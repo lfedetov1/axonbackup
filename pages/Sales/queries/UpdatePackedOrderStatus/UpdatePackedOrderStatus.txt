@@ -1,0 +1,6 @@
+UPDATE documents
+SET
+    status = 'CONFIRMED',
+    posting_status = 'READY',
+    note = CONCAT(COALESCE(note, ''), '\nPacked on ', NOW())
+WHERE id = {{this.params.orderId}};

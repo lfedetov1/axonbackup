@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#eab308",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "box",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "m1p9s64qwk",
+  "leftColumn": 58,
+  "minWidth": 120,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 46,
+  "mobileRightColumn": 62,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "onClick": "{{\nstoreValue(\"packingOrderId\", tblDeliveryNotes.selectedRow.ID)\n  .then(() => storeValue(\"packingOrderNumber\", tblDeliveryNotes.selectedRow.Number || tblDeliveryNotes.selectedRow.document_number))\n  .then(() => GetPackingOrderItems.run())\n  .then(() => storeValue(\"packedItems\", []))\n  .then(() => showModal(\"packingmodal\"))\n}}",
+  "parentColumnSpace": 24.203125,
+  "parentId": "8m1y0ivoiq",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 64,
+  "text": "Pack the order",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "xh6a6lxc1d",
+  "widgetName": "Button14"
+}

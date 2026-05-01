@@ -30,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{\n[\"Customer Orders\", \"Delivery Notes\", \"Sales History\"].includes(Tabs1.selectedTab)\n}}",
+  "isDisabled": "{{ appsmith.store.viewMode === \"add\" && JSAccess.has(\"sales.invoice.manage\") }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "jqsyvstdu5",

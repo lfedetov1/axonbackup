@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7d8e55d1-f157-4615-ba62-1bff70b1644d",
+  "id": "Inventory_JSAccess",
+  "unpublishedCollection": {
+    "name": "JSAccess",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

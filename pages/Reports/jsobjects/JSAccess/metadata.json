@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_6a9b0851-ca86-428c-bbed-e2492d72d046",
+  "id": "Reports_JSAccess",
+  "unpublishedCollection": {
+    "name": "JSAccess",
+    "pageId": "Reports",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

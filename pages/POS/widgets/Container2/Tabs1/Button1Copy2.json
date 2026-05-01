@@ -9,9 +9,16 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
-  "dynamicPropertyPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [
     {
       "key": "onClick"
@@ -22,7 +29,7 @@
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{(JSAccess.isAdmin() || JSAccess.has(\"finance.manage\")) && appsmith.store.cashRegisterStatus === \"OPEN\"}}\n",
   "key": "i412cra3be",
   "leftColumn": 2,
   "minWidth": 120,

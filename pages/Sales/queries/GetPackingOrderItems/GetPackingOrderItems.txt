@@ -1,0 +1,18 @@
+SELECT
+    di.id AS itemId,
+    di.product_id AS productId,
+    di.product_code AS productCode,
+    di.barcode AS barcode,
+    di.description AS description,
+    di.quantity AS orderedQty,
+    di.unit_id AS unitId,
+    di.tax_rate_id AS taxRateId,
+    di.unit_price AS unitPrice,
+    di.discount_percent AS discountPercent,
+    di.discount_amount AS discountAmount,
+    di.line_subtotal AS lineSubtotal,
+    di.tax_amount AS taxAmount,
+    di.line_total AS lineTotal
+FROM document_items di
+WHERE di.document_id = {{appsmith.store.packingOrderId}}
+ORDER BY di.line_no

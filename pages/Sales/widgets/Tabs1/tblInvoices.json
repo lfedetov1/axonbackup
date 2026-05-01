@@ -141,6 +141,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -149,6 +152,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -855,7 +861,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = tblInvoices.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.invoice.manage\"]))) : JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.invoice.manage\"]) })()}}",
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,

@@ -1,0 +1,36 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    product_code,
+    barcode,
+    description,
+    unit_id,
+    tax_rate_id,
+    warehouse_id,
+    quantity,
+    unit_price,
+    discount_percent,
+    discount_amount,
+    line_subtotal,
+    tax_amount,
+    line_total
+)
+VALUES (
+    {{this.params.invoiceId}},
+    {{this.params.lineNo}},
+    {{this.params.row.productId || "NULL"}},
+    {{this.params.row.productCode ? "'" + this.params.row.productCode + "'" : "NULL"}},
+    {{this.params.row.barcode ? "'" + this.params.row.barcode + "'" : "NULL"}},
+    '{{this.params.row.description || ""}}',
+    {{this.params.row.unitId || "NULL"}},
+    {{this.params.row.taxRateId || "NULL"}},
+    {{appsmith.store.warehouseId}},
+    {{this.params.row.packedQty || 0}},
+    {{this.params.row.unitPrice || 0}},
+    {{this.params.row.discountPercent || 0}},
+    {{this.params.row.discountAmount || 0}},
+    {{this.params.row.lineSubtotal || 0}},
+    {{this.params.row.taxAmount || 0}},
+    {{this.params.row.lineTotal || 0}}
+);
