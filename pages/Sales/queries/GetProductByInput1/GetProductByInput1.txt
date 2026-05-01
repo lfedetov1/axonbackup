@@ -1,0 +1,25 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.barcode AS barcode,
+    p.name AS productName,
+    p.name AS product,
+    COALESCE(NULLIF(p.description, ''), p.name) AS description,
+    p.product_type AS productType,
+    p.track_stock AS trackStock,
+    0 AS availableStock,
+    uom.id AS unitId,
+    uom.short_name AS unitName,
+    tr.id AS taxRateId,
+    tr.rate AS taxRate,
+    p.sale_price AS unitPrice
+FROM products p
+LEFT JOIN units_of_measure uom ON uom.id = p.unit_id
+LEFT JOIN tax_rates tr ON tr.id = p.tax_rate_id
+WHERE p.is_active = 1
+  AND (
+    p.code = {{ this.params.lookup || "" }}
+    OR p.barcode = {{ this.params.lookup || "" }}
+    OR p.name LIKE CONCAT('%', {{ this.params.lookup || "" }}, '%')
+  )
+LIMIT 1;

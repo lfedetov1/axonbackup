@@ -1,0 +1,21 @@
+UPDATE business_partners
+SET
+    partner_type = {{PartnerTypeSelect.selectedOptionValue || 'BOTH'}},
+    code = {{PartnerCodeInput.text || OIBInput.text}},
+    name = {{PartnerNameInput.text}},
+    legal_name = {{LegalNameInput.text || PartnerNameInput.text}},
+    contact_person = {{ContactPersonInput.text || null}},
+    tax_number = {{OIBInput.text || null}},
+    registration_number = {{RegistrationNumberInput.text || null}},
+    email = {{Email.text || null}},
+    phone = {{Phone.text || null}},
+    address_line1 = {{AddressInput.text || null}},
+    city_name = {{CityInput.text || null}},
+    postal_code = {{PostalCodeInput.text || null}},
+    country_id = (SELECT id FROM countries WHERE code = {{CountryCodeSelect.text || 'HR'}} LIMIT 1),
+    payment_term_days = {{PaymentTermDays.text || 0}},
+    credit_limit = {{PaymentTermDaysInput.text || 0}},
+    note = {{Note.text || null}},
+    updated_at = NOW()
+WHERE id = {{appsmith.store.currentPartnerId}}
+  AND company_id = {{appsmith.store.companyId}};

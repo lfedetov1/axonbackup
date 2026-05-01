@@ -1,0 +1,49 @@
+SELECT
+    di.id AS `Source Item ID`,
+    di.document_id AS `Source Document ID`,
+    di.product_id AS `Product ID`,
+    di.product_code AS `Product Code`,
+    di.barcode AS `Barcode`,
+    di.description AS `Description`,
+    di.unit_id AS `Unit ID`,
+    u.short_name AS `Unit`,
+    di.tax_rate_id AS `Tax Rate ID`,
+    tr.rate AS `Tax Rate`,
+    di.quantity AS `Original Quantity`,
+    COALESCE(SUM(ABS(ret.quantity)), 0) AS `Already Returned Quantity`,
+    (di.quantity - COALESCE(SUM(ABS(ret.quantity)), 0)) AS `Available Return Quantity`,
+    di.unit_price AS `Unit Price`,
+    di.discount_percent AS `Discount %`,
+    di.discount_amount AS `Discount Amount`,
+    di.line_subtotal AS `Subtotal`,
+    di.tax_amount AS `Tax Amount`,
+    di.line_total AS `Total`,
+    p.track_stock AS `Track Stock`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN document_items ret ON ret.source_document_item_id = di.id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+LEFT JOIN products p ON p.id = di.product_id
+WHERE di.document_id = {{this.params.sourceDocumentId}}
+GROUP BY
+    di.id,
+    di.document_id,
+    di.product_id,
+    di.product_code,
+    di.barcode,
+    di.description,
+    di.unit_id,
+    u.short_name,
+    di.tax_rate_id,
+    tr.rate,
+    di.quantity,
+    di.unit_price,
+    di.discount_percent,
+    di.discount_amount,
+    di.line_subtotal,
+    di.tax_amount,
+    di.line_total,
+    p.track_stock
+HAVING `Available Return Quantity` > 0
+ORDER BY di.line_no;

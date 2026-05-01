@@ -1,0 +1,22 @@
+INSERT INTO document_change_log (
+    document_id,
+    document_type,
+    company_id,
+    changed_by_user_id,
+    change_type,
+    field_name,
+    old_value,
+    new_value,
+    note
+)
+VALUES (
+    {{this.params.quotationId}},
+    'QUOTE',
+    {{appsmith.store.companyId}},
+    {{appsmith.store.userId}},
+    '{{this.params.changeType || "UPDATE"}}',
+    {{this.params.fieldName ? "'" + this.params.fieldName + "'" : "NULL"}},
+    {{this.params.oldValue ? "'" + this.params.oldValue + "'" : "NULL"}},
+    {{this.params.newValue ? "'" + this.params.newValue + "'" : "NULL"}},
+    {{this.params.note ? "'" + this.params.note + "'" : "NULL"}}
+);

@@ -1,0 +1,12 @@
+UPDATE documents
+SET
+    status = 'POSTED',
+    posting_status = 'POSTED',
+    is_locked = 1,
+    locked_at = NOW(),
+    locked_by_user_id = {{appsmith.store.userId}}
+WHERE company_id = {{appsmith.store.companyId}}
+  AND warehouse_id = {{appsmith.store.warehouseId}}
+  AND document_date = CURDATE()
+  AND document_type IN ('POS_SALE', 'SALES_RETURN')
+  AND status <> 'CANCELLED';

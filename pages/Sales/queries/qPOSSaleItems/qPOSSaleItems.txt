@@ -1,0 +1,23 @@
+SELECT
+    ID AS `ID`,
+    DocumentID AS `Document ID`,
+    LineNo AS `Line No`,
+    ProductCode AS `Product Code`,
+    Product AS `Product`,
+    Barcode AS `Barcode`,
+    Description AS `Description`,
+    Unit AS `Unit`,
+    Quantity AS `Quantity`,
+    UnitPrice AS `Unit Price`,
+    NetUnitPrice AS `Net Unit Price`,
+    DiscountPercent AS `Discount %`,
+    DiscountAmount AS `Discount Amount`,
+    TaxCode AS `Tax Code`,
+    TaxRate AS `Tax Rate`,
+    TaxAmount AS `Tax Amount`,
+    Total AS `Total`,
+    LineStatus AS `Line Status`,
+    Note AS `Note`
+FROM POSSaleItems
+WHERE DocumentID = {{ tblPOSSales.selectedRow.ID || 0 }} 
+ORDER BY LineNo;

@@ -1,0 +1,42 @@
+SELECT
+  CAST(
+    CONCAT(
+      'INV-',
+      LPAD(
+        COALESCE(
+          (
+            SELECT MAX(
+              CAST(
+                NULLIF(
+                  SUBSTRING_INDEX(
+                    SUBSTRING_INDEX(d.document_number, CONCAT('-', COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }})), 1),
+                    'INV-',
+                    -1
+                  ),
+                  ''
+                ) AS UNSIGNED
+              )
+            )
+            FROM documents d
+            WHERE d.company_id = {{ appsmith.store.currentCompany?.company_id || appsmith.store.companyId || 0 }}
+              AND d.document_type = 'SALES_INVOICE'
+              AND (
+                d.warehouse_id = w.id
+                OR CAST(d.warehouse_id AS CHAR) = CAST({{ appsmith.store.warehouseId || "" }} AS CHAR)
+              )
+              AND d.document_number LIKE CONCAT('INV-%-', COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }}))
+          ),
+          0
+        ) + 1,
+        3,
+        '0'
+      ),
+      '-',
+      COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }})
+    ) AS CHAR
+  ) AS document_number
+FROM (SELECT 1 AS one_row) x
+LEFT JOIN warehouses w
+  ON CAST(w.id AS CHAR) = CAST({{ appsmith.store.warehouseId || "" }} AS CHAR)
+  OR w.code = {{ appsmith.store.warehouseId || "" }}
+LIMIT 1;

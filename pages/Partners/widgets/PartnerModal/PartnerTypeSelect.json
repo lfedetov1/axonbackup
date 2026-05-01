@@ -1,0 +1,59 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 20,
+  "boxShadow": "none",
+  "defaultOptionValue": "BOTH",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "dfx3rsdsao",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Type",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 34,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 20,
+  "mobileLeftColumn": 34,
+  "mobileRightColumn": 54,
+  "mobileTopRow": 13,
+  "needsErrorInfo": false,
+  "optionLabel": "name",
+  "optionValue": "code",
+  "parentColumnSpace": 9.15625,
+  "parentId": "2svprgij3g",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 54,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  {\n    \"name\": \"CUSTOMER\",\n    \"code\": \"CUSTOMER\"\n  },\n  {\n    \"name\": \"SUPPLIER\",\n    \"code\": \"SUPPLIER\"\n  },\n  {\n    \"name\": \"BOTH\",\n    \"code\": \"BOTH\"\n  }\n]",
+  "topRow": 13,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "5txi64xvqo",
+  "widgetName": "PartnerTypeSelect"
+}

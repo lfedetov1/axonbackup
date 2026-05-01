@@ -1,0 +1,6 @@
+SELECT
+    code AS value,
+    name AS label
+FROM payment_methods
+WHERE is_active = 1
+ORDER BY sort_order, name;

@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_35864dc9-482c-436e-80e2-e2c91fdd39e3",
+  "id": "POS_CashCount",
+  "unpublishedCollection": {
+    "name": "CashCount",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

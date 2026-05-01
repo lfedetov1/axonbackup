@@ -1,0 +1,18 @@
+SELECT
+    d.id AS quotationId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+    d.valid_until AS validUntil,
+    d.partner_id AS partnerId,
+    d.status AS status,
+    d.posting_status AS postingStatus,
+    d.sales_channel AS salesChannel,
+    d.currency_code AS currencyCode,
+    d.exchange_rate AS exchangeRate,
+    d.customer_reference AS customerReference,
+    d.internal_reference AS internalReference,
+    d.note AS note
+FROM documents d
+WHERE d.id = {{appsmith.store.editQuoteId}}
+LIMIT 1

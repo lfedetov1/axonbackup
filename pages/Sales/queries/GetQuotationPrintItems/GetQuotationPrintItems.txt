@@ -1,0 +1,33 @@
+SELECT
+    di.id AS itemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+    di.product_id AS productId,
+    di.product_code AS productCode,
+    di.barcode AS barcode,
+    p.name AS productName,
+    di.description AS description,
+    di.unit_id AS unitId,
+    uom.short_name AS unitName,
+    di.quantity AS quantity,
+    di.unit_price AS unitPrice,
+    di.net_unit_price AS netUnitPrice,
+    di.discount_percent AS discountPercent,
+    di.discount_amount AS discountAmount,
+    di.discount_reason AS discountReason,
+    di.line_subtotal AS lineSubtotal,
+    di.tax_rate_id AS taxRateId,
+    tr.code AS taxCode,
+    tr.rate AS taxRate,
+    di.tax_amount AS taxAmount,
+    di.line_total AS lineTotal,
+    di.line_status AS lineStatus,
+    di.note AS note
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure uom ON uom.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE d.id = {{ appsmith.store.selectedQuoteId }}
+  AND d.document_type = 'QUOTE'
+ORDER BY di.line_no;

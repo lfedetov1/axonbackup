@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_fbc23358-cf9f-433e-97c8-afdce260644e",
+  "id": "POS_POSReceiptPrint",
+  "unpublishedCollection": {
+    "name": "POSReceiptPrint",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

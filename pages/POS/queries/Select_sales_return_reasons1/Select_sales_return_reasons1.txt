@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM
+  sales_return_reasons
+WHERE
+  name LIKE '%{{ReturnReasonSelect.filterText}}%'

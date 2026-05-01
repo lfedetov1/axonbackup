@@ -1,0 +1,38 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    unit_id,
+    tax_rate_id,
+    warehouse_id,
+    quantity,
+    unit_price,
+    discount_percent,
+    discount_amount,
+    line_subtotal,
+    tax_amount,
+    line_total,
+    note
+)
+VALUES
+{{
+  TableProducts.tableData.map((item, index) => `(
+    ${InsertInvoice.data.insertId},
+    ${index + 1},
+    ${item.ProductID || "NULL"},
+    '${(item.Description || "").replaceAll("'", "''")}',
+    ${item.UnitID || 1},
+    ${item.TaxRateID || "NULL"},
+    ${SelectWarehouse.text|| "NULL"},
+    ${item.Quantity || 0},
+    ${item.UnitPrice || 0},
+    ${item.DiscountPercent || 0},
+    ${item.DiscountAmount || 0},
+    ${item.LineSubtotal || 0},
+    ${item.TaxAmount || 0},
+    ${item.LineTotal || 0},
+    ${item.Note ? `'${String(item.Note).replaceAll("'", "''")}'` : "NULL"}
+  )`).join(",")
+}}
+;

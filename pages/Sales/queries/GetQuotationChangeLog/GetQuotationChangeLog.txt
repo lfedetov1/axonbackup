@@ -1,0 +1,14 @@
+SELECT
+    l.id AS ID,
+    l.change_type AS Action,
+    l.field_name AS Field,
+    l.old_value AS OldValue,
+    l.new_value AS NewValue,
+    l.note AS Note,
+    CONCAT(u.first_name, ' ', u.last_name) AS ChangedBy,
+    u.username AS UserName,
+    l.created_at AS ChangedAt
+FROM document_change_log l
+LEFT JOIN users u ON u.id = l.changed_by_user_id
+WHERE l.document_id = {{appsmith.store.currentQuotationId}}
+ORDER BY l.created_at DESC, l.id DESC;

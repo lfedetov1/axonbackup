@@ -1,0 +1,14 @@
+INSERT INTO pos_return_approvals (
+    company_id,
+    return_document_id,
+    source_document_id,
+    approved_by_user_id,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.returnDocumentId}},
+    {{this.params.sourceDocumentId}},
+    {{this.params.managerUserId}},
+    {{ReturnNoteInput.text || null}}
+);

@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM
+  warehouses
+WHERE
+  name LIKE '%{{SelectWarehouse.filterText}}%'

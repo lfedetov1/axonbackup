@@ -1,0 +1,52 @@
+SELECT
+  CAST(p.id AS CHAR) AS product_id,
+  CAST(COALESCE(p.code, '') AS CHAR) AS product_code,
+  CAST(COALESCE(p.name, '') AS CHAR) AS product_name,
+
+  CAST(
+    SUM(
+      CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE') THEN di.quantity
+        WHEN d.document_type = 'SALES_RETURN' THEN -di.quantity
+        ELSE 0
+      END
+    ) AS DECIMAL(18,2)
+  ) AS sold_qty,
+
+  CAST(
+    SUM(
+      CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE') THEN di.line_total
+        WHEN d.document_type = 'SALES_RETURN' THEN -di.line_total
+        ELSE 0
+      END
+    ) AS DECIMAL(18,2)
+  ) AS total_sales,
+
+  CAST(COUNT(DISTINCT d.id) AS CHAR) AS sold_times,
+
+  CAST(DATEDIFF(CURDATE(), DATE(p.created_at)) AS CHAR) AS active_days,
+
+  CAST(COUNT(DISTINCT DATE(d.document_date)) AS CHAR) AS sold_days
+
+FROM document_items di
+JOIN documents d
+  ON d.id = di.document_id
+JOIN products p
+  ON p.id = di.product_id
+
+WHERE d.company_id = {{ appsmith.store.currentCompany?.company_id || 0 }}
+  AND d.warehouse_id = {{ appsmith.store.warehouseId || 0 }}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RETURN')
+  AND d.status IN ('CONFIRMED', 'POSTED')
+  AND d.document_date >=
+    CASE
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'DAY' THEN CURDATE() - INTERVAL 1 DAY
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'WEEK' THEN CURDATE() - INTERVAL 7 DAY
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'MONTH' THEN CURDATE() - INTERVAL 30 DAY
+      ELSE CURDATE() - INTERVAL 7 DAY
+    END
+
+GROUP BY p.id, p.code, p.name, p.created_at
+ORDER BY total_sales DESC
+LIMIT 20;

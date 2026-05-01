@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 35,
+  "boxShadow": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+  "buttonColor": "#111827",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "814pdp9128",
+  "leftColumn": 31,
+  "minWidth": 120,
+  "mobileBottomRow": 34,
+  "mobileLeftColumn": 3,
+  "mobileRightColumn": 19,
+  "mobileTopRow": 30,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  (async () => {\n    try {\n      const loginRows = await loginUser.run();\n      const user = loginRows?.[0] || loginUser.data?.[0];\n\n      if (!user) {\n        showAlert(\"Wrong username or password\", \"error\");\n        return;\n      }\n\n      await storeValue(\"userId\", user.user_id);\n      await storeValue(\"username\", user.username);\n      await storeValue(\"companyId\", user.company_id);\n      await storeValue(\"companyName\", user.company_name);\n      await storeValue(\"roleId\", user.role_id);\n      await storeValue(\"roleCode\", user.role_code);\n      await storeValue(\"roleName\", user.role_name);\n\n      const cashRegisterRows = await GetUserCashRegister.run();\n      const cashRegister = cashRegisterRows?.[0] || GetUserCashRegister.data?.[0] || {};\n\n      await storeValue(\"cashRegisterId\", cashRegister.cashRegisterId || null);\n      await storeValue(\"cashRegisterCode\", cashRegister.cashRegisterCode || \"\");\n      await storeValue(\"cashRegisterName\", cashRegister.cashRegisterName || \"\");\n      await storeValue(\"warehouseId\", cashRegister.warehouseId || null);\n      await storeValue(\"warehouseCode\", cashRegister.warehouseCode || \"\");\n      await storeValue(\"warehouseName\", cashRegister.warehouseName || \"\");\n\n      if (!cashRegister.cashRegisterId) {\n        showAlert(\"No cash register is assigned to this user.\", \"warning\");\n      }\n\n      showModal(\"Warehouse\");\n    } catch (error) {\n      showAlert(\"Login failed: \" + error.message, \"error\");\n      console.log(error);\n    }\n  })()\n}}\n",
+  "originalBottomRow": 35,
+  "originalTopRow": 31,
+  "parentColumnSpace": 14.234375,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 41,
+  "text": "Sign in",
+  "topRow": 31,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "b0f2137dne",
+  "widgetName": "Button1"
+}

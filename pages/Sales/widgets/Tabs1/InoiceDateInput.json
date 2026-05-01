@@ -1,0 +1,63 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 13,
+  "boxShadow": "none",
+  "closeOnSelection": true,
+  "dateFormat": "DD.MM.YYYY",
+  "datePickerType": "DATE_PICKER",
+  "defaultDate": "2026-04-22T19:03:37.052Z",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "dateFormat"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "firstDayOfWeek": 0,
+  "isDisabled": false,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "6c4fzu7m45",
+  "label": "Inovice date :",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 48,
+  "maxDate": "2121-12-31T18:29:00.000Z",
+  "maxDynamicHeight": 9000,
+  "minDate": "1920-12-31T18:30:00.000Z",
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 38,
+  "mobileLeftColumn": 7,
+  "mobileRightColumn": 27,
+  "mobileTopRow": 31,
+  "needsErrorInfo": false,
+  "originalBottomRow": 97,
+  "originalTopRow": 93,
+  "parentColumnSpace": 13.921875,
+  "parentId": "ketqbhrli9",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 64,
+  "shortcuts": false,
+  "timePrecision": "minute",
+  "topRow": 9,
+  "type": "DATE_PICKER_WIDGET2",
+  "version": 2,
+  "widgetId": "qf5umnvymu",
+  "widgetName": "InoiceDateInput"
+}

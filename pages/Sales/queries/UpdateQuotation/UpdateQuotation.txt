@@ -1,0 +1,21 @@
+UPDATE documents
+SET
+    warehouse_id = {{appsmith.store.warehouseId}},
+    partner_id = {{SelectPartner1.selectedOptionValue}},
+    status = '{{QuotationStatusSelect.selectedOptionValue || "DRAFT"}}',
+    posting_status = '{{QuotationPostingStatusSelect?.selectedOptionValue || "NOT_POSTED"}}',
+    sales_channel = '{{QuotationSalesChannelSelect.selectedOptionValue || "BACKOFFICE"}}',
+    document_number = '{{Quotations_no.text}}',
+    document_date = '{{InoiceDateInput1.selectedDate}}',
+    due_date = {{dutedate1.selectedDate ? "'" + dutedate1.selectedDate + "'" : "NULL"}},
+    valid_until = {{QuotationValidUntilInput.selectedDate ? "'" + QuotationValidUntilInput.selectedDate + "'" : "NULL"}},
+    currency_code = '{{QuotationCurrencySelect.selectedOptionValue || "EUR"}}',
+    customer_reference = {{QuotationCustomerReferenceInpu.text ? "'" + QuotationCustomerReferenceInpu.text + "'" : "NULL"}},
+    internal_reference = {{QuotationInternalReferenceInpu.text ? "'" + QuotationInternalReferenceInpu.text + "'" : "NULL"}},
+    note = {{InvoiceNoteInput1.text ? "'" + InvoiceNoteInput1.text + "'" : "NULL"}},
+    subtotal_amount = {{this.params.totals.subtotal || 0}},
+    tax_amount = {{this.params.totals.tax || 0}},
+    discount_amount = {{this.params.totals.discount || 0}},
+    total_amount = {{this.params.totals.total || 0}},
+    updated_at = NOW()
+WHERE id = {{this.params.quotationId}};

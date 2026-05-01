@@ -1,0 +1,32 @@
+SELECT
+    di.id AS itemId,
+    di.product_id AS productId,
+    di.product_code AS productCode,
+    di.barcode AS barcode,
+    di.description AS description,
+    p.product_type AS productType,
+    p.track_stock AS trackStock,
+    COALESCE(s.quantity_balance, 0) AS availableStock,
+    di.unit_id AS unitId,
+    u.short_name AS unitName,
+    di.tax_rate_id AS taxRateId,
+    tr.rate AS taxRate,
+    di.quantity AS quantity,
+    di.unit_price AS unitPrice,
+    di.discount_percent AS discountPercent,
+    di.discount_amount AS discountAmount,
+    di.discount_reason AS discountReason,
+    di.line_subtotal AS lineSubtotal,
+    di.tax_amount AS taxAmount,
+    di.line_total AS lineTotal,
+    di.note AS note
+FROM document_items di
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+LEFT JOIN v_inventory_balance s
+    ON s.product_id = di.product_id
+   AND s.company_id = {{appsmith.store.companyId}}
+   AND s.warehouse_id = {{appsmith.store.warehouseId}}
+WHERE di.document_id = {{appsmith.store.editQuoteId}}
+ORDER BY di.line_no;

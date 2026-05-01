@@ -1,0 +1,23 @@
+SELECT
+    ID AS `ID`,
+    Number AS `Number`,
+    Date AS `Date`,
+    DueDate AS `Due Date`,
+    CustomerCode AS `Customer Code`,
+    Customer AS `Customer`,
+    Warehouse AS `Warehouse`,
+    PaymentMethod AS `Payment Method`,
+    Status AS `Status`,
+    PostingStatus AS `Posting Status`,
+    Subtotal AS `Subtotal`,
+    Tax AS `Tax`,
+    Discount AS `Discount`,
+    Total AS `Total`,
+    Paid AS `Paid`,
+    OpenAmount AS `Open Amount`,
+    CreatedBy AS `Created By`,
+    CreatedAt AS `Created At`
+FROM SalesInvoices
+WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
+              AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}'
+ORDER BY Date DESC, ID DESC;

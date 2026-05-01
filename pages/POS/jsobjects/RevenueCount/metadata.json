@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_d2d666c7-5fbc-408f-8543-7935eb800ccb",
+  "id": "POS_RevenueCount",
+  "unpublishedCollection": {
+    "name": "RevenueCount",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

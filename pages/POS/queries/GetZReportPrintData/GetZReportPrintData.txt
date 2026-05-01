@@ -1,0 +1,14 @@
+SELECT
+    CURDATE() AS reportDate,
+    COUNT(*) AS receiptCount,
+    COALESCE(SUM(CASE WHEN payment_method = 'CASH' THEN total_amount ELSE 0 END), 0) AS cashTotal,
+    COALESCE(SUM(CASE WHEN payment_method = 'CARD' THEN total_amount ELSE 0 END), 0) AS cardTotal,
+    COALESCE(SUM(CASE WHEN payment_method = 'OTHER' THEN total_amount ELSE 0 END), 0) AS otherTotal,
+    COALESCE(SUM(CASE WHEN payment_method = 'MIXED' THEN total_amount ELSE 0 END), 0) AS mixedTotal,
+    COALESCE(SUM(total_amount), 0) AS grandTotal
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND warehouse_id = {{appsmith.store.warehouseId}}
+  AND document_date = CURDATE()
+  AND document_type = 'POS_SALE'
+  AND status = 'POSTED';

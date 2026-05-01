@@ -1,0 +1,44 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#231f20",
+  "buttonVariant": "TERTIARY",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconName": "lock",
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "64bcavuqq0",
+  "leftColumn": 1,
+  "minWidth": 50,
+  "mobileBottomRow": 84,
+  "mobileLeftColumn": 18,
+  "mobileRightColumn": 22,
+  "mobileTopRow": 80,
+  "needsErrorInfo": false,
+  "onClick": "{{showModal(Posusercheck.name);}}",
+  "originalBottomRow": 84,
+  "originalTopRow": 80,
+  "parentColumnSpace": 13.71875,
+  "parentId": "8w3t9duyc1",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "hug",
+  "rightColumn": 5,
+  "topRow": 0,
+  "type": "ICON_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "o2vvje8q19",
+  "widgetName": "IconButton4"
+}

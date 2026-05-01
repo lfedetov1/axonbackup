@@ -1,0 +1,9 @@
+UPDATE documents
+SET
+    status = 'CONFIRMED',
+    is_locked = 1,
+    locked_at = NOW(),
+    locked_by_user_id = {{appsmith.store.userId}},
+    note = CONCAT(COALESCE(note, ''), '\nConverted to invoice ', {{this.params.invoiceNumber}})
+WHERE id = {{this.params.quotationId}}
+  AND document_type = 'QUOTE';

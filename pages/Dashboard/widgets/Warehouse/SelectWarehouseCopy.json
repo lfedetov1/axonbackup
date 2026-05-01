@@ -1,0 +1,72 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 16,
+  "boxShadow": "none",
+  "defaultOptionValue": "{{ ((options, serverSideFiltering) => ( appsmith.store.warehouseId))(SelectWarehouseCopy.options, SelectWarehouseCopy.serverSideFiltering) }}",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "defaultOptionValue"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onFilterUpdate"
+    }
+  ],
+  "isDisabled": true,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "nxhuehncb5",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 14,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 19,
+  "mobileLeftColumn": 2,
+  "mobileRightColumn": 22,
+  "mobileTopRow": 12,
+  "needsErrorInfo": false,
+  "onFilterUpdate": "{{\n            Select_warehouses3.run();\n            \n          }}",
+  "optionLabel": "name",
+  "optionValue": "code",
+  "originalBottomRow": 19,
+  "originalTopRow": 12,
+  "parentColumnSpace": 6.9375,
+  "parentId": "kk454unxp4",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 55,
+  "serverSideFiltering": true,
+  "sourceData": "{{Select_warehouses3.data}}",
+  "topRow": 11,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "9m6vr157ne",
+  "widgetName": "SelectWarehouseCopy"
+}

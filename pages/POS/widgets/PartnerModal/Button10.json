@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 12,
+  "boxShadow": "none",
+  "buttonColor": "#fde047",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "cloud-download",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "mhjs4agpvg",
+  "leftColumn": 55,
+  "minWidth": 120,
+  "mobileBottomRow": 14,
+  "mobileLeftColumn": 6,
+  "mobileRightColumn": 22,
+  "mobileTopRow": 10,
+  "needsErrorInfo": false,
+  "onClick": "{{ PartnerOib.fetchPartnerData() }}",
+  "parentColumnSpace": 9.15625,
+  "parentId": "8mut7vrfwq",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 64,
+  "text": "Ok",
+  "topRow": 8,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "bmbxnukbb0",
+  "widgetName": "Button10"
+}

@@ -1,0 +1,12 @@
+SELECT
+    tr.rate AS taxRate,
+    SUM(di.line_subtotal) AS taxableAmount,
+    SUM(di.tax_amount) AS taxAmount,
+    SUM(di.line_total) AS totalAmount
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE d.id = {{ appsmith.store.selectedQuoteId }}
+  AND d.document_type = 'QUOTE'
+GROUP BY tr.rate
+ORDER BY tr.rate;

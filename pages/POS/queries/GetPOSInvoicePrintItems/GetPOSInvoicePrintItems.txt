@@ -1,0 +1,19 @@
+SELECT
+    di.line_no AS lineNo,
+    di.product_code AS productCode,
+    di.barcode AS barcode,
+    di.description AS description,
+    di.quantity AS quantity,
+    u.short_name AS unitName,
+    di.unit_price AS unitPrice,
+    di.discount_percent AS discountPercent,
+    di.discount_amount AS discountAmount,
+    tr.rate AS taxRate,
+    di.tax_amount AS taxAmount,
+    di.line_subtotal AS lineSubtotal,
+    di.line_total AS lineTotal
+FROM document_items di
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{this.params.documentId}}
+ORDER BY di.line_no;

@@ -1,0 +1,43 @@
+SELECT
+    CAST(cu.user_id AS CHAR) AS user_id,
+    CAST(cu.company_id AS CHAR) AS company_id,
+    CAST(cu.role_id AS CHAR) AS role_id,
+    CAST(cu.is_default_company AS CHAR) AS is_default_company,
+
+    COALESCE(CAST(c.code AS CHAR), '') AS company_code,
+    COALESCE(CAST(c.name AS CHAR), '') AS company_name,
+    COALESCE(CAST(c.legal_name AS CHAR), '') AS legal_name,
+    COALESCE(CAST(c.tax_number AS CHAR), '') AS tax_number,
+    COALESCE(CAST(c.registration_number AS CHAR), '') AS registration_number,
+    COALESCE(CAST(c.address_line1 AS CHAR), '') AS address_line1,
+    COALESCE(CAST(c.address_line2 AS CHAR), '') AS address_line2,
+    COALESCE(CAST(c.city AS CHAR), '') AS city,
+    COALESCE(CAST(c.postal_code AS CHAR), '') AS postal_code,
+    COALESCE(CAST(c.country_code AS CHAR), '') AS country_code,
+    COALESCE(CAST(c.phone AS CHAR), '') AS phone,
+    COALESCE(CAST(c.email AS CHAR), '') AS email,
+    COALESCE(CAST(c.website AS CHAR), '') AS website,
+    COALESCE(CAST(c.iban AS CHAR), '') AS company_iban,
+    COALESCE(CAST(c.swift_code AS CHAR), '') AS company_swift_code,
+    COALESCE(CAST(c.logo_path AS CHAR), '') AS logo_path,
+    COALESCE(CAST(c.director_name AS CHAR), '') AS director_name,
+    COALESCE(CAST(c.base_currency_code AS CHAR), '') AS base_currency_code,
+
+    COALESCE(CAST(cba.bank_account_id AS CHAR), '') AS bank_account_id,
+    COALESCE(CAST(ba.account_name AS CHAR), '') AS account_name,
+    COALESCE(CAST(ba.account_number AS CHAR), '') AS account_number,
+    COALESCE(CAST(ba.iban AS CHAR), '') AS bank_iban,
+    COALESCE(CAST(ba.swift_code AS CHAR), '') AS bank_swift,
+    COALESCE(CAST(ba.currency_code AS CHAR), '') AS bank_currency_code
+
+FROM company_users cu
+JOIN companies c
+    ON c.id = cu.company_id
+LEFT JOIN company_bank_accounts cba
+    ON cba.company_id = c.id
+   AND cba.is_default = 1
+LEFT JOIN bank_accounts ba
+    ON ba.id = cba.bank_account_id
+WHERE cu.user_id = {{ appsmith.store.userId }}
+ORDER BY cu.is_default_company DESC, cu.id ASC
+LIMIT 1;

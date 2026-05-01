@@ -1,0 +1,27 @@
+SELECT
+    COALESCE(SUM(CASE
+        WHEN d.document_type = 'POS_SALE' AND d.payment_method = 'CASH'
+        THEN d.total_amount ELSE 0
+    END), 0)
+    -
+    COALESCE(SUM(CASE
+        WHEN d.document_type = 'SALES_RETURN' AND d.payment_method = 'CASH'
+        THEN ABS(d.total_amount) ELSE 0
+    END), 0) AS cashRevenue,
+
+    COALESCE(SUM(CASE
+        WHEN d.document_type = 'POS_SALE' AND d.payment_method = 'CARD'
+        THEN d.total_amount ELSE 0
+    END), 0) AS cardRevenue,
+
+    COALESCE(SUM(CASE
+        WHEN d.document_type = 'POS_SALE' AND d.payment_method IN ('OTHER', 'MIXED')
+        THEN d.total_amount ELSE 0
+    END), 0) AS otherRevenue,
+
+    COUNT(d.id) AS transactionCount
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.warehouse_id = {{appsmith.store.warehouseId}}
+  AND d.document_date = CURDATE()
+  AND d.document_type IN ('POS_SALE', 'SALES_RETURN');

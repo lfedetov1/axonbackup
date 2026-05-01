@@ -1,0 +1,46 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    source_document_item_id,
+    product_id,
+    description,
+    product_code,
+    barcode,
+    unit_id,
+    tax_rate_id,
+    quantity,
+    unit_price,
+    net_unit_price,
+    discount_percent,
+    discount_amount,
+    discount_reason,
+    line_subtotal,
+    tax_amount,
+    line_total,
+    line_status,
+    note
+)
+SELECT
+    {{this.params.invoiceId}},
+    qi.line_no,
+    qi.id,
+    qi.product_id,
+    qi.description,
+    qi.product_code,
+    qi.barcode,
+    qi.unit_id,
+    qi.tax_rate_id,
+    qi.quantity,
+    qi.unit_price,
+    qi.net_unit_price,
+    qi.discount_percent,
+    qi.discount_amount,
+    qi.discount_reason,
+    qi.line_subtotal,
+    qi.tax_amount,
+    qi.line_total,
+    'OPEN',
+    qi.note
+FROM document_items qi
+WHERE qi.document_id = {{this.params.quotationId}}
+ORDER BY qi.line_no;

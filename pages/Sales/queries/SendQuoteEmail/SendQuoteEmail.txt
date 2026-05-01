@@ -1,0 +1,31 @@
+{{
+`
+Dear Customer,
+
+Please find your quote details below.
+
+QUOTE DETAILS
+Quote number: ${GetQuotationPrintHeader.data[0].documentNumber}
+Date: ${GetQuotationPrintHeader.data[0].documentDate}
+Valid until: ${GetQuotationPrintHeader.data[0].validUntil || GetQuotationPrintHeader.data[0].dueDate || "-"}
+Currency: ${GetQuotationPrintHeader.data[0].currencyCode}
+
+SELLER
+${GetQuotationPrintHeader.data[0].companyName}
+${GetQuotationPrintHeader.data[0].companyAddress}
+${GetQuotationPrintHeader.data[0].companyPostalCode} ${GetQuotationPrintHeader.data[0].companyCity}
+VAT/OIB: ${GetQuotationPrintHeader.data[0].companyTaxNumber}
+
+CUSTOMER
+${GetQuotationPrintHeader.data[0].partnerLegalName || GetQuotationPrintHeader.data[0].partnerName}
+${GetQuotationPrintHeader.data[0].partnerAddress || ""}
+${GetQuotationPrintHeader.data[0].partnerPostalCode || ""} ${GetQuotationPrintHeader.data[0].partnerCity || ""}
+VAT/OIB: ${GetQuotationPrintHeader.data[0].partnerTaxNumber || ""}
+
+TOTAL
+${Number(GetQuotationPrintHeader.data[0].totalAmount || 0).toFixed(2)} ${GetQuotationPrintHeader.data[0].currencyCode}
+
+Kind regards,
+${GetQuotationPrintHeader.data[0].companyName}
+`
+}}

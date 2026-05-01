@@ -1,0 +1,7 @@
+SELECT
+  id AS value,
+  CONCAT(code, ' - ', name) AS label
+FROM warehouses
+WHERE company_id = {{appsmith.store.companyId || 1}}
+  AND is_active = 1
+ORDER BY name;

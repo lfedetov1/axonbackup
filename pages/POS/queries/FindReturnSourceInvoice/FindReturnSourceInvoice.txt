@@ -1,0 +1,18 @@
+SELECT
+    d.id AS documentId,
+    d.company_id AS companyId,
+    d.warehouse_id AS warehouseId,
+    d.partner_id AS partnerId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.payment_method AS paymentMethod,
+    d.card_type AS cardType,
+    d.total_amount AS totalAmount,
+    d.paid_amount AS paidAmount,
+    d.status AS status,
+    d.posting_status AS postingStatus
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_number = {{ReturnInvoiceNumberInput.text}}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+LIMIT 1;

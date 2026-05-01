@@ -1,0 +1,13 @@
+SELECT
+    cr.id AS cashRegisterId,
+    cr.code AS cashRegisterCode,
+    cr.name AS cashRegisterName,
+    cr.warehouse_id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName
+FROM cash_registers cr
+LEFT JOIN warehouses w ON w.id = cr.warehouse_id
+WHERE cr.company_id = {{appsmith.store.companyId}}
+  AND cr.responsible_user_id = {{appsmith.store.userId}}
+  AND cr.is_active = 1
+LIMIT 1;

@@ -1,0 +1,29 @@
+SELECT
+  CAST(SUM(CASE WHEN d.document_type = 'SALES_INVOICE' THEN d.total_amount ELSE 0 END) AS DECIMAL(18,2)) AS sales_amount,
+  CAST(SUM(CASE WHEN d.document_type = 'SALES_RETURN' THEN d.total_amount ELSE 0 END) AS DECIMAL(18,2)) AS returns_amount,
+  CAST(SUM(CASE WHEN d.document_type = 'SALES_ORDER' THEN d.total_amount ELSE 0 END) AS DECIMAL(18,2)) AS orders_amount,
+  CAST(SUM(CASE WHEN d.document_type = 'DELIVERY_NOTE' THEN d.total_amount ELSE 0 END) AS DECIMAL(18,2)) AS delivery_amount,
+  CAST(SUM(CASE WHEN d.document_type = 'PURCHASE_RECEIPT' THEN d.total_amount ELSE 0 END) AS DECIMAL(18,2)) AS received_amount,
+  CAST(
+    SUM(CASE WHEN d.document_type = 'SALES_INVOICE' THEN d.total_amount ELSE 0 END)
+    - SUM(CASE WHEN d.document_type = 'SALES_RETURN' THEN d.total_amount ELSE 0 END)
+    AS DECIMAL(18,2)
+  ) AS net_sales
+FROM documents d
+WHERE d.company_id = {{ appsmith.store.currentCompany?.company_id || 0 }}
+  AND d.warehouse_id = {{ appsmith.store.warehouseId || 0 }}
+  AND d.document_type IN (
+    'SALES_INVOICE',
+    'SALES_RETURN',
+    'SALES_ORDER',
+    'DELIVERY_NOTE',
+    'PURCHASE_RECEIPT'
+  )
+  AND d.status IN ('CONFIRMED', 'POSTED')
+  AND d.document_date >=
+    CASE
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'DAY' THEN CURDATE() - INTERVAL 1 DAY
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'WEEK' THEN CURDATE() - INTERVAL 7 DAY
+      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'MONTH' THEN CURDATE() - INTERVAL 30 DAY
+      ELSE CURDATE() - INTERVAL 7 DAY
+    END;

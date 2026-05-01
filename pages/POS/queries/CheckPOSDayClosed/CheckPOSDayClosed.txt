@@ -1,0 +1,7 @@
+SESELECT id
+FROM cash_register_closings
+WHERE company_id = {{appsmith.store.companyId}}
+  AND cash_register_id = {{CashRegisterSelect.text}}
+  AND closing_date = CURDATE()
+  AND status = 'CLOSED'
+LIMIT 1;

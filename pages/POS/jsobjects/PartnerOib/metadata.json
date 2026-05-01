@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_beba3d1a-2d60-4f26-9078-204c10e5c390",
+  "id": "POS_PartnerOib",
+  "unpublishedCollection": {
+    "name": "PartnerOib",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

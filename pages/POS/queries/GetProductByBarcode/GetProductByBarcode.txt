@@ -1,0 +1,27 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.barcode AS barcode,
+    p.name AS productName,
+    p.description AS description,
+    p.sale_price AS unitPrice,
+    p.tax_rate_id AS taxRateId,
+    COALESCE(tr.rate, 0) AS taxRate,
+    p.unit_id AS unitId,
+    COALESCE(u.short_name, '') AS unitName,
+    p.product_type AS productType,
+    p.track_stock AS trackStock,
+    COALESCE(s.quantity_balance, 0) AS availableStock
+FROM products p
+LEFT JOIN tax_rates tr ON tr.id = p.tax_rate_id
+LEFT JOIN units_of_measure u ON u.id = p.unit_id
+LEFT JOIN v_inventory_balance s
+    ON s.product_id = p.id
+   AND s.company_id = {{appsmith.store.companyId}}
+   AND s.warehouse_id = {{appsmith.store.warehouseId}}
+WHERE p.is_active = 1
+  AND (
+    TRIM(p.code) = TRIM('{{BarcodeInput.text}}')
+    OR TRIM(p.barcode) = TRIM('{{BarcodeInput.text}}')
+  )
+LIMIT 1

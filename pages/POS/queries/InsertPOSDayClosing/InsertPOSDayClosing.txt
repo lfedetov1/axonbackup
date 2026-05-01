@@ -1,0 +1,38 @@
+INSERT INTO cash_register_closings (
+    company_id,
+    cash_register_id,
+    closing_date,
+    closed_by_user_id,
+    opening_amount,
+    expected_cash_amount,
+    counted_cash_amount,
+    difference_amount,
+    cash_sales_amount,
+    card_sales_amount,
+    bank_sales_amount,
+    other_sales_amount,
+    cash_in_amount,
+    cash_out_amount,
+    transaction_count,
+    status,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{CashRegisterSelect.text}},
+    CURDATE(),
+    {{appsmith.store.userId}},
+    0,
+    {{GetCashRevenue.data?.[0]?.cashRevenue || 0}},
+    {{CashCount.total()}},
+    {{CashCount.difference()}},
+    {{GetCashRevenue.data?.[0]?.cashRevenue || 0}},
+    {{GetCashRevenue.data?.[0]?.cardRevenue || 0}},
+    0,
+    {{GetCashRevenue.data?.[0]?.otherRevenue || 0}},
+    {{GetCashRevenue.data?.[0]?.cashRevenue || 0}},
+    {{CashCount.total()}},
+    {{GetCashRevenue.data?.[0]?.transactionCount || 0}},
+    'CLOSED',
+    'POS day closing'
+);

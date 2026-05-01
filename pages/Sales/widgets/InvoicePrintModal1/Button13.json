@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 10,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "print",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "6h0a7giuw7",
+  "leftColumn": 2,
+  "minWidth": 120,
+  "mobileBottomRow": 10,
+  "mobileLeftColumn": 2,
+  "mobileRightColumn": 18,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onClick": "{{ storeValue(\"documentPrintAction\", \"print_\" + Date.now()) }}",
+  "parentColumnSpace": 13.21875,
+  "parentId": "dg0xb7ou5p",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 12,
+  "text": "Print",
+  "topRow": 6,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "jvdcx4so6d",
+  "widgetName": "Button13"
+}

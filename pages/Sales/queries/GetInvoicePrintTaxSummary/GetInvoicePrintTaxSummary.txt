@@ -1,0 +1,9 @@
+SELECT
+  TaxRate AS taxRate,
+  SUM(Subtotal) AS taxableAmount,
+  SUM(TaxAmount) AS taxAmount,
+  SUM(Total) AS totalAmount
+FROM SalesInvoiceItems
+WHERE Number = {{ appsmith.store.selectedDocumentId }}
+GROUP BY TaxRate
+ORDER BY TaxRate;

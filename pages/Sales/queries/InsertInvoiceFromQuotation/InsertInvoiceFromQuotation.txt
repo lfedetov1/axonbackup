@@ -1,0 +1,46 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    partner_id,
+    created_by_user_id,
+    document_type,
+    status,
+    posting_status,
+    sales_channel,
+    document_number,
+    document_date,
+    due_date,
+    currency_code,
+    exchange_rate,
+    source_document_id,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount,
+    paid_amount
+)
+SELECT
+    q.company_id,
+    q.warehouse_id,
+    q.partner_id,
+    {{appsmith.store.userId}},
+    'SALES_INVOICE',
+    'DRAFT',
+    'NOT_POSTED',
+    q.sales_channel,
+    {{this.params.invoiceNumber}},
+    CURDATE(),
+    CURDATE(),
+    q.currency_code,
+    q.exchange_rate,
+    q.id,
+    CONCAT('Created from quotation ', q.document_number),
+    q.subtotal_amount,
+    q.tax_amount,
+    q.discount_amount,
+    q.total_amount,
+    0
+FROM documents q
+WHERE q.id = {{this.params.quotationId}}
+  AND q.document_type = 'QUOTE';

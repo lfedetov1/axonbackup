@@ -1,0 +1,53 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 32,
+  "boxShadow": "none",
+  "buttonColor": "#1a1f36",
+  "buttonStyle": "PRIMARY_BUTTON",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "floppy-disk",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "5cxjtfms2w",
+  "leftColumn": 47,
+  "minWidth": 120,
+  "mobileBottomRow": 22,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 18,
+  "needsErrorInfo": false,
+  "onClick": "{{\nSelectWarehouse.selectedOptionValue\nappsmith.store.companyId\n\nif (!SelectWarehouse.selectedOptionValue) {\n  showAlert(\"Select warehouse first\", \"warning\");\n} else if (\n  appsmith.store.roleCode === \"ADMIN\" ||\n  JSON.stringify(appsmith.store.permissions || []).includes(\"warehouse.manage\") ||\n  JSON.stringify(appsmith.store.permissions || []).includes(\"sales.manage\")\n) {\n  storeValue(\"warehouseId\", SelectWarehouse.selectedOptionValue)\n    .then(() => storeValue(\"warehouseLabel\", SelectWarehouse.selectedOptionLabel))\n    .then(() => closeModal(\"Warehouse\"))\n    .then(() => showAlert(\"Warehouse changed\", \"success\"))\n    .then(() => checkWarehousePermission.run())\n    .catch(() => showAlert(\"Warehouse change failed\", \"error\"));\n} else {\n  showAlert(\"You do not have access to this warehouse\", \"error\");\n}\n}}\n",
+  "parentId": "kk454unxp4",
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Confirm",
+  "topRow": 28,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "3381mrcefc",
+  "widgetName": "Button4"
+}

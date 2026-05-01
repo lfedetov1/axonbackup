@@ -1,0 +1,22 @@
+SELECT
+    p.payment_number AS paymentNumber,
+    p.payment_date AS paymentDate,
+    p.payment_method AS paymentMethod,
+    p.currency_code AS currencyCode,
+    p.amount AS amount,
+    p.reference_number AS referenceNumber,
+    p.note AS note,
+    bp.name AS partnerName,
+    u.username AS cashier,
+    cr.code AS cashRegisterCode,
+    w.name AS warehouseName,
+		c.logo_path AS company_logo_path,
+    c.name AS companyName
+FROM payments p
+JOIN companies c ON c.id = p.company_id
+LEFT JOIN business_partners bp ON bp.id = p.partner_id
+LEFT JOIN users u ON u.id = p.created_by_user_id
+LEFT JOIN cash_registers cr ON cr.id = {{appsmith.store.cashRegisterId || 0}}
+LEFT JOIN warehouses w ON w.id = {{appsmith.store.warehouseId || 0}}
+WHERE p.id = {{this.params.paymentId}}
+LIMIT 1;

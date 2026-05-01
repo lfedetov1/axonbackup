@@ -1,0 +1,13 @@
+SELECT
+  COUNT(*) AS allowed
+FROM users u
+JOIN company_users cu ON cu.user_id = u.id
+JOIN roles r ON r.id = cu.role_id
+LEFT JOIN role_permissions rp ON rp.role_id = r.id
+LEFT JOIN permissions p ON p.id = rp.permission_id
+WHERE u.id = {{appsmith.store.userId}}
+  AND cu.company_id = {{appsmith.store.companyId}}
+  AND (
+    r.code = 'ADMIN'
+    OR p.code = 'warehouse.manage'
+  );

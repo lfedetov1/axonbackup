@@ -1,0 +1,10 @@
+SELECT
+    u.id AS userId,
+    u.username AS username
+FROM pos_user_access_codes pac
+JOIN users u ON u.id = pac.user_id
+WHERE pac.company_id = {{appsmith.store.companyId}}
+  AND pac.is_active = 1
+  AND u.is_active = 1
+  AND pac.access_code_hash = SHA2({{POSUserCodeInput.text}}, 256)
+LIMIT 1;

@@ -1,0 +1,17 @@
+SELECT
+    ID AS `ID`,
+    Number AS `Number`,
+    Date AS `Date`,
+    CustomerCode AS `Customer Code`,
+    Customer AS `Customer`,
+    Warehouse AS `Warehouse`,
+    Status AS `Status`,
+    PostingStatus AS `Posting Status`,
+    Total AS `Total`,
+    CreatedBy AS `Created By`,
+    CreatedAt AS `Created At`
+FROM DeliveryNotes
+WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
+              AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}' AND Warehouse = '{{appsmith.store.warehouseId}}'
+              
+ORDER BY Date DESC, ID DESC;

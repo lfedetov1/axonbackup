@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_8652fed3-3ba1-4a5a-9c7d-15e6e6159238",
+  "id": "POS_POSCashierAccess",
+  "unpublishedCollection": {
+    "name": "POSCashierAccess",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

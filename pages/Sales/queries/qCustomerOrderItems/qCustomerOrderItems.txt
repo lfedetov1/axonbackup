@@ -1,0 +1,29 @@
+SELECT
+    ID AS `ID`,
+    DocumentID AS `Document ID`,
+    LineNo AS `Line No`,
+    ProductCode AS `Product Code`,
+    Product AS `Product`,
+    Barcode AS `Barcode`,
+    Description AS `Description`,
+    Unit AS `Unit`,
+    Quantity AS `Quantity`,
+    ReservedQuantity AS `Reserved Quantity`,
+    DeliveredQuantity AS `Delivered Quantity`,
+    InvoicedQuantity AS `Invoiced Quantity`,
+    ReturnedQuantity AS `Returned Quantity`,
+    UnitPrice AS `Unit Price`,
+    NetUnitPrice AS `Net Unit Price`,
+    DiscountPercent AS `Discount %`,
+    DiscountAmount AS `Discount Amount`,
+    DiscountReason AS `Discount Reason`,
+    TaxCode AS `Tax Code`,
+    TaxRate AS `Tax Rate`,
+    TaxAmount AS `Tax Amount`,
+    Total AS `Total`,
+    LineStatus AS `Line Status`,
+    Note AS `Note`
+FROM CustomerOrderItems
+WHERE DocumentID = {{ tblCustomerOrders.selectedRow.ID || 0 }} AND  Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
+              AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}' 
+ORDER BY LineNo;

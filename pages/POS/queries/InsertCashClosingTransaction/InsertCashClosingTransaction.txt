@@ -1,0 +1,22 @@
+INSERT INTO cash_transactions (
+    cash_register_id,
+    document_id,
+    payment_id,
+    transaction_date,
+    transaction_type,
+    amount,
+    reference_number,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{CashRegisterSelect.text}},
+    NULL,
+    NULL,
+    NOW(),
+    'CLOSING',
+    {{CashCount.total()}},
+    CONCAT('POS-CLOSE-', DATE_FORMAT(NOW(), '%Y%m%d')),
+    'Daily cash deposit closing',
+    {{appsmith.store.userId}}
+);

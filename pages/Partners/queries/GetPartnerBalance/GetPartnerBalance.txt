@@ -1,0 +1,45 @@
+SELECT
+    bp.id AS partnerId,
+    bp.name AS partnerName,
+
+    COALESCE(SUM(CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+        THEN d.total_amount
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(d.total_amount)
+        ELSE 0
+    END), 0) AS totalInvoiced,
+
+    COALESCE(SUM(CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+        THEN d.paid_amount
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(d.paid_amount)
+        ELSE 0
+    END), 0) AS totalPaid,
+
+    COALESCE(SUM(CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+        THEN d.total_amount - d.paid_amount
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(d.total_amount - d.paid_amount)
+        ELSE 0
+    END), 0) AS openBalance,
+
+    COALESCE(SUM(CASE
+        WHEN d.due_date < CURDATE()
+         AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+        THEN d.total_amount - d.paid_amount
+        ELSE 0
+    END), 0) AS overdueAmount,
+
+    COUNT(d.id) AS documentCount
+FROM business_partners bp
+LEFT JOIN documents d
+    ON d.partner_id = bp.id
+   AND d.company_id = bp.company_id
+   AND d.status <> 'CANCELLED'
+   AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RETURN')
+WHERE bp.company_id = {{appsmith.store.companyId}}
+  AND bp.id = {{PartnersTable.selectedRow["Partner ID"] || 0}}
+GROUP BY bp.id, bp.name;

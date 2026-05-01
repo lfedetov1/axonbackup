@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM
+  warehouses
+WHERE
+  code LIKE '%{{SelectWarehouseCopy.filterText}}%'

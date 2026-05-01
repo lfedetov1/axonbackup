@@ -1,0 +1,19 @@
+SELECT
+  ID AS id,
+  DocumentID AS documentId,
+  LineNo AS lineNo,
+  ProductID AS productId,
+  ProductCode AS productCode,
+  Product AS productName,
+  Description AS description,
+  Unit AS unitName,
+  Quantity AS quantity,
+  UnitPrice AS unitPrice,
+  DiscountAmount AS discountAmount,
+  Subtotal AS lineSubtotal,
+  TaxRate AS taxRate,
+  TaxAmount AS taxAmount,
+  Total AS lineTotal
+FROM SalesInvoiceItems
+WHERE Number = {{ appsmith.store.selectedDocumentId }}
+ORDER BY LineNo;

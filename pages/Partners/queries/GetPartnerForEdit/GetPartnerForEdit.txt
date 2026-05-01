@@ -1,0 +1,26 @@
+SELECT
+    bp.id AS partnerId,
+    bp.partner_type AS partnerType,
+    bp.code AS partnerCode,
+    bp.name AS partnerName,
+    bp.legal_name AS legalName,
+    bp.contact_person AS contactPerson,
+    bp.tax_number AS oib,
+    bp.registration_number AS registrationNumber,
+    bp.email AS email,
+    bp.phone AS phone,
+    bp.mobile AS mobile,
+    bp.address_line1 AS addressLine1,
+    bp.address_line2 AS addressLine2,
+    bp.city_name AS city,
+    bp.postal_code AS postalCode,
+    c.code AS countryCode,
+    bp.payment_term_days AS paymentTermDays,
+    bp.credit_limit AS creditLimit,
+    bp.note AS note,
+    bp.is_active AS isActive
+FROM business_partners bp
+LEFT JOIN countries c ON c.id = bp.country_id
+WHERE bp.company_id = {{appsmith.store.companyId}}
+  AND bp.id = {{this.params.partnerId}}
+LIMIT 1;

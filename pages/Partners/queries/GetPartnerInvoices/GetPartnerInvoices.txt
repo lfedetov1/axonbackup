@@ -1,0 +1,26 @@
+SELECT
+    d.id AS `Document ID`,
+    d.document_type AS `Document Type`,
+    d.document_number AS `Document Number`,
+    d.document_date AS `Date`,
+    d.due_date AS `Due Date`,
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+    d.payment_method AS `Payment Method`,
+    d.currency_code AS `Currency`,
+    d.subtotal_amount AS `Subtotal`,
+    d.tax_amount AS `Tax`,
+    d.total_amount AS `Total`,
+    d.paid_amount AS `Paid`,
+    (d.total_amount - d.paid_amount) AS `Open Amount`,
+    CASE
+        WHEN d.due_date < CURDATE()
+         AND (d.total_amount - d.paid_amount) > 0
+        THEN 'YES'
+        ELSE 'NO'
+    END AS `Overdue`
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.partner_id = {{PartnersTable.selectedRow["Partner ID"] || 0}}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RETURN')
+ORDER BY d.document_date DESC, d.id DESC;

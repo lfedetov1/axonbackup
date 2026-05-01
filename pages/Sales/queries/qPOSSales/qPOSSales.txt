@@ -1,0 +1,18 @@
+SELECT
+    ID AS `ID`,
+    Number AS `Number`,
+    Date AS `Date`,
+    CustomerCode AS `Customer Code`,
+    Customer AS `Customer`,
+    Warehouse AS `Warehouse`,
+    PaymentMethod AS `Payment Method`,
+    Cashier AS `Cashier`,
+    Status AS `Status`,
+    PostingStatus AS `Posting Status`,
+    Total AS `Total`,
+    Paid AS `Paid`,
+    CreatedAt AS `Created At`
+FROM POSSales
+WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
+              AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}' AND Warehouse = '{{appsmith.store.warehouseId}}'
+ORDER BY Date DESC, ID DESC;

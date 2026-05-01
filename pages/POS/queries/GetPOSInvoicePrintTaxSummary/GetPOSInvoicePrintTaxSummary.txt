@@ -1,0 +1,10 @@
+SELECT
+    COALESCE(tr.rate, 0) AS taxRate,
+    SUM(di.line_subtotal) AS taxableAmount,
+    SUM(di.tax_amount) AS taxAmount,
+    SUM(di.line_total) AS totalAmount
+FROM document_items di
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{this.params.documentId}}
+GROUP BY COALESCE(tr.rate, 0)
+ORDER BY taxRate;

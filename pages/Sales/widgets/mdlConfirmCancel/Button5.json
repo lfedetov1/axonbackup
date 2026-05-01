@@ -1,0 +1,56 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 18,
+  "boxShadow": "none",
+  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "buttonStyle": "PRIMARY_BUTTON",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "buttonColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "jqsyvstdu5",
+  "leftColumn": 51,
+  "minWidth": 120,
+  "mobileBottomRow": 22,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 18,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  closeModal(\"mdlConfirmCancel\");\n  storeValue(\"viewMode\", \"list\");\n\nstoreValue(\"isAdding\", false)\n\n}}\n{{\n\t\t storeValue(\"viewMode\", \"list\"),\n\nstoreValue(\"isAdding\", false),\n\n    invoice_no.setValue(\"\"),\n    SelectPartner.setSelectedOption(\"\"),\n    SelectWarehouse.setValue()(\"\"),\n    SelectPayment.setSelectedOption(\"\"),\n    SubtotalInput.setText(\"\"),\n    TaxAmountInput.setText(\"\"),\n    DiscountAmountInput.setText(\"\"),\n    TotalAmountInput.setText(\"\"),\n SelectPayment.setSelectedOption(\"\"),\n    InvoiceNoteInput.setValue(\"\"),\n    resetWidget(\"InvoiceDateInput\", true),\n    resetWidget(\"DueDateInput\", true),\n    resetWidget(\"InvoiceItemsGrid\", true)\n  ) : null\n}}\n\n{{\t storeValue(\"viewMode\", \"list\"),\n\nstoreValue(\"isAdding\", false),\n\n    invoice_no.setValue(\"\"),\n    SelectPartner1.setSelectedOption(\"\"),\n    SelectWarehouse1.setValue()(\"\"),\n    SelectPayment1.setSelectedOption(\"\"),\n    SubtotalInput1.setText(\"\"),\n    TaxAmountInput1.setText(\"\"),\n    DiscountAmountInput1.setText(\"\"),\n    TotalAmountInput1.setText(\"\"),\n QuotationStatusSelect.setSelectedOption(\"\"),\n\t\tQuotationStatusSelect.setSelectedOption(\"DRAFT\"),\n\t\tQuotationSalesChannelSelect.setSelectedOption(\"BACKOFFICE\"),\n\tresetWidget(\"QuotationValidUntilInput\", true),\t\n\t\tQuotationCustomerReferenceInpu.text(\"\"),\n\t\tQuotationInternalReferenceInpu.text(\"\"),\n\t\t\n    InvoiceNoteInput1.setValue(\"\"),\n    resetWidget(\"InvoiceDateInput1\", true),\n    resetWidget(\"duedate1\", true),\n    resetWidget(\"TableProducts1\", true)\n  ) : null\n{{\nstoreValue(\"viewMode\", \"list\")\n  .then(() => storeValue(\"isEditQuote\", false))\n  .then(() => storeValue(\"editQuoteId\", null))\n  .then(() => JSObjectInvoice.resetRows())\n}}\n}}",
+  "originalBottomRow": 17,
+  "originalTopRow": 13,
+  "parentId": "1qscxt0cux",
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 61,
+  "text": "Yes",
+  "topRow": 14,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "1rkn7jn96p",
+  "widgetName": "Button5"
+}

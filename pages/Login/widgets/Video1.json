@@ -1,0 +1,39 @@
+{
+  "animateLoading": true,
+  "autoPlay": true,
+  "backgroundColor": "#000",
+  "borderRadius": "1.5rem",
+  "bottomRow": 41,
+  "boxShadow": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+  "dynamicBindingPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onEnd"
+    }
+  ],
+  "flexVerticalAlignment": "start",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "z50bitmdyz",
+  "leftColumn": 45,
+  "mobileBottomRow": 59,
+  "mobileLeftColumn": 37,
+  "mobileRightColumn": 61,
+  "mobileTopRow": 31,
+  "needsErrorInfo": false,
+  "onEnd": "{{resetWidget(\"Video1\", true);}}",
+  "originalBottomRow": 41,
+  "originalTopRow": 15,
+  "parentColumnSpace": 14.234375,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 64,
+  "topRow": 15,
+  "type": "VIDEO_WIDGET",
+  "url": "https://raw.githubusercontent.com/lfedetov1/acuura-assets/main/images/axon1.mp4",
+  "version": 1,
+  "widgetId": "d5c5jrjy07",
+  "widgetName": "Video1"
+}

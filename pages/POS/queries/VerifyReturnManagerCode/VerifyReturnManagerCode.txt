@@ -1,0 +1,13 @@
+SELECT
+    u.id AS managerUserId,
+    u.username AS managerUsername
+FROM pos_manager_approval_codes mac
+JOIN users u ON u.id = mac.user_id
+JOIN company_users cu ON cu.user_id = u.id AND cu.company_id = mac.company_id
+JOIN roles r ON r.id = cu.role_id
+WHERE mac.company_id = {{appsmith.store.companyId}}
+  AND mac.is_active = 1
+  AND u.is_active = 1
+  AND mac.approval_code_hash = SHA2({{ReturnManagerCodeInput.text}}, 256)
+  AND r.code IN ('ADMIN', 'MANAGER')
+LIMIT 1;
