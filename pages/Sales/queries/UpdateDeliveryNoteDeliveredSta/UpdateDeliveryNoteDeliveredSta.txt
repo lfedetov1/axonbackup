@@ -1,0 +1,7 @@
+UPDATE documents
+SET
+    status = 'DELIVERED',
+    posting_status = 'READY',
+    note = CONCAT(COALESCE(note, ''), '\nDelivered on ', NOW())
+WHERE id = {{this.params.deliveryNoteId}}
+  AND document_type = 'DELIVERY_NOTE';

@@ -21,13 +21,13 @@ FROM business_partners bp
 LEFT JOIN countries c ON c.id = bp.country_id
 WHERE bp.company_id = {{appsmith.store.companyId}}
   AND (
-      {{PartnerSearchInput.text || ''}} = ''
-      OR bp.tax_number LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
-      OR bp.name LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
-      OR bp.legal_name LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
-      OR bp.code LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
-      OR bp.email LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
-      OR bp.phone LIKE CONCAT('%', {{PartnerSearchInput.text}}, '%')
+      TRIM('{{PartnerSearchInput.text || ""}}') = ''
+      OR bp.tax_number LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
+      OR bp.name LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
+      OR bp.legal_name LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
+      OR bp.code LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
+      OR bp.email LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
+      OR bp.phone LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
   )
 ORDER BY bp.name
 LIMIT 200;
