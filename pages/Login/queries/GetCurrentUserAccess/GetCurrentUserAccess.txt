@@ -1,0 +1,26 @@
+SELECT
+    u.id AS userId,
+    u.username AS username,
+    u.email AS email,
+    u.first_name AS firstName,
+    u.last_name AS lastName,
+    cu.company_id AS companyId,
+    r.id AS roleId,
+    r.code AS roleCode,
+    r.name AS roleName,
+    p.id AS permissionId,
+    p.code AS permissionCode,
+    p.name AS permissionName,
+    p.module_name AS moduleName
+FROM users u
+JOIN company_users cu
+    ON cu.user_id = u.id
+JOIN roles r
+    ON r.id = cu.role_id
+LEFT JOIN role_permissions rp
+    ON rp.role_id = r.id
+LEFT JOIN permissions p
+    ON p.id = rp.permission_id
+WHERE u.id = {{appsmith.store.userId}}
+  AND cu.company_id = {{appsmith.store.companyId}}
+ORDER BY p.module_name, p.code;

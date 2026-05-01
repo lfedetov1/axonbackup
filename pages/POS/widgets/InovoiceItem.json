@@ -53,7 +53,7 @@
     "trackStock",
     "stockError"
   ],
-  "columnUpdatedAt": 1777638570764,
+  "columnUpdatedAt": 1777644100199,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -659,7 +659,7 @@
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
-      "isVisible": true,
+      "isVisible": false,
       "label": "Tax Rate",
       "notation": "standard",
       "originalId": "taxRate",
