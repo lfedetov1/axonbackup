@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 36,
+  "bottomRow": 37,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -30,8 +30,8 @@
   "mobileRightColumn": 49,
   "mobileTopRow": 56,
   "needsErrorInfo": false,
-  "originalBottomRow": 36,
-  "originalTopRow": 32,
+  "originalBottomRow": 37,
+  "originalTopRow": 33,
   "overflow": "NONE",
   "parentColumnSpace": 14.53125,
   "parentId": "0",
@@ -43,7 +43,7 @@
   "text": "Invoice :",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 32,
+  "topRow": 33,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

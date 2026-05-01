@@ -1,33 +1,29 @@
 SELECT
-    bp.id AS `Partner ID`,
-    bp.code AS `Partner Code`,
-    bp.name AS `Partner Name`,
-    bp.legal_name AS `Legal Name`,
-    bp.contact_person AS `Contact Person`,
-    bp.tax_number AS `OIB/VAT`,
-    bp.registration_number AS `Registration Number`,
-    bp.email AS `Email`,
-    bp.phone AS `Phone`,
-    bp.mobile AS `Mobile`,
-    bp.address_line1 AS `Address`,
-    bp.city_name AS `City`,
-    bp.postal_code AS `Postal Code`,
-    c.code AS `Country Code`,
-    c.name AS `Country`,
-    bp.payment_term_days AS `Payment Term Days`,
-    bp.credit_limit AS `Credit Limit`,
-    bp.is_active AS `Active`
+  bp.id AS partner_id,
+  bp.company_id,
+  bp.code,
+  bp.name,
+  bp.legal_name,
+  bp.contact_person,
+  bp.tax_number,
+  bp.registration_number,
+  bp.email,
+  bp.phone,
+  bp.mobile,
+  bp.address_line1,
+  bp.city_name,
+  bp.postal_code,
+  bp.payment_term_days,
+  bp.credit_limit,
+  bp.is_active
 FROM business_partners bp
-LEFT JOIN countries c ON c.id = bp.country_id
-WHERE bp.company_id = {{appsmith.store.companyId}}
-  AND (
-      TRIM('{{PartnerSearchInput.text || ""}}') = ''
-      OR bp.tax_number LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-      OR bp.name LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-      OR bp.legal_name LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-      OR bp.code LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-      OR bp.email LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-      OR bp.phone LIKE CONCAT('%', TRIM('{{PartnerSearchInput.text || ""}}'), '%')
-  )
-ORDER BY bp.name
-LIMIT 200;
+WHERE (
+  LENGTH(TRIM('{{PartnerSearchInput.text || ""}}')) = 0
+  OR LOWER(bp.tax_number) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+  OR LOWER(bp.name) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+  OR LOWER(bp.legal_name) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+  OR LOWER(bp.code) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+  OR LOWER(bp.email) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+  OR LOWER(bp.phone) LIKE CONCAT('%', LOWER(TRIM('{{PartnerSearchInput.text || ""}}')), '%')
+)
+LIMIT 200
