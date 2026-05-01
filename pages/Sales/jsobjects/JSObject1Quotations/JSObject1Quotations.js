@@ -350,6 +350,48 @@ export default {
       console.log(error);
     }
   },
+	
+	async confirmConvertQuoteToInvoice() {
+  const quotationId = appsmith.store.pendingQuotationId;
+
+  if (!quotationId) {
+    showAlert("Quotation ID is missing.", "warning");
+    return;
+  }
+
+  try {
+    const result = await ConvertQuoteToInvoice.run({ quotationId });
+    const newInvoiceId =
+      result?.[0]?.newInvoiceId ||
+      result?.[1]?.[0]?.newInvoiceId ||
+      ConvertQuoteToInvoice.data?.[0]?.newInvoiceId ||
+      ConvertQuoteToInvoice.data?.[1]?.[0]?.newInvoiceId;
+
+    if (typeof InsertQuotationChangeLog !== "undefined") {
+      await InsertQuotationChangeLog.run({
+        quotationId,
+        changeType: "UPDATE",
+        note: "Quotation converted to invoice"
+      });
+    }
+
+    closeModal("ConfirmQuoteToInvoiceModal");
+
+    if (typeof GetQuotations !== "undefined") {
+      await GetQuotations.run();
+    }
+
+    if (typeof GetInvoices !== "undefined") {
+      await GetInvoices.run();
+    }
+
+    showAlert("Quotation converted to invoice successfully.", "success");
+  } catch (error) {
+    showAlert("Error while converting quotation: " + error.message, "error");
+    console.log(error);
+  }
+},
+
 
   async saveQuotationWithItems() {
     const rows = appsmith.store.quotationItems || [];

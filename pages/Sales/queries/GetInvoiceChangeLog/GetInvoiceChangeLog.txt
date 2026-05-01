@@ -1,0 +1,16 @@
+SELECT
+    l.id AS ID,
+    l.document_id AS DocumentID,
+    l.document_type AS DocumentType,
+    l.change_type AS Action,
+    l.field_name AS Field,
+    l.old_value AS OldValue,
+    l.new_value AS NewValue,
+    l.note AS Note,
+    l.created_at AS ChangedAt,
+    u.username AS UserName,
+    CONCAT(u.first_name, ' ', u.last_name) AS ChangedBy
+FROM document_change_log l
+LEFT JOIN users u ON u.id = l.changed_by_user_id
+WHERE l.document_id = {{tblInvoices.selectedRow.ID}}
+ORDER BY l.created_at DESC, l.id DESC;

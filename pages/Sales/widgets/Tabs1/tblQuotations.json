@@ -47,9 +47,10 @@
     "Created_By",
     "Created_At",
     "customColumn1",
-    "customColumn2"
+    "customColumn2",
+    "customColumn3"
   ],
-  "columnUpdatedAt": 1777632838916,
+  "columnUpdatedAt": 1777643334657,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -125,6 +126,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -139,6 +146,9 @@
     },
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -150,6 +160,9 @@
     },
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -729,6 +742,45 @@
       "notation": "standard",
       "onClick": "{{\nstoreValue(\"activeTab\", \"Quotations\")\n  .then(() => storeValue(\"viewMode\", \"add\"))\n  .then(() => storeValue(\"isEditQuote\", true))\n  .then(() => storeValue(\"editQuoteId\", currentRow.quotationId || currentRow.ID))\n  .then(() => GetQuotationForEdit.run())\n  .then(() => GetQuotationItemsForEdit.run())\n  .then(() => JSObjectInvoice.loadQuotationItemsForEdit())\n}}\n",
       "originalId": "customColumn2",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn3": {
+      "alias": "Make a bill",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{tblQuotations.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{tblQuotations.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "dollar",
+      "id": "customColumn3",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Make a bill",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{JSObject1Quotations.confirmConvertQuoteToInvoice()}}",
+      "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

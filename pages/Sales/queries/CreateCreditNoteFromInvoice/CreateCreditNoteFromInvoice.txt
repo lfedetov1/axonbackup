@@ -1,0 +1,56 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    partner_id,
+    created_by_user_id,
+    approved_by_user_id,
+    document_type,
+    status,
+    document_number,
+    document_date,
+    due_date,
+    currency_code,
+    exchange_rate,
+    source_document_id,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount,
+    paid_amount,
+    sales_channel,
+    payment_method,
+    posting_status,
+    customer_reference,
+    internal_reference
+)
+SELECT
+    d.company_id,
+    d.warehouse_id,
+    d.partner_id,
+    {{appsmith.store.userId}},
+    d.approved_by_user_id,
+    'CREDIT_NOTE',
+    'DRAFT',
+    CONCAT('CN-', d.document_number),
+    CURDATE(),
+    d.due_date,
+    d.currency_code,
+    d.exchange_rate,
+    d.id,
+    CONCAT('Void credit note created from invoice ', d.document_number),
+    d.subtotal_amount,
+    d.tax_amount,
+    d.discount_amount,
+    d.total_amount,
+    0,
+    d.sales_channel,
+    d.payment_method,
+    'NOT_POSTED',
+    d.customer_reference,
+    d.internal_reference
+FROM documents d
+WHERE d.id = {{this.params.invoiceId}}
+  AND d.document_type = 'SALES_INVOICE';
+
+SELECT LAST_INSERT_ID() AS creditNoteId;

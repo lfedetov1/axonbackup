@@ -1,0 +1,102 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    partner_id,
+    created_by_user_id,
+    approved_by_user_id,
+    document_type,
+    status,
+    document_number,
+    document_date,
+    due_date,
+    currency_code,
+    exchange_rate,
+    source_document_id,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount,
+    paid_amount,
+    sales_channel,
+    payment_method,
+    posting_status,
+    customer_reference,
+    internal_reference,
+    valid_until
+)
+SELECT
+    d.company_id,
+    d.warehouse_id,
+    d.partner_id,
+    {{appsmith.store.userId}},
+    d.approved_by_user_id,
+    'SALES_INVOICE',
+    'DRAFT',
+    CONCAT('INV-CONV-', d.id),
+    CURDATE(),
+    d.due_date,
+    d.currency_code,
+    d.exchange_rate,
+    d.id,
+    CONCAT(COALESCE(d.note, ''), '\nConverted from quotation ', d.document_number),
+    d.subtotal_amount,
+    d.tax_amount,
+    d.discount_amount,
+    d.total_amount,
+    0,
+    d.sales_channel,
+    d.payment_method,
+    'NOT_POSTED',
+    d.customer_reference,
+    d.internal_reference,
+    d.valid_until
+FROM documents d
+WHERE d.id = {{this.params.quotationId}}
+  AND d.document_type = 'QUOTE';
+
+SET @new_invoice_id = LAST_INSERT_ID();
+
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    source_document_item_id,
+    product_code,
+    barcode,
+    description,
+    unit_id,
+    tax_rate_id,
+    warehouse_id,
+    quantity,
+    unit_price,
+    discount_percent,
+    discount_amount,
+    line_subtotal,
+    tax_amount,
+    line_total,
+    note
+)
+SELECT
+    @new_invoice_id,
+    di.line_no,
+    di.product_id,
+    di.id,
+    di.product_code,
+    di.barcode,
+    di.description,
+    di.unit_id,
+    di.tax_rate_id,
+    di.warehouse_id,
+    di.quantity,
+    di.unit_price,
+    di.discount_percent,
+    di.discount_amount,
+    di.line_subtotal,
+    di.tax_amount,
+    di.line_total,
+    di.note
+FROM document_items di
+WHERE di.document_id = {{this.params.quotationId}};
+
+SELECT @new_invoice_id AS newInvoiceId;

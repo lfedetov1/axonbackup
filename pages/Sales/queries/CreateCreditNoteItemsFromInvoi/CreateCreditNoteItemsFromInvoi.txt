@@ -1,0 +1,41 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    source_document_item_id,
+    product_code,
+    barcode,
+    description,
+    unit_id,
+    tax_rate_id,
+    warehouse_id,
+    quantity,
+    unit_price,
+    discount_percent,
+    discount_amount,
+    line_subtotal,
+    tax_amount,
+    line_total,
+    note
+)
+SELECT
+    {{this.params.creditNoteId}},
+    di.line_no,
+    di.product_id,
+    di.id,
+    di.product_code,
+    di.barcode,
+    di.description,
+    di.unit_id,
+    di.tax_rate_id,
+    di.warehouse_id,
+    di.quantity,
+    di.unit_price,
+    di.discount_percent,
+    di.discount_amount,
+    di.line_subtotal,
+    di.tax_amount,
+    di.line_total,
+    CONCAT(COALESCE(di.note, ''), ' | Voided from invoice item')
+FROM document_items di
+WHERE di.document_id = {{this.params.invoiceId}};

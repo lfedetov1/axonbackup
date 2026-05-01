@@ -1,0 +1,8 @@
+UPDATE documents
+SET
+    status = 'CANCELLED',
+    cancelled_at = NOW(),
+    cancelled_by_user_id = {{appsmith.store.userId}},
+    note = CONCAT(COALESCE(note, ''), '\nVoided on ', NOW())
+WHERE id = {{this.params.invoiceId}}
+  AND document_type = 'SALES_INVOICE';
