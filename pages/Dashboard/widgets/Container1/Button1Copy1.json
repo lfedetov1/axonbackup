@@ -12,13 +12,25 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{JSAccess.has(\"company.manage\")}}\n",
   "key": "m7sc6r0t8m",
   "leftColumn": 11,
   "minWidth": 120,
@@ -27,6 +39,7 @@
   "mobileRightColumn": 22,
   "mobileTopRow": 23,
   "needsErrorInfo": false,
+  "onClick": "\n",
   "originalBottomRow": 21,
   "originalTopRow": 17,
   "parentColumnSpace": 14.234375,

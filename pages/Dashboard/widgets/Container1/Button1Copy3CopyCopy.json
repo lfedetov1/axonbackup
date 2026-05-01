@@ -26,7 +26,7 @@
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": "{{\nappsmith.store.roleCode === \"ADMIN\" ||\n(appsmith.store.permissions || []).includes(\"MANAGER\")\n\nappsmith.store.roleCode === \"ADMIN\" ||\n(appsmith.store.permissions || []).includes(\"WAREHOUSE\")\n}}",
+  "isVisible": "{{JSAccess.has(\"purchase.manage\")}}",
   "key": "m7sc6r0t8m",
   "leftColumn": 27,
   "minWidth": 120,
