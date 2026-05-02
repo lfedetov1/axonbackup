@@ -1,0 +1,28 @@
+SELECT
+    p.id AS `Product ID`,
+    p.code AS `Code`,
+    p.name AS `Product`,
+    COALESCE(w.name, 'Bez skladišta') AS `Warehouse`,
+    COALESCE(w.code, '') AS `Warehouse Code`,
+    COALESCE(
+        SUM(
+            CASE
+                WHEN sm.movement_type = 'IN' THEN sm.quantity
+                WHEN sm.movement_type = 'OUT' THEN -sm.quantity
+                ELSE sm.quantity
+            END
+        ),
+        0
+    ) AS `Available Quantity`
+FROM products p
+LEFT JOIN stock_movements sm ON sm.product_id = p.id
+LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+WHERE p.name = {{ProductsTable.selectedRow?.Name || ProductsTable.selectedRow?.name || ProductsTable.selectedRow?.Product || ""}}
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    w.id,
+    w.code,
+    w.name
+ORDER BY w.name;

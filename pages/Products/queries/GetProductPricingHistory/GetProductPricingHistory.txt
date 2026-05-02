@@ -1,0 +1,20 @@
+SELECT
+    p.id AS `Product ID`,
+    p.code AS `Code`,
+    p.name AS `Product`,
+    pp.price_type AS `Price Type`,
+    pp.price AS `Price`,
+    pp.currency_code AS `Currency`,
+    pp.valid_from AS `Valid From`,
+    pp.valid_to AS `Valid To`,
+    CASE
+        WHEN COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+        THEN 'YES'
+        ELSE 'NO'
+    END AS `Active`
+FROM product_prices pp
+JOIN products p ON p.id = pp.product_id
+WHERE p.id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+ORDER BY
+    pp.valid_from DESC,
+    pp.id DESC;

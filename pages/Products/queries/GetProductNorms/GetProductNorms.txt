@@ -1,0 +1,35 @@
+SELECT
+    pn.id AS `Norm ID`,
+    pn.code AS `Norm Code`,
+    pn.name AS `Norm Name`,
+    pn.version_no AS `Version`,
+    parent.code AS `Product Code`,
+    parent.name AS `Product`,
+    pn.output_quantity AS `Output Quantity`,
+    out_uom.code AS `Output Unit`,
+    pni.line_no AS `Line No`,
+    comp.code AS `Component Code`,
+    comp.name AS `Component`,
+    pni.quantity AS `Component Quantity`,
+    comp_uom.code AS `Component Unit`,
+    pni.waste_percent AS `Waste %`,
+    pni.note AS `Note`,
+    pn.valid_from AS `Valid From`,
+    pn.valid_to AS `Valid To`,
+    CASE
+        WHEN pn.is_active = 1
+         AND COALESCE(pn.valid_to, '9999-12-31') >= CURDATE()
+        THEN 'Active'
+        ELSE 'Inactive'
+    END AS `Status`
+FROM product_norms pn
+JOIN products parent ON parent.id = pn.parent_product_id
+LEFT JOIN units_of_measure out_uom ON out_uom.id = pn.output_unit_id
+LEFT JOIN product_norm_items pni ON pni.product_norm_id = pn.id
+LEFT JOIN products comp ON comp.id = pni.component_product_id
+LEFT JOIN units_of_measure comp_uom ON comp_uom.id = pni.unit_id
+WHERE pn.parent_product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+ORDER BY
+    pn.code,
+    pn.version_no,
+    pni.line_no;

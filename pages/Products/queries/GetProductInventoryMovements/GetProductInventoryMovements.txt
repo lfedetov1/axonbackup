@@ -1,0 +1,22 @@
+SELECT
+    sm.id AS `Movement ID`,
+    p.id AS `Product ID`,
+    p.code AS `Code`,
+    p.name AS `Product`,
+    COALESCE(w.name, 'Bez skladišta') AS `Warehouse`,
+    COALESCE(w.code, '') AS `Warehouse Code`,
+    sm.movement_type AS `Movement Type`,
+    sm.movement_date AS `Movement Date`,
+    sm.quantity AS `Quantity`,
+    sm.unit_cost AS `Unit Cost`,
+    sm.total_cost AS `Total Cost`,
+    sm.note AS `Note`,
+    sm.document_id AS `Document ID`,
+    sm.document_item_id AS `Document Item ID`
+FROM stock_movements sm
+JOIN products p ON p.id = sm.product_id
+LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+WHERE p.id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+ORDER BY
+    sm.movement_date DESC,
+    sm.id DESC;

@@ -1,0 +1,43 @@
+SELECT
+    p.id AS `Product ID`,
+    p.code AS `Code`,
+    p.name AS `Product`,
+    p.short_name AS `Short Name`,
+    p.description AS `Description`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+    p.product_type AS `Type`,
+    pc.name AS `Category`,
+    u.name AS `Unit`,
+    tr.rate AS `Tax Rate`,
+    p.sale_price AS `Sale Price`,
+    p.purchase_price AS `Purchase Price`,
+    p.track_stock AS `Track Stock`,
+    p.minimum_stock AS `Minimum Stock`,
+    p.maximum_stock AS `Maximum Stock`,
+    p.reorder_level AS `Reorder Level`,
+    COALESCE(stock.total_stock, 0) AS `Total Stock`,
+    CASE
+        WHEN p.is_active = 1 THEN 'Active'
+        ELSE 'Inactive'
+    END AS `Status`,
+    p.note AS `Note`
+FROM products p
+LEFT JOIN product_categories pc ON pc.id = p.category_id
+LEFT JOIN units_of_measure u ON u.id = p.unit_id
+LEFT JOIN tax_rates tr ON tr.id = p.tax_rate_id
+LEFT JOIN (
+    SELECT
+        sm.product_id,
+        SUM(
+            CASE
+                WHEN sm.movement_type = 'IN' THEN sm.quantity
+                WHEN sm.movement_type = 'OUT' THEN -sm.quantity
+                ELSE sm.quantity
+            END
+        ) AS total_stock
+    FROM stock_movements sm
+    GROUP BY sm.product_id
+) stock ON stock.product_id = p.id
+WHERE p.id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+LIMIT 1;

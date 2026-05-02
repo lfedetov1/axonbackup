@@ -15,7 +15,16 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onSubmit"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onSubmit"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "geosearch",
   "inputType": "TEXT",
@@ -39,6 +48,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 9,
   "needsErrorInfo": false,
+  "onSubmit": "{{ SearchProducts.run() }}",
   "originalBottomRow": 14,
   "originalTopRow": 7,
   "parentColumnSpace": 17.453125,
@@ -53,5 +63,5 @@
   "type": "INPUT_WIDGET_V2",
   "version": 2,
   "widgetId": "o39lw614gl",
-  "widgetName": "Input1"
+  "widgetName": "ProductSearchInput"
 }

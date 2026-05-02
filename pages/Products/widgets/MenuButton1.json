@@ -1,0 +1,89 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 13,
+  "boxShadow": "none",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "iconAlign": "left",
+  "iconName": "menu",
+  "isCompact": false,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "63cvzz3ffk",
+  "label": "Options",
+  "leftColumn": 55,
+  "menuColor": "#a16207",
+  "menuItems": {
+    "menuItem1": {
+      "iconName": "dollar",
+      "id": "menuItem1",
+      "index": 0,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New sales",
+      "widgetId": ""
+    },
+    "menuItem2": {
+      "iconName": "annotation",
+      "id": "menuItem2",
+      "index": 1,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New Offer",
+      "widgetId": ""
+    },
+    "menuItem3": {
+      "iconName": "log-out",
+      "id": "menuItem3",
+      "index": 2,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New document",
+      "widgetId": ""
+    },
+    "menuItemd0xbe8kw0a": {
+      "iconName": "shopping-cart",
+      "id": "menuItemd0xbe8kw0a",
+      "index": 3,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New Purchase",
+      "widgetId": "10e35z9zjm"
+    },
+    "menuItemgzqip4abs6": {
+      "iconName": "add-to-artifact",
+      "id": "menuItemgzqip4abs6",
+      "index": 4,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New Norm",
+      "widgetId": "tiroarj5iu"
+    }
+  },
+  "menuItemsSource": "STATIC",
+  "menuVariant": "PRIMARY",
+  "mobileBottomRow": 91,
+  "mobileLeftColumn": 30,
+  "mobileRightColumn": 46,
+  "mobileTopRow": 87,
+  "needsErrorInfo": false,
+  "originalBottomRow": 13,
+  "originalTopRow": 9,
+  "parentColumnSpace": 17.453125,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "renderMode": "CANVAS",
+  "rightColumn": 64,
+  "topRow": 9,
+  "type": "MENU_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "2t9m9ksz7i",
+  "widgetName": "MenuButton1"
+}
