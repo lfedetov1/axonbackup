@@ -1,0 +1,55 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 5,
+  "dynamicBindingPathList": [
+    {
+      "key": "truncateButtonColor"
+    },
+    {
+      "key": "fontFamily"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "textColor"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+  "fontSize": "1rem",
+  "fontStyle": "BOLD",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "7ze8gpqdek",
+  "leftColumn": 8,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 22,
+  "mobileLeftColumn": 3,
+  "mobileRightColumn": 19,
+  "mobileTopRow": 18,
+  "needsErrorInfo": false,
+  "originalBottomRow": 5,
+  "originalTopRow": 0,
+  "overflow": "NONE",
+  "parentColumnSpace": 14.234375,
+  "parentId": "1c5ukv3ggz",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 14,
+  "shouldTruncate": false,
+  "text": "Product Overview",
+  "textAlign": "LEFT",
+  "textColor": "{{appsmith.theme.colors.backgroundColor}}",
+  "topRow": 0,
+  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "type": "TEXT_WIDGET",
+  "version": 1,
+  "widgetId": "o81ffkjrod",
+  "widgetName": "Text1Copy"
+}

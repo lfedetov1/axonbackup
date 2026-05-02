@@ -1,0 +1,215 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": 1,
+  "bottomRow": 37,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "children": [
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 150,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": true,
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isDisabled": false,
+      "isLoading": false,
+      "isVisible": true,
+      "key": "uzrh1bzjx4",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 150,
+      "minWidth": 450,
+      "mobileBottomRow": 150,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 418.875,
+      "mobileTopRow": 0,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "wj9i0rojej",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 418.875,
+      "shouldScrollContents": false,
+      "tabId": "tab2",
+      "tabName": "Sales",
+      "topRow": 0,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "h2uobfceek",
+      "widgetName": "Canvas3"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 150,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "uzrh1bzjx4",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 190,
+      "minWidth": 450,
+      "mobileBottomRow": 191,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 471.234375,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "wj9i0rojej",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 471.234375,
+      "tabId": "tabuvm6pdvfu3",
+      "tabName": "Purchase",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "eah3auak5w",
+      "widgetName": "Canvas7"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 150,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "uzrh1bzjx4",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 190,
+      "minWidth": 450,
+      "mobileBottomRow": 191,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 471.234375,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "wj9i0rojej",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 471.234375,
+      "tabId": "tab0h37sdoqvs",
+      "tabName": "Analytics",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "3k9kh9qbt6",
+      "widgetName": "Canvas8"
+    }
+  ],
+  "defaultTab": "General Information",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "flexVerticalAlignment": "stretch",
+  "isCanvas": true,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "m0uuzh5c83",
+  "leftColumn": 36,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 15,
+  "minWidth": 450,
+  "mobileBottomRow": 32,
+  "mobileLeftColumn": 36,
+  "mobileRightColumn": 60,
+  "mobileTopRow": 17,
+  "needsErrorInfo": false,
+  "originalBottomRow": 37,
+  "originalTopRow": 18,
+  "parentColumnSpace": 17.453125,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 63,
+  "shouldScrollContents": true,
+  "shouldShowTabs": true,
+  "tabsObj": {
+    "tab0h37sdoqvs": {
+      "id": "tab0h37sdoqvs",
+      "index": 2,
+      "isVisible": true,
+      "label": "Analytics",
+      "widgetId": "3k9kh9qbt6"
+    },
+    "tab2": {
+      "id": "tab2",
+      "index": 0,
+      "isVisible": true,
+      "label": "Sales",
+      "positioning": "vertical",
+      "widgetId": "h2uobfceek"
+    },
+    "tabuvm6pdvfu3": {
+      "id": "tabuvm6pdvfu3",
+      "index": 1,
+      "isVisible": true,
+      "label": "Purchase",
+      "widgetId": "eah3auak5w"
+    }
+  },
+  "topRow": 18,
+  "type": "TABS_WIDGET",
+  "version": 3,
+  "widgetId": "wj9i0rojej",
+  "widgetName": "Tabs1"
+}
