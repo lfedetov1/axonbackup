@@ -202,7 +202,7 @@
   "mobileRightColumn": 35,
   "mobileTopRow": 17,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  GetProductAvailability.run()\n    .then(() => GetProductPricingHistory.run())\n    .then(() => GetProductInventoryMovements.run()) \n     .then(() =>\t\t\t\t\t\t\tGetProductCard.run())\n.then(() => GetProductNorms.run())\n.then(() =>\nGetProductSalesTrend.run())\n.then(() => GetProductSalesLines.run())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n}}",
+  "onRowSelected": "{{\n  GetProductAvailability.run()\n    .then(() => GetProductPricingHistory.run())\n    .then(() => GetProductInventoryMovements.run()) \n     .then(() =>\t\t\t\t\t\t\tGetProductCard.run())\n.then(() => GetProductNorms.run())\n.then(() =>\nGetProductSalesTrend.run())\n.then(() => GetProductSalesLines.run())\n.then(() =>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tGetProductPurchaseTrend.run())\n    .then(() => GetProductPurchaseLines.run())\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n}}",
   "originalBottomRow": 52,
   "originalTopRow": 18,
   "parentColumnSpace": 17.453125,

@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 128,
+  "bottomRow": 136,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 340,
+      "bottomRow": 420,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 340,
+      "bottomRow": 420,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -101,7 +101,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 340,
+      "bottomRow": 420,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -143,9 +143,99 @@
       "version": 1,
       "widgetId": "g7vak2qiac",
       "widgetName": "Canvas8Copy"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 420,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "2aen4sbfrv",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 380,
+      "minWidth": 450,
+      "mobileBottomRow": 381,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1099.546875,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "lm1ozee1is",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1099.546875,
+      "tabId": "tabl1znso8dzy",
+      "tabName": "Stock product analytics",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "nms2vz1l69",
+      "widgetName": "Canvas11"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 420,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "2aen4sbfrv",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 460,
+      "minWidth": 450,
+      "mobileBottomRow": 461,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1099.546875,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "lm1ozee1is",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1099.546875,
+      "tabId": "tab2bupnudk4f",
+      "tabName": "Sales stock analystics",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "isux44f36p",
+      "widgetName": "Canvas12"
     }
   ],
-  "defaultTab": "General Information",
+  "defaultTab": "Sales",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -173,7 +263,7 @@
   "mobileRightColumn": 60,
   "mobileTopRow": 17,
   "needsErrorInfo": false,
-  "originalBottomRow": 128,
+  "originalBottomRow": 136,
   "originalTopRow": 90,
   "parentColumnSpace": 17.453125,
   "parentId": "0",
@@ -198,6 +288,20 @@
       "label": "Sales",
       "positioning": "vertical",
       "widgetId": "z4knilxvbu"
+    },
+    "tab2bupnudk4f": {
+      "id": "tab2bupnudk4f",
+      "index": 4,
+      "isVisible": true,
+      "label": "Sales stock analystics",
+      "widgetId": "isux44f36p"
+    },
+    "tabl1znso8dzy": {
+      "id": "tabl1znso8dzy",
+      "index": 3,
+      "isVisible": true,
+      "label": "Stock product analytics",
+      "widgetId": "nms2vz1l69"
     },
     "tabuvm6pdvfu3": {
       "id": "tabuvm6pdvfu3",

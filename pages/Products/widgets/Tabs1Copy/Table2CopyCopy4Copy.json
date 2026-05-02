@@ -4,7 +4,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 28,
+  "bottomRow": 31,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "cachedTableData": {},
   "canFreezeColumn": true,
@@ -51,9 +51,17 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "tableData"
     }
   ],
-  "dynamicPropertyPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "tableData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
   "enableClientSideSearch": true,
   "endOfData": false,
   "flexVerticalAlignment": "start",
@@ -68,7 +76,7 @@
   "isVisibleSearch": true,
   "key": "r1tao2i9v0",
   "label": "Data",
-  "leftColumn": 0,
+  "leftColumn": 32,
   "minWidth": 450,
   "mobileBottomRow": 28,
   "mobileLeftColumn": 0,
@@ -83,7 +91,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 63,
   "searchKey": "",
-  "tableData": "",
+  "tableData": "{{GetProductPurchaseLines.data}}",
   "textSize": "0.875rem",
   "topRow": 0,
   "totalRecordsCount": 0,

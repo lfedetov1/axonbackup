@@ -1,0 +1,5 @@
+SELECT
+    id AS value,
+    CONCAT(code, ' - ', name) AS label
+FROM warehouses
+ORDER BY code, name;

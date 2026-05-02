@@ -1,0 +1,39 @@
+SELECT
+    DATE_FORMAT(sm.movement_date, '%Y-%m') AS `Sort Period`,
+    DATE_FORMAT(sm.movement_date, '%M %Y') AS `Period`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT')
+            THEN sm.quantity
+            ELSE 0
+        END
+    ), 0) AS `Stock In`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT')
+            THEN sm.quantity
+            ELSE 0
+        END
+    ), 0) AS `Stock Out`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT')
+            THEN sm.quantity
+            WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT')
+            THEN -sm.quantity
+            ELSE 0
+        END
+    ), 0) AS `Net Movement`
+FROM stock_movements sm
+WHERE sm.product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+  AND (
+      {{!StockWarehouseSelect.selectedOptionValue}}
+      OR sm.warehouse_id = {{StockWarehouseSelect.selectedOptionValue || 0}}
+  )
+GROUP BY
+    `Sort Period`,
+    `Period`
+ORDER BY `Sort Period`;
