@@ -34,6 +34,9 @@
   "dynamicTriggerPathList": [
     {
       "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItemkwpgu8865w.onClick"
     }
   ],
   "iconAlign": "left",
@@ -94,14 +97,17 @@
       "widgetId": "tiroarj5iu"
     },
     "menuItemkwpgu8865w": {
+      "iconName": "cloud-upload",
       "id": "menuItemkwpgu8865w",
       "index": 6,
       "isDisabled": false,
       "isVisible": true,
       "label": "Fast import",
+      "onClick": "{{showModal(FastImport.name);}}",
       "widgetId": "h8bd1ivj81"
     },
     "menuItemlcumaywsd1": {
+      "iconName": "duplicate",
       "id": "menuItemlcumaywsd1",
       "index": 4,
       "isDisabled": false,
