@@ -1,0 +1,9 @@
+SELECT id AS taxRateId
+FROM tax_rates
+WHERE COALESCE(company_id, {{appsmith.store.companyId}}) = {{appsmith.store.companyId}}
+  AND (
+      code = {{this.params.taxRate || ""}}
+      OR name = {{this.params.taxRate || ""}}
+      OR rate = {{Number(this.params.taxRate || -1)}}
+  )
+LIMIT 1;

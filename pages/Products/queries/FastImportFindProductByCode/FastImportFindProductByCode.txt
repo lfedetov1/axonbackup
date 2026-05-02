@@ -1,0 +1,5 @@
+SELECT id AS productId
+FROM products
+WHERE company_id = {{appsmith.store.companyId}}
+  AND code = {{this.params.code}}
+LIMIT 1;

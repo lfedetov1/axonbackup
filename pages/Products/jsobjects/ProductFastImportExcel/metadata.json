@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_1618ea2e-47cc-4595-a15f-fea25d4db280",
+  "id": "Products_ProductFastImportExcel",
+  "unpublishedCollection": {
+    "name": "ProductFastImportExcel",
+    "pageId": "Products",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

@@ -1,0 +1,8 @@
+SELECT id AS categoryId
+FROM product_categories
+WHERE company_id = {{appsmith.store.companyId}}
+  AND (
+      code = {{this.params.category || ""}}
+      OR name = {{this.params.category || ""}}
+  )
+LIMIT 1;

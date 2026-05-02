@@ -93,6 +93,14 @@
       "label": "New Norm",
       "widgetId": "tiroarj5iu"
     },
+    "menuItemkwpgu8865w": {
+      "id": "menuItemkwpgu8865w",
+      "index": 6,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Fast import",
+      "widgetId": "h8bd1ivj81"
+    },
     "menuItemlcumaywsd1": {
       "id": "menuItemlcumaywsd1",
       "index": 4,

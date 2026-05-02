@@ -1,0 +1,5 @@
+SELECT id AS countryId
+FROM countries
+WHERE code = {{this.params.country || ""}}
+   OR name = {{this.params.country || ""}}
+LIMIT 1;

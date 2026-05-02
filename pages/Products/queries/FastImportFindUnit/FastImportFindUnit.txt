@@ -1,0 +1,6 @@
+SELECT id AS unitId
+FROM units_of_measure
+WHERE code = {{this.params.unit || ""}}
+   OR name = {{this.params.unit || ""}}
+   OR short_name = {{this.params.unit || ""}}
+LIMIT 1;
