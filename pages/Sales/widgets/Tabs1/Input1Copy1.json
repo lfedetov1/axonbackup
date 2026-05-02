@@ -5,7 +5,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 62,
   "boxShadow": "none",
-  "defaultText": "{{ GetWarehouseSalesSummary.data?.[0]?.net_sales || 0 }}",
+  "defaultText": "{{ \"€ \" + Number(GetSalesDashboardKpis.data[0]?.[\"Net Sales\"] || 0).toFixed(2) }}\n",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"

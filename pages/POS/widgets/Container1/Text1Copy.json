@@ -43,7 +43,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 56,
   "shouldTruncate": false,
-  "text": "{{appsmith.store.warehouseLabel}}",
+  "text": "{{appsmith.store.warehouseCode}}",
   "textAlign": "LEFT",
   "textColor": "#18181b",
   "topRow": 0,

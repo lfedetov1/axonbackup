@@ -34,7 +34,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{\nSelectWarehouse.selectedOptionValue\nappsmith.store.companyId\n \n\nif (!SelectWarehouse.selectedOptionValue) {\n  showAlert(\"Select warehouse first\", \"warning\");\n} else {\n\t General_data.run() \n  storeValue(\"warehouseId\", SelectWarehouse.selectedOptionValue)\n\tstoreValue(\"companyPrint\", General_data.data[0])\n\t .then (() =>\n  closeModal(\"Warehouse\"))\n\t\t\t.then(() => \n  navigateTo(\"Dashboard\")\n\n   .catch(() => showAlert(\"Cannot open dashboard\", \"error\")));\n}\n\n}}",
+  "onClick": "{{\nSelectWarehouse.selectedOptionValue\nappsmith.store.companyId\n \n\nif (!SelectWarehouse.selectedOptionValue) {\n  showAlert(\"Select warehouse first\", \"warning\");\n} else {\n\t General_data.run() \n\tstoreValue(\"companyPrint\", General_data.data[0])\n\t .then (() =>\n  closeModal(\"Warehouse\"))\n\t\t\t.then(() => \n  navigateTo(\"Dashboard\")\n\n   .catch(() => showAlert(\"Cannot open dashboard\", \"error\")));\n}\n\n}}",
   "originalBottomRow": 22,
   "originalTopRow": 18,
   "parentId": "7v4odg4vve",

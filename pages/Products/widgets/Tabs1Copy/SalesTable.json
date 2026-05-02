@@ -4,7 +4,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 28,
+  "bottomRow": 32,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "cachedTableData": {},
   "canFreezeColumn": true,
@@ -51,9 +51,17 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "tableData"
     }
   ],
-  "dynamicPropertyPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "tableData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
   "enableClientSideSearch": true,
   "endOfData": false,
   "flexVerticalAlignment": "start",
@@ -68,7 +76,7 @@
   "isVisibleSearch": true,
   "key": "r1tao2i9v0",
   "label": "Data",
-  "leftColumn": 0,
+  "leftColumn": 32,
   "minWidth": 450,
   "mobileBottomRow": 28,
   "mobileLeftColumn": 0,
@@ -76,20 +84,20 @@
   "mobileTopRow": 0,
   "needsErrorInfo": false,
   "parentColumnSpace": 16.867919921875,
-  "parentId": "3k9kh9qbt6",
+  "parentId": "z4knilxvbu",
   "parentRowSpace": 10,
   "primaryColumns": {},
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
   "rightColumn": 64,
   "searchKey": "",
-  "tableData": "",
+  "tableData": "{{ GetProductSalesLines.data }}\n",
   "textSize": "0.875rem",
   "topRow": 0,
   "totalRecordsCount": 0,
   "type": "TABLE_WIDGET_V2",
   "version": 2,
   "verticalAlignment": "CENTER",
-  "widgetId": "7z2b48sutc",
-  "widgetName": "Table2CopyCopy5"
+  "widgetId": "s3ni8x1h1y",
+  "widgetName": "SalesTable"
 }

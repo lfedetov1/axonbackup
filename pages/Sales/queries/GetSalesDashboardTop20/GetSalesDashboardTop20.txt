@@ -1,0 +1,36 @@
+SELECT
+    COALESCE(w.code, '') AS `Warehouse Code`,
+    COALESCE(w.name, '') AS `Warehouse`,
+    p.code AS `Code`,
+    p.name AS `Product`,
+    COALESCE(SUM(di.quantity), 0) AS `Quantity Sold`,
+    COALESCE(SUM(di.line_total), 0) AS `Sales Total`,
+    COALESCE(SUM(di.discount_amount), 0) AS `Discount`,
+    COALESCE(SUM(di.tax_amount), 0) AS `Tax`,
+    COUNT(DISTINCT d.id) AS `Documents`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN warehouses w ON w.id = COALESCE(d.warehouse_id, di.warehouse_id)
+WHERE d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+  AND d.status <> 'CANCELLED'
+  AND (
+      {{appsmith.store.warehouseId || 0}} = 0
+      OR COALESCE(d.warehouse_id, di.warehouse_id) = {{appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY' AND d.document_date = CURDATE())
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK' AND YEARWEEK(d.document_date, 1) = YEARWEEK(CURDATE(), 1))
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH' AND YEAR(d.document_date) = YEAR(CURDATE()) AND MONTH(d.document_date) = MONTH(CURDATE()))
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR' AND YEAR(d.document_date) = YEAR(CURDATE()))
+  )
+GROUP BY
+    w.id,
+    w.code,
+    w.name,
+    p.id,
+    p.code,
+    p.name
+ORDER BY `Sales Total` DESC
+LIMIT 20;
+

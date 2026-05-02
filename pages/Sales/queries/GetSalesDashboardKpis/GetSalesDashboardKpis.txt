@@ -1,0 +1,52 @@
+SELECT
+    COALESCE(SUM(
+        CASE
+            WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+            THEN d.total_amount
+            ELSE 0
+        END
+    ), 0) AS `Sales`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN ABS(d.total_amount)
+            ELSE 0
+        END
+    ), 0) AS `Returns`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+            THEN d.total_amount
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN -ABS(d.total_amount)
+            ELSE 0
+        END
+    ), 0) AS `Net Sales`,
+
+    COALESCE(SUM(
+        CASE
+            WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+            THEN di.quantity
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN -ABS(di.quantity)
+            ELSE 0
+        END
+    ), 0) AS `Net Quantity`,
+
+    COUNT(DISTINCT d.id) AS `Documents`
+FROM documents d
+LEFT JOIN document_items di ON di.document_id = d.id
+WHERE d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RETURN')
+  AND d.status <> 'CANCELLED'
+  AND (
+      {{appsmith.store.warehouseId || 0}} = 0
+      OR COALESCE(d.warehouse_id, di.warehouse_id) = {{appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY' AND d.document_date = CURDATE())
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK' AND YEARWEEK(d.document_date, 1) = YEARWEEK(CURDATE(), 1))
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH' AND YEAR(d.document_date) = YEAR(CURDATE()) AND MONTH(d.document_date) = MONTH(CURDATE()))
+      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR' AND YEAR(d.document_date) = YEAR(CURDATE()))
+  );

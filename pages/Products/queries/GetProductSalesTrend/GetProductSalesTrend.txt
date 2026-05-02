@@ -1,0 +1,11 @@
+SELECT
+    d.document_date AS `Date`,
+    SUM(di.quantity) AS `Quantity Sold`,
+    SUM(di.line_total) AS `Sales Total`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+WHERE di.product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+  AND d.status <> 'CANCELLED'
+GROUP BY d.document_date
+ORDER BY d.document_date;

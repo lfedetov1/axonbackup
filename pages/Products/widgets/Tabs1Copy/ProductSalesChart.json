@@ -3,13 +3,12 @@
   "allowScroll": false,
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 50,
+  "bottomRow": 32,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "chartData": {
-    "uizjqp1jr2": {
-      "color": "#14532d",
-      "data": "{{\n  GetSalesDashboardChart.data.map(row => ({\n    x: row.Period,\n    y: Number(row[\"Sales Total\"] || 0)\n  }))\n}}\n",
-      "seriesName": "Profit"
+    "crbhquc2li": {
+      "data": "{{\nGetProductSalesTrend.data.map(row => ({\n    x: row.Date,\n    y: Number(row[\"Sales Total\"] || 0),\n    quantity: Number(row[\"Quantity Sold\"] || 0)\n  }))\n}}\n",
+      "seriesName": "Sales Total"
     }
   },
   "chartName": "Sales Report",
@@ -79,36 +78,35 @@
       "key": "fontFamily"
     },
     {
-      "key": "chartData.uizjqp1jr2.data"
+      "key": "chartData.crbhquc2li.data"
     }
   ],
-  "dynamicPropertyPathList": [],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "start",
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "isLoading": false,
   "isVisible": true,
-  "key": "ojgccyifcs",
+  "key": "cnxmfhm1qi",
   "labelOrientation": "auto",
   "leftColumn": 0,
   "minWidth": 450,
-  "mobileBottomRow": 38,
-  "mobileLeftColumn": 1,
-  "mobileRightColumn": 25,
-  "mobileTopRow": 6,
+  "mobileBottomRow": 32,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 24,
+  "mobileTopRow": 0,
   "needsErrorInfo": true,
-  "parentColumnSpace": 13.40625,
-  "parentId": "g2r9ggfzi9",
+  "parentColumnSpace": 16.867919921875,
+  "parentId": "z4knilxvbu",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 63,
+  "rightColumn": 32,
   "showDataPointLabel": false,
-  "topRow": 6,
+  "topRow": 0,
   "type": "CHART_WIDGET",
   "version": 1,
-  "widgetId": "mi0ckv33yw",
-  "widgetName": "Chart1",
-  "xAxisName": "Totals",
+  "widgetId": "uhhi83cdbd",
+  "widgetName": "ProductSalesChart",
+  "xAxisName": "Product Line",
   "yAxisName": "Revenue($)"
 }

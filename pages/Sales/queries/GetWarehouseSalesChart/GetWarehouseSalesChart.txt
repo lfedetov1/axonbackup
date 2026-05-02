@@ -1,10 +1,10 @@
 SELECT
   CASE
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'DAY'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'DAY'
       THEN DATE_FORMAT(d.document_date, '%H:00')
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'WEEK'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'WEEK'
       THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'MONTH'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'MONTH'
       THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
     ELSE DATE_FORMAT(d.document_date, '%Y-%m-%d')
   END AS period_label,
@@ -34,18 +34,18 @@ WHERE d.company_id = {{ appsmith.store.currentCompany?.company_id || 0 }}
   AND d.status IN ('CONFIRMED', 'POSTED')
   AND d.document_date >=
     CASE
-      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'DAY' THEN CURDATE() - INTERVAL 1 DAY
-      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'WEEK' THEN CURDATE() - INTERVAL 7 DAY
-      WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'MONTH' THEN CURDATE() - INTERVAL 30 DAY
+      WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'DAY' THEN CURDATE() - INTERVAL 1 DAY
+      WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'WEEK' THEN CURDATE() - INTERVAL 7 DAY
+      WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'MONTH' THEN CURDATE() - INTERVAL 30 DAY
       ELSE CURDATE() - INTERVAL 7 DAY
     END
 GROUP BY
   CASE
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'DAY'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'DAY'
       THEN DATE_FORMAT(d.document_date, '%H:00')
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'WEEK'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'WEEK'
       THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
-    WHEN '{{ SelectPeriod.selectedOptionValue || "WEEK" }}' = 'MONTH'
+    WHEN '{{ SalesPeriodSelect.selectedOptionValue || "WEEK" }}' = 'MONTH'
       THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
     ELSE DATE_FORMAT(d.document_date, '%Y-%m-%d')
   END

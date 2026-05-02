@@ -1,0 +1,21 @@
+SELECT
+    d.document_date AS `Date`,
+    d.document_number AS `Document Number`,
+    d.document_type AS `Document Type`,
+    d.payment_method AS `Payment Method`,
+    di.quantity AS `Quantity`,
+    di.unit_price AS `Unit Price`,
+    di.discount_amount AS `Discount`,
+    di.line_subtotal AS `Subtotal`,
+    di.tax_amount AS `Tax`,
+    di.line_total AS `Total`,
+    d.status AS `Status`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+WHERE di.product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+  AND d.status <> 'CANCELLED'
+ORDER BY
+    d.document_date DESC,
+    d.id DESC,
+    di.line_no DESC;

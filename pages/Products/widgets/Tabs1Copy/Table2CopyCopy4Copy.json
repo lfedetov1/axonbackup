@@ -76,12 +76,12 @@
   "mobileTopRow": 0,
   "needsErrorInfo": false,
   "parentColumnSpace": 16.867919921875,
-  "parentId": "h2uobfceek",
+  "parentId": "mfw7742td7",
   "parentRowSpace": 10,
   "primaryColumns": {},
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 64,
+  "rightColumn": 63,
   "searchKey": "",
   "tableData": "",
   "textSize": "0.875rem",
@@ -90,6 +90,6 @@
   "type": "TABLE_WIDGET_V2",
   "version": 2,
   "verticalAlignment": "CENTER",
-  "widgetId": "fblmeotsv9",
-  "widgetName": "Table2CopyCopy3"
+  "widgetId": "xprw0muwwr",
+  "widgetName": "Table2CopyCopy4Copy"
 }
