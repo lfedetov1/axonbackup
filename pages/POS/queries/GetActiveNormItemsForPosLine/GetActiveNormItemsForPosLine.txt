@@ -1,0 +1,33 @@
+SELECT
+    pn.id AS normId,
+    pn.parent_product_id AS parentProductId,
+    pn.output_quantity AS outputQuantity,
+    pni.line_no AS lineNo,
+    pni.component_product_id AS componentProductId,
+    comp.code AS componentCode,
+    comp.name AS componentName,
+    pni.quantity AS componentQuantity,
+    pni.waste_percent AS wastePercent
+FROM product_norms pn
+JOIN product_norm_items pni ON pni.product_norm_id = pn.id
+JOIN products comp ON comp.id = pni.component_product_id
+WHERE pn.company_id = {{appsmith.store.companyId}}
+  AND pn.parent_product_id = {{this.params.productId}}
+  AND pn.is_active = 1
+  AND COALESCE(pn.valid_from, '1000-01-01') <= CURDATE()
+  AND COALESCE(pn.valid_to, '9999-12-31') >= CURDATE()
+  AND pn.id = (
+      SELECT pn2.id
+      FROM product_norms pn2
+      WHERE pn2.company_id = pn.company_id
+        AND pn2.parent_product_id = pn.parent_product_id
+        AND pn2.is_active = 1
+        AND COALESCE(pn2.valid_from, '1000-01-01') <= CURDATE()
+        AND COALESCE(pn2.valid_to, '9999-12-31') >= CURDATE()
+      ORDER BY
+        COALESCE(pn2.valid_from, '1000-01-01') DESC,
+        pn2.id DESC
+      LIMIT 1
+  )
+ORDER BY
+    pni.line_no;

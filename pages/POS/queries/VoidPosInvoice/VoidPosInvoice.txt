@@ -1,0 +1,11 @@
+UPDATE documents
+SET
+    status = 'CANCELLED',
+    posting_status = 'NOT_POSTED',
+    cancelled_at = NOW(),
+    cancelled_by_user_id = {{appsmith.store.userId || null}},
+    note = CONCAT(COALESCE(note, ''), ' VOID: ', {{VoidReasonInput.text || 'POS void'}})
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.invoiceId}}
+  AND document_type = 'POS_SALE'
+  AND status <> 'CANCELLED';

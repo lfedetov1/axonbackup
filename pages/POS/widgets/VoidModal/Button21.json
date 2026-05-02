@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 17,
+  "bottomRow": 13,
   "boxShadow": "none",
   "buttonColor": "#dcfce7",
   "buttonVariant": "PRIMARY",
@@ -9,14 +9,11 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
-    },
-    {
-      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
-      "key": "isVisible"
+      "key": "onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -25,33 +22,35 @@
     }
   ],
   "iconAlign": "left",
-  "iconName": "trash",
+  "iconName": "search-text",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": "{{JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.manage\"])}}",
-  "key": "i412cra3be",
-  "leftColumn": 3,
+  "isVisible": true,
+  "key": "ail6gb1n0a",
+  "leftColumn": 34,
   "minWidth": 120,
-  "mobileBottomRow": 5,
-  "mobileLeftColumn": 2,
-  "mobileRightColumn": 18,
-  "mobileTopRow": 1,
+  "mobileBottomRow": 13,
+  "mobileLeftColumn": 34,
+  "mobileRightColumn": 50,
+  "mobileTopRow": 9,
   "needsErrorInfo": false,
-  "onClick": "{{showModal(VoidModal.name);}}",
-  "parentColumnSpace": 5.077049255371094,
-  "parentId": "c3lzb8z49k",
+  "onClick": "{{ POSVoid.findInvoice() }}",
+  "originalBottomRow": 13,
+  "originalTopRow": 9,
+  "parentColumnSpace": 6.9375,
+  "parentId": "4ees5hca3k",
   "parentRowSpace": 10,
   "placement": "CENTER",
   "recaptchaType": "V3",
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 62,
-  "text": "Void",
-  "topRow": 13,
+  "rightColumn": 50,
+  "text": "Search",
+  "topRow": 9,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "tyl1yj6w96",
-  "widgetName": "Button1CopyCopy1"
+  "widgetId": "qsyvsrr6kj",
+  "widgetName": "Button21"
 }

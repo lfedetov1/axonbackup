@@ -1,0 +1,16 @@
+SELECT
+    sm.id AS movementId,
+    sm.company_id AS companyId,
+    sm.warehouse_id AS warehouseId,
+    sm.product_id AS productId,
+    sm.document_id AS documentId,
+    sm.document_item_id AS documentItemId,
+    sm.movement_type AS movementType,
+    sm.quantity AS quantity,
+    sm.unit_cost AS unitCost,
+    sm.total_cost AS totalCost,
+    sm.note AS note
+FROM stock_movements sm
+WHERE sm.company_id = {{appsmith.store.companyId}}
+  AND sm.document_id = {{this.params.invoiceId}}
+ORDER BY sm.id;

@@ -41,6 +41,43 @@ export default {
     return Number(row.availableStock || 0);
   },
 
+  calculateNormComponentQuantity(component, soldQuantity) {
+    const outputQuantity = Number(component.outputQuantity || 1) || 1;
+    const componentQuantity = Number(component.componentQuantity || 0);
+    const wastePercent = Number(component.wastePercent || 0);
+    const baseQuantity = (Number(soldQuantity || 0) / outputQuantity) * componentQuantity;
+
+    return Number((baseQuantity * (1 + wastePercent / 100)).toFixed(4));
+  },
+
+  async deductStockForInvoiceItem(invoiceId, invoiceItemId, row) {
+    const normItems = await GetActiveNormItemsForPosLine.run({
+      productId: row.productId
+    });
+
+    if (normItems && normItems.length) {
+      for (const component of normItems) {
+        await InsertInvoiceNormStockMovement.run({
+          invoiceId,
+          invoiceItemId,
+          componentProductId: component.componentProductId,
+          requiredQuantity: this.calculateNormComponentQuantity(component, row.quantity),
+          note: "POS norm: " + (row.productCode || row.description || "")
+        });
+      }
+
+      return;
+    }
+
+    if (this.isStockTracked(row)) {
+      await InsertInvoiceStockMovement.run({
+        invoiceId,
+        invoiceItemId,
+        row
+      });
+    }
+  },
+
   getRows() {
     return this.cleanRows(appsmith.store.invoiceItems || []);
   },
@@ -62,11 +99,10 @@ export default {
       { subtotal: 0, tax: 0, discount: 0, total: 0 }
     );
   },
-	
-	async resetTable() {
-  await storeValue("invoiceItems", []);
-},
 
+  async resetTable() {
+    await storeValue("invoiceItems", []);
+  },
 
   async scanBarcode() {
     const lookup = String(BarcodeInput.text || "").trim();
@@ -262,13 +298,11 @@ export default {
           return;
         }
 
-        if (String(recalculatedRows[i].trackStock || "0") === "1") {
-          await InsertInvoiceStockMovement.run({
-            invoiceId,
-            invoiceItemId,
-            row: recalculatedRows[i]
-          });
-        }
+        await this.deductStockForInvoiceItem(
+          invoiceId,
+          invoiceItemId,
+          recalculatedRows[i]
+        );
       }
 
       await POSReceiptPrint.open(invoiceId);

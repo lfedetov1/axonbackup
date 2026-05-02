@@ -1,0 +1,13 @@
+SELECT
+    d.id AS invoiceId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS status,
+    d.posting_status AS postingStatus,
+    d.total_amount AS totalAmount,
+    d.paid_amount AS paidAmount
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_number = {{VoidInvoiceNumberInput.text}}
+  AND d.document_type = 'POS_SALE'
+LIMIT 1;

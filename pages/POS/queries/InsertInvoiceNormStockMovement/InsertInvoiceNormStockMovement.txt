@@ -1,0 +1,26 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    document_id,
+    document_item_id,
+    movement_type,
+    movement_date,
+    quantity,
+    unit_cost,
+    total_cost,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{appsmith.store.warehouseId}},
+    {{this.params.componentProductId}},
+    {{this.params.invoiceId}},
+    {{this.params.invoiceItemId}},
+    'OUT',
+    NOW(),
+    ABS({{this.params.requiredQuantity || 0}}),
+    0,
+    0,
+    {{this.params.note || 'POS norm'}}
+);

@@ -1,0 +1,26 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    document_id,
+    document_item_id,
+    movement_type,
+    movement_date,
+    quantity,
+    unit_cost,
+    total_cost,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.warehouseId}},
+    {{this.params.productId}},
+    {{this.params.invoiceId}},
+    {{this.params.documentItemId}},
+    {{this.params.reverseMovementType}},
+    NOW(),
+    ABS({{this.params.quantity || 0}}),
+    {{this.params.unitCost || 0}},
+    {{this.params.totalCost || 0}},
+    {{this.params.note || 'POS VOID reversal'}}
+);
