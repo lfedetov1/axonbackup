@@ -6,15 +6,42 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "menuItems.menuItem2.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem3.isVisible"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "menuItems.menuItem2.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.isVisible"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "menu",
   "isCompact": false,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ JSAccess.has(\"products.create\") }}",
   "key": "63cvzz3ffk",
   "label": "Options",
   "leftColumn": 55,
@@ -27,6 +54,7 @@
       "isDisabled": false,
       "isVisible": true,
       "label": "New sales",
+      "onClick": "{{ JSAccess.has(\"sales.invoices.create\") }}",
       "widgetId": ""
     },
     "menuItem2": {
@@ -34,7 +62,7 @@
       "id": "menuItem2",
       "index": 1,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"sales.quotations.create\") }}\n",
       "label": "New Offer",
       "widgetId": ""
     },
@@ -43,7 +71,7 @@
       "id": "menuItem3",
       "index": 2,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"purchase.documents.create\") }}",
       "label": "New document",
       "widgetId": ""
     },
