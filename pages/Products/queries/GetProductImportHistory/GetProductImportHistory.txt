@@ -1,0 +1,17 @@
+SELECT
+    pib.created_at AS `Imported At`,
+    pib.source_type AS `Source Type`,
+    pib.source_name AS `Source`,
+    pib.file_name AS `File`,
+    pib.status AS `Batch Status`,
+    pir.action_type AS `Action`,
+    pir.status AS `Row Status`,
+    pir.external_id AS `External ID`,
+    pir.error_message AS `Error`,
+    pir.row_no AS `Row No`
+FROM product_import_rows pir
+JOIN product_import_batches pib ON pib.id = pir.batch_id
+WHERE pir.product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+ORDER BY
+    pib.created_at DESC,
+    pir.row_no DESC;

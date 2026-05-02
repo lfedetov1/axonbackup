@@ -44,7 +44,7 @@
   "isVisible": "{{ JSAccess.has(\"products.create\") }}",
   "key": "63cvzz3ffk",
   "label": "Options",
-  "leftColumn": 55,
+  "leftColumn": 57,
   "menuColor": "#a16207",
   "menuItems": {
     "menuItem1": {
@@ -87,11 +87,19 @@
     "menuItemgzqip4abs6": {
       "iconName": "add-to-artifact",
       "id": "menuItemgzqip4abs6",
-      "index": 4,
+      "index": 5,
       "isDisabled": false,
       "isVisible": true,
       "label": "New Norm",
       "widgetId": "tiroarj5iu"
+    },
+    "menuItemlcumaywsd1": {
+      "id": "menuItemlcumaywsd1",
+      "index": 4,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New Category",
+      "widgetId": "7vpr9vr0bl"
     }
   },
   "menuItemsSource": "STATIC",
@@ -108,7 +116,7 @@
   "parentRowSpace": 10,
   "placement": "CENTER",
   "renderMode": "CANVAS",
-  "rightColumn": 64,
+  "rightColumn": 63,
   "topRow": 9,
   "type": "MENU_BUTTON_WIDGET",
   "version": 1,

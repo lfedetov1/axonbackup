@@ -1,0 +1,11 @@
+SELECT
+    source_type AS `Source Type`,
+    source_name AS `Source`,
+    external_id AS `External ID`,
+    external_sku AS `External SKU`,
+    external_barcode AS `External Barcode`,
+    last_synced_at AS `Last Synced At`,
+    is_active AS `Active`
+FROM product_external_refs
+WHERE product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+ORDER BY source_type, source_name;

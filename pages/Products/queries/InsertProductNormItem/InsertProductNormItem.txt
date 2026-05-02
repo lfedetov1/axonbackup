@@ -1,0 +1,18 @@
+INSERT INTO product_norm_items (
+    product_norm_id,
+    line_no,
+    component_product_id,
+    quantity,
+    unit_id,
+    waste_percent,
+    note
+)
+VALUES (
+    {{this.params.productNormId}},
+    {{this.params.lineNo}},
+    {{this.params.componentProductId}},
+    {{this.params.quantity}},
+    {{this.params.unitId}},
+    {{this.params.wastePercent || 0}},
+    {{this.params.note || null}}
+);

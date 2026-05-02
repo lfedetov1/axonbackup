@@ -1,0 +1,5 @@
+SELECT
+    id AS value,
+    name AS label
+FROM units_of_measure
+ORDER BY name;

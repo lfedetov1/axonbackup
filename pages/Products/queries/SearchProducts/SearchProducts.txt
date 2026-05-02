@@ -30,10 +30,14 @@ FROM products p
 LEFT JOIN units_of_measure u ON u.id = p.unit_id
 LEFT JOIN tax_rates tr ON tr.id = p.tax_rate_id
 LEFT JOIN product_categories pc ON pc.id = p.category_id
-WHERE
-    TRIM({{ProductSearchInput.text || ""}}) = ""
-    OR LOWER(COALESCE(p.code, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
-    OR LOWER(COALESCE(p.name, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
-    OR LOWER(COALESCE(p.barcode, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
-    OR LOWER(COALESCE(p.sku, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+WHERE TRIM({{ProductSearchInput.text || ""}}) <> ""
+  AND (
+      LOWER(COALESCE(p.code, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(p.name, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(p.short_name, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(p.description, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(p.barcode, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(p.sku, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+      OR LOWER(COALESCE(pc.name, "")) LIKE CONCAT("%", LOWER(TRIM({{ProductSearchInput.text || ""}})), "%")
+  )
 ORDER BY p.name;

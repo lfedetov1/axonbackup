@@ -1,0 +1,7 @@
+SELECT
+    id AS value,
+    CONCAT(code, ' - ', rate, '%') AS label
+FROM tax_rates
+WHERE COALESCE(company_id, {{appsmith.store.companyId}}) = {{appsmith.store.companyId}}
+ORDER BY rate, code;
+

@@ -1,0 +1,5 @@
+SELECT
+    code AS value,
+    CONCAT(code, ' - ', name) AS label
+FROM currencies
+ORDER BY code;

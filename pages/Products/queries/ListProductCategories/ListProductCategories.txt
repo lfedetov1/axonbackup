@@ -1,0 +1,7 @@
+SELECT
+    id AS value,
+    name AS label
+FROM product_categories
+WHERE company_id = {{appsmith.store.companyId}}
+  AND is_active = 1
+ORDER BY name;

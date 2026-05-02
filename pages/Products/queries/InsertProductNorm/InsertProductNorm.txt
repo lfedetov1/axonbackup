@@ -1,0 +1,26 @@
+INSERT INTO product_norms (
+    company_id,
+    parent_product_id,
+    code,
+    name,
+    version_no,
+    output_quantity,
+    output_unit_id,
+    valid_from,
+    valid_to,
+    is_active,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.productId}},
+    {{ProductNormCodeInput.text}},
+    {{ProductNormNameInput.text || ProductNameInput.text}},
+    {{ProductNormVersionInput.text || '1.0'}},
+    {{ProductNormOutputQuantityInput.text || 1}},
+    {{ProductUnitSelect.selectedOptionValue}},
+    {{ProductNormValidFromInput.selectedDate || ProductNormValidFromInput.selectedDate || null}},
+    {{ProductNormValidToInput.selectedDate || ProductNormValidToInput.selectedDate || null}},
+    {{ProductNormActiveSwitch.isSwitchedOn ? 1 : 0}},
+    {{ProductNormNoteInput.text || null}}
+);

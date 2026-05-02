@@ -234,6 +234,51 @@
       "version": 1,
       "widgetId": "7ynpqqun1i",
       "widgetName": "Canvas10"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 300,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "1c1nbggcas",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1099.546875,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "umwvjsf7t0",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1099.546875,
+      "tabId": "tabm27jnq14ad",
+      "tabName": "Import History ",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "qoyzimzeuc",
+      "widgetName": "Canvas13"
     }
   ],
   "defaultTab": "Aveability",
@@ -255,6 +300,9 @@
     },
     {
       "key": "tabsObj.tabc5swmh50bz.isVisible"
+    },
+    {
+      "key": "tabsObj.tabm27jnq14ad.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -267,6 +315,9 @@
     },
     {
       "key": "tabsObj.tabc5swmh50bz.isVisible"
+    },
+    {
+      "key": "tabsObj.tabm27jnq14ad.isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -324,6 +375,13 @@
       "isVisible": "{{ JSAccess.has(\"products.norms.view\") }}",
       "label": "Norms",
       "widgetId": "7ynpqqun1i"
+    },
+    "tabm27jnq14ad": {
+      "id": "tabm27jnq14ad",
+      "index": 5,
+      "isVisible": "{{ JSAccess.has(\"products.import\") || JSAccess.has(\"admin.access\") }}",
+      "label": "Import History ",
+      "widgetId": "qoyzimzeuc"
     },
     "tabtg7tqzgtpz": {
       "id": "tabtg7tqzgtpz",
