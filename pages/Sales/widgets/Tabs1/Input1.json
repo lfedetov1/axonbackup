@@ -3,7 +3,7 @@
   "animateLoading": true,
   "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 63,
+  "bottomRow": 62,
   "boxShadow": "none",
   "defaultText": "{{ GetWarehouseSalesSummary.data?.[0]?.sales_amount || 0 }}",
   "dynamicBindingPathList": [
@@ -51,7 +51,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "showStepArrows": false,
-  "topRow": 56,
+  "topRow": 55,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
   "widgetId": "wjpkwblcmk",

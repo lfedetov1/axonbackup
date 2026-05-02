@@ -51,9 +51,10 @@
     "Created_By",
     "Created_At",
     "customColumn1",
-    "customColumn2"
+    "customColumn2",
+    "customColumn3"
   ],
-  "columnUpdatedAt": 1777643075083,
+  "columnUpdatedAt": 1777730317846,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -144,6 +145,15 @@
     },
     {
       "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.buttonColor"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -155,6 +165,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "onRowSelected"
     }
   ],
   "dynamicTriggerPathList": [
@@ -163,6 +179,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "onRowSelected"
     }
   ],
   "enableClientSideSearch": true,
@@ -186,6 +208,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onRowSelected": "{{\n  storeValue(\"selectedDocumentNumber\", tblInvoices.selectedRow.Number);\n  storeValue(\"selectedPartnerId\", tblInvoices.selectedRow[\"Customer Code\"]);\n}}",
   "parentColumnSpace": 13.921875,
   "parentId": "an4k0i4g58",
   "parentRowSpace": 10,
@@ -315,7 +338,7 @@
       "isEditable": false,
       "isSaveVisible": true,
       "isVisible": true,
-      "label": "Customer Code",
+      "label": "Partner",
       "notation": "standard",
       "originalId": "Customer Code",
       "sticky": "",
@@ -873,6 +896,45 @@
       "notation": "standard",
       "onClick": "{{JSObjectInvoice.voidInvoiceWithCreditNote(currentRow.ID || currentRow.invoiceId)}}\n\n",
       "originalId": "customColumn2",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn3": {
+      "alias": "Send Email",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{tblInvoices.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{tblInvoices.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "{{tblInvoices.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "inbox-geo",
+      "id": "customColumn3",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Send Email",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{\n  getPartnerEmail.run(() => {\n    SendInvoiceAPI.run(\n      () => showAlert(\"Invoice sent successfully.\", \"success\"),\n      () => showAlert(\"Error while sending invoice.\", \"error\")\n    );\n  });\n}}",
+      "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

@@ -1,0 +1,4 @@
+{
+  "documentNumber": "{{appsmith.store.selectedDocumentNumber}}",
+  "customerEmail": "{{getPartnerEmail.data[0]?.email}}"
+}

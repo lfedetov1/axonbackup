@@ -1,0 +1,4 @@
+{
+  "documentNumber": "{{appsmith.store.selectedQuoteNumber}}",
+  "customerEmail": "{{getQuotePartnerEmail.data[0]?.email}}"
+}
