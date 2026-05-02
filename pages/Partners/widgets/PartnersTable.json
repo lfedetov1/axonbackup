@@ -178,7 +178,7 @@
   "mobileRightColumn": 35,
   "mobileTopRow": 14,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  PartnerEdit.loadPartnerForEdit(\n    PartnersTable.selectedRow[\"partner_id\"]\n  )\nGetPartnerInvoices.run()\n}}",
+  "onRowSelected": "{{\n  storeValue(\n    \"selectedPartnerCode\",\n    PartnersTable.selectedRow[\"code\"] || PartnersTable.selectedRow.code || PartnersTable.selectedRow.Code\n  );\n\n  storeValue(\n    \"selectedPartnerName\",\n    PartnersTable.selectedRow[\"name\"] || PartnersTable.selectedRow.name || PartnersTable.selectedRow.Name\n  );\n\nGetPartnerInvoices.run();\n\n}}\n",
   "originalBottomRow": 56,
   "originalTopRow": 17,
   "parentColumnSpace": 14.53125,

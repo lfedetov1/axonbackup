@@ -1,8 +1,12 @@
 SELECT
     d.id AS `Document ID`,
+    d.company_id AS `Company ID`,
+    d.partner_id AS `Partner ID`,
+    bp.code AS `Partner Code`,
+    bp.name AS `Partner Name`,
     d.document_type AS `Document Type`,
     d.document_number AS `Document Number`,
-    d.document_date AS `Date`,
+    d.document_date AS `Document Date`,
     d.due_date AS `Due Date`,
     d.status AS `Status`,
     d.posting_status AS `Posting Status`,
@@ -20,7 +24,12 @@ SELECT
         ELSE 'NO'
     END AS `Overdue`
 FROM documents d
+JOIN business_partners bp ON bp.id = d.partner_id
 WHERE d.company_id = {{appsmith.store.companyId}}
-  AND d.partner_id = {{PartnersTable.selectedRow["partner_id"] || 0}}
-  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RETURN')
+  AND bp.company_id = {{appsmith.store.companyId}}
+  AND (
+      bp.code = {{appsmith.store.selectedPartnerCode || ""}}
+      OR bp.name LIKE CONCAT('%', {{appsmith.store.selectedPartnerName || ""}}, '%')
+      OR bp.legal_name LIKE CONCAT('%', {{appsmith.store.selectedPartnerName || ""}}, '%')
+  )
 ORDER BY d.document_date DESC, d.id DESC;
