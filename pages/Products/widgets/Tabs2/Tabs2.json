@@ -246,9 +246,29 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtg7tqzgtpz.isVisible"
+    },
+    {
+      "key": "tabsObj.tabc5swmh50bz.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtg7tqzgtpz.isVisible"
+    },
+    {
+      "key": "tabsObj.tabc5swmh50bz.isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
@@ -286,7 +306,7 @@
     "tab2": {
       "id": "tab2",
       "index": 1,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.prices.view\") }}\n",
       "label": "Pricing",
       "positioning": "vertical",
       "widgetId": "88u12wfho0"
@@ -301,14 +321,14 @@
     "tabc5swmh50bz": {
       "id": "tabc5swmh50bz",
       "index": 4,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.norms.view\") }}",
       "label": "Norms",
       "widgetId": "7ynpqqun1i"
     },
     "tabtg7tqzgtpz": {
       "id": "tabtg7tqzgtpz",
       "index": 2,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.hasAny([\"inventory.balance.view\", \"inventory.movements.view\"]) }}",
       "label": "Inventory",
       "widgetId": "5qkgqwv993"
     }

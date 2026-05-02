@@ -4,7 +4,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 7,
   "boxShadow": "none",
-  "defaultOptionValue": "{{ ((options, serverSideFiltering) => (  appsmith.store.warehouseId || \"\" ))(StockWarehouseSelect.options, StockWarehouseSelect.serverSideFiltering) }}",
+  "defaultOptionValue": "{{ ((options, serverSideFiltering) => (  appsmith.store.warehouseId || \"\" ))(StockWarehouseSelect1.options, StockWarehouseSelect1.serverSideFiltering) }}",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -57,7 +57,7 @@
   "optionLabel": "label",
   "optionValue": "value",
   "parentColumnSpace": 16.867919921875,
-  "parentId": "nms2vz1l69",
+  "parentId": "isux44f36p",
   "parentRowSpace": 10,
   "placeholderText": "Select option",
   "renderMode": "CANVAS",
@@ -68,6 +68,6 @@
   "topRow": 0,
   "type": "SELECT_WIDGET",
   "version": 1,
-  "widgetId": "o09l98nklk",
-  "widgetName": "StockWarehouseSelect"
+  "widgetId": "b76nya8aj9",
+  "widgetName": "StockWarehouseSelect1"
 }

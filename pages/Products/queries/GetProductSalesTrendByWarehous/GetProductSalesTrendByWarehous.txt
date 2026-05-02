@@ -1,0 +1,19 @@
+SELECT
+    DATE_FORMAT(d.document_date, '%Y-%m') AS `Sort Period`,
+    DATE_FORMAT(d.document_date, '%M %Y') AS `Period`,
+
+    COALESCE(SUM(di.quantity), 0) AS `Quantity Sold`,
+    COALESCE(SUM(di.line_total), 0) AS `Sales Total`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+WHERE di.product_id = {{ProductsTable.selectedRow?.["Product ID"] || ProductsTable.selectedRow?.id || 0}}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+  AND d.status <> 'CANCELLED'
+  AND (
+      {{!StockWarehouseSelect1.selectedOptionValue}}
+      OR COALESCE(d.warehouse_id, di.warehouse_id) = {{StockWarehouseSelect1.selectedOptionValue || 0}}
+  )
+GROUP BY
+    `Sort Period`,
+    `Period`
+ORDER BY `Sort Period`;
