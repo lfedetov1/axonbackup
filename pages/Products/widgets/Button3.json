@@ -19,7 +19,11 @@
       "key": "isVisible"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
@@ -34,6 +38,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 73,
   "needsErrorInfo": false,
+  "onClick": "{{showModal(addnewproduct.name);}}",
   "originalBottomRow": 13,
   "originalTopRow": 9,
   "parentColumnSpace": 17.453125,
