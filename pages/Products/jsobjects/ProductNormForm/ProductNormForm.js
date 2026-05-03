@@ -58,8 +58,11 @@ export default {
       }))
     );
 
-    roductNormComponentSearchInput.setValue("");
-    roductNormComponentSearchInput.setValue("");
+    if (typeof roductNormComponentSearchInput !== "undefined") {
+      roductNormComponentSearchInput.setValue("");
+    }
+
+    ProductNormComponentQuantityIn.setValue("");
     ProductNormComponentWastePerce.setValue("0");
     ProductNormComponentNoteInput.setValue("");
 

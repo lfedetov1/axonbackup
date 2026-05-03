@@ -1,0 +1,8 @@
+UPDATE product_prices
+SET valid_to = DATE_SUB(
+  {{ ProductPriceValidFromInput.selectedDate || ProductPriceValidFromInput.selectedDate || moment().format("YYYY-MM-DD") }},
+  INTERVAL 1 DAY
+)
+WHERE product_id = {{ this.params.productId }}
+  AND COALESCE(CAST(valid_to AS CHAR), '') = '';
+

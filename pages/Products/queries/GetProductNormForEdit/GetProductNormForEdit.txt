@@ -1,0 +1,16 @@
+SELECT
+  id AS productNormId,
+  code AS normCode,
+  name AS normName,
+  version_no AS versionNo,
+  output_quantity AS outputQuantity,
+  output_unit_id AS outputUnitId,
+  valid_from AS validFrom,
+  valid_to AS validTo,
+  is_active AS isActive,
+  note
+FROM product_norms
+WHERE company_id = {{ appsmith.store.companyId }}
+  AND parent_product_id = {{ this.params.productId }}
+ORDER BY is_active DESC, id DESC
+LIMIT 1;

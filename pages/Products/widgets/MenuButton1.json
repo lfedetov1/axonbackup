@@ -92,7 +92,7 @@
       "id": "menuItemgzqip4abs6",
       "index": 5,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": false,
       "label": "New Norm",
       "widgetId": "tiroarj5iu"
     },
@@ -111,7 +111,7 @@
       "id": "menuItemlcumaywsd1",
       "index": 4,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": false,
       "label": "New Category",
       "widgetId": "7vpr9vr0bl"
     }

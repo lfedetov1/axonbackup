@@ -1,0 +1,29 @@
+SELECT
+    id AS productId,
+    category_id AS categoryId,
+    unit_id AS unitId,
+    tax_rate_id AS taxRateId,
+    code AS productCode,
+    name AS productName,
+    short_name AS shortName,
+    description,
+    barcode,
+    sku,
+    product_type AS productType,
+    track_stock AS trackStock,
+    is_used_item AS isUsedItem,
+    serial_number_required AS serialNumberRequired,
+    minimum_stock AS minimumStock,
+    maximum_stock AS maximumStock,
+    reorder_level AS reorderLevel,
+    purchase_price AS purchasePrice,
+    sale_price AS salePrice,
+    weight_kg AS weightKg,
+    note,
+    is_active AS isActive
+FROM products
+WHERE (
+    id = {{ this.params.productId || 0 }}
+    OR code = {{ this.params.productCode || "" }}
+)
+LIMIT 1;

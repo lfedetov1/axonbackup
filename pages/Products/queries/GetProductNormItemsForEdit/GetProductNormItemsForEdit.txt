@@ -1,0 +1,17 @@
+SELECT
+  pni.id AS productNormItemId,
+  pni.line_no AS lineNo,
+  pni.component_product_id AS componentProductId,
+  p.code AS componentCode,
+  p.name AS componentName,
+  pni.quantity,
+  pni.unit_id AS unitId,
+  u.code AS unitCode,
+  u.name AS unitName,
+  pni.waste_percent AS wastePercent,
+  pni.note
+FROM product_norm_items pni
+JOIN products p ON p.id = pni.component_product_id
+JOIN units_of_measure u ON u.id = pni.unit_id
+WHERE pni.product_norm_id = {{ this.params.productNormId }}
+ORDER BY pni.line_no;

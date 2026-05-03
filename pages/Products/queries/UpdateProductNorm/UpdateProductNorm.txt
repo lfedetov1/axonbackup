@@ -1,0 +1,13 @@
+UPDATE product_norms
+SET
+  code = {{ ProductNormCodeInput.text }},
+  name = {{ ProductNormNameInput.text || ProductNameInput.text }},
+  version_no = {{ ProductNormVersionInput.text || '1.0' }},
+  output_quantity = {{ ProductNormOutputQuantityInput.text || 1 }},
+  output_unit_id = {{ ProductUnitSelect.selectedOptionValue }},
+  valid_from = {{ ProductNormValidFromInput.selectedDate || ProductNormValidFromInput.text || null }},
+  valid_to = {{ ProductNormValidToInput.selectedDate || ProductNormValidToInput.text || null }},
+  is_active = {{ ProductNormActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  note = {{ ProductNormNoteInput.text || null }}
+WHERE id = {{ this.params.productNormId }}
+  AND company_id = {{ appsmith.store.companyId }};

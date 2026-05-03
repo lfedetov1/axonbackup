@@ -63,7 +63,7 @@
     "customColumn1",
     "customColumn2"
   ],
-  "columnUpdatedAt": 1777745170963,
+  "columnUpdatedAt": 1777809375712,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -184,9 +184,6 @@
     },
     {
       "key": "primaryColumns.customColumn2.boxShadow"
-    },
-    {
-      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -203,12 +200,21 @@
       "key": "primaryColumns.customColumn1.isCellVisible"
     },
     {
-      "key": "primaryColumns.customColumn2.isCellVisible"
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -1180,7 +1186,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( JSAccess.has(\"products.edit\") )) :  JSAccess.has(\"products.edit\")  })()}}",
+      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( \nJSAccess.has(\"products.edit\") )) :  \nJSAccess.has(\"products.edit\")  })()}}",
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,
@@ -1190,6 +1196,7 @@
       "label": "Edit",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ ProductForm.loadProductForEdit(null, currentRow.Code) }}\n\n",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",
@@ -1199,7 +1206,7 @@
       "width": 150
     },
     "customColumn2": {
-      "alias": "Delete",
+      "alias": "Print",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "borderRadius": "{{ProductsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
@@ -1215,20 +1222,21 @@
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
-      "iconName": "trash",
+      "iconName": "print",
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( JSAccess.has(\"products.delete\") )) :  JSAccess.has(\"products.delete\")  })()}}",
+      "isCellVisible": true,
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
       "isVisible": true,
-      "label": "Delete",
+      "label": "Print",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ ProductReportActions.openFromRow(currentRow) }}",
       "originalId": "customColumn2",
       "sticky": "",
       "textSize": "0.875rem",
