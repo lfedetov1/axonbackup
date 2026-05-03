@@ -42,7 +42,7 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 5,
+  "rightColumn": 4,
   "text": "Dashboard",
   "topRow": 0,
   "type": "BUTTON_WIDGET",

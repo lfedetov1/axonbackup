@@ -14,30 +14,24 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicPropertyPathList": [],
-  "dynamicTriggerPathList": [
-    {
-      "key": "onClick"
-    }
-  ],
+  "dynamicTriggerPathList": [],
   "iconAlign": "left",
-  "iconName": "user",
+  "iconName": "notifications",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
   "isVisible": true,
-  "key": "m7sc6r0t8m",
-  "leftColumn": 58,
+  "key": "97fwhq2htc",
+  "leftColumn": 56,
   "minWidth": 120,
-  "mobileBottomRow": 31,
-  "mobileLeftColumn": 17,
-  "mobileRightColumn": 33,
-  "mobileTopRow": 27,
+  "mobileBottomRow": 45,
+  "mobileLeftColumn": 7,
+  "mobileRightColumn": 23,
+  "mobileTopRow": 41,
   "needsErrorInfo": false,
-  "onClick": "{{showModal(Warehouse.name);}}",
   "originalBottomRow": 45,
   "originalTopRow": 41,
-  "parentColumnSpace": 14.234375,
+  "parentColumnSpace": 30.5625,
   "parentId": "0xu08jazzl",
   "parentRowSpace": 10,
   "placement": "CENTER",
@@ -45,11 +39,11 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 60,
+  "rightColumn": 58,
   "text": "",
   "topRow": 0,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "bphhpu1i34",
-  "widgetName": "Button2Copy"
+  "widgetId": "zbosk64nr6",
+  "widgetName": "Button5"
 }
