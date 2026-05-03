@@ -43,7 +43,9 @@ VALUES (
     {{ProductCountryOfOriginSelect.selectedOptionValue || null}},
     {{ProductCustomsDescriptionInput.text || null}},
     {{ProductIntrastatCodeInput.text || null}},
-    {{ProductTypeSelect.selectedOptionValue || 'GOODS'}},
+    {{ProductTypeSelect.selectedOptionValue === "SERVICE"
+    ? 0
+    : (ProductTrackStockSwitch.isSwitchedOn ? 1 : 0)}},
     {{ProductTypeSelect.selectedOptionValue === 'SERVICE' ? 0 : (ProductTrackStockSwitch.isSwitchedOn ? 1 : 0)}},
     {{ProductUsedItemSwitch.isSwitchedOn ? 1 : 0}},
     {{ProductSerialRequiredSwitch.isSwitchedOn ? 1 : 0}},

@@ -1,0 +1,4 @@
+UPDATE products
+SET is_active = 0
+WHERE id = {{this.params.productId}}
+  AND company_id = {{appsmith.store.companyId}};

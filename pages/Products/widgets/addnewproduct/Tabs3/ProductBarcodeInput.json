@@ -12,13 +12,28 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onSubmit"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onSubmit"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": false,
+  "isDisabled": "{{ ProductDuplicateGuard.hasDuplicate() }}",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
@@ -38,6 +53,9 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
+  "onSubmit": "{{ ProductDuplicateGuard.check() }}\n",
+  "originalBottomRow": 39,
+  "originalTopRow": 32,
   "parentColumnSpace": 12.3470947265625,
   "parentId": "q9ys9izwwe",
   "parentRowSpace": 10,

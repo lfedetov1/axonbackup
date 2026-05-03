@@ -112,7 +112,10 @@ export default {
     }
 
     try {
-      const result = await GetProductByBarcode.run({ lookup });
+const result = await GetProductByBarcode.run({
+  lookup: BarcodeInput.text?.trim() || ""
+});
+
       const product = result?.[0] || GetProductByBarcode.data?.[0];
 
       if (!product) {

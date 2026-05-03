@@ -15,10 +15,28 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onSubmit"
+    },
+    {
+      "key": "onTextChanged"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onSubmit"
+    },
+    {
+      "key": "onTextChanged"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": false,
+  "isDisabled": "",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
@@ -38,6 +56,8 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onSubmit": "",
+  "onTextChanged": "{{ ProductDuplicateGuard.check() }}\n",
   "parentColumnSpace": 9.456738281249999,
   "parentId": "q9ys9izwwe",
   "parentRowSpace": 10,

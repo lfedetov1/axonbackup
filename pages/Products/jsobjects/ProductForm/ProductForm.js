@@ -1,4 +1,6 @@
 export default {
+
+
   normRows() {
     return appsmith.store.productNormItems || [];
   },
@@ -299,8 +301,19 @@ export default {
       norm_item_count: ProductHasNormSwitch.isSwitchedOn ? this.normRows().length : 0
     };
   },
+	
+	async closeProductModal() {
+  await ProductDuplicateGuard.clear();
+  resetWidget("addnewproduct", true);
+  closeModal("addnewproduct");
+}, 
 
   async save() {
+		const canSave = await ProductDuplicateGuard.check();
+
+  if (!canSave) {
+    return;
+  }
     if (!ProductCodeInput.text) {
       showAlert("Product code is required.", "warning");
       return;

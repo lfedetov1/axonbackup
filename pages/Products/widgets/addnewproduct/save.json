@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 57,
+  "bottomRow": 68,
   "boxShadow": "none",
   "buttonColor": "#a16207",
   "buttonStyle": "PRIMARY_BUTTON",
@@ -10,11 +10,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -25,7 +31,7 @@
   "iconAlign": "left",
   "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ ProductDuplicateGuard.hasDuplicate() }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "dbmmx2she6",
@@ -37,8 +43,8 @@
   "mobileTopRow": 18,
   "needsErrorInfo": false,
   "onClick": "{{ ProductForm.save() }}",
-  "originalBottomRow": 57,
-  "originalTopRow": 53,
+  "originalBottomRow": 68,
+  "originalTopRow": 64,
   "parentId": "dssm9fgrap",
   "placement": "CENTER",
   "recaptchaType": "V3",
@@ -47,7 +53,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 63,
   "text": "Save",
-  "topRow": 53,
+  "topRow": 64,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "sg3c97jlh3",

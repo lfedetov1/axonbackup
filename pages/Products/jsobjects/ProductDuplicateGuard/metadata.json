@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_fa16b2a9-1b55-4976-bb02-0c2ebe87daa9",
+  "id": "Products_ProductDuplicateGuard",
+  "unpublishedCollection": {
+    "name": "ProductDuplicateGuard",
+    "pageId": "Products",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

@@ -20,9 +20,16 @@
   "dynamicPropertyPathList": [
     {
       "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
   "isDisabled": false,
   "isFilterable": true,
   "isLoading": false,
@@ -43,8 +50,11 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
+  "onOptionChange": "{{\n  (() => {\n    if (ProductTypeSelect.selectedOptionValue === \"SERVICE\") {\n      ProductTrackStockSwitch.setValue(false);\n    }\n  })()\n}}\n",
   "optionLabel": "value",
   "optionValue": "value",
+  "originalBottomRow": 39,
+  "originalTopRow": 32,
   "parentColumnSpace": 12.3470947265625,
   "parentId": "q9ys9izwwe",
   "parentRowSpace": 10,
@@ -53,7 +63,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 63,
   "serverSideFiltering": false,
-  "sourceData": "{{\n  [\n    { label: \"Goods\", value: \"GOODS\" },\n    { label: \"Service\", value: \"SERVICE\" }\n  ]\n}}",
+  "sourceData": "{{\n  [\n    { label: \"Goods\", value: \"GOODS\" },\n    { label: \"Service\", value: \"SERVICE\" }\n  ]\n}}\n",
   "topRow": 32,
   "type": "SELECT_WIDGET",
   "version": 1,

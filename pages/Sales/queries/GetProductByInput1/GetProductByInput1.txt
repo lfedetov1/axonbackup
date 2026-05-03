@@ -7,7 +7,15 @@ SELECT
     COALESCE(NULLIF(p.description, ''), p.name) AS description,
     p.product_type AS productType,
     p.track_stock AS trackStock,
-    0 AS availableStock,
+    COALESCE((
+        SELECT SUM(ib.quantity_balance)
+        FROM v_inventory_balance ib
+        WHERE ib.product_id = p.id
+          AND (
+            {{ appsmith.store.warehouseId || 0 }} = 0
+            OR ib.warehouse_id = {{ appsmith.store.warehouseId || 0 }}
+          )
+    ), 0) AS availableStock,
     uom.id AS unitId,
     uom.short_name AS unitName,
     tr.id AS taxRateId,

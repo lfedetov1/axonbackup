@@ -1,0 +1,40 @@
+SELECT *
+FROM (
+  SELECT
+    'code' AS duplicateField,
+    id,
+    code,
+    barcode,
+    sku,
+    name
+  FROM products
+  WHERE {{String(ProductCodeInput.text || "").trim() ? 1 : 0}} = 1
+    AND TRIM(code) = {{String(ProductCodeInput.text || "").trim()}}
+
+  UNION ALL
+
+  SELECT
+    'barcode' AS duplicateField,
+    id,
+    code,
+    barcode,
+    sku,
+    name
+  FROM products
+  WHERE {{String(ProductBarcodeInput.text || "").trim() ? 1 : 0}} = 1
+    AND TRIM(barcode) = {{String(ProductBarcodeInput.text || "").trim()}}
+
+  UNION ALL
+
+  SELECT
+    'sku' AS duplicateField,
+    id,
+    code,
+    barcode,
+    sku,
+    name
+  FROM products
+  WHERE {{String(ProductSkuInput.text || "").trim() ? 1 : 0}} = 1
+    AND TRIM(sku) = {{String(ProductSkuInput.text || "").trim()}}
+) duplicates
+LIMIT 1;

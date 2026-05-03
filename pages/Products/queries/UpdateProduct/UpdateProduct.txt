@@ -10,7 +10,9 @@ SET
   barcode = {{ ProductBarcodeInput.text || null }},
   sku = {{ ProductSkuInput.text || null }},
   product_type = {{ ProductTypeSelect.selectedOptionValue || 'GOODS' }},
-  track_stock = {{ ProductTrackStockSwitch.isSwitchedOn ? 1 : 0 }},
+  track_stock = {{ ProductTypeSelect.selectedOptionValue === "SERVICE"
+    ? 0
+    : (ProductTrackStockSwitch.isSwitchedOn ? 1 : 0) }},
   is_used_item = {{ ProductUsedItemSwitch.isSwitchedOn ? 1 : 0 }},
   serial_number_required = {{ ProductSerialRequiredSwitch.isSwitchedOn ? 1 : 0 }},
   minimum_stock = {{ ProductMinimumStockInput.text || 0 }},
