@@ -1,0 +1,26 @@
+SELECT
+  d.id AS document_id,
+  d.document_number AS invoice_number,
+  d.document_date AS invoice_date,
+  d.due_date,
+  bp.name AS customer,
+  w.code AS warehouse_code,
+  w.name AS warehouse_name,
+  d.status,
+  d.posting_status,
+  d.payment_method,
+  d.total_amount,
+  d.paid_amount,
+  d.total_amount - d.paid_amount AS open_amount
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.company_id = {{ appsmith.store.companyId }}
+  AND (
+    {{ appsmith.store.warehouseId || 0 }} = 0
+    OR d.warehouse_id = {{ appsmith.store.warehouseId || 0 }}
+  )
+  AND d.document_type = 'SALES_INVOICE'
+  AND d.status <> 'CANCELLED'
+ORDER BY d.document_date DESC, d.id DESC
+LIMIT 10;

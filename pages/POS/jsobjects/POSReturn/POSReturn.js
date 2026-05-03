@@ -330,6 +330,44 @@ export default {
         managerUserId
       });
 
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: returnDocumentId,
+        actionType: "INSERT",
+        newValues: {
+          source: "POS Return",
+          document_type: "SALES_RETURN",
+          source_document_id: sourceDocumentId,
+          manager_user_id: managerUserId,
+          return_reason_id: ReturnReasonSelect.selectedOptionValue,
+          payment_method: ReturnPaymentMethodSelect.selectedOptionValue,
+          card_type: ReturnPaymentMethodSelect.selectedOptionValue === "CARD"
+            ? ReturnCardTypeSelect.selectedOptionValue
+            : null,
+          subtotal_amount: totals.subtotal,
+          tax_amount: totals.tax,
+          discount_amount: totals.discount,
+          total_amount: totals.total,
+          item_count: rows.length
+        }
+      });
+
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: sourceDocumentId,
+        actionType: "POST",
+        newValues: {
+          source: "POS Return",
+          return_document_id: returnDocumentId,
+          manager_user_id: managerUserId,
+          note: "POS return created and approved"
+        }
+      });
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
+
       await this.clearReturnForm();
 
       showAlert("Return was saved successfully.", "success");

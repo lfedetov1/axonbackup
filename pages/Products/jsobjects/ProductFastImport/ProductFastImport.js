@@ -82,6 +82,25 @@ export default {
         const productRows = await FastImportFindProductByCode.run({ code });
         const product = productRows?.[0] || FastImportFindProductByCode.data?.[0];
 
+        await AuditLog.insert({
+          entityName: "products",
+          entityId: String(product?.productId || code),
+          actionType: "UPDATE",
+          newValues: {
+            source: "Product fast import",
+            product_id: product?.productId || null,
+            code,
+            name,
+            unit,
+            category: this.cleanText(row.category),
+            tax_rate: this.cleanText(row.tax_rate),
+            country_of_origin: this.cleanText(row.country_of_origin),
+            product_type: this.cleanText(row.product_type || "GOODS").toUpperCase(),
+            track_stock: row.track_stock === "" || row.track_stock === undefined ? 1 : Number(row.track_stock),
+            is_active: row.is_active === "" || row.is_active === undefined ? 1 : Number(row.is_active)
+          }
+        });
+
         importedRows += 1;
         resultRows.push({
           ...row,
@@ -103,6 +122,10 @@ export default {
 
     if (typeof SearchProducts !== "undefined") {
       await SearchProducts.run();
+    }
+
+    if (typeof InsertAuditLog !== "undefined") {
+      await InsertAuditLog.run();
     }
 
     showAlert(

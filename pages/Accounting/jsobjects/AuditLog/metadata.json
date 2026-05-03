@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_afe3f8c0-face-4806-8937-c83b948e44fc",
+  "id": "Accounting_AuditLog",
+  "unpublishedCollection": {
+    "name": "AuditLog",
+    "pageId": "Accounting",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

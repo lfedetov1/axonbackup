@@ -47,10 +47,13 @@ export default {
         await InsertProductPurchasePrice.run({ productId });
       }
 
+      let productNormId = null;
+      const rows = this.normRows();
+
       if (ProductHasNormSwitch.isSwitchedOn) {
         const normResponse = await InsertProductNorm.run({ productId });
 
-        const productNormId =
+        productNormId =
           normResponse?.insertId ||
           normResponse?.[0]?.insertId ||
           InsertProductNorm.data?.insertId ||
@@ -61,8 +64,6 @@ export default {
           console.log(normResponse);
           return;
         }
-
-        const rows = this.normRows();
 
         for (let i = 0; i < rows.length; i += 1) {
           await InsertProductNormItem.run({
@@ -77,10 +78,58 @@ export default {
         }
       }
 
+      await AuditLog.insert({
+        entityName: "products",
+        entityId: productId,
+        actionType: "INSERT",
+        newValues: {
+          source: "Product form",
+          code: ProductCodeInput.text,
+          name: ProductNameInput.text,
+          unit_id: ProductUnitSelect.selectedOptionValue,
+          category_id: typeof ProductCategorySelect !== "undefined"
+            ? ProductCategorySelect.selectedOptionValue
+            : null,
+          tax_rate_id: typeof ProductTaxRateSelect !== "undefined"
+            ? ProductTaxRateSelect.selectedOptionValue
+            : null,
+          product_type: typeof ProductTypeSelect !== "undefined"
+            ? ProductTypeSelect.selectedOptionValue
+            : null,
+          track_stock: typeof ProductTrackStockSwitch !== "undefined"
+            ? ProductTrackStockSwitch.isSwitchedOn
+            : null,
+          sale_price: ProductSalePriceInput.text,
+          purchase_price: ProductPurchasePriceInput.text,
+          has_norm: ProductHasNormSwitch.isSwitchedOn,
+          norm_id: productNormId,
+          norm_item_count: ProductHasNormSwitch.isSwitchedOn ? rows.length : 0
+        }
+      });
+
+      if (productNormId) {
+        await AuditLog.insert({
+          entityName: "product_norms",
+          entityId: productNormId,
+          actionType: "INSERT",
+          newValues: {
+            source: "Product form",
+            product_id: productId,
+            product_code: ProductCodeInput.text,
+            product_name: ProductNameInput.text,
+            norm_item_count: rows.length
+          }
+        });
+      }
+
       await storeValue("productNormItems", []);
 
       if (typeof SearchProducts !== "undefined") {
         await SearchProducts.run();
+      }
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
       }
 
       closeModal(addnewproduct.name);

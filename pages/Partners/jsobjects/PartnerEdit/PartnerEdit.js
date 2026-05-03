@@ -7,6 +7,33 @@ export default {
     return this.isEditMode() ? "Update Partner" : "Save Partner";
   },
 
+  getPartnerAuditValues() {
+    return {
+      partner_type: typeof PartnerTypeSelect !== "undefined"
+        ? PartnerTypeSelect.selectedOptionValue
+        : null,
+      code: PartnerCodeInput.text,
+      name: PartnerNameInput.text,
+      legal_name: LegalNameInput.text,
+      oib: OIBInput.text,
+      registration_number: RegistrationNumberInput.text,
+      contact_person: typeof ContactPersonInput !== "undefined"
+        ? ContactPersonInput.text
+        : null,
+      email: Email.text,
+      phone: Phone.text,
+      address_line1: AddressInput.text,
+      postal_code: PostalCodeInput.text,
+      city: CityInput.text,
+      country_code: typeof CountryCodeSelect !== "undefined"
+        ? (CountryCodeSelect.selectedOptionValue || CountryCodeSelect.text || "HR")
+        : "HR",
+      payment_term_days: PaymentTermDaysInput.text,
+      credit_limit: PaymentTermDays.text,
+      note: Note.text
+    };
+  },
+
   async loadPartnerForEdit(partnerId) {
     if (!partnerId) {
       showAlert("Select partner first.", "warning");
@@ -23,6 +50,7 @@ export default {
       }
 
       await storeValue("currentPartnerId", partner.partnerId);
+      await storeValue("partnerBeforeEdit", partner);
 
       if (typeof PartnerTypeSelect !== "undefined") {
         PartnerTypeSelect.setSelectedOption(partner.partnerType || "BOTH");
@@ -45,7 +73,7 @@ export default {
       CityInput.setValue(partner.city || "");
 
       if (typeof CountryCodeSelect !== "undefined") {
-        CountryCodeSelect.text(partner.countryCode || "HR");
+        CountryCodeSelect.setSelectedOption(partner.countryCode || "HR");
       }
 
       PaymentTermDaysInput.setValue(String(partner.paymentTermDays || 0));
@@ -61,6 +89,7 @@ export default {
 
   async startNewPartner() {
     await storeValue("currentPartnerId", null);
+    await storeValue("partnerBeforeEdit", null);
 
     if (typeof PartnerTypeSelect !== "undefined") {
       PartnerTypeSelect.setSelectedOption("BOTH");
@@ -100,15 +129,55 @@ export default {
     }
 
     try {
+      const auditValues = this.getPartnerAuditValues();
+
       if (this.isEditMode()) {
+        const partnerId = appsmith.store.currentPartnerId;
+
         await UpdatePartner.run();
+
+        await AuditLog.insert({
+          entityName: "business_partners",
+          entityId: partnerId,
+          actionType: "UPDATE",
+          oldValues: appsmith.store.partnerBeforeEdit || null,
+          newValues: auditValues
+        });
+
         showAlert("Partner was updated successfully.", "success");
       } else {
-        await InsertPartner.run();
+        const result = await InsertPartner.run();
+
+        const partnerId =
+          result?.insertId ||
+          result?.[0]?.insertId ||
+          result?.[1]?.[0]?.partnerId ||
+          InsertPartner.data?.insertId ||
+          InsertPartner.data?.[0]?.insertId ||
+          InsertPartner.data?.[1]?.[0]?.partnerId ||
+          PartnerCodeInput.text;
+
+        await AuditLog.insert({
+          entityName: "business_partners",
+          entityId: partnerId,
+          actionType: "INSERT",
+          newValues: auditValues
+        });
+
+        await storeValue("currentPartnerId", partnerId);
+
         showAlert("Partner was saved successfully.", "success");
       }
 
-      await SearchPartners.run();
+      await storeValue("partnerBeforeEdit", null);
+
+      if (typeof SearchPartners !== "undefined") {
+        await SearchPartners.run();
+      }
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
     } catch (error) {
       showAlert("Error while saving partner: " + error.message, "error");
       console.log(error);

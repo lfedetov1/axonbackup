@@ -1,0 +1,31 @@
+SELECT
+  p.id AS product_id,
+  p.code AS product_code,
+  p.name AS product_name,
+  w.id AS warehouse_id,
+  w.code AS warehouse_code,
+  w.name AS warehouse_name,
+  COALESCE(ib.quantity_balance, 0) AS current_stock,
+  p.minimum_stock,
+  p.reorder_level,
+  GREATEST(p.minimum_stock - COALESCE(ib.quantity_balance, 0), 0) AS missing_quantity,
+  p.purchase_price,
+  GREATEST(p.minimum_stock - COALESCE(ib.quantity_balance, 0), 0) * p.purchase_price AS estimated_restock_value
+FROM products p
+JOIN warehouses w
+  ON w.company_id = p.company_id
+LEFT JOIN v_inventory_balance ib
+  ON ib.product_id = p.id
+ AND ib.warehouse_id = w.id
+ AND ib.company_id = p.company_id
+WHERE p.company_id = {{ appsmith.store.companyId }}
+  AND (
+    {{ appsmith.store.warehouseId || 0 }} = 0
+    OR w.id = {{ appsmith.store.warehouseId || 0 }}
+  )
+  AND p.is_active = 1
+  AND p.track_stock = 1
+  AND w.is_active = 1
+  AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock
+ORDER BY missing_quantity DESC, estimated_restock_value DESC
+LIMIT 10;

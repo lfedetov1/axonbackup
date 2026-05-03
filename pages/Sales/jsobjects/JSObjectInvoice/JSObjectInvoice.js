@@ -58,7 +58,6 @@ export default {
 
     await storeValue("invoiceItems", renumbered.length ? renumbered : [this.emptyRow(1)]);
   },
-	
 
   recalculateRow(row, discountMode = "percent") {
     const quantity = Number(row.quantity || 0);
@@ -109,62 +108,83 @@ export default {
 
     await storeValue("invoiceItems", rows);
   },
-async voidInvoiceWithCreditNote(invoiceId) {
-  if (!invoiceId) {
-    showAlert("Invoice ID is missing.", "warning");
-    return;
-  }
 
-  try {
-    await CancelInvoiceForVoid.run({ invoiceId });
-
-    const creditNoteResponse = await CreateCreditNoteFromInvoice.run({ invoiceId });
-
-    const creditNoteId =
-      creditNoteResponse?.[1]?.[0]?.creditNoteId ||
-      creditNoteResponse?.[0]?.creditNoteId ||
-      CreateCreditNoteFromInvoice.data?.[1]?.[0]?.creditNoteId ||
-      CreateCreditNoteFromInvoice.data?.[0]?.creditNoteId;
-
-    if (!creditNoteId) {
-      showAlert("Credit note was not created.", "error");
+  async voidInvoiceWithCreditNote(invoiceId) {
+    if (!invoiceId) {
+      showAlert("Invoice ID is missing.", "warning");
       return;
     }
 
-    await CreateCreditNoteItemsFromInvoi.run({
-      invoiceId,
-      creditNoteId
-    });
+    try {
+      await CancelInvoiceForVoid.run({ invoiceId });
 
-    if (typeof InsertInvoiceVoidLog !== "undefined") {
-      await InsertInvoiceVoidLog.run({
-        documentId: invoiceId,
-        documentType: "SALES_INVOICE",
-        oldValue: "POSTED",
-        newValue: "CANCELLED",
-        note: "Invoice voided and credit note created"
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: invoiceId,
+        actionType: "UPDATE",
+        oldValues: {
+          document_type: "SALES_INVOICE",
+          status: "POSTED"
+        },
+        newValues: {
+          document_type: "SALES_INVOICE",
+          status: "CANCELLED",
+          note: "Invoice voided"
+        }
       });
 
-      await InsertInvoiceVoidLog.run({
-        documentId: creditNoteId,
-        documentType: "CREDIT_NOTE",
-        oldValue: null,
-        newValue: "DRAFT",
-        note: "Credit note created from voided invoice"
+      const creditNoteResponse = await CreateCreditNoteFromInvoice.run({ invoiceId });
+
+      const creditNoteId =
+        creditNoteResponse?.[1]?.[0]?.creditNoteId ||
+        creditNoteResponse?.[0]?.creditNoteId ||
+        CreateCreditNoteFromInvoice.data?.[1]?.[0]?.creditNoteId ||
+        CreateCreditNoteFromInvoice.data?.[0]?.creditNoteId;
+
+      if (!creditNoteId) {
+        showAlert("Credit note was not created.", "error");
+        return;
+      }
+
+      await CreateCreditNoteItemsFromInvoi.run({
+        invoiceId,
+        creditNoteId
       });
-    }
 
-    if (typeof GetInvoices !== "undefined") {
-      await GetInvoices.run();
-    }
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: creditNoteId,
+        actionType: "INSERT",
+        newValues: {
+          document_type: "CREDIT_NOTE",
+          source_document_id: invoiceId,
+          status: "DRAFT",
+          note: "Credit note created from voided invoice"
+        }
+      });
 
-    showAlert("Invoice voided and credit note created.", "success");
-  } catch (error) {
-    showAlert("Error while voiding invoice: " + error.message, "error");
-    console.log(error);
+await AuditLog1.insert({
+  entityName: "documents",
+  entityId: invoiceId,
+  actionType: "POST",
+  newValues: {
+    document_type: "SALES_INVOICE",
+    source_credit_note_id: creditNoteId,
+    note: "Invoice voided and credit note created"
   }
-},
+});
 
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
+
+      showAlert("Invoice voided and credit note created.", "success");
+    } catch (error) {
+      showAlert("Error while voiding invoice: " + error.message, "error");
+      console.log(error);
+    }
+  },
 
   async updateProductLookup(rowIndex, value) {
     const rows = [...(appsmith.store.invoiceItems || [])];
@@ -237,7 +257,8 @@ async voidInvoiceWithCreditNote(invoiceId) {
 
     await storeValue("invoiceItems", rows);
   },
-	 async loadQuotationItemsForEdit() {
+
+  async loadQuotationItemsForEdit() {
     const items = GetQuotationItemsForEdit.data || [];
 
     if (!items.length) {

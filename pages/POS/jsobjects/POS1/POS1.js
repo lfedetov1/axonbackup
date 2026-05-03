@@ -305,6 +305,42 @@ export default {
         );
       }
 
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: invoiceId,
+        actionType: "INSERT",
+        newValues: {
+          source: "POS",
+          document_type: "POS_SALE",
+          payment_method: paymentMethod,
+          card_type: cardType,
+          subtotal_amount: totals.subtotal,
+          tax_amount: totals.tax,
+          discount_amount: totals.discount,
+          total_amount: totals.total,
+          item_count: recalculatedRows.length,
+          warehouse_id: appsmith.store.warehouseId || null
+        }
+      });
+
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: invoiceId,
+        actionType: "POST",
+        newValues: {
+          source: "POS",
+          document_type: "POS_SALE",
+          posting_status: "POSTED",
+          payment_method: paymentMethod,
+          total_amount: totals.total,
+          note: "POS payment completed and stock movement created"
+        }
+      });
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
+
       await POSReceiptPrint.open(invoiceId);
       await this.clearPOS();
       showAlert(paymentMethod + " payment saved successfully.", "success");

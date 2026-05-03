@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    bp.id,\n    CONCAT(bp.code, ' - ', bp.name) AS label\nFROM business_partners bp\nWHERE bp.company_id = {{ appsmith.store.companyId}}\n  AND bp.is_active = 1\n  AND bp.partner_type IN ('CUSTOMER', 'BOTH')\nORDER BY bp.name;",
+      "body": "SELECT\n  id,\n  company_id,\n  code,\n  name,\n  partner_type,\n  is_active\nFROM business_partners\nORDER BY id DESC\nLIMIT 10;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,11 +22,7 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "dynamicBindingPathList": [
-      {
-        "key": "body"
-      }
-    ],
+    "dynamicBindingPathList": [],
     "name": "Getpartner",
     "pageId": "Sales",
     "runBehaviour": "AUTOMATIC",

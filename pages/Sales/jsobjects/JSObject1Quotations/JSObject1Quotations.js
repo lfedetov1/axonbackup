@@ -108,7 +108,6 @@ export default {
     if (rowIndex < 0 || rowIndex >= rows.length) return;
 
     rows.splice(rowIndex, 1);
-
     await storeValue("quotationItems", rows.length ? rows : [this.emptyRow()]);
   },
 
@@ -206,15 +205,15 @@ export default {
 
     await GetNewQuotationNumber.run();
 
-    if (typeof QuotationNumberInput !== "undefined") {
+    if (typeof Quotations_no !== "undefined") {
       Quotations_no.setValue(GetNewQuotationNumber.data?.[0]?.document_number || "");
     }
 
-    if (typeof QuotationDateInput !== "undefined") {
+    if (typeof InoiceDateInput1 !== "undefined") {
       InoiceDateInput1.setValue(new Date().toISOString().slice(0, 10));
     }
 
-    if (typeof duedate1 !== "undefined") {
+    if (typeof dutedate1 !== "undefined") {
       dutedate1.setValue("");
     }
 
@@ -222,7 +221,7 @@ export default {
       QuotationValidUntilInput.setValue("");
     }
 
-    if (typeof QuotationPartnerSelect !== "undefined") {
+    if (typeof SelectPartner1 !== "undefined") {
       SelectPartner1.setSelectedOption("");
     }
 
@@ -238,15 +237,15 @@ export default {
       QuotationCurrencySelect.setSelectedOption("EUR");
     }
 
-    if (typeof QuotationCustomerReferenceInput !== "undefined") {
+    if (typeof QuotationCustomerReferenceInpu !== "undefined") {
       QuotationCustomerReferenceInpu.setValue("");
     }
 
-    if (typeof QuotationInternalReferenceInput !== "undefined") {
+    if (typeof QuotationInternalReferenceInpu !== "undefined") {
       QuotationInternalReferenceInpu.setValue("");
     }
 
-    if (typeof QuotationNoteInput !== "undefined") {
+    if (typeof InvoiceNoteInput1 !== "undefined") {
       InvoiceNoteInput1.setValue("");
     }
   },
@@ -300,15 +299,15 @@ export default {
       await storeValue("quotationEditMode", true);
       await storeValue("quotationItems", items.length ? items : [this.emptyRow()]);
 
-      if (typeof QuotationNumberInput !== "undefined") {
+      if (typeof Quotations_no !== "undefined") {
         Quotations_no.setValue(header.documentNumber || "");
       }
 
-      if (typeof QuotationDateInput !== "undefined") {
+      if (typeof InoiceDateInput1 !== "undefined") {
         InoiceDateInput1.setValue(header.documentDate || "");
       }
 
-      if (typeof duedate1 !== "undefined") {
+      if (typeof dutedate1 !== "undefined") {
         dutedate1.setValue(header.dueDate || "");
       }
 
@@ -316,7 +315,7 @@ export default {
         QuotationValidUntilInput.setValue(header.validUntil || "");
       }
 
-      if (typeof QuotationPartnerSelect !== "undefined") {
+      if (typeof SelectPartner !== "undefined") {
         SelectPartner.setSelectedOption(String(header.partnerId || ""));
       }
 
@@ -332,15 +331,15 @@ export default {
         QuotationCurrencySelect.setSelectedOption(header.currencyCode || "EUR");
       }
 
-      if (typeof QuotationCustomerReferenceInput !== "undefined") {
+      if (typeof QuotationCustomerReferenceInpu !== "undefined") {
         QuotationCustomerReferenceInpu.setValue(header.customerReference || "");
       }
 
-      if (typeof QuotationInternalReferenceInput !== "undefined") {
+      if (typeof QuotationInternalReferenceInpu !== "undefined") {
         QuotationInternalReferenceInpu.setValue(header.internalReference || "");
       }
 
-      if (typeof QuotationNoteInput !== "undefined") {
+      if (typeof InvoiceNoteInput1 !== "undefined") {
         InvoiceNoteInput1.setValue(header.note || "");
       }
 
@@ -350,48 +349,69 @@ export default {
       console.log(error);
     }
   },
-	
-	async confirmConvertQuoteToInvoice() {
-  const quotationId = appsmith.store.pendingQuotationId;
 
-  if (!quotationId) {
-    showAlert("Quotation ID is missing.", "warning");
-    return;
-  }
+  async confirmConvertQuoteToInvoice() {
+    const quotationId = appsmith.store.pendingQuotationId;
 
-  try {
-    const result = await ConvertQuoteToInvoice.run({ quotationId });
-    const newInvoiceId =
-      result?.[0]?.newInvoiceId ||
-      result?.[1]?.[0]?.newInvoiceId ||
-      ConvertQuoteToInvoice.data?.[0]?.newInvoiceId ||
-      ConvertQuoteToInvoice.data?.[1]?.[0]?.newInvoiceId;
+    if (!quotationId) {
+      showAlert("Quotation ID is missing.", "warning");
+      return;
+    }
 
-    if (typeof InsertQuotationChangeLog !== "undefined") {
-      await InsertQuotationChangeLog.run({
-        quotationId,
-        changeType: "UPDATE",
-        note: "Quotation converted to invoice"
+    try {
+      const result = await ConvertQuoteToInvoice.run({ quotationId });
+
+      const newInvoiceId =
+        result?.[0]?.newInvoiceId ||
+        result?.[1]?.[0]?.newInvoiceId ||
+        ConvertQuoteToInvoice.data?.[0]?.newInvoiceId ||
+        ConvertQuoteToInvoice.data?.[1]?.[0]?.newInvoiceId;
+
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: quotationId,
+        actionType: "POST",
+        newValues: {
+          document_type: "QUOTE",
+          converted_to: "SALES_INVOICE",
+          new_invoice_id: newInvoiceId || null,
+          note: "Quotation converted to invoice"
+        }
       });
+
+      if (newInvoiceId) {
+        await AuditLog1.insert({
+          entityName: "documents",
+          entityId: newInvoiceId,
+          actionType: "INSERT",
+          newValues: {
+            document_type: "SALES_INVOICE",
+            source_document_id: quotationId,
+            note: "Invoice created from quotation"
+          }
+        });
+      }
+
+      if (typeof InsertQuotationChangeLog !== "undefined") {
+        await InsertQuotationChangeLog.run({
+          quotationId,
+          changeType: "UPDATE",
+          note: "Quotation converted to invoice"
+        });
+      }
+
+      closeModal("ConfirmQuoteToInvoiceModal");
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
+
+      showAlert("Quotation converted to invoice successfully.", "success");
+    } catch (error) {
+      showAlert("Error while converting quotation: " + error.message, "error");
+      console.log(error);
     }
-
-    closeModal("ConfirmQuoteToInvoiceModal");
-
-    if (typeof GetQuotations !== "undefined") {
-      await GetQuotations.run();
-    }
-
-    if (typeof GetInvoices !== "undefined") {
-      await GetInvoices.run();
-    }
-
-    showAlert("Quotation converted to invoice successfully.", "success");
-  } catch (error) {
-    showAlert("Error while converting quotation: " + error.message, "error");
-    console.log(error);
-  }
-},
-
+  },
 
   async saveQuotationWithItems() {
     const rows = appsmith.store.quotationItems || [];
@@ -443,14 +463,31 @@ export default {
         });
       }
 
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: quotationId,
+        actionType: "INSERT",
+        newValues: {
+          document_type: "QUOTE",
+          document_number: Quotations_no.text,
+          partner_id: SelectPayment1.selectedOptionValue,
+          status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
+          total_amount: totals.total,
+          subtotal_amount: totals.subtotal,
+          tax_amount: totals.tax,
+          discount_amount: totals.discount,
+          item_count: recalculatedRows.length
+        }
+      });
+
       await storeValue("quotationEditMode", true);
       await storeValue("viewMode", "list");
 
-      showAlert("Quotation was saved successfully.", "success");
-
-      if (typeof GetQuotations !== "undefined") {
-        await GetQuotationForEdit.run();
+      if (typeof ActivityLogQuery !== "undefined") {
+        await InsertAuditLog.run();
       }
+
+      showAlert("Quotation was saved successfully.", "success");
 
       if (typeof QuotationPrintActions !== "undefined") {
         await QuotationPrintActions.openQuotePrint();
@@ -480,12 +517,14 @@ export default {
 
     try {
       await storeValue("quotationItems", recalculatedRows);
-			
-			await InsertQuotationChangeLog.run({
-  quotationId,
-  changeType: "UPDATE",
-  note: "Quotation header and items updated"
-   });
+
+      if (typeof InsertQuotationChangeLog !== "undefined") {
+        await InsertQuotationChangeLog.run({
+          quotationId,
+          changeType: "UPDATE",
+          note: "Quotation header and items updated"
+        });
+      }
 
       await UpdateQuotation.run({ totals, quotationId });
       await DeleteQuotationItems.run({ quotationId });
@@ -498,13 +537,31 @@ export default {
         });
       }
 
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: quotationId,
+        actionType: "UPDATE",
+        newValues: {
+          document_type: "QUOTE",
+          document_number: Quotations_no.text,
+          partner_id: SelectPayment1.selectedOptionValue,
+          status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
+          total_amount: totals.total,
+          subtotal_amount: totals.subtotal,
+          tax_amount: totals.tax,
+          discount_amount: totals.discount,
+          item_count: recalculatedRows.length,
+          note: "Quotation header and items updated"
+        }
+      });
+
       await storeValue("viewMode", "list");
 
-      showAlert("Quotation was updated successfully.", "success");
-
-      if (typeof GetQuotations !== "undefined") {
-        await GetQuotationForEdit.run();
+      if (typeof ActivityLogQuery !== "undefined") {
+        await InsertAuditLog.run();
       }
+
+      showAlert("Quotation was updated successfully.", "success");
 
       if (typeof QuotationPrintActions !== "undefined") {
         await QuotationPrintActions.openQuotePrint();

@@ -1,8 +1,10 @@
 SELECT
-    bp.id,
-    CONCAT(bp.code, ' - ', bp.name) AS label
-FROM business_partners bp
-WHERE bp.company_id = {{ appsmith.store.companyId}}
-  AND bp.is_active = 1
-  AND bp.partner_type IN ('CUSTOMER', 'BOTH')
-ORDER BY bp.name;
+  id,
+  company_id,
+  code,
+  name,
+  partner_type,
+  is_active
+FROM business_partners
+ORDER BY id DESC
+LIMIT 10;

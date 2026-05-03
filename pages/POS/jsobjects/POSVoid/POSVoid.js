@@ -49,39 +49,82 @@ export default {
       return;
     }
 
-    const movements = await ListVoidInvoiceStockMovements.run({
-      invoiceId: invoice.invoiceId
-    });
-
-    for (const movement of movements || []) {
-      await InsertVoidStockReversal.run({
-        invoiceId: invoice.invoiceId,
-        warehouseId: movement.warehouseId,
-        productId: movement.productId,
-        documentItemId: movement.documentItemId,
-        reverseMovementType: this.reverseMovementType(movement.movementType),
-        quantity: movement.quantity,
-        unitCost: movement.unitCost,
-        totalCost: movement.totalCost,
-        note: "POS VOID reversal for " + invoice.documentNumber
+    try {
+      const movements = await ListVoidInvoiceStockMovements.run({
+        invoiceId: invoice.invoiceId
       });
+
+      for (const movement of movements || []) {
+        await InsertVoidStockReversal.run({
+          invoiceId: invoice.invoiceId,
+          warehouseId: movement.warehouseId,
+          productId: movement.productId,
+          documentItemId: movement.documentItemId,
+          reverseMovementType: this.reverseMovementType(movement.movementType),
+          quantity: movement.quantity,
+          unitCost: movement.unitCost,
+          totalCost: movement.totalCost,
+          note: "POS VOID reversal for " + invoice.documentNumber
+        });
+      }
+
+      await VoidPosInvoice.run({
+        invoiceId: invoice.invoiceId
+      });
+
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: invoice.invoiceId,
+        actionType: "UPDATE",
+        oldValues: {
+          document_type: "POS_SALE",
+          document_number: invoice.documentNumber,
+          status: invoice.status,
+          posting_status: invoice.postingStatus || null
+        },
+        newValues: {
+          source: "POS Void",
+          document_type: "POS_SALE",
+          document_number: invoice.documentNumber,
+          status: "CANCELLED",
+          reason: typeof VoidReasonInput !== "undefined"
+            ? VoidReasonInput.text
+            : null,
+          reversed_stock_movements: (movements || []).length
+        }
+      });
+
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: invoice.invoiceId,
+        actionType: "POST",
+        newValues: {
+          source: "POS Void",
+          document_type: "POS_SALE",
+          document_number: invoice.documentNumber,
+          note: "POS invoice voided and stock restored"
+        }
+      });
+
+      if (typeof InsertAuditLog !== "undefined") {
+        await InsertAuditLog.run();
+      }
+
+      await storeValue("voidInvoiceFound", false);
+      await storeValue("voidInvoice", null);
+
+      VoidInvoiceNumberInput.setValue("");
+
+      if (typeof VoidReasonInput !== "undefined") {
+        VoidReasonInput.setValue("");
+      }
+
+      closeModal(VoidModal.name);
+
+      showAlert("POS invoice was voided and stock was restored.", "success");
+    } catch (error) {
+      showAlert("Error while voiding POS invoice: " + error.message, "error");
+      console.log(error);
     }
-
-    await VoidPosInvoice.run({
-      invoiceId: invoice.invoiceId
-    });
-
-    await storeValue("voidInvoiceFound", false);
-    await storeValue("voidInvoice", null);
-
-    VoidInvoiceNumberInput.setValue("");
-
-    if (typeof VoidReasonInput !== "undefined") {
-      VoidReasonInput.setValue("");
-    }
-
-    closeModal(Voidmodal.name);
-
-    showAlert("POS invoice was voided and stock was restored.", "success");
   }
 };

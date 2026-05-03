@@ -1,0 +1,32 @@
+SELECT
+  al.id AS log_id,
+  al.created_at,
+  DATE_FORMAT(al.created_at, '%d.%m.%Y %H:%i') AS created_at_label,
+  al.action_type,
+  al.entity_name,
+  al.entity_id,
+  COALESCE(u.username, 'System') AS user_name,
+  al.ip_address,
+  CASE
+    WHEN al.action_type = 'INSERT' THEN CONCAT(COALESCE(u.username, 'System'), ' created ', al.entity_name, ' #', al.entity_id)
+    WHEN al.action_type = 'UPDATE' THEN CONCAT(COALESCE(u.username, 'System'), ' updated ', al.entity_name, ' #', al.entity_id)
+    WHEN al.action_type = 'DELETE' THEN CONCAT(COALESCE(u.username, 'System'), ' deleted ', al.entity_name, ' #', al.entity_id)
+    WHEN al.action_type = 'LOGIN' THEN CONCAT(COALESCE(u.username, 'System'), ' signed in')
+    WHEN al.action_type = 'LOGOUT' THEN CONCAT(COALESCE(u.username, 'System'), ' signed out')
+    WHEN al.action_type = 'POST' THEN CONCAT(COALESCE(u.username, 'System'), ' posted ', al.entity_name, ' #', al.entity_id)
+    ELSE CONCAT(COALESCE(u.username, 'System'), ' performed ', al.action_type, ' on ', al.entity_name)
+  END AS activity_text
+FROM audit_logs al
+LEFT JOIN users u ON u.id = al.user_id
+WHERE al.company_id = {{ appsmith.store.companyId }}
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code = 'audit.view'
+  )
+ORDER BY al.created_at DESC
+LIMIT 20;

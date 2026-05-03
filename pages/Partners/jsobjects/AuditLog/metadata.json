@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_46262fcc-2984-4858-bc61-59d99d0b9297",
+  "id": "Partners_AuditLog",
+  "unpublishedCollection": {
+    "name": "AuditLog",
+    "pageId": "Partners",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}
