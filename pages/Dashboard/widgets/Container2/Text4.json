@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 9,
+  "bottomRow": 7,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -27,7 +27,7 @@
   "isLoading": false,
   "isVisible": true,
   "key": "9dk8m1258e",
-  "leftColumn": 26,
+  "leftColumn": 29,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
@@ -44,7 +44,7 @@
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 38,
+  "rightColumn": 46,
   "shouldTruncate": false,
   "text": "{{ \"📦 Warehouse: \" + (appsmith.store.warehouseName|| \"No warehouse\") }}",
   "textAlign": "LEFT",
