@@ -1,0 +1,188 @@
+SELECT
+  'CRITICAL' AS severity,
+  'Posting issue' AS title,
+  CONCAT(x.affected_count, ' documents are confirmed but not posted.') AS message,
+  x.affected_count,
+  'documents' AS source_table,
+  NULL AS source_view,
+  'posting_status' AS source_column,
+  'posting_issue' AS alert_type,
+  'Open documents' AS action_label,
+  'documents' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM documents
+  WHERE document_type IN ('SALES_INVOICE', 'POS_SALE', 'DELIVERY_NOTE', 'SALES_RETURN')
+    AND status = 'CONFIRMED'
+    AND posting_status IN ('NOT_POSTED', 'READY')
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code = 'sales.documents.post'
+  )
+
+UNION ALL
+
+SELECT
+  'WARNING' AS severity,
+  'Overdue unpaid invoices' AS title,
+  CONCAT(x.affected_count, ' overdue sales invoices are not fully paid.') AS message,
+  x.affected_count,
+  'documents' AS source_table,
+  'SalesInvoices' AS source_view,
+  'due_date / paid_amount / total_amount' AS source_column,
+  'overdue_unpaid_invoices' AS alert_type,
+  'Open sales invoices' AS action_label,
+  'SalesInvoices' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM documents
+  WHERE document_type = 'SALES_INVOICE'
+    AND status <> 'CANCELLED'
+    AND due_date < CURDATE()
+    AND total_amount > paid_amount
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code IN ('sales.invoices.view', 'finance.payments.view')
+  )
+
+UNION ALL
+
+SELECT
+  'WARNING' AS severity,
+  'Expired open quotes' AS title,
+  CONCAT(x.affected_count, ' quotations expired without being confirmed or cancelled.') AS message,
+  x.affected_count,
+  'documents' AS source_table,
+  'Quotations' AS source_view,
+  'valid_until / status' AS source_column,
+  'expired_open_quotes' AS alert_type,
+  'Open quotations' AS action_label,
+  'Quotations' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM documents
+  WHERE document_type = 'QUOTE'
+    AND status = 'DRAFT'
+    AND valid_until < CURDATE()
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code = 'sales.quotations.view'
+  )
+
+UNION ALL
+
+SELECT
+  'WARNING' AS severity,
+  'Old draft documents' AS title,
+  CONCAT(x.affected_count, ' draft sales documents are older than 7 days.') AS message,
+  x.affected_count,
+  'documents' AS source_table,
+  NULL AS source_view,
+  'document_date / status' AS source_column,
+  'old_draft_documents' AS alert_type,
+  'Review drafts' AS action_label,
+  'documents' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM documents
+  WHERE document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE')
+    AND status = 'DRAFT'
+    AND document_date < DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code = 'sales.documents.view'
+  )
+
+UNION ALL
+
+SELECT
+  'CRITICAL' AS severity,
+  'Business day not closed' AS title,
+  CONCAT(x.affected_count, ' active cash registers were not closed yesterday.') AS message,
+  x.affected_count,
+  'cash_registers / cash_register_closings' AS source_table,
+  'vw_cash_register_closings' AS source_view,
+  'closing_date / status' AS source_column,
+  'business_day_not_closed' AS alert_type,
+  'Close business day' AS action_label,
+  'cash_register_closings' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM cash_registers cr
+  WHERE cr.is_active = 1
+    AND NOT EXISTS (
+      SELECT 1
+      FROM cash_register_closings crc
+      WHERE crc.cash_register_id = cr.id
+        AND crc.closing_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+        AND crc.status = 'CLOSED'
+    )
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code = 'pos.close_day'
+  )
+
+UNION ALL
+
+SELECT
+  'WARNING' AS severity,
+  'Document total mismatch' AS title,
+  CONCAT(x.affected_count, ' documents have inconsistent totals.') AS message,
+  x.affected_count,
+  'documents' AS source_table,
+  NULL AS source_view,
+  'subtotal_amount / tax_amount / discount_amount / total_amount' AS source_column,
+  'document_total_mismatch' AS alert_type,
+  'Review documents' AS action_label,
+  'documents' AS action_target
+FROM (
+  SELECT COUNT(*) AS affected_count
+  FROM documents
+  WHERE status <> 'CANCELLED'
+    AND ABS(total_amount - (subtotal_amount + tax_amount - discount_amount)) > 0.02
+) x
+WHERE x.affected_count > 0
+  AND EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.user_id = {{ appsmith.store.userId }}
+      AND p.code IN ('sales.documents.view', 'sales.documents.edit')
+  );

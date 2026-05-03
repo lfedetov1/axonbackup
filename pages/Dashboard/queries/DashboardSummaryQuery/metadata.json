@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_304f98ac-8c78-4489-b8b0-27a8e864ada2",
+  "id": "Dashboard_DashboardSummaryQuery",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  COALESCE(today_revenue.today_revenue, 0) AS today_revenue,\n  COALESCE(today_revenue.today_paid, 0) AS today_paid,\n  COALESCE(today_revenue.today_document_count, 0) AS today_document_count,\n\n  COALESCE(open_invoices.open_invoice_count, 0) AS open_invoice_count,\n  COALESCE(open_invoices.open_invoice_amount, 0) AS open_invoice_amount,\n  COALESCE(open_invoices.overdue_invoice_amount, 0) AS overdue_invoice_amount,\n\n  COALESCE(low_stock.low_stock_count, 0) AS low_stock_count,\n  COALESCE(low_stock.estimated_restock_value, 0) AS estimated_restock_value,\n\n  COALESCE(alerts.active_alert_count, 0) AS active_alert_count\n\nFROM\n  (\n    SELECT\n      SUM(d.total_amount) AS today_revenue,\n      SUM(d.paid_amount) AS today_paid,\n      COUNT(d.id) AS today_document_count\n    FROM documents d\n    WHERE d.company_id = {{ appsmith.store.companyId }}\n      AND (\n        {{ appsmith.store.warehouseId || 0 }} = 0\n        OR d.warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n      )\n      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')\n      AND d.status <> 'CANCELLED'\n      AND d.document_date = CURDATE()\n  ) today_revenue\n\nCROSS JOIN\n  (\n    SELECT\n      COUNT(d.id) AS open_invoice_count,\n      SUM(d.total_amount - d.paid_amount) AS open_invoice_amount,\n      SUM(CASE WHEN d.due_date < CURDATE() THEN d.total_amount - d.paid_amount ELSE 0 END) AS overdue_invoice_amount\n    FROM documents d\n    WHERE d.company_id = {{ appsmith.store.companyId }}\n      AND (\n        {{ appsmith.store.warehouseId || 0 }} = 0\n        OR d.warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n      )\n      AND d.document_type = 'SALES_INVOICE'\n      AND d.status <> 'CANCELLED'\n      AND d.total_amount > d.paid_amount\n  ) open_invoices\n\nCROSS JOIN\n  (\n    SELECT\n      COUNT(*) AS low_stock_count,\n      SUM(GREATEST(p.minimum_stock - COALESCE(ib.quantity_balance, 0), 0) * p.purchase_price) AS estimated_restock_value\n    FROM products p\n    JOIN warehouses w\n      ON w.company_id = p.company_id\n    LEFT JOIN v_inventory_balance ib\n      ON ib.product_id = p.id\n     AND ib.warehouse_id = w.id\n     AND ib.company_id = p.company_id\n    WHERE p.company_id = {{ appsmith.store.companyId }}\n      AND (\n        {{ appsmith.store.warehouseId || 0 }} = 0\n        OR w.id = {{ appsmith.store.warehouseId || 0 }}\n      )\n      AND p.is_active = 1\n      AND p.track_stock = 1\n      AND w.is_active = 1\n      AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock\n  ) low_stock\n\nCROSS JOIN\n  (\n    SELECT COUNT(*) AS active_alert_count\n    FROM (\n      SELECT 1\n      FROM documents\n      WHERE company_id = {{ appsmith.store.companyId }}\n        AND (\n          {{ appsmith.store.warehouseId || 0 }} = 0\n          OR warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n        )\n        AND document_type IN ('SALES_INVOICE', 'POS_SALE', 'DELIVERY_NOTE', 'SALES_RETURN')\n        AND status = 'CONFIRMED'\n        AND posting_status IN ('NOT_POSTED', 'READY')\n      HAVING COUNT(*) > 0\n\n      UNION ALL\n\n      SELECT 1\n      FROM documents\n      WHERE company_id = {{ appsmith.store.companyId }}\n        AND (\n          {{ appsmith.store.warehouseId || 0 }} = 0\n          OR warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n        )\n        AND document_type = 'SALES_INVOICE'\n        AND status <> 'CANCELLED'\n        AND due_date < CURDATE()\n        AND total_amount > paid_amount\n      HAVING COUNT(*) > 0\n\n      UNION ALL\n\n      SELECT 1\n      FROM documents\n      WHERE company_id = {{ appsmith.store.companyId }}\n        AND (\n          {{ appsmith.store.warehouseId || 0 }} = 0\n          OR warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n        )\n        AND document_type = 'QUOTE'\n        AND status = 'DRAFT'\n        AND valid_until < CURDATE()\n      HAVING COUNT(*) > 0\n\n      UNION ALL\n\n      SELECT 1\n      FROM cash_registers cr\n      WHERE cr.company_id = {{ appsmith.store.companyId }}\n        AND (\n          {{ appsmith.store.warehouseId || 0 }} = 0\n          OR cr.warehouse_id = {{ appsmith.store.warehouseId || 0 }}\n        )\n        AND cr.is_active = 1\n        AND NOT EXISTS (\n          SELECT 1\n          FROM cash_register_closings crc\n          WHERE crc.cash_register_id = cr.id\n            AND crc.closing_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n            AND crc.status = 'CLOSED'\n        )\n      HAVING COUNT(*) > 0\n    ) active_alerts\n  ) alerts;\n",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "DashboardSummaryQuery",
+    "pageId": "Dashboard",
+    "runBehaviour": "ON_PAGE_LOAD",
+    "userSetOnLoad": true
+  }
+}

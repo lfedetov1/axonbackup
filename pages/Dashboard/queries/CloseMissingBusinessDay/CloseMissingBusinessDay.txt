@@ -1,0 +1,54 @@
+INSERT INTO cash_register_closings (
+  company_id,
+  cash_register_id,
+  closing_date,
+  closed_by_user_id,
+  opening_amount,
+  expected_cash_amount,
+  counted_cash_amount,
+  difference_amount,
+  cash_sales_amount,
+  card_sales_amount,
+  bank_sales_amount,
+  other_sales_amount,
+  cash_in_amount,
+  cash_out_amount,
+  transaction_count,
+  status,
+  note
+)
+SELECT
+  cr.company_id,
+  cr.id,
+  DATE_SUB(CURDATE(), INTERVAL 1 DAY),
+  {{ appsmith.store.userId }},
+  cr.opening_balance,
+  cr.opening_balance
+    + COALESCE(SUM(CASE WHEN ct.transaction_type IN ('IN', 'OPENING', 'TRANSFER_IN') THEN ct.amount ELSE 0 END), 0)
+    - COALESCE(SUM(CASE WHEN ct.transaction_type IN ('OUT', 'CLOSING', 'TRANSFER_OUT') THEN ct.amount ELSE 0 END), 0),
+  cr.opening_balance
+    + COALESCE(SUM(CASE WHEN ct.transaction_type IN ('IN', 'OPENING', 'TRANSFER_IN') THEN ct.amount ELSE 0 END), 0)
+    - COALESCE(SUM(CASE WHEN ct.transaction_type IN ('OUT', 'CLOSING', 'TRANSFER_OUT') THEN ct.amount ELSE 0 END), 0),
+  0,
+  0,
+  0,
+  0,
+  0,
+  COALESCE(SUM(CASE WHEN ct.transaction_type IN ('IN', 'OPENING', 'TRANSFER_IN') THEN ct.amount ELSE 0 END), 0),
+  COALESCE(SUM(CASE WHEN ct.transaction_type IN ('OUT', 'CLOSING', 'TRANSFER_OUT') THEN ct.amount ELSE 0 END), 0),
+  COUNT(ct.id),
+  'CLOSED',
+  'Auto-closed from critical alerts dashboard'
+FROM cash_registers cr
+LEFT JOIN cash_transactions ct
+  ON ct.cash_register_id = cr.id
+ AND DATE(ct.transaction_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+WHERE cr.is_active = 1
+  AND NOT EXISTS (
+    SELECT 1
+    FROM cash_register_closings crc
+    WHERE crc.cash_register_id = cr.id
+      AND crc.closing_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+      AND crc.status = 'CLOSED'
+  )
+GROUP BY cr.id;

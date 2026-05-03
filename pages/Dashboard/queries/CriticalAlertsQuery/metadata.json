@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_840ec01c-a802-44b0-8030-0cd272faf84e",
+  "id": "Dashboard_CriticalAlertsQuery",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  'CRITICAL' AS severity,\n  'Posting issue' AS title,\n  CONCAT(x.affected_count, ' documents are confirmed but not posted.') AS message,\n  x.affected_count,\n  'documents' AS source_table,\n  NULL AS source_view,\n  'posting_status' AS source_column,\n  'posting_issue' AS alert_type,\n  'Open documents' AS action_label,\n  'documents' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM documents\n  WHERE document_type IN ('SALES_INVOICE', 'POS_SALE', 'DELIVERY_NOTE', 'SALES_RETURN')\n    AND status = 'CONFIRMED'\n    AND posting_status IN ('NOT_POSTED', 'READY')\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code = 'sales.documents.post'\n  )\n\nUNION ALL\n\nSELECT\n  'WARNING' AS severity,\n  'Overdue unpaid invoices' AS title,\n  CONCAT(x.affected_count, ' overdue sales invoices are not fully paid.') AS message,\n  x.affected_count,\n  'documents' AS source_table,\n  'SalesInvoices' AS source_view,\n  'due_date / paid_amount / total_amount' AS source_column,\n  'overdue_unpaid_invoices' AS alert_type,\n  'Open sales invoices' AS action_label,\n  'SalesInvoices' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM documents\n  WHERE document_type = 'SALES_INVOICE'\n    AND status <> 'CANCELLED'\n    AND due_date < CURDATE()\n    AND total_amount > paid_amount\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code IN ('sales.invoices.view', 'finance.payments.view')\n  )\n\nUNION ALL\n\nSELECT\n  'WARNING' AS severity,\n  'Expired open quotes' AS title,\n  CONCAT(x.affected_count, ' quotations expired without being confirmed or cancelled.') AS message,\n  x.affected_count,\n  'documents' AS source_table,\n  'Quotations' AS source_view,\n  'valid_until / status' AS source_column,\n  'expired_open_quotes' AS alert_type,\n  'Open quotations' AS action_label,\n  'Quotations' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM documents\n  WHERE document_type = 'QUOTE'\n    AND status = 'DRAFT'\n    AND valid_until < CURDATE()\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code = 'sales.quotations.view'\n  )\n\nUNION ALL\n\nSELECT\n  'WARNING' AS severity,\n  'Old draft documents' AS title,\n  CONCAT(x.affected_count, ' draft sales documents are older than 7 days.') AS message,\n  x.affected_count,\n  'documents' AS source_table,\n  NULL AS source_view,\n  'document_date / status' AS source_column,\n  'old_draft_documents' AS alert_type,\n  'Review drafts' AS action_label,\n  'documents' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM documents\n  WHERE document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE')\n    AND status = 'DRAFT'\n    AND document_date < DATE_SUB(CURDATE(), INTERVAL 7 DAY)\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code = 'sales.documents.view'\n  )\n\nUNION ALL\n\nSELECT\n  'CRITICAL' AS severity,\n  'Business day not closed' AS title,\n  CONCAT(x.affected_count, ' active cash registers were not closed yesterday.') AS message,\n  x.affected_count,\n  'cash_registers / cash_register_closings' AS source_table,\n  'vw_cash_register_closings' AS source_view,\n  'closing_date / status' AS source_column,\n  'business_day_not_closed' AS alert_type,\n  'Close business day' AS action_label,\n  'cash_register_closings' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM cash_registers cr\n  WHERE cr.is_active = 1\n    AND NOT EXISTS (\n      SELECT 1\n      FROM cash_register_closings crc\n      WHERE crc.cash_register_id = cr.id\n        AND crc.closing_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n        AND crc.status = 'CLOSED'\n    )\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code = 'pos.close_day'\n  )\n\nUNION ALL\n\nSELECT\n  'WARNING' AS severity,\n  'Document total mismatch' AS title,\n  CONCAT(x.affected_count, ' documents have inconsistent totals.') AS message,\n  x.affected_count,\n  'documents' AS source_table,\n  NULL AS source_view,\n  'subtotal_amount / tax_amount / discount_amount / total_amount' AS source_column,\n  'document_total_mismatch' AS alert_type,\n  'Review documents' AS action_label,\n  'documents' AS action_target\nFROM (\n  SELECT COUNT(*) AS affected_count\n  FROM documents\n  WHERE status <> 'CANCELLED'\n    AND ABS(total_amount - (subtotal_amount + tax_amount - discount_amount)) > 0.02\n) x\nWHERE x.affected_count > 0\n  AND EXISTS (\n    SELECT 1\n    FROM company_users cu\n    JOIN roles r ON r.id = cu.role_id\n    JOIN role_permissions rp ON rp.role_id = r.id\n    JOIN permissions p ON p.id = rp.permission_id\n    WHERE cu.user_id = {{ appsmith.store.userId }}\n      AND p.code IN ('sales.documents.view', 'sales.documents.edit')\n  );\n",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "CriticalAlertsQuery",
+    "pageId": "Dashboard",
+    "runBehaviour": "ON_PAGE_LOAD",
+    "userSetOnLoad": true
+  }
+}
