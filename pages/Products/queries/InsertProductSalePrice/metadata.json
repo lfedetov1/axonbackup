@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "INSERT INTO product_prices (\n    product_id,\n    price_type,\n    currency_code,\n    price,\n    valid_from,\n    valid_to\n)\nVALUES (\n    {{this.params.productId}},\n    'SALE',\n    {{ProductCurrencySelect.selectedOptionValue || 'EUR'}},\n    {{ProductSalePriceInput.text || 0}},\n    {{ProductPriceValidFromInput.selectedDate || ProductPriceValidFromInput.selectedDate || moment().format(\"YYYY-MM-DD\")}},\n    null\n);\n",
+      "body": "INSERT INTO product_prices (\n    product_id,\n    price_type,\n    currency_code,\n    price,\n    valid_from,\n    valid_to\n)\nVALUES (\n    {{ this.params.productId }},\n    'SALE',\n    {{ ProductCurrencySelect.selectedOptionValue || 'EUR' }},\n    {{ ProductSalePriceInput.text || 0 }},\n    {{ ProductPriceValidFromInput.selectedDate\n        ? moment(ProductPriceValidFromInput.selectedDate).format(\"YYYY-MM-DD\")\n        : moment().format(\"YYYY-MM-DD\") }},\n    NULL\n);\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

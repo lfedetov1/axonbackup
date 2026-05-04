@@ -7,10 +7,12 @@ INSERT INTO product_prices (
     valid_to
 )
 VALUES (
-    {{this.params.productId}},
+    {{ this.params.productId }},
     'SALE',
-    {{ProductCurrencySelect.selectedOptionValue || 'EUR'}},
-    {{ProductSalePriceInput.text || 0}},
-    {{ProductPriceValidFromInput.selectedDate || ProductPriceValidFromInput.selectedDate || moment().format("YYYY-MM-DD")}},
-    null
+    {{ ProductCurrencySelect.selectedOptionValue || 'EUR' }},
+    {{ ProductSalePriceInput.text || 0 }},
+    {{ ProductPriceValidFromInput.selectedDate
+        ? moment(ProductPriceValidFromInput.selectedDate).format("YYYY-MM-DD")
+        : moment().format("YYYY-MM-DD") }},
+    NULL
 );
