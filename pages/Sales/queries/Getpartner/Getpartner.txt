@@ -5,3 +5,5 @@ FROM business_partners
 WHERE company_id = {{ appsmith.store.companyId }}
   AND is_active = 1
 ORDER BY name;
+
+

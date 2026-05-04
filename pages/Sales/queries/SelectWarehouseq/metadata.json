@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_e8336ff2-b5c1-42dd-abbc-b134914245bd",
-  "id": "Sales_Getpartner",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_049d6b5e-74fe-450c-b75b-7c21db739bbe",
+  "id": "Sales_SelectWarehouseq",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    id AS value,\n    name AS label\nFROM business_partners\nWHERE company_id = {{ appsmith.store.companyId }}\n  AND is_active = 1\nORDER BY name;\n\n\n",
+      "body": "SELECT\n    w.id AS value,\n    CONCAT(w.code, ' - ', w.name) AS label\nFROM warehouses w\nWHERE w.company_id = {{ appsmith.store.companyId }}\n  AND w.is_active = 1\nORDER BY w.is_default DESC, w.name;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -27,7 +27,7 @@
         "key": "body"
       }
     ],
-    "name": "Getpartner",
+    "name": "SelectWarehouseq",
     "pageId": "Sales",
     "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false

@@ -25,6 +25,10 @@ export default {
     };
   },
 
+  getWarehouseId() {
+    return Number(appsmith.store.warehouseId1 || 1);
+  },
+
   tableData() {
     const rows = appsmith.store.quotationItems || [];
     return rows.length ? rows : [this.emptyRow()];
@@ -196,6 +200,51 @@ export default {
     await storeValue("quotationItems", rows);
   },
 
+  async resolveQuotationId(quotationResponse) {
+    let quotationId =
+      quotationResponse?.insertId ||
+      quotationResponse?.[0]?.insertId ||
+      quotationResponse?.[0]?.id ||
+      quotationResponse?.[0]?.quotationId ||
+      quotationResponse?.[1]?.[0]?.quotationId ||
+      InsertQuotation.data?.insertId ||
+      InsertQuotation.data?.[0]?.insertId ||
+      InsertQuotation.data?.[0]?.id ||
+      InsertQuotation.data?.[0]?.quotationId ||
+      InsertQuotation.data?.[1]?.[0]?.quotationId;
+
+    if (quotationId) {
+      return quotationId;
+    }
+
+    const savedRows = await GetSavedQuotationByNumber.run();
+
+    return (
+      savedRows?.[0]?.id ||
+      GetSavedQuotationByNumber.data?.[0]?.id
+    );
+  },
+
+  async refreshQuotationNumber() {
+    if (typeof GetNewQuotationNumber === "undefined") {
+      return;
+    }
+
+    const rows = await GetNewQuotationNumber.run();
+
+    const nextNumber =
+      rows?.[0]?.document_number ||
+      rows?.[0]?.quotationNumber ||
+      rows?.[0]?.number ||
+      GetNewQuotationNumber.data?.[0]?.document_number ||
+      GetNewQuotationNumber.data?.[0]?.quotationNumber ||
+      GetNewQuotationNumber.data?.[0]?.number;
+
+    if (nextNumber && typeof Quotations_no !== "undefined") {
+      Quotations_no.setValue(String(nextNumber));
+    }
+  },
+
   async startNewQuotation() {
     await storeValue("activeTab", "Quotations");
     await storeValue("viewMode", "add");
@@ -203,10 +252,10 @@ export default {
     await storeValue("quotationEditMode", false);
     await storeValue("quotationItems", [this.emptyRow()]);
 
-    await GetNewQuotationNumber.run();
+    await this.refreshQuotationNumber();
 
-    if (typeof Quotations_no !== "undefined") {
-      Quotations_no.setValue(GetNewQuotationNumber.data?.[0]?.document_number || "");
+    if (typeof SelectWarehouse1 !== "undefined") {
+      SelectWarehouse1.setSelectedOption(String(this.getWarehouseId()));
     }
 
     if (typeof InoiceDateInput1 !== "undefined") {
@@ -303,6 +352,10 @@ export default {
         Quotations_no.setValue(header.documentNumber || "");
       }
 
+      if (typeof SelectWarehouse1 !== "undefined") {
+        SelectWarehouse1.setSelectedOption(String(header.warehouseId || this.getWarehouseId()));
+      }
+
       if (typeof InoiceDateInput1 !== "undefined") {
         InoiceDateInput1.setValue(header.documentDate || "");
       }
@@ -315,8 +368,8 @@ export default {
         QuotationValidUntilInput.setValue(header.validUntil || "");
       }
 
-      if (typeof SelectPartner !== "undefined") {
-        SelectPartner.setSelectedOption(String(header.partnerId || ""));
+      if (typeof SelectPartner1 !== "undefined") {
+        SelectPartner1.setSelectedOption(String(header.partnerId || ""));
       }
 
       if (typeof QuotationStatusSelect !== "undefined") {
@@ -414,14 +467,16 @@ export default {
   },
 
   async saveQuotationWithItems() {
-    const rows = appsmith.store.quotationItems || [];
+    const rows = (appsmith.store.quotationItems || []).filter(row =>
+      row.productId || row.productCode || row.description
+    );
 
     if (!Quotations_no.text) {
       showAlert("Quotation number is required.", "warning");
       return;
     }
 
-    if (!SelectPayment1.selectedOptionValue) {
+    if (!SelectPartner1.selectedOptionValue) {
       showAlert("Partner is required.", "warning");
       return;
     }
@@ -433,22 +488,20 @@ export default {
 
     const recalculatedRows = rows.map(row => this.recalculateRow(row));
     const totals = this.getTotals(recalculatedRows);
+    const warehouseId = this.getWarehouseId();
 
     try {
       await storeValue("quotationItems", recalculatedRows);
 
-      const quotationResponse = await InsertQuotation.run({ totals });
+      const quotationResponse = await InsertQuotation.run({
+        totals,
+        warehouseId
+      });
 
-      const quotationId =
-        quotationResponse?.insertId ||
-        quotationResponse?.[0]?.insertId ||
-        quotationResponse?.[1]?.[0]?.quotationId ||
-        InsertQuotation.data?.insertId ||
-        InsertQuotation.data?.[0]?.insertId ||
-        InsertQuotation.data?.[1]?.[0]?.quotationId;
+      const quotationId = await this.resolveQuotationId(quotationResponse);
 
       if (!quotationId) {
-        showAlert("Quotation saved, but ID was not returned.", "error");
+        showAlert("Quotation saved, but ID could not be found.", "error");
         console.log(quotationResponse);
         return;
       }
@@ -459,7 +512,8 @@ export default {
         await InsertQuotationItem.run({
           quotationId,
           lineNo: i + 1,
-          row: recalculatedRows[i]
+          row: recalculatedRows[i],
+          warehouseId
         });
       }
 
@@ -470,7 +524,8 @@ export default {
         newValues: {
           document_type: "QUOTE",
           document_number: Quotations_no.text,
-          partner_id: SelectPayment1.selectedOptionValue,
+          partner_id: SelectPartner1.selectedOptionValue,
+          warehouse_id: warehouseId,
           status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
           total_amount: totals.total,
           subtotal_amount: totals.subtotal,
@@ -483,7 +538,7 @@ export default {
       await storeValue("quotationEditMode", true);
       await storeValue("viewMode", "list");
 
-      if (typeof ActivityLogQuery !== "undefined") {
+      if (typeof ActivityLogQuery !== "undefined" && typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
 
@@ -500,7 +555,9 @@ export default {
 
   async updateQuotationWithItems() {
     const quotationId = appsmith.store.currentQuotationId;
-    const rows = appsmith.store.quotationItems || [];
+    const rows = (appsmith.store.quotationItems || []).filter(row =>
+      row.productId || row.productCode || row.description
+    );
 
     if (!quotationId) {
       showAlert("No quotation is loaded for editing.", "warning");
@@ -514,6 +571,7 @@ export default {
 
     const recalculatedRows = rows.map(row => this.recalculateRow(row));
     const totals = this.getTotals(recalculatedRows);
+    const warehouseId = this.getWarehouseId();
 
     try {
       await storeValue("quotationItems", recalculatedRows);
@@ -526,14 +584,15 @@ export default {
         });
       }
 
-      await UpdateQuotation.run({ totals, quotationId });
+      await UpdateQuotation.run({ totals, quotationId, warehouseId });
       await DeleteQuotationItems.run({ quotationId });
 
       for (let i = 0; i < recalculatedRows.length; i += 1) {
         await InsertQuotationItem.run({
           quotationId,
           lineNo: i + 1,
-          row: recalculatedRows[i]
+          row: recalculatedRows[i],
+          warehouseId
         });
       }
 
@@ -544,7 +603,8 @@ export default {
         newValues: {
           document_type: "QUOTE",
           document_number: Quotations_no.text,
-          partner_id: SelectPayment1.selectedOptionValue,
+          partner_id: SelectPartner1.selectedOptionValue,
+          warehouse_id: warehouseId,
           status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
           total_amount: totals.total,
           subtotal_amount: totals.subtotal,
@@ -557,7 +617,7 @@ export default {
 
       await storeValue("viewMode", "list");
 
-      if (typeof ActivityLogQuery !== "undefined") {
+      if (typeof ActivityLogQuery !== "undefined" && typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
 

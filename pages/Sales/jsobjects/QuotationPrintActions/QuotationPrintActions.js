@@ -6,6 +6,7 @@ export default {
       showAlert("Select a quote first.", "warning");
       return;
     }
+
     await storeValue("selectedDocumentId", Quotations_no.text);
     await storeValue("selectedQuoteId", row.ID);
     await storeValue("quotePrintAction", "");
@@ -19,6 +20,5 @@ export default {
 
   async printQuote() {
     await storeValue("quotePrintAction", "print_" + Date.now());
-  },
   }
 };

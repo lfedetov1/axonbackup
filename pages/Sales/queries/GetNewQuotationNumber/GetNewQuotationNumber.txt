@@ -9,7 +9,7 @@ SELECT
               CAST(
                 NULLIF(
                   SUBSTRING_INDEX(
-                    SUBSTRING_INDEX(d.document_number, CONCAT('-', COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }})), 1),
+                    SUBSTRING_INDEX(d.document_number, CONCAT('-', COALESCE(w.code, {{ appsmith.store.warehouseId1 || "WH" }})), 1),
                     'QUO-',
                     -1
                   ),
@@ -22,9 +22,9 @@ SELECT
               AND d.document_type = 'QUOTE'
               AND (
                 d.warehouse_id = w.id
-                OR CAST(d.warehouse_id AS CHAR) = CAST({{ appsmith.store.warehouseId || "" }} AS CHAR)
+                OR CAST(d.warehouse_id AS CHAR) = CAST({{ appsmith.store.warehouseId1 || "" }} AS CHAR)
               )
-              AND d.document_number LIKE CONCAT('QUO-%-', COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }}))
+              AND d.document_number LIKE CONCAT('QUO-%-', COALESCE(w.code, {{ appsmith.store.warehouseId1 || "WH" }}))
           ),
           0
         ) + 1,
@@ -32,11 +32,11 @@ SELECT
         '0'
       ),
       '-',
-      COALESCE(w.code, {{ appsmith.store.warehouseId || "WH" }})
+      COALESCE(w.code, {{ appsmith.store.warehouseId1 || "WH" }})
     ) AS CHAR
   ) AS document_number
 FROM (SELECT 1 AS one_row) x
 LEFT JOIN warehouses w
-  ON CAST(w.id AS CHAR) = CAST({{ appsmith.store.warehouseId || "" }} AS CHAR)
-  OR w.code = {{ appsmith.store.warehouseId || "" }}
+  ON CAST(w.id AS CHAR) = CAST({{ appsmith.store.warehouseId1 || "" }} AS CHAR)
+  OR w.code = {{ appsmith.store.warehouseId1 || "" }}
 LIMIT 1;

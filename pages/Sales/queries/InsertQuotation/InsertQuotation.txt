@@ -23,7 +23,7 @@ INSERT INTO documents (
 )
 VALUES (
     {{ appsmith.store.companyId }},
-    {{ appsmith.store.warehouseId1 || 1 }},
+    {{ this.params.warehouseId || appsmith.store.warehouseId1 || 1 }},
     {{ SelectPartner1.selectedOptionValue || null }},
     {{ appsmith.store.userId }},
     'QUOTE',
@@ -34,13 +34,13 @@ VALUES (
     {{ QuotationCustomerReferenceInpu.text || null }},
     {{ QuotationInternalReferenceInpu.text || null }},
     {{ dutedate1.selectedDate ? moment(dutedate1.selectedDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD") }},
-    null,
+    {{ null }},
     {{ QuotationValidUntilInput.selectedDate ? moment(QuotationValidUntilInput.selectedDate).format("YYYY-MM-DD") : null }},
     {{ QuotationCurrencySelect.selectedOptionValue || "EUR" }},
     1.000000,
-    {{ Note.text || null }},
-    {{ SubtotalInput1.text || 0 }},
-    {{ TaxAmountInput1.text || 0 }},
-    {{ DiscountAmountInput1.text || 0 }},
-    {{ TotalAmountInput1.text || 0 }}
+    {{ InvoiceNoteInput1.text || null }},
+    {{ this.params.totals.subtotal || 0 }},
+    {{ this.params.totals.tax || 0 }},
+    {{ this.params.totals.discount || 0 }},
+    {{ this.params.totals.total || 0 }}
 );

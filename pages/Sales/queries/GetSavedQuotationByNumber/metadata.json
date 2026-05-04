@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_e8336ff2-b5c1-42dd-abbc-b134914245bd",
-  "id": "Sales_Getpartner",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_328be212-750a-41c9-b3f8-4a75431df5c7",
+  "id": "Sales_GetSavedQuotationByNumber",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    id AS value,\n    name AS label\nFROM business_partners\nWHERE company_id = {{ appsmith.store.companyId }}\n  AND is_active = 1\nORDER BY name;\n\n\n",
+      "body": "SELECT id\nFROM documents\nWHERE document_type = 'QUOTE'\n  AND document_number = {{ Quotations_no.text }}\n  AND company_id = {{ appsmith.store.companyId }}\nORDER BY id DESC\nLIMIT 1;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -27,9 +27,9 @@
         "key": "body"
       }
     ],
-    "name": "Getpartner",
+    "name": "GetSavedQuotationByNumber",
     "pageId": "Sales",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

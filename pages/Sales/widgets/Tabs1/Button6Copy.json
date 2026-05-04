@@ -35,7 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 47,
   "needsErrorInfo": false,
-  "onClick": "{{\n JSObject1Quotations.saveCurrentQuotation() \nJSObject1Quotations.saveQuotationWithItems() \nJSObject1Quotations.saveCurrentQuotation()\n\n  Tabs1.selectedTab !== \"New Quatations\" ? (\n\t\tstoreValue(\"selectedDocumentType\", \"QUOTE\") ,\n\t\t storeValue(\"viewMode\", \"list\"),\n\nstoreValue(\"isAdding\", false),\n\n    invoice_no.setValue(\"\"),\n    SelectPartner1.setSelectedOption(\"\"),\n    SelectWarehouse1.setValue()(\"\"),\n    SelectPayment1.setSelectedOption(\"\"),\n    SubtotalInput1.setText(\"\"),\n    TaxAmountInput1.setText(\"\"),\n    DiscountAmountInput1.setText(\"\"),\n    TotalAmountInput1.setText(\"\"),\n QuotationStatusSelect.setSelectedOption(\"\"),\n\t\tQuotationStatusSelect.setSelectedOption(\"DRAFT\"),\n\t\tQuotationSalesChannelSelect.setSelectedOption(\"BACKOFFICE\"),\n\tresetWidget(\"QuotationValidUntilInput\", true),\t\n\t\tQuotationCustomerReferenceInpu.text(\"\"),\n\t\tQuotationInternalReferenceInpu.text(\"\"),\n\t\t\n    InvoiceNoteInput1.setValue(\"\"),\n    resetWidget(\"InvoiceDateInput1\", true),\n    resetWidget(\"duedate1\", true),\n    resetWidget(\"TableProducts1\", true)\n  ) : null\n\nQuotationPrintActions.openQuotePrint()\n\n}}",
+  "onClick": "{{ JSObject1Quotations.saveCurrentQuotation() }}",
   "originalBottomRow": 166,
   "originalTopRow": 162,
   "parentColumnSpace": 13.40625,

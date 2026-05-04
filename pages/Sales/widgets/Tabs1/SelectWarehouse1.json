@@ -1,11 +1,10 @@
 {
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
-  "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 7,
   "boxShadow": "none",
-  "defaultText": "{{appsmith.store.warehouseCode}}",
+  "defaultOptionValue": "{{ ((options, serverSideFiltering) => (  appsmith.store.warehouseId1 || SelectWarehouseq.data[0]?.value ))(SelectWarehouse1.options, SelectWarehouse1.serverSideFiltering) }}",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -14,45 +13,74 @@
       "key": "borderRadius"
     },
     {
-      "key": "defaultText"
+      "key": "sourceData"
+    },
+    {
+      "key": "isDisabled"
+    },
+    {
+      "key": "defaultOptionValue"
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicPropertyPathList": [],
-  "dynamicTriggerPathList": [],
-  "iconAlign": "left",
-  "inputType": "TEXT",
-  "isDisabled": true,
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onDropdownOpen"
+    },
+    {
+      "key": "onOptionChange"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onDropdownOpen"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": "{{ !JSAccess.has(\"warehouse.change\") }}\n",
+  "isFilterable": true,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "gozvug6b8a",
-  "label": "Warehouse :",
+  "key": "2zyep3km6p",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelStyle": "",
+  "labelText": "Warehaouse :",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 21,
+  "leftColumn": 19,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 8,
-  "mobileLeftColumn": 6,
-  "mobileRightColumn": 26,
-  "mobileTopRow": 1,
+  "mobileBottomRow": 7,
+  "mobileLeftColumn": 19,
+  "mobileRightColumn": 39,
+  "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "parentColumnSpace": 29.4375,
+  "onDropdownOpen": "{{SelectWarehouseq.run()}}",
+  "onOptionChange": "{{ storeValue(\"warehouseId1\", SelectWarehouse1.selectedOptionValue) }}\n",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 13.453125,
   "parentId": "d7b3ned5a0",
   "parentRowSpace": 10,
+  "placeholderText": "Select option",
   "renderMode": "CANVAS",
-  "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 26,
-  "showStepArrows": false,
+  "rightColumn": 31,
+  "serverSideFiltering": false,
+  "sourceData": "{{ SelectWarehouseq.data }}\n",
   "topRow": 0,
-  "type": "INPUT_WIDGET_V2",
-  "version": 2,
-  "widgetId": "ye9q7j9d8v",
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "uk8eb9rpt4",
   "widgetName": "SelectWarehouse1"
 }

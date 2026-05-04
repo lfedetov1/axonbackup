@@ -26,11 +26,17 @@
     },
     {
       "key": "onOptionChange"
+    },
+    {
+      "key": "onDropdownOpen"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onOptionChange"
+    },
+    {
+      "key": "onDropdownOpen"
     }
   ],
   "isDisabled": false,
@@ -44,7 +50,7 @@
   "labelText": "Partner :",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 27,
+  "leftColumn": 31,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
@@ -53,16 +59,17 @@
   "mobileRightColumn": 47,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onOptionChange": "{{storeValue(\"selectedPartner\", Partnerdata.data[0]);}}",
-  "optionLabel": "name",
-  "optionValue": "code",
+  "onDropdownOpen": "",
+  "onOptionChange": "{{ storeValue(\"selectedPartnerId\", SelectPartner1.selectedOptionValue) }}\n",
+  "optionLabel": "label",
+  "optionValue": "value",
   "parentColumnSpace": 13.40625,
   "parentId": "d7b3ned5a0",
   "parentRowSpace": 10,
   "placeholderText": "Select option",
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 47,
+  "rightColumn": 51,
   "serverSideFiltering": false,
   "sourceData": "{{Getpartner.data}}",
   "topRow": 0,
