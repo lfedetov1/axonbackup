@@ -41,7 +41,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 24,
   "needsErrorInfo": false,
-  "onClick": "{{ JSObjectInvoice.addRow() }}\n",
+  "onClick": "{{ JSObject1Quotations.updateItemLookup(0, \"TEST-SERVICE\") }}\n\n\n",
   "originalBottomRow": 68,
   "originalTopRow": 64,
   "parentColumnSpace": 14.234375,

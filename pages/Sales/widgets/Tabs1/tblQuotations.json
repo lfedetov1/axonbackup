@@ -802,7 +802,7 @@
       "label": "Make a bill",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{JSObject1Quotations.confirmConvertQuoteToInvoice()}}",
+      "onClick": "{{\n  (async () => {\n    const quotationId = tblQuotations.triggeredRow?.ID || tblQuotations.selectedRow?.ID;\n\n    if (!quotationId) {\n      showAlert(\"Select a quotation first.\", \"warning\");\n      return;\n    }\n\n    await storeValue(\"pendingQuotationId\", quotationId);\n    showModal(ConfirmQuoteToInvoiceModal.name);\n  })()\n}}\n\n",
       "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",

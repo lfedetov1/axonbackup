@@ -43,7 +43,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 20,
   "shouldTruncate": false,
-  "text": "{{\n(appsmith.store.invoiceItems || [])\n  .reduce((sum, row) => sum + Number(row.lineTotal || 0), 0)\n  .toFixed(2)\n}}",
+  "text": "{{\n(appsmith.store.quotationItems || [])\n  .reduce((sum, row) => sum + Number(row.lineTotal || 0), 0)\n  .toFixed(2)\n}}\n",
   "textAlign": "LEFT",
   "textColor": "#ef4444",
   "topRow": 85,

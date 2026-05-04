@@ -1,12 +1,17 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_d8dbb11f-7d0a-4ceb-9f68-295ce2f39a94",
-  "id": "Sales_JSObject1Quotations.refreshQuotationNumber",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_1e495d7f-a2b8-401c-a2af-ad04828c223d",
+  "id": "Sales_JSObject1Quotations.updateUnitPriceFromRow",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [],
+      "jsArguments": [
+        {
+          "name": "row",
+          "value": "{{{}}}"
+        }
+      ],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -22,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "JSObject1Quotations.refreshQuotationNumber",
-    "name": "refreshQuotationNumber",
+    "fullyQualifiedName": "JSObject1Quotations.updateUnitPriceFromRow",
+    "name": "updateUnitPriceFromRow",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

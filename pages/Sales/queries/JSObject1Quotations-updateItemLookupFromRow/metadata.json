@@ -1,12 +1,17 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_801dde7a-2795-433d-9b75-6e4b531b1391",
-  "id": "Sales_JSObject1Quotations.initRows",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_de0149d2-2b52-43ed-b2f2-9f667735e1dd",
+  "id": "Sales_JSObject1Quotations.updateItemLookupFromRow",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [],
+      "jsArguments": [
+        {
+          "name": "row",
+          "value": "{{{}}}"
+        }
+      ],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -22,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "JSObject1Quotations.initRows",
-    "name": "initRows",
+    "fullyQualifiedName": "JSObject1Quotations.updateItemLookupFromRow",
+    "name": "updateItemLookupFromRow",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

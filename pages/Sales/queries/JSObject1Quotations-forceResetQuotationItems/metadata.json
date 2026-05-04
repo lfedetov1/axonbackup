@@ -1,22 +1,12 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_afcac66c-1cba-4b4b-9db9-3054c562e92f",
-  "id": "Sales_JSObject1Quotations.updateRowField",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_274da10e-5404-4788-82d8-3186ee726966",
+  "id": "Sales_JSObject1Quotations.forceResetQuotationItems",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [
-        {
-          "name": "rowIndex"
-        },
-        {
-          "name": "fieldName"
-        },
-        {
-          "name": "value"
-        }
-      ],
+      "jsArguments": [],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -32,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "JSObject1Quotations.updateRowField",
-    "name": "updateRowField",
+    "fullyQualifiedName": "JSObject1Quotations.forceResetQuotationItems",
+    "name": "forceResetQuotationItems",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

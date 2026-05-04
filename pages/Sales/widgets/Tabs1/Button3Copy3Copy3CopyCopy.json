@@ -41,7 +41,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 24,
   "needsErrorInfo": false,
-  "onClick": "{{ JSObjectInvoice.removeRow(TableProducts.triggeredRowIndex) }}\n",
+  "onClick": "{{ JSObject1Quotations.forceResetQuotationItems() }}\n",
   "originalBottomRow": 68,
   "originalTopRow": 64,
   "parentColumnSpace": 14.234375,

@@ -1,6 +1,7 @@
 export default {
-  emptyRow() {
+  emptyRow(lineNo = 1) {
     return {
+      lineNo: String(lineNo),
       itemLookup: "",
       productId: "",
       productCode: "",
@@ -31,7 +32,7 @@ export default {
 
   tableData() {
     const rows = appsmith.store.quotationItems || [];
-    return rows.length ? rows : [this.emptyRow()];
+    return rows.length ? rows : [this.emptyRow(1)];
   },
 
   isEditMode() {
@@ -61,19 +62,17 @@ export default {
     return {
       ...row,
       quantity: String(quantity),
-      unitPrice: String(Number(unitPrice).toFixed(2)),
-      discountPercent: String(Number(discountPercent).toFixed(2)),
-      discountAmount: String(discountAmount.toFixed(2)),
-      lineSubtotal: String(lineSubtotal.toFixed(2)),
-      taxAmount: String(taxAmount.toFixed(2)),
-      lineTotal: String(lineTotal.toFixed(2))
+      unitPrice: Number(unitPrice).toFixed(2),
+      discountPercent: Number(discountPercent).toFixed(2),
+      discountAmount: discountAmount.toFixed(2),
+      lineSubtotal: lineSubtotal.toFixed(2),
+      taxAmount: taxAmount.toFixed(2),
+      lineTotal: lineTotal.toFixed(2)
     };
   },
 
   getTotals(rows = appsmith.store.quotationItems || []) {
-    const recalculatedRows = rows.map(row => this.recalculateRow(row));
-
-    return recalculatedRows.reduce(
+    return rows.map(row => this.recalculateRow(row)).reduce(
       (sum, row) => ({
         subtotal: sum.subtotal + Number(row.lineSubtotal || 0),
         tax: sum.tax + Number(row.taxAmount || 0),
@@ -85,80 +84,71 @@ export default {
   },
 
   async recalculateAllRows() {
-    const rows = [...(appsmith.store.quotationItems || [])].map(row => this.recalculateRow(row));
+    const rows = [...(appsmith.store.quotationItems || [])].map(row =>
+      this.recalculateRow(row)
+    );
+
     await storeValue("quotationItems", rows);
   },
 
   async initRows() {
     const rows = appsmith.store.quotationItems || [];
+
     if (!rows.length) {
-      await storeValue("quotationItems", [this.emptyRow()]);
+      await storeValue("quotationItems", [this.emptyRow(1)]);
     }
   },
 
   async resetRows() {
-    await storeValue("quotationItems", [this.emptyRow()]);
+    await storeValue("quotationItems", [this.emptyRow(1)]);
   },
 
   async addRow() {
     const rows = [...(appsmith.store.quotationItems || [])];
-    rows.push(this.emptyRow());
+
+    rows.push(this.emptyRow(rows.length + 1));
+
     await storeValue("quotationItems", rows);
   },
 
   async removeRow(rowIndex) {
     const rows = [...(appsmith.store.quotationItems || [])];
 
-    if (rowIndex < 0 || rowIndex >= rows.length) return;
+    if (rowIndex < 0 || rowIndex >= rows.length) {
+      return;
+    }
 
     rows.splice(rowIndex, 1);
-    await storeValue("quotationItems", rows.length ? rows : [this.emptyRow()]);
+
+    const renumbered = rows.map((row, index) => ({
+      ...row,
+      lineNo: String(index + 1)
+    }));
+
+    await storeValue("quotationItems", renumbered.length ? renumbered : [this.emptyRow(1)]);
   },
 
   async updateRowField(rowIndex, fieldName, value) {
     const rows = [...(appsmith.store.quotationItems || [])];
 
-    if (rowIndex < 0 || rowIndex >= rows.length) return;
+    if (rowIndex < 0 || rowIndex >= rows.length) {
+      return;
+    }
 
-    rows[rowIndex] = {
+    rows[rowIndex] = this.recalculateRow({
       ...rows[rowIndex],
       [fieldName]: String(value || "0")
-    };
-
-    rows[rowIndex] = this.recalculateRow(rows[rowIndex]);
+    });
 
     await storeValue("quotationItems", rows);
-  },
-
-  async updateItemLookup(rowIndex, value) {
-    const rows = [...(appsmith.store.quotationItems || [])];
-
-    if (rowIndex < 0 || rowIndex >= rows.length) return;
-
-    rows[rowIndex] = {
-      ...rows[rowIndex],
-      itemLookup: String(value || "")
-    };
-
-    await storeValue("quotationItems", rows);
-  },
-
-  async updateQuantity(rowIndex, value) {
-    await this.updateRowField(rowIndex, "quantity", value);
-  },
-
-  async updateDiscount(rowIndex, value) {
-    await this.updateRowField(rowIndex, "discountPercent", value);
-  },
-
-  async updateUnitPrice(rowIndex, value) {
-    await this.updateRowField(rowIndex, "unitPrice", value);
   },
 
   async updateTextField(rowIndex, fieldName, value) {
     const rows = [...(appsmith.store.quotationItems || [])];
 
-    if (rowIndex < 0 || rowIndex >= rows.length) return;
+    if (rowIndex < 0 || rowIndex >= rows.length) {
+      return;
+    }
 
     rows[rowIndex] = {
       ...rows[rowIndex],
@@ -168,34 +158,157 @@ export default {
     await storeValue("quotationItems", rows);
   },
 
-  async fillRowFromProduct(rowIndex) {
-    const rows = [...(appsmith.store.quotationItems || [])];
-    const product = TableProduct1.selectedRow;
+  async updateQuantity(rowIndex, value) {
+    return this.updateRowField(rowIndex, "quantity", value);
+  },
 
-    if (!product || rowIndex < 0 || rowIndex >= rows.length) return;
+  async updateDiscount(rowIndex, value) {
+    return this.updateRowField(rowIndex, "discountPercent", value);
+  },
+
+  async updateUnitPrice(rowIndex, value) {
+    return this.updateRowField(rowIndex, "unitPrice", value);
+  },
+
+  getRowIndex(row = {}) {
+    if (row.lineNo) {
+      return Number(row.lineNo) - 1;
+    }
+
+    const rows = appsmith.store.quotationItems || [];
+
+    return rows.findIndex(item =>
+      String(item.productId || "") === String(row.productId || "") &&
+      String(item.productCode || "") === String(row.productCode || "") &&
+      String(item.description || "") === String(row.description || "")
+    );
+  },
+
+  async updateQuantityFromRow(row = {}) {
+    const rowIndex = this.getRowIndex(row);
+
+    if (rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    return this.updateRowField(rowIndex, "quantity", row.quantity || row["Quantity"] || 0);
+  },
+
+  async updateUnitPriceFromRow(row = {}) {
+    const rowIndex = this.getRowIndex(row);
+
+    if (rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    return this.updateRowField(rowIndex, "unitPrice", row.unitPrice || row["Unit Price"] || 0);
+  },
+
+  async updateDiscountFromRow(row = {}) {
+    const rowIndex = this.getRowIndex(row);
+
+    if (rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    return this.updateRowField(rowIndex, "discountPercent", row.discountPercent || row["Discount %"] || 0);
+  },
+
+  async updateItemLookupFromRow(row = {}) {
+    const rowIndex = this.getRowIndex(row);
+
+    if (rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    return this.updateItemLookup(rowIndex, row.itemLookup || row["Item Lookup"] || "");
+  },
+
+  async updateItemLookup(rowIndex, value) {
+    const rows = [...(appsmith.store.quotationItems || [])];
+
+    if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    if (!rows[rowIndex]) {
+      rows[rowIndex] = this.emptyRow(rowIndex + 1);
+    }
 
     rows[rowIndex] = {
       ...rows[rowIndex],
-      itemLookup: String(product.productCode || product.ProductCode || product.Code || product.Name || product.name || ""),
-      productId: String(product.productId || product.ProductID || product.id || ""),
-      productCode: String(product.productCode || product.ProductCode || product.Code || ""),
-      barcode: String(product.barcode || product.Barcode || ""),
-      description: String(product.description || product.Description || product.Name || product.name || ""),
-      productType: String(product.productType || product.ProductType || ""),
-      trackStock: String(product.trackStock || product.TrackStock || "0"),
-      availableStock: String(product.availableStock || product.AvailableStock || "0"),
-      unitId: String(product.unitId || product.UnitID || ""),
-      unitName: String(product.unitName || product.UnitName || ""),
-      taxRateId: String(product.taxRateId || product.TaxRateID || ""),
-      taxRate: String(product.taxRate || product.TaxRate || "0"),
-      unitPrice: String(product.unitPrice || product.UnitPrice || product.Price || "0"),
+      lineNo: String(rowIndex + 1),
+      itemLookup: String(value || "")
+    };
+
+    await storeValue("quotationItems", rows);
+
+    const lookup = String(value || "").trim();
+
+    if (!lookup) {
+      return;
+    }
+
+    try {
+      const result = await GetProductByInput1.run({ lookup });
+      const product = result?.[0] || GetProductByInput1.data?.[0];
+
+      if (!product) {
+        showAlert("Product not found.", "warning");
+        return;
+      }
+
+      await this.fillRowFromProduct(rowIndex, product);
+    } catch (error) {
+      showAlert("Error while loading product: " + error.message, "error");
+      console.log(error);
+    }
+  },
+
+  async fillRowFromProduct(rowIndex, product = null) {
+    const rows = [...(appsmith.store.quotationItems || [])];
+    const selectedProduct = product || TableProduct1.selectedRow;
+
+    if (!selectedProduct) {
+      showAlert("Product was not found.", "warning");
+      return;
+    }
+
+    if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+      showAlert("Row index was not found.", "error");
+      return;
+    }
+
+    if (!rows[rowIndex]) {
+      rows[rowIndex] = this.emptyRow(rowIndex + 1);
+    }
+
+    rows[rowIndex] = this.recalculateRow({
+      ...rows[rowIndex],
+      lineNo: String(rowIndex + 1),
+      itemLookup: String(selectedProduct.productCode || selectedProduct.ProductCode || selectedProduct.Code || selectedProduct.code || ""),
+      productId: String(selectedProduct.productId || selectedProduct.ProductID || selectedProduct.id || selectedProduct.ID || ""),
+      productCode: String(selectedProduct.productCode || selectedProduct.ProductCode || selectedProduct.Code || selectedProduct.code || ""),
+      barcode: String(selectedProduct.barcode || selectedProduct.Barcode || ""),
+      description: String(selectedProduct.description || selectedProduct.productName || selectedProduct.product || selectedProduct.Description || selectedProduct.Name || selectedProduct.name || ""),
+      productType: String(selectedProduct.productType || selectedProduct.ProductType || ""),
+      trackStock: String(selectedProduct.trackStock || selectedProduct.TrackStock || "0"),
+      availableStock: String(selectedProduct.availableStock || selectedProduct.AvailableStock || "0"),
+      unitId: String(selectedProduct.unitId || selectedProduct.UnitID || ""),
+      unitName: String(selectedProduct.unitName || selectedProduct.UnitName || selectedProduct.Unit || ""),
+      taxRateId: String(selectedProduct.taxRateId || selectedProduct.TaxRateID || ""),
+      taxRate: String(selectedProduct.taxRate || selectedProduct.TaxRate || "0"),
+      unitPrice: String(selectedProduct.unitPrice || selectedProduct.UnitPrice || selectedProduct.Price || selectedProduct.salePrice || selectedProduct.sale_price || "0"),
       quantity: String(rows[rowIndex].quantity || "1"),
       discountPercent: String(rows[rowIndex].discountPercent || "0"),
       discountReason: String(rows[rowIndex].discountReason || ""),
       note: String(rows[rowIndex].note || "")
-    };
-
-    rows[rowIndex] = this.recalculateRow(rows[rowIndex]);
+    });
 
     await storeValue("quotationItems", rows);
   },
@@ -219,10 +332,7 @@ export default {
 
     const savedRows = await GetSavedQuotationByNumber.run();
 
-    return (
-      savedRows?.[0]?.id ||
-      GetSavedQuotationByNumber.data?.[0]?.id
-    );
+    return savedRows?.[0]?.id || GetSavedQuotationByNumber.data?.[0]?.id;
   },
 
   async refreshQuotationNumber() {
@@ -250,7 +360,7 @@ export default {
     await storeValue("viewMode", "add");
     await storeValue("currentQuotationId", null);
     await storeValue("quotationEditMode", false);
-    await storeValue("quotationItems", [this.emptyRow()]);
+    await storeValue("quotationItems", [this.emptyRow(1)]);
 
     await this.refreshQuotationNumber();
 
@@ -318,8 +428,9 @@ export default {
       }
 
       const itemRows = await GetQuotationItemsForEdit.run({ quotationId });
-      const items = (itemRows || GetQuotationItemsForEdit.data || []).map(row =>
+      const items = (itemRows || GetQuotationItemsForEdit.data || []).map((row, index) =>
         this.recalculateRow({
+          lineNo: String(index + 1),
           itemLookup: String(row.productCode || row.description || ""),
           productId: String(row.productId || ""),
           productCode: String(row.productCode || ""),
@@ -346,7 +457,7 @@ export default {
 
       await storeValue("currentQuotationId", header.quotationId);
       await storeValue("quotationEditMode", true);
-      await storeValue("quotationItems", items.length ? items : [this.emptyRow()]);
+      await storeValue("quotationItems", items.length ? items : [this.emptyRow(1)]);
 
       if (typeof Quotations_no !== "undefined") {
         Quotations_no.setValue(header.documentNumber || "");
@@ -466,6 +577,60 @@ export default {
     }
   },
 
+  async clearQuotationAfterSave() {
+    await storeValue("quotationItems", [this.emptyRow(1)]);
+    await storeValue("quotationEditMode", false);
+    await storeValue("currentQuotationId", null);
+
+    if (typeof TableProducts1 !== "undefined") {
+      resetWidget("TableProducts1", true);
+    }
+
+    if (typeof SelectPartner1 !== "undefined") {
+      SelectPartner1.setSelectedOption("");
+    }
+
+    if (typeof QuotationCustomerReferenceInpu !== "undefined") {
+      QuotationCustomerReferenceInpu.setValue("");
+    }
+
+    if (typeof QuotationInternalReferenceInpu !== "undefined") {
+      QuotationInternalReferenceInpu.setValue("");
+    }
+
+    if (typeof InvoiceNoteInput1 !== "undefined") {
+      InvoiceNoteInput1.setValue("");
+    }
+
+    if (typeof QuotationStatusSelect !== "undefined") {
+      QuotationStatusSelect.setSelectedOption("DRAFT");
+    }
+
+    if (typeof QuotationSalesChannelSelect !== "undefined") {
+      QuotationSalesChannelSelect.setSelectedOption("BACKOFFICE");
+    }
+
+    if (typeof QuotationCurrencySelect !== "undefined") {
+      QuotationCurrencySelect.setSelectedOption("EUR");
+    }
+
+    await this.refreshQuotationNumber();
+  },
+
+  async forceResetQuotationItems() {
+    await storeValue("quotationItems", []);
+    await storeValue("quotationItemsResetKey", Date.now());
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    await storeValue("quotationItems", [this.emptyRow(1)]);
+    await storeValue("quotationItemsResetKey", Date.now());
+
+    if (typeof TableProducts1 !== "undefined") {
+      resetWidget("TableProducts1", true);
+    }
+  },
+
   async saveQuotationWithItems() {
     const rows = (appsmith.store.quotationItems || []).filter(row =>
       row.productId || row.productCode || row.description
@@ -517,36 +682,38 @@ export default {
         });
       }
 
-      await AuditLog1.insert({
-        entityName: "documents",
-        entityId: quotationId,
-        actionType: "INSERT",
-        newValues: {
-          document_type: "QUOTE",
-          document_number: Quotations_no.text,
-          partner_id: SelectPartner1.selectedOptionValue,
-          warehouse_id: warehouseId,
-          status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
-          total_amount: totals.total,
-          subtotal_amount: totals.subtotal,
-          tax_amount: totals.tax,
-          discount_amount: totals.discount,
-          item_count: recalculatedRows.length
-        }
-      });
-
-      await storeValue("quotationEditMode", true);
-      await storeValue("viewMode", "list");
+      if (typeof AuditLog1 !== "undefined") {
+        await AuditLog1.insert({
+          entityName: "documents",
+          entityId: quotationId,
+          actionType: "INSERT",
+          newValues: {
+            document_type: "QUOTE",
+            document_number: Quotations_no.text,
+            partner_id: SelectPartner1.selectedOptionValue,
+            warehouse_id: warehouseId,
+            status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
+            total_amount: totals.total,
+            subtotal_amount: totals.subtotal,
+            tax_amount: totals.tax,
+            discount_amount: totals.discount,
+            item_count: recalculatedRows.length
+          }
+        });
+      }
 
       if (typeof ActivityLogQuery !== "undefined" && typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
 
-      showAlert("Quotation was saved successfully.", "success");
-
-      if (typeof QuotationPrintActions !== "undefined") {
-        await QuotationPrintActions.openQuotePrint();
+      if (typeof QuotationPrintActions !== "undefined" && QuotationPrintActions.openQuotePrintById) {
+        await QuotationPrintActions.openQuotePrintById(quotationId);
       }
+
+      await this.clearQuotationAfterSave();
+      await storeValue("viewMode", "list");
+
+      showAlert("Quotation was saved successfully.", "success");
     } catch (error) {
       showAlert("Error while saving quotation: " + error.message, "error");
       console.log(error);
@@ -596,36 +763,39 @@ export default {
         });
       }
 
-      await AuditLog1.insert({
-        entityName: "documents",
-        entityId: quotationId,
-        actionType: "UPDATE",
-        newValues: {
-          document_type: "QUOTE",
-          document_number: Quotations_no.text,
-          partner_id: SelectPartner1.selectedOptionValue,
-          warehouse_id: warehouseId,
-          status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
-          total_amount: totals.total,
-          subtotal_amount: totals.subtotal,
-          tax_amount: totals.tax,
-          discount_amount: totals.discount,
-          item_count: recalculatedRows.length,
-          note: "Quotation header and items updated"
-        }
-      });
-
-      await storeValue("viewMode", "list");
+      if (typeof AuditLog1 !== "undefined") {
+        await AuditLog1.insert({
+          entityName: "documents",
+          entityId: quotationId,
+          actionType: "UPDATE",
+          newValues: {
+            document_type: "QUOTE",
+            document_number: Quotations_no.text,
+            partner_id: SelectPartner1.selectedOptionValue,
+            warehouse_id: warehouseId,
+            status: QuotationStatusSelect?.selectedOptionValue || "DRAFT",
+            total_amount: totals.total,
+            subtotal_amount: totals.subtotal,
+            tax_amount: totals.tax,
+            discount_amount: totals.discount,
+            item_count: recalculatedRows.length,
+            note: "Quotation header and items updated"
+          }
+        });
+      }
 
       if (typeof ActivityLogQuery !== "undefined" && typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
 
-      showAlert("Quotation was updated successfully.", "success");
-
-      if (typeof QuotationPrintActions !== "undefined") {
-        await QuotationPrintActions.openQuotePrint();
+      if (typeof QuotationPrintActions !== "undefined" && QuotationPrintActions.openQuotePrintById) {
+        await QuotationPrintActions.openQuotePrintById(quotationId);
       }
+
+      await this.clearQuotationAfterSave();
+      await storeValue("viewMode", "list");
+
+      showAlert("Quotation was updated successfully.", "success");
     } catch (error) {
       showAlert("Error while updating quotation: " + error.message, "error");
       console.log(error);

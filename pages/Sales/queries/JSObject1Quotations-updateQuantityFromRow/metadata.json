@@ -1,12 +1,17 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_48b37a58-58d9-4bd2-b5d5-67d3065ffadc",
-  "id": "Sales_JSObject1Quotations.startNewQuotation",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_6403c230-f4d5-4460-a3d7-a2bf99c00e6e",
+  "id": "Sales_JSObject1Quotations.updateQuantityFromRow",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [],
+      "jsArguments": [
+        {
+          "name": "row",
+          "value": "{{{}}}"
+        }
+      ],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -22,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "JSObject1Quotations.startNewQuotation",
-    "name": "startNewQuotation",
+    "fullyQualifiedName": "JSObject1Quotations.updateQuantityFromRow",
+    "name": "updateQuantityFromRow",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

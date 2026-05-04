@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_5ff711f4-1495-4380-bbd1-15d7ec93a5ae",
-  "id": "Sales_JSObject1Quotations.updateDiscount",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_f23eaa34-3b51-43e5-b7e8-e088b1c42da9",
+  "id": "Sales_JSObject1Quotations.getRowIndex",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -8,10 +8,8 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "rowIndex"
-        },
-        {
-          "name": "value"
+          "name": "row",
+          "value": "{{{}}}"
         }
       ],
       "paginationType": "NONE",
@@ -29,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "JSObject1Quotations.updateDiscount",
-    "name": "updateDiscount",
+    "fullyQualifiedName": "JSObject1Quotations.getRowIndex",
+    "name": "getRowIndex",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

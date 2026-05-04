@@ -12,8 +12,8 @@ SELECT
         FROM v_inventory_balance ib
         WHERE ib.product_id = p.id
           AND (
-            {{ appsmith.store.warehouseId || 0 }} = 0
-            OR ib.warehouse_id = {{ appsmith.store.warehouseId || 0 }}
+            {{ appsmith.store.warehouseId1 || 0 }} = 0
+            OR ib.warehouse_id = {{ appsmith.store.warehouseId1 || 0 }}
           )
     ), 0) AS availableStock,
     uom.id AS unitId,
