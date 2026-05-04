@@ -20,11 +20,5 @@ export default {
   async printQuote() {
     await storeValue("quotePrintAction", "print_" + Date.now());
   },
-
-  async emailQuote() {
-    await SendQuoteEmail.run(
-      () => showAlert("Email sent.", "success"),
-      () => showAlert("Email sending failed.", "error")
-    );
   }
 };

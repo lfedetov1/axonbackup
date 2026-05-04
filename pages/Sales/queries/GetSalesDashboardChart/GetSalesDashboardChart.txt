@@ -1,29 +1,23 @@
 SELECT
     CASE
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY'
-        THEN DATE_FORMAT(d.created_at, '%H:00')
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'DAY'
+        THEN DATE_FORMAT(d.document_date, '%H:00')
 
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK'
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' IN ('WEEK', 'MONTH')
         THEN DATE_FORMAT(d.document_date, '%d.%m.%Y')
 
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH'
-        THEN DATE_FORMAT(d.document_date, '%d.%m.%Y')
-
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR'
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'YEAR'
         THEN DATE_FORMAT(d.document_date, '%M %Y')
     END AS `Period`,
 
     CASE
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY'
-        THEN DATE_FORMAT(d.created_at, '%Y-%m-%d %H')
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'DAY'
+        THEN DATE_FORMAT(d.document_date, '%Y-%m-%d %H')
 
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK'
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' IN ('WEEK', 'MONTH')
         THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
 
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH'
-        THEN DATE_FORMAT(d.document_date, '%Y-%m-%d')
-
-        WHEN {{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR'
+        WHEN '{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'YEAR'
         THEN DATE_FORMAT(d.document_date, '%Y-%m')
     END AS `Sort Period`,
 
@@ -31,19 +25,30 @@ SELECT
     COALESCE(SUM(di.line_total), 0) AS `Sales Total`
 FROM documents d
 JOIN document_items di ON di.document_id = d.id
+CROSS JOIN (
+    SELECT MAX(document_date) AS max_date
+    FROM documents
+    WHERE document_type IN ('SALES_INVOICE', 'POS_SALE')
+) x
 WHERE d.document_type IN ('SALES_INVOICE', 'POS_SALE')
-  AND d.status <> 'CANCELLED'
+  AND COALESCE(d.status, '') <> 'CANCELLED'
   AND (
       {{appsmith.store.warehouseId || 0}} = 0
       OR COALESCE(d.warehouse_id, di.warehouse_id) = {{appsmith.store.warehouseId || 0}}
   )
   AND (
-      ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY' AND d.document_date = CURDATE())
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK' AND YEARWEEK(d.document_date, 1) = YEARWEEK(CURDATE(), 1))
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH' AND YEAR(d.document_date) = YEAR(CURDATE()) AND MONTH(d.document_date) = MONTH(CURDATE()))
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR' AND YEAR(d.document_date) = YEAR(CURDATE()))
+      ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'DAY'
+       AND DATE(d.document_date) = DATE(x.max_date))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'WEEK'
+       AND YEARWEEK(d.document_date, 1) = YEARWEEK(x.max_date, 1))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'MONTH'
+       AND YEAR(d.document_date) = YEAR(x.max_date)
+       AND MONTH(d.document_date) = MONTH(x.max_date))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'YEAR'
+       AND YEAR(d.document_date) = YEAR(x.max_date))
   )
-GROUP BY
-    `Period`,
-    `Sort Period`
+GROUP BY `Period`, `Sort Period`
 ORDER BY `Sort Period`;

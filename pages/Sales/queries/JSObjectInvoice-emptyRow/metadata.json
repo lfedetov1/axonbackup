@@ -1,5 +1,5 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_84c32944-7b1e-4b35-8099-eb82bd1b4b42",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_f38c046e-10ff-4fbe-a457-20cc084735a9",
   "id": "Sales_JSObjectInvoice.emptyRow",
   "pluginId": "js-plugin",
   "pluginType": "JS",
@@ -31,6 +31,6 @@
     "name": "emptyRow",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
-    "userSetOnLoad": true
+    "userSetOnLoad": false
   }
 }

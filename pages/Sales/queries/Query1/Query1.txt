@@ -1,1 +1,0 @@
-SELECT * FROM accounting_accounts LIMIT 10;

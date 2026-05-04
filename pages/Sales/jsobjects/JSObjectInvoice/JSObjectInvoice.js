@@ -118,7 +118,7 @@ export default {
     try {
       await CancelInvoiceForVoid.run({ invoiceId });
 
-      await AuditLog.insert({
+      await AuditLog1.insert({
         entityName: "documents",
         entityId: invoiceId,
         actionType: "UPDATE",

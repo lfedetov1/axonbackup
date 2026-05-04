@@ -12,17 +12,30 @@ FROM document_items di
 JOIN documents d ON d.id = di.document_id
 LEFT JOIN products p ON p.id = di.product_id
 LEFT JOIN warehouses w ON w.id = COALESCE(d.warehouse_id, di.warehouse_id)
+CROSS JOIN (
+    SELECT MAX(document_date) AS max_date
+    FROM documents
+    WHERE document_type IN ('SALES_INVOICE', 'POS_SALE')
+) x
 WHERE d.document_type IN ('SALES_INVOICE', 'POS_SALE')
-  AND d.status <> 'CANCELLED'
+  AND IFNULL(d.status, '') <> 'CANCELLED'
   AND (
       {{appsmith.store.warehouseId || 0}} = 0
       OR COALESCE(d.warehouse_id, di.warehouse_id) = {{appsmith.store.warehouseId || 0}}
   )
   AND (
-      ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'DAY' AND d.document_date = CURDATE())
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'WEEK' AND YEARWEEK(d.document_date, 1) = YEARWEEK(CURDATE(), 1))
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'MONTH' AND YEAR(d.document_date) = YEAR(CURDATE()) AND MONTH(d.document_date) = MONTH(CURDATE()))
-      OR ({{SalesPeriodSelect.selectedOptionValue || "DAY"}} = 'YEAR' AND YEAR(d.document_date) = YEAR(CURDATE()))
+      ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'DAY'
+       AND DATE(d.document_date) = DATE(x.max_date))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'WEEK'
+       AND YEARWEEK(d.document_date, 1) = YEARWEEK(x.max_date, 1))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'MONTH'
+       AND YEAR(d.document_date) = YEAR(x.max_date)
+       AND MONTH(d.document_date) = MONTH(x.max_date))
+
+      OR ('{{SalesPeriodSelect.selectedOptionValue || "DAY"}}' = 'YEAR'
+       AND YEAR(d.document_date) = YEAR(x.max_date))
   )
 GROUP BY
     w.id,
@@ -33,4 +46,3 @@ GROUP BY
     p.name
 ORDER BY `Sales Total` DESC
 LIMIT 20;
-
