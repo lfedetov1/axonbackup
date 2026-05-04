@@ -24,7 +24,7 @@ INSERT INTO documents (
 )
 VALUES (
     {{appsmith.store.companyId}},
-    {{appsmith.store.warehouseId || null}},
+    {{appsmith.store.warehouseId1 || null}},
     NULL,
     {{appsmith.store.userId}},
     {{appsmith.store.userId}},
@@ -34,7 +34,7 @@ VALUES (
     'POS',
     {{this.params.paymentMethod}},
     {{this.params.cardType || null}},
-    {{'POS-' + moment().format('YYYYMMDDHHmmss')}},
+    {{ this.params.documentNumber || invoice_no.text }},
     CURDATE(),
     CURDATE(),
     'EUR',

@@ -29,7 +29,7 @@
     ],
     "name": "Select_sales_return_reasons1",
     "pageId": "POS",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

@@ -1,12 +1,33 @@
 SELECT
     COALESCE(tr.rate, 0) AS taxRate,
-    SUM(di.line_subtotal) AS taxableAmount,
-    SUM(di.tax_amount) AS taxAmount,
-    SUM(di.line_total) AS totalAmount
+
+    SUM(
+        CASE
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN -ABS(di.line_subtotal)
+            ELSE di.line_subtotal
+        END
+    ) AS taxableAmount,
+
+    SUM(
+        CASE
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN -ABS(di.tax_amount)
+            ELSE di.tax_amount
+        END
+    ) AS taxAmount,
+
+    SUM(
+        CASE
+            WHEN d.document_type = 'SALES_RETURN'
+            THEN -ABS(di.line_total)
+            ELSE di.line_total
+        END
+    ) AS totalAmount
 FROM document_items di
 JOIN documents d ON d.id = di.document_id
 LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
-WHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : "" }}'
-  AND d.document_type = 'POS_SALE'
+WHERE di.document_id = {{ tblPOSSales.selectedRow.ID || 0 }}
+  AND d.document_type IN ('POS_SALE', 'SALES_RETURN')
 GROUP BY COALESCE(tr.rate, 0)
 ORDER BY taxRate;

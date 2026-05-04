@@ -50,9 +50,10 @@
     "Tax_Amount",
     "Total",
     "Line_Status",
-    "Note"
+    "Note",
+    "Document_Type"
   ],
-  "columnUpdatedAt": 1777876773124,
+  "columnUpdatedAt": 1777893730198,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -131,6 +132,9 @@
     },
     {
       "key": "primaryColumns.Note.computedValue"
+    },
+    {
+      "key": "primaryColumns.Document_Type.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -330,6 +334,37 @@
       "originalId": "Document ID",
       "sticky": "",
       "textColor": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "Document_Type": {
+      "alias": "Document Type",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "columnType": "text",
+      "computedValue": "{{(() => { const tableData = Table1CopyCopy3.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"Document Type\"])) : Document Type })()}}",
+      "currencyCode": "USD",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "id": "Document_Type",
+      "index": 19,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": false,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Document Type",
+      "notation": "standard",
+      "originalId": "Document Type",
+      "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},

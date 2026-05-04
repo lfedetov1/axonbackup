@@ -5,7 +5,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 8,
   "boxShadow": "none",
-  "defaultText": "{{ GetNewInvoiceNumber.data?.[0]?.document_number || \"\" }}\n\n\n",
+  "defaultText": "{{ GetNewInvoiceNumber.data[0]?.invoiceNumber || \"\" }}\n\n\n\n",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"

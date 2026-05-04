@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n    SUM(di.line_subtotal) AS taxableAmount,\n    SUM(di.tax_amount) AS taxAmount,\n    SUM(di.line_total) AS totalAmount\nFROM document_items di\nJOIN documents d ON d.id = di.document_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : \"\" }}'\n  AND d.document_type = 'POS_SALE'\nGROUP BY COALESCE(tr.rate, 0)\nORDER BY taxRate;\n",
+      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n\n    SUM(\n        CASE\n            WHEN d.document_type = 'SALES_RETURN'\n            THEN -ABS(di.line_subtotal)\n            ELSE di.line_subtotal\n        END\n    ) AS taxableAmount,\n\n    SUM(\n        CASE\n            WHEN d.document_type = 'SALES_RETURN'\n            THEN -ABS(di.tax_amount)\n            ELSE di.tax_amount\n        END\n    ) AS taxAmount,\n\n    SUM(\n        CASE\n            WHEN d.document_type = 'SALES_RETURN'\n            THEN -ABS(di.line_total)\n            ELSE di.line_total\n        END\n    ) AS totalAmount\nFROM document_items di\nJOIN documents d ON d.id = di.document_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE di.document_id = {{ tblPOSSales.selectedRow.ID || 0 }}\n  AND d.document_type IN ('POS_SALE', 'SALES_RETURN')\nGROUP BY COALESCE(tr.rate, 0)\nORDER BY taxRate;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

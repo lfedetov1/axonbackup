@@ -1,10 +1,7 @@
 SELECT
-  id,
-  company_id,
-  code,
-  name,
-  partner_type,
-  is_active
+    id AS value,
+    name AS label
 FROM business_partners
-ORDER BY id DESC
-LIMIT 10;
+WHERE company_id = {{ appsmith.store.companyId }}
+  AND is_active = 1
+ORDER BY name;

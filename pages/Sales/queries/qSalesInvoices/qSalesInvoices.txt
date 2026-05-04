@@ -1,23 +1,26 @@
 SELECT
-    ID AS `ID`,
-    Number AS `Number`,
-    Date AS `Date`,
-    DueDate AS `Due Date`,
-    CustomerCode AS `Customer Code`,
-    Customer AS `Customer`,
-    Warehouse AS `Warehouse`,
-    PaymentMethod AS `Payment Method`,
-    Status AS `Status`,
-    PostingStatus AS `Posting Status`,
-    Subtotal AS `Subtotal`,
-    Tax AS `Tax`,
-    Discount AS `Discount`,
-    Total AS `Total`,
-    Paid AS `Paid`,
-    OpenAmount AS `Open Amount`,
-    CreatedBy AS `Created By`,
-    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`
-FROM SalesInvoices
-WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
-              AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}'
-ORDER BY Date DESC, ID DESC;
+    d.id AS `ID`,
+    d.document_number AS `Number`,
+    DATE_FORMAT(d.document_date, '%d.%m.%Y') AS `Date`,
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+    w.name AS `Warehouse`,
+    d.payment_method AS `Payment Method`,
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+    d.total_amount AS `Total`,
+    d.paid_amount AS `Paid`,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Created At`
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.document_type = 'SALES_INVOICE'
+  AND DATE(d.document_date) BETWEEN
+      STR_TO_DATE('{{ moment(dtpFrom.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y')
+      AND STR_TO_DATE('{{ moment(dtpTo.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y')
+  AND (
+      {{ Number(appsmith.store.warehouseId1 || 0) }} = 0
+      OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || 0) }}
+      OR d.warehouse_id IS NULL
+  )
+ORDER BY d.document_date DESC, d.id DESC;

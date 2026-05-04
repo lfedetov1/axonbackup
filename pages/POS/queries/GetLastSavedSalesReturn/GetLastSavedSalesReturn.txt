@@ -1,0 +1,6 @@
+SELECT id, document_number
+FROM documents
+WHERE document_type = 'SALES_RETURN'
+  AND source_document_id = {{ appsmith.store.posReturnSourceInvoice.documentId || appsmith.store.posReturnSourceInvoice["Document ID"] }}
+ORDER BY id DESC
+LIMIT 1;

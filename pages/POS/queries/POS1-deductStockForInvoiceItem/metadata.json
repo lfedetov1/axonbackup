@@ -15,6 +15,9 @@
         },
         {
           "name": "row"
+        },
+        {
+          "name": "warehouseId"
         }
       ],
       "paginationType": "NONE",

@@ -1,25 +1,47 @@
 SELECT
-    ID AS `ID`,
-    DocumentID AS `Document ID`,
-    LineNo AS `Line No`,
-    ProductCode AS `Product Code`,
-    Product AS `Product`,
-    Barcode AS `Barcode`,
-    Description AS `Description`,
-    Unit AS `Unit`,
-    Quantity AS `Quantity`,
-    UnitPrice AS `Unit Price`,
-    NetUnitPrice AS `Net Unit Price`,
-    DiscountPercent AS `Discount %`,
-    DiscountAmount AS `Discount Amount`,
-    TaxCode AS `Tax Code`,
-    TaxRate AS `Tax Rate`,
-    TaxAmount AS `Tax Amount`,
-    Total AS `Total`,
-    LineStatus AS `Line Status`,
-    Note AS `Note`
-FROM POSSaleItems
-WHERE DocumentID = {{
+    di.id AS `ID`,
+    di.document_id AS `Document ID`,
+    di.line_no AS `Line No`,
+    di.product_code AS `Product Code`,
+    p.name AS `Product`,
+    di.barcode AS `Barcode`,
+    di.description AS `Description`,
+    u.short_name AS `Unit`,
+
+    CASE
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(di.quantity)
+        ELSE di.quantity
+    END AS `Quantity`,
+
+    di.unit_price AS `Unit Price`,
+    di.net_unit_price AS `Net Unit Price`,
+    di.discount_percent AS `Discount %`,
+    di.discount_amount AS `Discount Amount`,
+    tr.code AS `Tax Code`,
+    tr.rate AS `Tax Rate`,
+
+    CASE
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(di.tax_amount)
+        ELSE di.tax_amount
+    END AS `Tax Amount`,
+
+    CASE
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(di.line_total)
+        ELSE di.line_total
+    END AS `Total`,
+
+    di.line_status AS `Line Status`,
+    di.note AS `Note`,
+    d.document_type AS `Document Type`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{
   tblPOSSales.selectedRow && tblPOSSales.selectedRow.ID
     ? tblPOSSales.selectedRow.ID
     : (
@@ -28,4 +50,5 @@ WHERE DocumentID = {{
           : 0
       )
 }}
-ORDER BY LineNo;
+  AND d.document_type IN ('POS_SALE', 'SALES_RETURN')
+ORDER BY di.line_no;

@@ -1,0 +1,4 @@
+SELECT id, document_number, document_type, warehouse_id, created_at
+FROM documents
+ORDER BY id DESC
+LIMIT 5;

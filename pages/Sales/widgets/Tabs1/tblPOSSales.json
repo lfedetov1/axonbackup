@@ -45,9 +45,10 @@
     "Total",
     "Paid",
     "Created_At",
-    "customColumn1"
+    "customColumn1",
+    "Document_Type"
   ],
-  "columnUpdatedAt": 1777877234075,
+  "columnUpdatedAt": 1777893726737,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -114,6 +115,9 @@
     },
     {
       "key": "primaryColumns.customColumn1.boxShadow"
+    },
+    {
+      "key": "primaryColumns.Document_Type.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -320,6 +324,37 @@
       "outputFormat": "DD-MM-YYYY",
       "sticky": "",
       "textColor": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "Document_Type": {
+      "alias": "Document Type",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "columnType": "text",
+      "computedValue": "{{(() => { const tableData = tblPOSSales.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"Document Type\"])) : Document Type })()}}",
+      "currencyCode": "USD",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "id": "Document_Type",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": false,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Document Type",
+      "notation": "standard",
+      "originalId": "Document Type",
+      "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},
@@ -628,7 +663,7 @@
       "label": "Print",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{ POSReceiptPrint.open(tblPOSSales.selectedRow) }}",
+      "onClick": "{{ POSReceiptPrint.openFromSelectedRow() }}",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",

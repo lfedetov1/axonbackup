@@ -5,7 +5,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 4,
   "boxShadow": "none",
-  "defaultText": "{{ GetNewInvoiceNumber.data?.[0]?.document_number || \"null\" }}\n",
+  "defaultText": "{{ GetNewInvoiceNumber.data[0]?.invoiceNumber || \"\" }}\n\n",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -33,7 +33,7 @@
   "labelTextColor": "#231f20",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 35,
+  "leftColumn": 28,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,

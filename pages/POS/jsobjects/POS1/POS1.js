@@ -41,6 +41,10 @@ export default {
     return Number(row.availableStock || 0);
   },
 
+  getWarehouseId() {
+    return Number(appsmith.store.warehouseId1 || 1);
+  },
+
   calculateNormComponentQuantity(component, soldQuantity) {
     const outputQuantity = Number(component.outputQuantity || 1) || 1;
     const componentQuantity = Number(component.componentQuantity || 0);
@@ -50,7 +54,7 @@ export default {
     return Number((baseQuantity * (1 + wastePercent / 100)).toFixed(4));
   },
 
-  async deductStockForInvoiceItem(invoiceId, invoiceItemId, row) {
+  async deductStockForInvoiceItem(invoiceId, invoiceItemId, row, warehouseId) {
     const normItems = await GetActiveNormItemsForPosLine.run({
       productId: row.productId
     });
@@ -60,6 +64,7 @@ export default {
         await InsertInvoiceNormStockMovement.run({
           invoiceId,
           invoiceItemId,
+          warehouseId,
           componentProductId: component.componentProductId,
           requiredQuantity: this.calculateNormComponentQuantity(component, row.quantity),
           note: "POS norm: " + (row.productCode || row.description || "")
@@ -73,6 +78,7 @@ export default {
       await InsertInvoiceStockMovement.run({
         invoiceId,
         invoiceItemId,
+        warehouseId,
         row
       });
     }
@@ -242,6 +248,126 @@ export default {
     await storeValue("invoiceItems", rows);
   },
 
+  async resolveInvoiceId(invoiceResponse) {
+    let invoiceId =
+      invoiceResponse?.insertId ||
+      invoiceResponse?.[0]?.insertId ||
+      invoiceResponse?.[0]?.id ||
+      invoiceResponse?.[0]?.invoiceId ||
+      InsertInvoice.data?.insertId ||
+      InsertInvoice.data?.[0]?.insertId ||
+      InsertInvoice.data?.[0]?.id ||
+      InsertInvoice.data?.[0]?.invoiceId;
+
+    if (invoiceId) {
+      return invoiceId;
+    }
+
+    if (typeof GetSavedPOSInvoiceByNumber !== "undefined") {
+      const savedInvoiceRows = await GetSavedPOSInvoiceByNumber.run();
+
+      invoiceId =
+        savedInvoiceRows?.[0]?.id ||
+        GetSavedPOSInvoiceByNumber.data?.[0]?.id;
+
+      if (invoiceId) {
+        return invoiceId;
+      }
+    }
+
+    if (typeof GetLastSavedPOSInvoice !== "undefined") {
+      const lastInvoiceRows = await GetLastSavedPOSInvoice.run();
+
+      const lastInvoice =
+        lastInvoiceRows?.[0] ||
+        GetLastSavedPOSInvoice.data?.[0];
+
+      if (lastInvoice?.document_number) {
+        await storeValue("posPrintDocumentNumber", lastInvoice.document_number);
+      }
+
+      return lastInvoice?.id;
+    }
+
+    return null;
+  },
+
+  async resolveInvoiceItemId(itemResponse, invoiceId, lineNo) {
+    let invoiceItemId =
+      itemResponse?.insertId ||
+      itemResponse?.[0]?.insertId ||
+      itemResponse?.[0]?.id ||
+      itemResponse?.[0]?.invoiceItemId ||
+      InsertInvoiceItems.data?.insertId ||
+      InsertInvoiceItems.data?.[0]?.insertId ||
+      InsertInvoiceItems.data?.[0]?.id ||
+      InsertInvoiceItems.data?.[0]?.invoiceItemId;
+
+    if (invoiceItemId) {
+      return invoiceItemId;
+    }
+
+    if (typeof GetSavedPOSInvoiceItemByLine !== "undefined") {
+      const savedItemRows = await GetSavedPOSInvoiceItemByLine.run({
+        invoiceId,
+        lineNo
+      });
+
+      invoiceItemId =
+        savedItemRows?.[0]?.id ||
+        GetSavedPOSInvoiceItemByLine.data?.[0]?.id;
+
+      if (invoiceItemId) {
+        return invoiceItemId;
+      }
+    }
+
+    return null;
+  },
+
+  async preparePrintData() {
+    if (typeof GetPOSInvoicePrintHeader === "undefined") {
+      return;
+    }
+
+    const headerRows = await GetPOSInvoicePrintHeader.run();
+    const itemRows = await GetPOSInvoicePrintItems.run();
+    const taxRows = await GetPOSInvoicePrintTaxSummary.run();
+
+    const header = headerRows?.[0] || GetPOSInvoicePrintHeader.data?.[0];
+    const items = itemRows || GetPOSInvoicePrintItems.data || [];
+    const taxes = taxRows || GetPOSInvoicePrintTaxSummary.data || [];
+
+    if (header) {
+      await storeValue("posReceiptPrintData", {
+        header,
+        items,
+        taxes
+      });
+    }
+  },
+
+  async openPrintModal() {
+    await this.preparePrintData();
+    showModal(POSReceiptPrintModal.name);
+  },
+
+  async refreshNewInvoiceNumber() {
+    if (typeof GetNewInvoiceNumber === "undefined") {
+      return;
+    }
+
+    const rows = await GetNewInvoiceNumber.run();
+
+    const nextNumber =
+      rows?.[0]?.invoiceNumber ||
+      GetNewInvoiceNumber.data?.[0]?.invoiceNumber;
+
+    if (nextNumber && typeof invoice_no !== "undefined") {
+      invoice_no.setValue(String(nextNumber));
+    }
+  },
+
   async savePayment(paymentMethod, cardType = null) {
     const rows = this.getRows();
 
@@ -256,26 +382,33 @@ export default {
       return;
     }
 
+    const documentNumber = String(invoice_no.text || "").trim();
+
+    if (!documentNumber) {
+      showAlert("Invoice number is missing.", "warning");
+      return;
+    }
+
+    const warehouseId = this.getWarehouseId();
     const recalculatedRows = rows.map(row => this.recalculateRow(row));
     const totals = this.getTotals(recalculatedRows);
 
     try {
       await storeValue("invoiceItems", recalculatedRows);
+      await storeValue("posPrintDocumentNumber", documentNumber);
 
       const invoiceResponse = await InsertInvoice.run({
         totals,
         paymentMethod,
-        cardType
+        cardType,
+        documentNumber,
+        warehouseId
       });
 
-      const invoiceId =
-        invoiceResponse?.insertId ||
-        invoiceResponse?.[0]?.insertId ||
-        InsertInvoice.data?.insertId ||
-        InsertInvoice.data?.[0]?.insertId;
+      const invoiceId = await this.resolveInvoiceId(invoiceResponse);
 
       if (!invoiceId) {
-        showAlert("Invoice was saved, but invoice ID was not returned.", "error");
+        showAlert("Invoice was saved, but invoice ID could not be found.", "error");
         console.log(invoiceResponse);
         return;
       }
@@ -283,20 +416,23 @@ export default {
       await storeValue("currentInvoiceId", invoiceId);
 
       for (let i = 0; i < recalculatedRows.length; i += 1) {
+        const lineNo = i + 1;
+
         const itemResponse = await InsertInvoiceItems.run({
           invoiceId,
-          lineNo: i + 1,
-          row: recalculatedRows[i]
+          lineNo,
+          row: recalculatedRows[i],
+          warehouseId
         });
 
-        const invoiceItemId =
-          itemResponse?.insertId ||
-          itemResponse?.[0]?.insertId ||
-          InsertInvoiceItems.data?.insertId ||
-          InsertInvoiceItems.data?.[0]?.insertId;
+        const invoiceItemId = await this.resolveInvoiceItemId(
+          itemResponse,
+          invoiceId,
+          lineNo
+        );
 
         if (!invoiceItemId) {
-          showAlert("Invoice item was saved, but item ID was not returned.", "error");
+          showAlert("Invoice item was saved, but item ID could not be found.", "error");
           console.log(itemResponse);
           return;
         }
@@ -304,56 +440,60 @@ export default {
         await this.deductStockForInvoiceItem(
           invoiceId,
           invoiceItemId,
-          recalculatedRows[i]
+          recalculatedRows[i],
+          warehouseId
         );
       }
 
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: invoiceId,
-        actionType: "INSERT",
-        newValues: {
-          source: "POS",
-          document_type: "POS_SALE",
-          payment_method: paymentMethod,
-          card_type: cardType,
-          subtotal_amount: totals.subtotal,
-          tax_amount: totals.tax,
-          discount_amount: totals.discount,
-          total_amount: totals.total,
-          item_count: recalculatedRows.length,
-          warehouse_id: appsmith.store.warehouseId || null
-        }
-      });
+     try {
+  if (typeof AuditLog !== "undefined" && AuditLog.insert) {
+    await AuditLog.insert({
+      entity_name: "documents",
+      entity_id: invoiceId,
+      action_type: "INSERT",
+      new_values: {
+        source: "POS",
+        document_type: "POS_SALE",
+        payment_method: paymentMethod,
+        card_type: cardType,
+        subtotal_amount: totals.subtotal,
+        tax_amount: totals.tax,
+        discount_amount: totals.discount,
+        total_amount: totals.total,
+        item_count: recalculatedRows.length,
+        warehouse_id: warehouseId
+      }
+    });
 
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: invoiceId,
-        actionType: "POST",
-        newValues: {
-          source: "POS",
-          document_type: "POS_SALE",
-          posting_status: "POSTED",
-          payment_method: paymentMethod,
-          total_amount: totals.total,
-          note: "POS payment completed and stock movement created"
-        }
-      });
+    await AuditLog.insert({
+      entity_name: "documents",
+      entity_id: invoiceId,
+      action_type: "POST",
+      new_values: {
+        source: "POS",
+        document_type: "POS_SALE",
+        posting_status: "POSTED",
+        payment_method: paymentMethod,
+        total_amount: totals.total,
+        warehouse_id: warehouseId,
+        note: "POS payment completed and stock movement created"
+      }
+    });
+  }
+} catch (auditError) {
+  console.log("Audit log skipped:", auditError);
+}
+
 
       if (typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
 
-      const documentNumber = String(invoice_no.text || "").trim();
-
-      if (!documentNumber) {
-        showAlert("Invoice number is missing for print.", "warning");
-      } else {
-        await storeValue("posPrintDocumentNumber", documentNumber);
-        await POSReceiptPrint.openFromPOSForm();
-      }
+      await this.openPrintModal();
 
       await this.clearPOS();
+      await this.refreshNewInvoiceNumber();
+
       showAlert(paymentMethod + " payment saved successfully.", "success");
     } catch (error) {
       showAlert("Error while saving payment: " + error.message, "error");
@@ -389,7 +529,9 @@ export default {
     await storeValue("invoiceItems", []);
     await storeValue("currentInvoiceId", null);
 
-    BarcodeInput.setValue("");
+    if (typeof BarcodeInput !== "undefined") {
+      BarcodeInput.setValue("");
+    }
 
     if (typeof CardTypeSelect !== "undefined") {
       CardTypeSelect.setSelectedOption("");

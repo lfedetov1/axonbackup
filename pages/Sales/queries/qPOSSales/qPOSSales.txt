@@ -1,22 +1,38 @@
 SELECT
-    ID AS `ID`,
-    Number AS `Number`,
-    Date AS `Date`,
-    CustomerCode AS `Customer Code`,
-    Customer AS `Customer`,
-    Warehouse AS `Warehouse`,
-    PaymentMethod AS `Payment Method`,
-    Cashier AS `Cashier`,
-    Status AS `Status`,
-    PostingStatus AS `Posting Status`,
-    Total AS `Total`,
-    Paid AS `Paid`,
-    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`
-FROM POSSales
-WHERE Date >= '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
-  AND Date < DATE_ADD('{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}', INTERVAL 1 DAY)
+    d.id AS `ID`,
+    d.document_number AS `Number`,
+    DATE_FORMAT(d.document_date, '%d.%m.%Y') AS `Date`,
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+    w.name AS `Warehouse`,
+    d.payment_method AS `Payment Method`,
+    cu.username AS `Cashier`,
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+    d.document_type AS `Document Type`,
+
+    CASE
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(d.total_amount)
+        ELSE d.total_amount
+    END AS `Total`,
+
+    CASE
+        WHEN d.document_type = 'SALES_RETURN'
+        THEN -ABS(d.paid_amount)
+        ELSE d.paid_amount
+    END AS `Paid`,
+
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Created At`
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users cu ON cu.id = d.cashier_user_id
+WHERE d.document_type IN ('POS_SALE', 'SALES_RETURN')
+  AND d.document_date >= '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
+  AND d.document_date < DATE_ADD('{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}', INTERVAL 1 DAY)
   AND (
-      {{appsmith.store.warehouseId || 0}} = 0
-      OR WarehouseID = {{appsmith.store.warehouseId || 0}}
+      {{ appsmith.store.warehouseId1 || 0 }} = 0
+      OR d.warehouse_id = {{ appsmith.store.warehouseId1 || 0 }}
   )
-ORDER BY Date DESC, ID DESC;
+ORDER BY d.document_date DESC, d.id DESC;

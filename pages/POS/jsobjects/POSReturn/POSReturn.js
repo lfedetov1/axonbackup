@@ -32,6 +32,7 @@ export default {
   displayRow(row = {}) {
     return {
       Return: row.returnSelected === true,
+      "Return Action": row.returnSelected === true ? "Selected" : "Select",
       "Product Code": row.productCode || "",
       Barcode: row.barcode || "",
       Description: row.description || "",
@@ -108,6 +109,78 @@ export default {
       returnTaxAmount: String(returnTaxAmount.toFixed(2)),
       returnTotal: String(returnTotal.toFixed(2))
     };
+  },
+
+  toggleReturnSelected(sourceDocumentItemId) {
+    const rows = [...(appsmith.store.posReturnItems || [])];
+
+    const index = rows.findIndex(row =>
+      String(row.sourceDocumentItemId || "") === String(sourceDocumentItemId || "")
+    );
+
+    if (index < 0) {
+      showAlert("Return item was not found.", "warning");
+      return;
+    }
+
+    rows[index] = this.recalculateReturnRow({
+      ...rows[index],
+      returnSelected: rows[index].returnSelected !== true
+    });
+
+    return storeValue("posReturnItems", rows);
+  },
+
+  selectAllReturnItems() {
+    const rows = [...(appsmith.store.posReturnItems || [])].map(row =>
+      this.recalculateReturnRow({
+        ...row,
+        returnSelected: Number(row.availableReturnQuantity || 0) > 0
+      })
+    );
+
+    return storeValue("posReturnItems", rows);
+  },
+
+  clearSelectedReturnItems() {
+    const rows = [...(appsmith.store.posReturnItems || [])].map(row =>
+      this.recalculateReturnRow({
+        ...row,
+        returnSelected: false
+      })
+    );
+
+    return storeValue("posReturnItems", rows);
+  },
+
+  async syncReturnTableEdits() {
+    const tableRows = ReturnItemsTable.tableData || [];
+    const storedRows = [...(appsmith.store.posReturnItems || [])];
+
+    const nextRows = storedRows.map(storedRow => {
+      const editedRow = tableRows.find(row =>
+        String(row.sourceDocumentItemId || "") === String(storedRow.sourceDocumentItemId || "")
+      );
+
+      if (!editedRow) {
+        return storedRow;
+      }
+
+      return this.recalculateReturnRow({
+        ...storedRow,
+        returnSelected: storedRow.returnSelected === true,
+        returnQuantity: String(
+          editedRow["Return Quantity"] ||
+          editedRow.returnQuantity ||
+          storedRow.returnQuantity ||
+          "0"
+        ),
+        note: String(editedRow.Note || editedRow.note || storedRow.note || "")
+      });
+    });
+
+    await storeValue("posReturnItems", nextRows);
+    return nextRows;
   },
 
   getReturnRows() {
@@ -232,6 +305,8 @@ export default {
   },
 
   async saveReturn() {
+    await this.syncReturnTableEdits();
+
     const sourceInvoice = appsmith.store.posReturnSourceInvoice;
     const rows = this.getReturnRows();
 
@@ -288,17 +363,30 @@ export default {
         totals
       });
 
-      const returnDocumentId =
-        returnResponse?.insertId ||
-        returnResponse?.[0]?.insertId ||
-        InsertSalesReturn.data?.insertId ||
-        InsertSalesReturn.data?.[0]?.insertId;
+      let returnDocumentId =
+  returnResponse?.insertId ||
+  returnResponse?.[0]?.insertId ||
+  returnResponse?.[0]?.id ||
+  returnResponse?.[0]?.returnDocumentId ||
+  InsertSalesReturn.data?.insertId ||
+  InsertSalesReturn.data?.[0]?.insertId ||
+  InsertSalesReturn.data?.[0]?.id ||
+  InsertSalesReturn.data?.[0]?.returnDocumentId;
 
-      if (!returnDocumentId) {
-        showAlert("Return was saved, but return ID was not returned.", "error");
-        console.log(returnResponse);
-        return;
-      }
+if (!returnDocumentId) {
+  const savedReturnRows = await GetLastSavedSalesReturn.run();
+
+  returnDocumentId =
+    savedReturnRows?.[0]?.id ||
+    GetLastSavedSalesReturn.data?.[0]?.id;
+}
+
+if (!returnDocumentId) {
+  showAlert("Return was saved, but return ID could not be found.", "error");
+  console.log(returnResponse);
+  return;
+}
+
 
       for (let i = 0; i < rows.length; i += 1) {
         const itemResponse = await InsertSalesReturnItem.run({
@@ -330,45 +418,44 @@ export default {
         managerUserId
       });
 
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: returnDocumentId,
-        actionType: "INSERT",
-        newValues: {
-          source: "POS Return",
-          document_type: "SALES_RETURN",
-          source_document_id: sourceDocumentId,
-          manager_user_id: managerUserId,
-          return_reason_id: ReturnReasonSelect.selectedOptionValue,
-          payment_method: ReturnPaymentMethodSelect.selectedOptionValue,
-          card_type: ReturnPaymentMethodSelect.selectedOptionValue === "CARD"
-            ? ReturnCardTypeSelect.selectedOptionValue
-            : null,
-          subtotal_amount: totals.subtotal,
-          tax_amount: totals.tax,
-          discount_amount: totals.discount,
-          total_amount: totals.total,
-          item_count: rows.length
-        }
-      });
-
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: sourceDocumentId,
-        actionType: "POST",
-        newValues: {
-          source: "POS Return",
-          return_document_id: returnDocumentId,
-          manager_user_id: managerUserId,
-          note: "POS return created and approved"
-        }
-      });
-
       if (typeof InsertAuditLog !== "undefined") {
-        await InsertAuditLog.run();
+        await InsertAuditLog.run({
+          entity_name: "documents",
+          entity_id: returnDocumentId,
+          action_type: "INSERT",
+          new_values: {
+            source: "POS Return",
+            document_type: "SALES_RETURN",
+            source_document_id: sourceDocumentId,
+            manager_user_id: managerUserId,
+            return_reason_id: ReturnReasonSelect.selectedOptionValue,
+            payment_method: ReturnPaymentMethodSelect.selectedOptionValue,
+            card_type: ReturnPaymentMethodSelect.selectedOptionValue === "CARD"
+              ? ReturnCardTypeSelect.selectedOptionValue
+              : null,
+            subtotal_amount: totals.subtotal,
+            tax_amount: totals.tax,
+            discount_amount: totals.discount,
+            total_amount: totals.total,
+            item_count: rows.length
+          }
+        });
+
+        await InsertAuditLog.run({
+          entity_name: "documents",
+          entity_id: sourceDocumentId,
+          action_type: "POST",
+          new_values: {
+            source: "POS Return",
+            return_document_id: returnDocumentId,
+            manager_user_id: managerUserId,
+            note: "POS return created and approved"
+          }
+        });
       }
 
       await this.clearReturnForm();
+			closeModal(ReturnModal.name);
 
       showAlert("Return was saved successfully.", "success");
     } catch (error) {

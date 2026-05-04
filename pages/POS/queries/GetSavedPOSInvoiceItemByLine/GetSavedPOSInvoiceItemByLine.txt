@@ -1,0 +1,5 @@
+SELECT id
+FROM document_items
+WHERE document_id = {{ this.params.invoiceId }}
+  AND line_no = {{ this.params.lineNo }}
+LIMIT 1;

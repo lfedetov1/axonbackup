@@ -23,11 +23,17 @@
     },
     {
       "key": "onOptionChange"
+    },
+    {
+      "key": "onDropdownOpen"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onOptionChange"
+    },
+    {
+      "key": "onDropdownOpen"
     }
   ],
   "isDisabled": false,
@@ -50,9 +56,10 @@
   "mobileRightColumn": 47,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onDropdownOpen": "{{Getpartner.run()}}",
   "onOptionChange": "{{storeValue(\"selectedPartner\", Partnerdata.data[0]);}}",
-  "optionLabel": "name",
-  "optionValue": "code",
+  "optionLabel": "label",
+  "optionValue": "value",
   "parentColumnSpace": 13.40625,
   "parentId": "ketqbhrli9",
   "parentRowSpace": 10,
