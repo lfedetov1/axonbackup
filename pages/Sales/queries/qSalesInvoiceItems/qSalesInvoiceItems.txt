@@ -1,25 +1,53 @@
 SELECT
-    ID AS `ID`,
-    DocumentID AS `Document ID`,
-    LineNo AS `Line No`,
-    ProductCode AS `Product Code`,
-    Product AS `Product`,
-    Barcode AS `Barcode`,
-    Description AS `Description`,
-    Unit AS `Unit`,
-    Quantity AS `Quantity`,
-    InvoicedQuantity AS `Invoiced Quantity`,
-    UnitPrice AS `Unit Price`,
-    NetUnitPrice AS `Net Unit Price`,
-    DiscountPercent AS `Discount %`,
-    DiscountAmount AS `Discount Amount`,
-    DiscountReason AS `Discount Reason`,
-    TaxCode AS `Tax Code`,
-    TaxRate AS `Tax Rate`,
-    TaxAmount AS `Tax Amount`,
-    Total AS `Total`,
-    LineStatus AS `Line Status`,
-    Note AS `Note`
-FROM SalesInvoiceItems
-WHERE DocumentID = {{ tblInvoices.selectedRow.ID || 0 }}
-ORDER BY LineNo;
+    di.id AS `ID`,
+    di.document_id AS `Document ID`,
+    di.line_no AS `Line No`,
+    di.product_code AS `Product Code`,
+    p.name AS `Product`,
+    di.barcode AS `Barcode`,
+    di.description AS `Description`,
+    u.short_name AS `Unit`,
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(di.quantity)
+        ELSE di.quantity
+    END AS `Quantity`,
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(di.invoiced_quantity)
+        ELSE di.invoiced_quantity
+    END AS `Invoiced Quantity`,
+
+    di.unit_price AS `Unit Price`,
+    di.net_unit_price AS `Net Unit Price`,
+    di.discount_percent AS `Discount %`,
+    di.discount_amount AS `Discount Amount`,
+    di.discount_reason AS `Discount Reason`,
+    tr.code AS `Tax Code`,
+    tr.rate AS `Tax Rate`,
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(di.tax_amount)
+        ELSE di.tax_amount
+    END AS `Tax Amount`,
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(di.line_total)
+        ELSE di.line_total
+    END AS `Total`,
+
+    di.line_status AS `Line Status`,
+    di.note AS `Note`,
+    d.document_type AS `Document Type`
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{ tblInvoices.selectedRow.ID || 0 }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+ORDER BY di.line_no;

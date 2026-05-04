@@ -1,26 +1,40 @@
 SELECT
     d.id AS `ID`,
     d.document_number AS `Number`,
+    d.document_type AS `Document Type`,
+    d.document_date AS `Original Date`,
     DATE_FORMAT(d.document_date, '%d.%m.%Y') AS `Date`,
+    STR_TO_DATE('{{ moment(dtpFrom.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y') AS `Filter From`,
+    STR_TO_DATE('{{ moment(dtpTo.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y') AS `Filter To`,
     bp.code AS `Customer Code`,
     bp.name AS `Customer`,
     w.name AS `Warehouse`,
     d.payment_method AS `Payment Method`,
     d.status AS `Status`,
     d.posting_status AS `Posting Status`,
-    d.total_amount AS `Total`,
-    d.paid_amount AS `Paid`,
-    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Created At`
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(d.total_amount)
+        ELSE d.total_amount
+    END AS `Total`,
+
+    CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(d.paid_amount)
+        ELSE d.paid_amount
+    END AS `Paid`,
+
+    d.created_at AS `Created At`
 FROM documents d
 LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
-WHERE d.document_type = 'SALES_INVOICE'
+WHERE d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
   AND DATE(d.document_date) BETWEEN
       STR_TO_DATE('{{ moment(dtpFrom.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y')
       AND STR_TO_DATE('{{ moment(dtpTo.selectedDate).format("DD.MM.YYYY") }}', '%d.%m.%Y')
   AND (
       {{ Number(appsmith.store.warehouseId1 || 0) }} = 0
       OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || 0) }}
-      OR d.warehouse_id IS NULL
   )
 ORDER BY d.document_date DESC, d.id DESC;

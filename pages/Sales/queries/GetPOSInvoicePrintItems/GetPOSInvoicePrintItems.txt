@@ -3,40 +3,17 @@ SELECT
     di.product_code AS productCode,
     di.barcode AS barcode,
     di.description AS description,
-
-    CASE
-        WHEN d.document_type = 'SALES_RETURN'
-        THEN -ABS(di.quantity)
-        ELSE di.quantity
-    END AS quantity,
-
+    di.quantity AS quantity,
     u.short_name AS unitName,
     di.unit_price AS unitPrice,
     di.discount_percent AS discountPercent,
     di.discount_amount AS discountAmount,
     tr.rate AS taxRate,
-
-    CASE
-        WHEN d.document_type = 'SALES_RETURN'
-        THEN -ABS(di.tax_amount)
-        ELSE di.tax_amount
-    END AS taxAmount,
-
-    CASE
-        WHEN d.document_type = 'SALES_RETURN'
-        THEN -ABS(di.line_subtotal)
-        ELSE di.line_subtotal
-    END AS lineSubtotal,
-
-    CASE
-        WHEN d.document_type = 'SALES_RETURN'
-        THEN -ABS(di.line_total)
-        ELSE di.line_total
-    END AS lineTotal
+    di.tax_amount AS taxAmount,
+    di.line_subtotal AS lineSubtotal,
+    di.line_total AS lineTotal
 FROM document_items di
-JOIN documents d ON d.id = di.document_id
 LEFT JOIN units_of_measure u ON u.id = di.unit_id
 LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
-WHERE di.document_id = {{ tblPOSSales.selectedRow.ID || 0 }}
-  AND d.document_type IN ('POS_SALE', 'SALES_RETURN')
+WHERE di.document_id = {{ appsmith.store.currentInvoiceId || tblInvoices.selectedRow.ID || 0 }}
 ORDER BY di.line_no;
