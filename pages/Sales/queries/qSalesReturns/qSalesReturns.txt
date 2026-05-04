@@ -10,7 +10,7 @@ SELECT
     PostingStatus AS `Posting Status`,
     Total AS `Total`,
     CreatedBy AS `Created By`,
-    CreatedAt AS `Created At`
+    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`
 FROM SalesReturns
 WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
               AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}'

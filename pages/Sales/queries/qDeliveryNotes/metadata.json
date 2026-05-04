@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    ID AS `ID`,\n    Number AS `Number`,\n    Date AS `Date`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Warehouse AS `Warehouse`,\n    Status AS `Status`,\n    PostingStatus AS `Posting Status`,\n    Total AS `Total`,\n    CreatedBy AS `Created By`,\n    CreatedAt AS `Created At`\nFROM DeliveryNotes\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}' AND Warehouse = '{{appsmith.store.warehouseId}}'\n              \nORDER BY Date DESC, ID DESC;\n",
+      "body": "SELECT\n    ID AS `ID`,\n    Number AS `Number`,\n    Date AS `Date`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Warehouse AS `Warehouse`,\n    Status AS `Status`,\n    PostingStatus AS `Posting Status`,\n    Total AS `Total`,\n    CreatedBy AS `Created By`,\n    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`\nFROM DeliveryNotes\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}' AND Warehouse = '{{appsmith.store.warehouseId}}'\n              \nORDER BY Date DESC, ID DESC;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

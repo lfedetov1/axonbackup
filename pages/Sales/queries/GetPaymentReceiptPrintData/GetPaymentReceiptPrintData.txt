@@ -6,10 +6,8 @@ SELECT
     d.paid_amount AS amount,
     d.document_number AS referenceNumber,
     d.note AS note,
-
     bp.name AS partnerName,
     cu.username AS cashier,
-
     cr.code AS cashRegisterCode,
     w.name AS warehouseName,
     c.logo_path AS company_logo_path,
@@ -20,6 +18,6 @@ LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN users cu ON cu.id = d.cashier_user_id
 LEFT JOIN cash_registers cr ON cr.id = {{ appsmith.store.cashRegisterId || 0 }}
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
-WHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || "" }}'
+WHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : "" }}'
   AND d.document_type = 'POS_SALE'
 LIMIT 1;

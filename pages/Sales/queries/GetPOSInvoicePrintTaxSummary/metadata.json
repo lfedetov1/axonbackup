@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_4e72a8ef-f5f5-4354-81aa-e85641d917a1",
-  "id": "POS_GetPOSInvoicePrintTaxSummary",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_501c613a-972f-4d1d-a8a9-f1c77451bac4",
+  "id": "Sales_GetPOSInvoicePrintTaxSummary",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n    SUM(di.line_subtotal) AS taxableAmount,\n    SUM(di.tax_amount) AS taxAmount,\n    SUM(di.line_total) AS totalAmount\nFROM document_items di\nJOIN documents d ON d.id = di.document_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || \"\" }}'\n  AND d.document_type = 'POS_SALE'\nGROUP BY COALESCE(tr.rate, 0)\nORDER BY taxRate;\n",
+      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n    SUM(di.line_subtotal) AS taxableAmount,\n    SUM(di.tax_amount) AS taxAmount,\n    SUM(di.line_total) AS totalAmount\nFROM document_items di\nJOIN documents d ON d.id = di.document_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : \"\" }}'\n  AND d.document_type = 'POS_SALE'\nGROUP BY COALESCE(tr.rate, 0)\nORDER BY taxRate;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -28,7 +28,7 @@
       }
     ],
     "name": "GetPOSInvoicePrintTaxSummary",
-    "pageId": "POS",
+    "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }

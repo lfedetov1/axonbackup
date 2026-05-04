@@ -2,7 +2,7 @@ SELECT
     ID AS `ID`,
     DocumentType AS `Document Type`,
     Number AS `Number`,
-    Date AS `Date`,
+    DATE_FORMAT(Date, '%d.%m.%Y') AS `Date`,
     CustomerCode AS `Customer Code`,
     Customer AS `Customer`,
     Status AS `Status`,
@@ -12,7 +12,7 @@ SELECT
     Total AS `Total`,
     Paid AS `Paid`,
     CreatedBy AS `Created By`,
-    CreatedAt AS `Created At`
+    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`
 FROM SalesHistory
 WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
               AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}'

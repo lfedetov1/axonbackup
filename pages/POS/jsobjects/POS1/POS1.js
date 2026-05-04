@@ -112,9 +112,9 @@ export default {
     }
 
     try {
-const result = await GetProductByBarcode.run({
-  lookup: BarcodeInput.text?.trim() || ""
-});
+      const result = await GetProductByBarcode.run({
+        lookup: BarcodeInput.text?.trim() || ""
+      });
 
       const product = result?.[0] || GetProductByBarcode.data?.[0];
 
@@ -344,7 +344,15 @@ const result = await GetProductByBarcode.run({
         await InsertAuditLog.run();
       }
 
-      await POSReceiptPrint.open(invoiceId);
+      const documentNumber = String(invoice_no.text || "").trim();
+
+      if (!documentNumber) {
+        showAlert("Invoice number is missing for print.", "warning");
+      } else {
+        await storeValue("posPrintDocumentNumber", documentNumber);
+        await POSReceiptPrint.openFromPOSForm();
+      }
+
       await this.clearPOS();
       showAlert(paymentMethod + " payment saved successfully.", "success");
     } catch (error) {

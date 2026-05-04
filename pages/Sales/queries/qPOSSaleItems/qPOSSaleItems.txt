@@ -19,5 +19,13 @@ SELECT
     LineStatus AS `Line Status`,
     Note AS `Note`
 FROM POSSaleItems
-WHERE DocumentID = {{ tblPOSSales.selectedRow.ID || 0 }} 
+WHERE DocumentID = {{
+  tblPOSSales.selectedRow && tblPOSSales.selectedRow.ID
+    ? tblPOSSales.selectedRow.ID
+    : (
+        tblPOSSales.tableData && tblPOSSales.tableData.length > 0
+          ? tblPOSSales.tableData[0].ID
+          : 0
+      )
+}}
 ORDER BY LineNo;

@@ -1,25 +1,23 @@
 export default {
-  async open() {
-    const documentNumber = invoice_no.text;
+  async open(row = tblPOSSales.selectedRow) {
+    const documentNumber = row?.Number;
 
     if (!documentNumber) {
-      showAlert("Invoice number is missing.", "error");
+      showAlert("POS invoice number is missing.", "error");
       return;
     }
 
     try {
-      await storeValue("posPrintDocumentNumber", documentNumber);
-
-      const headerRows = await GetPOSInvoicePrintHeader.run();
-      const itemRows = await GetPOSInvoicePrintItems.run();
-      const taxRows = await GetPOSInvoicePrintTaxSummary.run();
+      const headerRows = await GetPOSInvoicePrintHeader.run({ documentNumber });
+      const itemRows = await GetPOSInvoicePrintItems.run({ documentNumber });
+      const taxRows = await GetPOSInvoicePrintTaxSummary.run({ documentNumber });
 
       const header = headerRows?.[0] || GetPOSInvoicePrintHeader.data?.[0];
       const items = itemRows || GetPOSInvoicePrintItems.data || [];
       const taxes = taxRows || GetPOSInvoicePrintTaxSummary.data || [];
 
       if (!header) {
-        showAlert("POS receipt print data was not found.", "error");
+        showAlert("POS invoice print data was not found.", "error");
         return;
       }
 

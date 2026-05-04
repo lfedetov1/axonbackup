@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    di.line_no AS lineNo,\n    di.product_code AS productCode,\n    di.barcode AS barcode,\n    di.description AS description,\n    di.quantity AS quantity,\n    u.short_name AS unitName,\n    di.unit_price AS unitPrice,\n    di.discount_percent AS discountPercent,\n    di.discount_amount AS discountAmount,\n    tr.rate AS taxRate,\n    di.tax_amount AS taxAmount,\n    di.line_subtotal AS lineSubtotal,\n    di.line_total AS lineTotal\nFROM document_items di\nLEFT JOIN units_of_measure u ON u.id = di.unit_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE di.document_id = {{this.params.documentId}}\nORDER BY di.line_no;\n",
+      "body": "SELECT\n    di.line_no AS lineNo,\n    di.product_code AS productCode,\n    di.barcode AS barcode,\n    di.description AS description,\n    di.quantity AS quantity,\n    u.short_name AS unitName,\n    di.unit_price AS unitPrice,\n    di.net_unit_price AS netUnitPrice,\n    di.discount_percent AS discountPercent,\n    di.discount_amount AS discountAmount,\n    tr.rate AS taxRate,\n    di.tax_amount AS taxAmount,\n    di.line_subtotal AS lineSubtotal,\n    di.line_total AS lineTotal,\n    di.note AS note\nFROM document_items di\nJOIN documents d ON d.id = di.document_id\nLEFT JOIN units_of_measure u ON u.id = di.unit_id\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\nWHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || \"\" }}'\n  AND d.document_type = 'POS_SALE'\nORDER BY di.line_no;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

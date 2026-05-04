@@ -6,18 +6,16 @@ SELECT
     di.quantity AS quantity,
     u.short_name AS unitName,
     di.unit_price AS unitPrice,
-    di.net_unit_price AS netUnitPrice,
     di.discount_percent AS discountPercent,
     di.discount_amount AS discountAmount,
     tr.rate AS taxRate,
     di.tax_amount AS taxAmount,
     di.line_subtotal AS lineSubtotal,
-    di.line_total AS lineTotal,
-    di.note AS note
+    di.line_total AS lineTotal
 FROM document_items di
 JOIN documents d ON d.id = di.document_id
 LEFT JOIN units_of_measure u ON u.id = di.unit_id
 LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
-WHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || "" }}'
+WHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : "" }}'
   AND d.document_type = 'POS_SALE'
 ORDER BY di.line_no;

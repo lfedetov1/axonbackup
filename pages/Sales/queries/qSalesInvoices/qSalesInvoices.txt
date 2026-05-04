@@ -16,7 +16,7 @@ SELECT
     Paid AS `Paid`,
     OpenAmount AS `Open Amount`,
     CreatedBy AS `Created By`,
-    CreatedAt AS `Created At`
+    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`
 FROM SalesInvoices
 WHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format("YYYY-MM-DD") }}'
               AND '{{ moment(dtpTo.selectedDate).format("YYYY-MM-DD") }}'

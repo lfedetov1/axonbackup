@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    ID AS `ID`,\n    Number AS `Number`,\n    Date AS `Date`,\n    ValidUntil AS `Valid Until`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Status AS `Status`,\n    SalesChannel AS `Sales Channel`,\n    Subtotal AS `Subtotal`,\n    Tax AS `Tax`,\n    Discount AS `Discount`,\n    Total AS `Total`,\n    CreatedBy AS `Created By`,\n    CreatedAt AS `Created At`\nFROM Quotations\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}' \nORDER BY Date DESC, ID DESC;\n",
+      "body": "SELECT\n    ID AS `ID`,\n    Number AS `Number`,\n    Date AS `Date`,\n    ValidUntil AS `Valid Until`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Status AS `Status`,\n    SalesChannel AS `Sales Channel`,\n    Subtotal AS `Subtotal`,\n    Tax AS `Tax`,\n    Discount AS `Discount`,\n    Total AS `Total`,\n    CreatedBy AS `Created By`,\n    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`\nFROM Quotations\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}' \nORDER BY Date DESC, ID DESC;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

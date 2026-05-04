@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    ID AS `ID`,\n    DocumentType AS `Document Type`,\n    Number AS `Number`,\n    Date AS `Date`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Status AS `Status`,\n    PostingStatus AS `Posting Status`,\n    PaymentMethod AS `Payment Method`,\n    SalesChannel AS `Sales Channel`,\n    Total AS `Total`,\n    Paid AS `Paid`,\n    CreatedBy AS `Created By`,\n    CreatedAt AS `Created At`\nFROM SalesHistory\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}'\nORDER BY Date DESC, ID DESC;\n",
+      "body": "SELECT\n    ID AS `ID`,\n    DocumentType AS `Document Type`,\n    Number AS `Number`,\n    DATE_FORMAT(Date, '%d.%m.%Y') AS `Date`,\n    CustomerCode AS `Customer Code`,\n    Customer AS `Customer`,\n    Status AS `Status`,\n    PostingStatus AS `Posting Status`,\n    PaymentMethod AS `Payment Method`,\n    SalesChannel AS `Sales Channel`,\n    Total AS `Total`,\n    Paid AS `Paid`,\n    CreatedBy AS `Created By`,\n    DATE_FORMAT(CreatedAt, '%d.%m.%Y %H:%i:%s') AS `Created At`\nFROM SalesHistory\nWHERE Date BETWEEN '{{ moment(dtpFrom.selectedDate).format(\"YYYY-MM-DD\") }}'\n              AND '{{ moment(dtpTo.selectedDate).format(\"YYYY-MM-DD\") }}'\nORDER BY Date DESC, ID DESC;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

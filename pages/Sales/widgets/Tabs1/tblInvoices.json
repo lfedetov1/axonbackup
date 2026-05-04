@@ -375,6 +375,7 @@
       "label": "Date",
       "notation": "standard",
       "originalId": "Date",
+      "outputFormat": "DD-MM-YYYY",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",

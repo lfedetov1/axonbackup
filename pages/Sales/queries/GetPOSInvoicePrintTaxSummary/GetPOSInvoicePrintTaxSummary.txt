@@ -6,7 +6,7 @@ SELECT
 FROM document_items di
 JOIN documents d ON d.id = di.document_id
 LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
-WHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || "" }}'
+WHERE d.document_number = '{{ tblPOSSales.selectedRow ? tblPOSSales.selectedRow.Number : "" }}'
   AND d.document_type = 'POS_SALE'
 GROUP BY COALESCE(tr.rate, 0)
 ORDER BY taxRate;
