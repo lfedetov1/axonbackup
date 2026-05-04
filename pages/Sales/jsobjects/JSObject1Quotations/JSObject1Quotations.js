@@ -514,68 +514,86 @@ export default {
     }
   },
 
-  async confirmConvertQuoteToInvoice() {
-    const quotationId = appsmith.store.pendingQuotationId;
+ async confirmConvertQuoteToInvoice() {
+  const quotationId =
+    appsmith.store.pendingQuotationId ||
+    tblQuotations.triggeredRow?.ID ||
+    tblQuotations.selectedRow?.ID ||
+    appsmith.store.currentQuotationId;
 
-    if (!quotationId) {
-      showAlert("Quotation ID is missing.", "warning");
-      return;
+  if (!quotationId) {
+    showAlert("Quotation ID is missing.", "warning");
+    return;
+  }
+
+  try {
+    const result = await ConvertQuoteToInvoice.run({ quotationId });
+
+    let newInvoiceId =
+      result?.[0]?.newInvoiceId ||
+      result?.[1]?.[0]?.newInvoiceId ||
+      ConvertQuoteToInvoice.data?.[0]?.newInvoiceId ||
+      ConvertQuoteToInvoice.data?.[1]?.[0]?.newInvoiceId;
+
+    if (!newInvoiceId && typeof GetConvertedInvoiceByQuoteId !== "undefined") {
+      const invoiceRows = await GetConvertedInvoiceByQuoteId.run({ quotationId });
+      newInvoiceId =
+        invoiceRows?.[0]?.id ||
+        invoiceRows?.[0]?.invoiceId ||
+        GetConvertedInvoiceByQuoteId.data?.[0]?.id ||
+        GetConvertedInvoiceByQuoteId.data?.[0]?.invoiceId;
     }
 
-    try {
-      const result = await ConvertQuoteToInvoice.run({ quotationId });
+    await AuditLog1.insert({
+      entityName: "documents",
+      entityId: quotationId,
+      actionType: "POST",
+      newValues: {
+        document_type: "QUOTE",
+        converted_to: "SALES_INVOICE",
+        new_invoice_id: newInvoiceId || null,
+        note: "Quotation converted to invoice"
+      }
+    });
 
-      const newInvoiceId =
-        result?.[0]?.newInvoiceId ||
-        result?.[1]?.[0]?.newInvoiceId ||
-        ConvertQuoteToInvoice.data?.[0]?.newInvoiceId ||
-        ConvertQuoteToInvoice.data?.[1]?.[0]?.newInvoiceId;
-
+    if (newInvoiceId) {
       await AuditLog1.insert({
         entityName: "documents",
-        entityId: quotationId,
-        actionType: "POST",
+        entityId: newInvoiceId,
+        actionType: "INSERT",
         newValues: {
-          document_type: "QUOTE",
-          converted_to: "SALES_INVOICE",
-          new_invoice_id: newInvoiceId || null,
-          note: "Quotation converted to invoice"
+          document_type: "SALES_INVOICE",
+          source_document_id: quotationId,
+          note: "Invoice created from quotation"
         }
       });
-
-      if (newInvoiceId) {
-        await AuditLog1.insert({
-          entityName: "documents",
-          entityId: newInvoiceId,
-          actionType: "INSERT",
-          newValues: {
-            document_type: "SALES_INVOICE",
-            source_document_id: quotationId,
-            note: "Invoice created from quotation"
-          }
-        });
-      }
-
-      if (typeof InsertQuotationChangeLog !== "undefined") {
-        await InsertQuotationChangeLog.run({
-          quotationId,
-          changeType: "UPDATE",
-          note: "Quotation converted to invoice"
-        });
-      }
-
-      closeModal("ConfirmQuoteToInvoiceModal");
-
-      if (typeof InsertAuditLog !== "undefined") {
-        await InsertAuditLog.run();
-      }
-
-      showAlert("Quotation converted to invoice successfully.", "success");
-    } catch (error) {
-      showAlert("Error while converting quotation: " + error.message, "error");
-      console.log(error);
     }
-  },
+
+    if (typeof InsertQuotationChangeLog !== "undefined") {
+      await InsertQuotationChangeLog.run({
+        quotationId,
+        changeType: "UPDATE",
+        note: "Quotation converted to invoice"
+      });
+    }
+
+    closeModal(ConfirmQuoteToInvoiceModal.name);
+
+    if (typeof InsertAuditLog !== "undefined") {
+      await InsertAuditLog.run();
+    }
+
+    if (newInvoiceId && typeof InvoicePrint !== "undefined") {
+      await InvoicePrint.open(newInvoiceId, "A4");
+    }
+
+    showAlert("Quotation converted to invoice successfully.", "success");
+  } catch (error) {
+    showAlert("Error while converting quotation: " + error.message, "error");
+    console.log(error);
+  }
+},
+
 
   async clearQuotationAfterSave() {
     await storeValue("quotationItems", [this.emptyRow(1)]);
