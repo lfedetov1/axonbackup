@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 56,
+  "bottomRow": 62,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -43,7 +43,7 @@
   "text": "  Secure login powered by AXON Cloud",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 52,
+  "topRow": 57,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
