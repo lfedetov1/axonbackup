@@ -1,12 +1,69 @@
 export default {
-
-
   normRows() {
     return appsmith.store.productNormItems || [];
   },
 
   isEditMode() {
     return appsmith.store.productEditMode === true && !!appsmith.store.currentProductId;
+  },
+
+  firstRow(result, fallbackData) {
+    if (Array.isArray(result)) return result[0] || null;
+    if (Array.isArray(fallbackData)) return fallbackData[0] || null;
+    return result || fallbackData || null;
+  },
+
+  readId(row, keys = []) {
+    if (!row) return null;
+
+    for (const key of keys) {
+      if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
+        return row[key];
+      }
+    }
+
+    return null;
+  },
+
+  getInsertId(response, fallbackData) {
+    const row = this.firstRow(response, fallbackData);
+
+    return (
+      this.readId(response, ["insertId", "id", "productId", "product_id", "ID"]) ||
+      this.readId(row, ["insertId", "id", "productId", "product_id", "ID"]) ||
+      null
+    );
+  },
+
+  async findProductIdAfterInsert(productCode) {
+    const rows = await GetProductForEdit.run({
+      productId: null,
+      productCode
+    });
+
+    const product = rows?.[0] || GetProductForEdit.data?.[0];
+
+    return this.readId(product, [
+      "productId",
+      "product_id",
+      "id",
+      "ID",
+      "ProductID",
+      "Product ID"
+    ]);
+  },
+
+  async findNormIdAfterInsert(productId) {
+    const rows = await GetProductNormForEdit.run({ productId });
+    const norm = rows?.[0] || GetProductNormForEdit.data?.[0];
+
+    return this.readId(norm, [
+      "productNormId",
+      "product_norm_id",
+      "id",
+      "ID",
+      "ProductNormID"
+    ]);
   },
 
   async startNewProduct() {
@@ -23,17 +80,9 @@ export default {
     ProductBarcodeInput.setValue("");
     ProductSkuInput.setValue("");
 
-    if (typeof ProductHsCodeInput !== "undefined") {
-      ProductHsCodeInput.setValue("");
-    }
-
-    if (typeof ProductCustomsDescriptionInput !== "undefined") {
-      ProductCustomsDescriptionInput.setValue("");
-    }
-
-    if (typeof ProductIntrastatCodeInput !== "undefined") {
-      ProductIntrastatCodeInput.setValue("");
-    }
+    if (typeof ProductHsCodeInput !== "undefined") ProductHsCodeInput.setValue("");
+    if (typeof ProductCustomsDescriptionInput !== "undefined") ProductCustomsDescriptionInput.setValue("");
+    if (typeof ProductIntrastatCodeInput !== "undefined") ProductIntrastatCodeInput.setValue("");
 
     ProductMinimumStockInput.setValue("0");
     ProductMaximumStockInput.setValue("");
@@ -42,39 +91,17 @@ export default {
     ProductSalePriceInput.setValue("0");
     ProductWeightKgInput.setValue("");
 
-    if (typeof ProductNetWeightKgInput !== "undefined") {
-      ProductNetWeightKgInput.setValue("");
-    }
-
-    if (typeof ProductGrossWeightKgInput !== "undefined") {
-      ProductGrossWeightKgInput.setValue("");
-    }
+    if (typeof ProductNetWeightKgInput !== "undefined") ProductNetWeightKgInput.setValue("");
+    if (typeof ProductGrossWeightKgInput !== "undefined") ProductGrossWeightKgInput.setValue("");
 
     ProductNoteInput.setValue("");
 
-    if (typeof ProductCategorySelect !== "undefined") {
-      ProductCategorySelect.setSelectedOption("");
-    }
-
-    if (typeof ProductUnitSelect !== "undefined") {
-      ProductUnitSelect.setSelectedOption("");
-    }
-
-    if (typeof ProductTaxRateSelect !== "undefined") {
-      ProductTaxRateSelect.setSelectedOption("");
-    }
-
-    if (typeof ProductCountryOfOriginSelect !== "undefined") {
-      ProductCountryOfOriginSelect.setSelectedOption("");
-    }
-
-    if (typeof ProductCurrencySelect !== "undefined") {
-      ProductCurrencySelect.setSelectedOption("EUR");
-    }
-
-    if (typeof ProductTypeSelect !== "undefined") {
-      ProductTypeSelect.setSelectedOption("GOODS");
-    }
+    if (typeof ProductCategorySelect !== "undefined") ProductCategorySelect.setSelectedOption("");
+    if (typeof ProductUnitSelect !== "undefined") ProductUnitSelect.setSelectedOption("");
+    if (typeof ProductTaxRateSelect !== "undefined") ProductTaxRateSelect.setSelectedOption("");
+    if (typeof ProductCountryOfOriginSelect !== "undefined") ProductCountryOfOriginSelect.setSelectedOption("");
+    if (typeof ProductCurrencySelect !== "undefined") ProductCurrencySelect.setSelectedOption("EUR");
+    if (typeof ProductTypeSelect !== "undefined") ProductTypeSelect.setSelectedOption("GOODS");
 
     ProductTrackStockSwitch.setValue(true);
     ProductUsedItemSwitch.setValue(false);
@@ -89,44 +116,41 @@ export default {
     ProductNormActiveSwitch.setValue(true);
     ProductNormNoteInput.setValue("");
 
-    if (typeof ProductNormValidFromInput !== "undefined") {
-      ProductNormValidFromInput.setValue("");
-    }
-
-    if (typeof ProductNormValidToInput !== "undefined") {
-      ProductNormValidToInput.setValue("");
-    }
+    if (typeof ProductNormValidFromInput !== "undefined") ProductNormValidFromInput.setValue("");
+    if (typeof ProductNormValidToInput !== "undefined") ProductNormValidToInput.setValue("");
 
     showModal(addnewproduct.name);
   },
-	async loadSelectedProductForEdit() {
-  const row = appsmith.store.selectedProductRow || {};
 
-  const productId =
-    row.productId ||
-    row.product_id ||
-    row.id ||
-    row.ID ||
-    row.ProductID ||
-    row["Product ID"];
+  async loadSelectedProductForEdit() {
+    const row = appsmith.store.selectedProductRow || {};
 
-  const productCode =
-    row.productCode ||
-    row.product_code ||
-    row.code ||
-    row.Code ||
-    row.ProductCode ||
-    row["Product Code"];
+    const productId = this.readId(row, [
+      "productId",
+      "product_id",
+      "id",
+      "ID",
+      "ProductID",
+      "Product ID"
+    ]);
 
-  if (!productId && !productCode) {
-    showAlert("Selected row does not contain product ID or code.", "error");
-    console.log(row);
-    return;
-  }
+    const productCode = this.readId(row, [
+      "productCode",
+      "product_code",
+      "code",
+      "Code",
+      "ProductCode",
+      "Product Code"
+    ]);
 
-  return this.loadProductForEdit(productId || null, productCode || null);
-},
+    if (!productId && !productCode) {
+      showAlert("Selected row does not contain product ID or code.", "error");
+      console.log(row);
+      return;
+    }
 
+    return this.loadProductForEdit(productId || null, productCode || null);
+  },
 
   async loadProductForEdit(productId = null, productCode = null) {
     if (!productId && !productCode) {
@@ -135,11 +159,7 @@ export default {
     }
 
     try {
-      const productRows = await GetProductForEdit.run({
-        productId,
-        productCode
-      });
-
+      const productRows = await GetProductForEdit.run({ productId, productCode });
       const product = productRows?.[0] || GetProductForEdit.data?.[0];
 
       if (!product) {
@@ -147,80 +167,65 @@ export default {
         return;
       }
 
-      const loadedProductId = product.productId;
+      const loadedProductId = this.readId(product, [
+        "productId",
+        "product_id",
+        "id",
+        "ID",
+        "ProductID"
+      ]);
+
+      if (!loadedProductId) {
+        showAlert("Product was found, but product ID is missing.", "error");
+        console.log(product);
+        return;
+      }
 
       await storeValue("currentProductId", loadedProductId);
       await storeValue("productEditMode", true);
       await storeValue("productBeforeEdit", product);
 
-      ProductCodeInput.setValue(product.productCode || "");
-      ProductNameInput.setValue(product.productName || "");
+      ProductCodeInput.setValue(product.productCode || product.code || "");
+      ProductNameInput.setValue(product.productName || product.name || "");
       ProductShortNameInput.setValue(product.shortName || "");
       ProductDescriptionInput.setValue(product.description || "");
       ProductBarcodeInput.setValue(product.barcode || "");
       ProductSkuInput.setValue(product.sku || "");
 
-      if (typeof ProductHsCodeInput !== "undefined") {
-        ProductHsCodeInput.setValue(product.hsCode || "");
-      }
-
-      if (typeof ProductCustomsDescriptionInput !== "undefined") {
-        ProductCustomsDescriptionInput.setValue(product.customsDescription || "");
-      }
-
-      if (typeof ProductIntrastatCodeInput !== "undefined") {
-        ProductIntrastatCodeInput.setValue(product.intrastatCode || "");
-      }
+      if (typeof ProductHsCodeInput !== "undefined") ProductHsCodeInput.setValue(product.hsCode || "");
+      if (typeof ProductCustomsDescriptionInput !== "undefined") ProductCustomsDescriptionInput.setValue(product.customsDescription || "");
+      if (typeof ProductIntrastatCodeInput !== "undefined") ProductIntrastatCodeInput.setValue(product.intrastatCode || "");
 
       ProductMinimumStockInput.setValue(String(product.minimumStock || 0));
-      ProductMaximumStockInput.setValue(product.maximumStock === null || product.maximumStock === undefined ? "" : String(product.maximumStock));
-      ProductReorderLevelInput.setValue(product.reorderLevel === null || product.reorderLevel === undefined ? "" : String(product.reorderLevel));
+      ProductMaximumStockInput.setValue(product.maximumStock == null ? "" : String(product.maximumStock));
+      ProductReorderLevelInput.setValue(product.reorderLevel == null ? "" : String(product.reorderLevel));
       ProductPurchasePriceInput.setValue(String(product.purchasePrice || 0));
       ProductSalePriceInput.setValue(String(product.salePrice || 0));
-      ProductWeightKgInput.setValue(product.weightKg === null || product.weightKg === undefined ? "" : String(product.weightKg));
+      ProductWeightKgInput.setValue(product.weightKg == null ? "" : String(product.weightKg));
 
       if (typeof ProductNetWeightKgInput !== "undefined") {
-        ProductNetWeightKgInput.setValue(product.netWeightKg === null || product.netWeightKg === undefined ? "" : String(product.netWeightKg));
+        ProductNetWeightKgInput.setValue(product.netWeightKg == null ? "" : String(product.netWeightKg));
       }
 
       if (typeof ProductGrossWeightKgInput !== "undefined") {
-        ProductGrossWeightKgInput.setValue(product.grossWeightKg === null || product.grossWeightKg === undefined ? "" : String(product.grossWeightKg));
+        ProductGrossWeightKgInput.setValue(product.grossWeightKg == null ? "" : String(product.grossWeightKg));
       }
 
       ProductNoteInput.setValue(product.note || "");
 
-      if (typeof ProductCategorySelect !== "undefined") {
-        ProductCategorySelect.setSelectedOption(product.categoryId ? String(product.categoryId) : "");
-      }
-
-      if (typeof ProductUnitSelect !== "undefined") {
-        ProductUnitSelect.setSelectedOption(product.unitId ? String(product.unitId) : "");
-      }
-
-      if (typeof ProductTaxRateSelect !== "undefined") {
-        ProductTaxRateSelect.setSelectedOption(product.taxRateId ? String(product.taxRateId) : "");
-      }
-
-      if (typeof ProductCountryOfOriginSelect !== "undefined") {
-        ProductCountryOfOriginSelect.setSelectedOption(product.countryOfOriginId ? String(product.countryOfOriginId) : "");
-      }
-
-      if (typeof ProductCurrencySelect !== "undefined") {
-        ProductCurrencySelect.setSelectedOption("EUR");
-      }
-
-      if (typeof ProductTypeSelect !== "undefined") {
-        ProductTypeSelect.setSelectedOption(product.productType || "GOODS");
-      }
+      if (typeof ProductCategorySelect !== "undefined") ProductCategorySelect.setSelectedOption(product.categoryId ? String(product.categoryId) : "");
+      if (typeof ProductUnitSelect !== "undefined") ProductUnitSelect.setSelectedOption(product.unitId ? String(product.unitId) : "");
+      if (typeof ProductTaxRateSelect !== "undefined") ProductTaxRateSelect.setSelectedOption(product.taxRateId ? String(product.taxRateId) : "");
+      if (typeof ProductCountryOfOriginSelect !== "undefined") ProductCountryOfOriginSelect.setSelectedOption(product.countryOfOriginId ? String(product.countryOfOriginId) : "");
+      if (typeof ProductCurrencySelect !== "undefined") ProductCurrencySelect.setSelectedOption("EUR");
+      if (typeof ProductTypeSelect !== "undefined") ProductTypeSelect.setSelectedOption(product.productType || "GOODS");
 
       ProductTrackStockSwitch.setValue(Number(product.trackStock || 0) === 1);
       ProductUsedItemSwitch.setValue(Number(product.isUsedItem || 0) === 1);
       ProductSerialRequiredSwitch.setValue(Number(product.serialNumberRequired || 0) === 1);
       ProductActiveSwitch.setValue(Number(product.isActive || 0) === 1);
 
-      const normRows = await GetProductNormForEdit.run({
-        productId: loadedProductId
-      });
+      const normRows = await GetProductNormForEdit.run({ productId: loadedProductId });
       const norm = normRows?.[0] || GetProductNormForEdit.data?.[0];
 
       if (norm?.productNormId) {
@@ -232,13 +237,8 @@ export default {
         ProductNormVersionInput.setValue(norm.versionNo || "1.0");
         ProductNormOutputQuantityInput.setValue(String(norm.outputQuantity || 1));
 
-        if (typeof ProductNormValidFromInput !== "undefined") {
-          ProductNormValidFromInput.setValue(norm.validFrom || "");
-        }
-
-        if (typeof ProductNormValidToInput !== "undefined") {
-          ProductNormValidToInput.setValue(norm.validTo || "");
-        }
+        if (typeof ProductNormValidFromInput !== "undefined") ProductNormValidFromInput.setValue(norm.validFrom || "");
+        if (typeof ProductNormValidToInput !== "undefined") ProductNormValidToInput.setValue(norm.validTo || "");
 
         ProductNormActiveSwitch.setValue(Number(norm.isActive || 0) === 1);
         ProductNormNoteInput.setValue(norm.normNote || "");
@@ -301,19 +301,18 @@ export default {
       norm_item_count: ProductHasNormSwitch.isSwitchedOn ? this.normRows().length : 0
     };
   },
-	
-	async closeProductModal() {
-  await ProductDuplicateGuard.clear();
-  resetWidget("addnewproduct", true);
-  closeModal("addnewproduct");
-}, 
+
+  async closeProductModal() {
+    await ProductDuplicateGuard.clear();
+    resetWidget("addnewproduct", true);
+    closeModal("addnewproduct");
+  },
 
   async save() {
-		const canSave = await ProductDuplicateGuard.check();
+    const canSave = await ProductDuplicateGuard.check();
 
-  if (!canSave) {
-    return;
-  }
+    if (!canSave) return;
+
     if (!ProductCodeInput.text) {
       showAlert("Product code is required.", "warning");
       return;
@@ -350,15 +349,19 @@ export default {
       } else {
         const productResponse = await InsertProduct.run();
 
-        productId =
-          productResponse?.insertId ||
-          productResponse?.[0]?.insertId ||
-          InsertProduct.data?.insertId ||
-          InsertProduct.data?.[0]?.insertId;
+        productId = this.getInsertId(productResponse, InsertProduct.data);
 
         if (!productId) {
-          showAlert("Product was saved, but product ID was not returned.", "error");
-          console.log(productResponse);
+          productId = await this.findProductIdAfterInsert(ProductCodeInput.text);
+        }
+
+        if (!productId) {
+          showAlert("Product was saved, but product ID could not be found after insert.", "error");
+          console.log({
+            productResponse,
+            insertProductData: InsertProduct.data,
+            productCode: ProductCodeInput.text
+          });
           return;
         }
 
@@ -380,15 +383,19 @@ export default {
         } else {
           const normResponse = await InsertProductNorm.run({ productId });
 
-          productNormId =
-            normResponse?.insertId ||
-            normResponse?.[0]?.insertId ||
-            InsertProductNorm.data?.insertId ||
-            InsertProductNorm.data?.[0]?.insertId;
+          productNormId = this.getInsertId(normResponse, InsertProductNorm.data);
 
           if (!productNormId) {
-            showAlert("Product was saved, but norm ID was not returned.", "error");
-            console.log(normResponse);
+            productNormId = await this.findNormIdAfterInsert(productId);
+          }
+
+          if (!productNormId) {
+            showAlert("Product was saved, but norm ID could not be found after insert.", "error");
+            console.log({
+              normResponse,
+              insertProductNormData: InsertProductNorm.data,
+              productId
+            });
             return;
           }
 

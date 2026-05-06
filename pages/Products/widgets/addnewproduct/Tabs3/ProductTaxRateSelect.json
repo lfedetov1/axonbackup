@@ -20,9 +20,16 @@
   "dynamicPropertyPathList": [
     {
       "key": "sourceData"
+    },
+    {
+      "key": "onDropdownOpen"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onDropdownOpen"
+    }
+  ],
   "isDisabled": false,
   "isFilterable": true,
   "isLoading": false,
@@ -43,6 +50,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 26,
   "needsErrorInfo": false,
+  "onDropdownOpen": "{{ListProductTaxRates.run()}}",
   "optionLabel": "label",
   "optionValue": "value",
   "originalBottomRow": 46,
