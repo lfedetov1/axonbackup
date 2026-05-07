@@ -51,9 +51,10 @@
     "totalStockValue",
     "isActive",
     "customColumn1",
-    "customColumn2"
+    "customColumn2",
+    "customColumn3"
   ],
-  "columnUpdatedAt": 1778140026127,
+  "columnUpdatedAt": 1778140486403,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -141,14 +142,39 @@
     },
     {
       "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "tableData"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    }
+  ],
   "enableClientSideSearch": true,
   "endOfData": false,
   "flexVerticalAlignment": "start",
@@ -421,6 +447,7 @@
       "label": "Edit",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ WarehouseForm.loadForEdit(WarehousesTable.triggeredRow) }}\n",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",
@@ -430,7 +457,7 @@
       "width": 150
     },
     "customColumn2": {
-      "alias": "Deactivate",
+      "alias": "Disable",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "borderRadius": "{{WarehousesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
@@ -456,10 +483,50 @@
       "isEditable": false,
       "isSaveVisible": true,
       "isVisible": true,
-      "label": "Deactivate",
+      "label": "Disable",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ WarehouseForm.disable(WarehousesTable.triggeredRow) }}\n",
       "originalId": "customColumn2",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn3": {
+      "alias": "Reactivate",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{WarehousesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{WarehousesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#93c5fd",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "upload",
+      "id": "customColumn3",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Reactivate",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ WarehouseForm.reactivate(WarehousesTable.triggeredRow) }}\n",
+      "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

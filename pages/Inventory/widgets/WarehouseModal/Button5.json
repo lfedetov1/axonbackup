@@ -12,6 +12,11 @@
       "key": "borderRadius"
     }
   ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "dynamicTriggerPathList": [
     {
       "key": "onClick"
@@ -29,7 +34,7 @@
   "mobileRightColumn": 47,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{closeModal(WarehouseModal.name);}}",
+  "onClick": "{{ closeModal(WarehouseModal.name); storeValue(\"currentWarehouseId\", null); }}\n",
   "parentId": "2pte814ggl",
   "placement": "CENTER",
   "recaptchaType": "V3",

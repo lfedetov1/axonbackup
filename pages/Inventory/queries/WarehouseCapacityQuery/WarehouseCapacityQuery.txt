@@ -1,0 +1,57 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    w.minimum_capacity AS minimumCapacity,
+    w.maximum_capacity AS maximumCapacity,
+    w.capacity_unit_id AS capacityUnitId,
+    cu.code AS capacityUnitCode,
+    cu.name AS capacityUnitName,
+    w.capacity_note AS capacityNote,
+
+    COALESCE(stock.currentUsage, 0) AS currentUsage,
+
+    CASE
+        WHEN COALESCE(w.maximum_capacity, 0) > 0
+        THEN ROUND((COALESCE(stock.currentUsage, 0) / w.maximum_capacity) * 100, 2)
+        ELSE 0
+    END AS usagePercent,
+
+    CASE
+        WHEN COALESCE(w.maximum_capacity, 0) <= 0 THEN 'NO_CAPACITY_LIMIT'
+        WHEN COALESCE(stock.currentUsage, 0) >= w.maximum_capacity THEN 'FULL'
+        WHEN COALESCE(stock.currentUsage, 0) >= (w.maximum_capacity * 0.9) THEN 'NEAR_FULL'
+        WHEN COALESCE(w.minimum_capacity, 0) > 0
+         AND COALESCE(stock.currentUsage, 0) < w.minimum_capacity THEN 'BELOW_MINIMUM'
+        ELSE 'OK'
+    END AS capacityStatus
+
+FROM warehouses w
+
+LEFT JOIN units_of_measure cu
+  ON cu.id = w.capacity_unit_id
+
+LEFT JOIN (
+    SELECT
+        ib.company_id,
+        ib.warehouse_id,
+        SUM(COALESCE(ib.quantity_balance, 0)) AS currentUsage
+    FROM v_inventory_balance ib
+    GROUP BY
+        ib.company_id,
+        ib.warehouse_id
+) stock
+  ON stock.company_id = w.company_id
+ AND stock.warehouse_id = w.id
+
+WHERE w.company_id = {{appsmith.store.companyId}}
+  AND w.is_active = 1
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR w.id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+
+ORDER BY
+    usagePercent DESC,
+    w.name ASC;

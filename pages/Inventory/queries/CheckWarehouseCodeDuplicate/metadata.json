@@ -1,11 +1,11 @@
 {
   "gitSyncId": "69e7d447c5e91666c08fb1a7_5ce8f3b7-035a-42db-a375-6b003160db9a",
-  "id": "Inventory_Query1",
+  "id": "Inventory_CheckWarehouseCodeDuplicate",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "SELECT\n    id AS warehouseId,\n    code AS warehouseCode,\n    name AS warehouseName,\n    is_active AS isActive\nFROM warehouses\nWHERE company_id = {{appsmith.store.companyId}}\n  AND code = {{this.params.warehouseCode}}\n  AND id <> {{this.params.warehouseId || 0}}\nLIMIT 1;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,12 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "CheckWarehouseCodeDuplicate",
     "pageId": "Inventory",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

@@ -36,7 +36,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{ ListWarehouses.run(); ListInventoryWarehouses.run(); closeModal(WarehouseModal.name); showAlert(\"Warehouse was created.\", \"success\"); }}\n",
+  "onClick": "{{ WarehouseForm.startNew() }}\n\n",
   "parentId": "2pte814ggl",
   "placement": "CENTER",
   "recaptchaType": "V3",

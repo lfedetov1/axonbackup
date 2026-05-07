@@ -1,0 +1,10 @@
+SELECT
+    id AS warehouseId,
+    code AS warehouseCode,
+    name AS warehouseName,
+    is_active AS isActive
+FROM warehouses
+WHERE company_id = {{appsmith.store.companyId}}
+  AND code = {{this.params.warehouseCode}}
+  AND id <> {{this.params.warehouseId || 0}}
+LIMIT 1;
