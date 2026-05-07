@@ -1,0 +1,9 @@
+SELECT
+    id AS warehouseId,
+    code AS warehouseCode,
+    name AS warehouseName
+FROM warehouses
+WHERE company_id = {{appsmith.store.companyId}}
+  AND code = {{WarehouseCodeInput.text.trim()}}
+ORDER BY id DESC
+LIMIT 1;

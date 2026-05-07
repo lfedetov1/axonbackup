@@ -1,0 +1,75 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COUNT(DISTINCT p.id) AS trackedProductCount,
+
+    COALESCE(SUM(COALESCE(ib.quantity_balance, 0)), 0) AS totalStockQuantity,
+    COALESCE(SUM(COALESCE(ib.cost_balance, 0)), 0) AS totalStockValue,
+
+    COALESCE(SUM(
+        CASE
+            WHEN COALESCE(ib.quantity_balance, 0) > 0 THEN 1
+            ELSE 0
+        END
+    ), 0) AS productsInStockCount,
+
+    COALESCE(SUM(
+        CASE
+            WHEN COALESCE(ib.quantity_balance, 0) <= 0 THEN 1
+            ELSE 0
+        END
+    ), 0) AS outOfStockCount,
+
+    COALESCE(SUM(
+        CASE
+            WHEN p.minimum_stock > 0
+             AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock
+            THEN 1
+            ELSE 0
+        END
+    ), 0) AS lowStockCount,
+
+    MAX(last_move.lastMovementDate) AS lastMovementDate
+
+FROM warehouses w
+
+JOIN products p
+  ON p.company_id = w.company_id
+ AND p.track_stock = 1
+ AND p.is_active = 1
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = w.company_id
+ AND ib.warehouse_id = w.id
+ AND ib.product_id = p.id
+
+LEFT JOIN (
+    SELECT
+        sm.company_id,
+        sm.warehouse_id,
+        MAX(sm.movement_date) AS lastMovementDate
+    FROM stock_movements sm
+    WHERE sm.company_id = {{appsmith.store.companyId}}
+    GROUP BY
+        sm.company_id,
+        sm.warehouse_id
+) last_move
+  ON last_move.company_id = w.company_id
+ AND last_move.warehouse_id = w.id
+
+WHERE w.company_id = {{appsmith.store.companyId}}
+  AND w.is_active = 1
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR w.id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+
+GROUP BY
+    w.id,
+    w.code,
+    w.name
+
+ORDER BY
+    w.name ASC;

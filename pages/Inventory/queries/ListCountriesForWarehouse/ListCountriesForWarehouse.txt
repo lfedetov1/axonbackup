@@ -1,0 +1,10 @@
+SELECT
+    c.code AS value,
+    CONCAT(c.code, ' - ', c.name) AS label,
+    c.id AS countryId,
+    c.code AS countryCode,
+    c.name AS countryName
+FROM countries c
+ORDER BY
+    CASE WHEN c.code = 'HR' THEN 0 ELSE 1 END,
+    c.name ASC;

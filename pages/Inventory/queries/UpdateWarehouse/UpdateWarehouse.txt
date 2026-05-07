@@ -1,0 +1,20 @@
+UPDATE warehouses
+SET
+    code = {{WarehouseCodeInput.text.trim()}},
+    name = {{WarehouseNameInput.text.trim()}},
+    address_line1 = {{WarehouseAddressLine1Input.text.trim() || null}},
+    address_line2 = {{WarehouseAddressLine2Input.text.trim() || null}},
+    city = {{WarehouseCityInput.text.trim() || null}},
+    postal_code = {{WarehousePostalCodeInput.text.trim() || null}},
+    country_code = {{WarehouseCountryCodeSelect.selectedOptionValue || 'HR'}},
+    manager_name = {{WarehouseManagerNameInput.text.trim() || null}},
+    phone = {{WarehousePhoneInput.text.trim() || null}},
+    email = {{WarehouseEmailInput.text.trim() || null}},
+    is_default = {{WarehouseDefaultSwitch.isSwitchedOn ? 1 : 0}},
+    minimum_capacity = {{WarehouseMinimumCapacityInput.text || null}},
+    maximum_capacity = {{WarehouseMaximumCapacityInput.text || null}},
+    capacity_unit_id = {{WarehouseCapacityUnitSelect.selectedOptionValue || null}},
+    capacity_note = {{WarehouseCapacityNoteInput.text.trim() || null}},
+    is_active = {{WarehouseActiveSwitch.isSwitchedOn ? 1 : 0}}
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.warehouseId}};

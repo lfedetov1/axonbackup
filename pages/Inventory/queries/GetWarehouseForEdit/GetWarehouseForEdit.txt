@@ -1,0 +1,23 @@
+SELECT
+    w.id AS warehouseId,
+    w.company_id AS companyId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    w.address_line1 AS addressLine1,
+    w.address_line2 AS addressLine2,
+    w.city AS city,
+    w.postal_code AS postalCode,
+    w.country_code AS countryCode,
+    w.manager_name AS managerName,
+    w.phone AS phone,
+    w.email AS email,
+    w.is_default AS isDefault,
+    w.minimum_capacity AS minimumCapacity,
+    w.maximum_capacity AS maximumCapacity,
+    w.capacity_unit_id AS capacityUnitId,
+    w.capacity_note AS capacityNote,
+    w.is_active AS isActive
+FROM warehouses w
+WHERE w.company_id = {{appsmith.store.companyId}}
+  AND w.id = {{this.params.warehouseId}}
+LIMIT 1;

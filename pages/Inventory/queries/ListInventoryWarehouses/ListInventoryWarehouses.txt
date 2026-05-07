@@ -1,0 +1,19 @@
+SELECT
+    0 AS value,
+    'All warehouses' AS label,
+    0 AS warehouseId,
+    'ALL' AS warehouseCode,
+    'All warehouses' AS warehouseName
+
+UNION ALL
+
+SELECT
+    w.id AS value,
+    CONCAT(w.code, ' - ', w.name) AS label,
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName
+FROM warehouses w
+WHERE w.company_id = {{appsmith.store.companyId}}
+  AND w.is_active = 1
+ORDER BY label ASC;

@@ -1,0 +1,57 @@
+SELECT
+    sm.id AS movementId,
+    sm.movement_date AS movementDate,
+    sm.movement_type AS movementType,
+
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+
+    u.code AS unitCode,
+
+    sm.quantity AS quantity,
+    sm.unit_cost AS unitCost,
+    sm.total_cost AS totalCost,
+
+    d.id AS documentId,
+    d.document_type AS documentType,
+    d.document_number AS documentNumber,
+
+    sm.serial_number AS serialNumber,
+    sm.batch_number AS batchNumber,
+    sm.note AS note,
+    sm.created_at AS createdAt
+
+FROM stock_movements sm
+
+JOIN products p
+  ON p.id = sm.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+JOIN warehouses w
+  ON w.id = sm.warehouse_id
+
+LEFT JOIN documents d
+  ON d.id = sm.document_id
+
+WHERE sm.company_id = {{appsmith.store.companyId}}
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR sm.warehouse_id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      {{!InventorySearchInput.text}}
+      OR p.code LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR p.name LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR sm.batch_number LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR sm.serial_number LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+  )
+ORDER BY sm.movement_date DESC, sm.id DESC
+LIMIT 50;

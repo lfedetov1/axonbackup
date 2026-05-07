@@ -1,0 +1,40 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "alignWidget": "LEFT",
+  "animateLoading": true,
+  "bottomRow": 12,
+  "boxShadow": "none",
+  "defaultSwitchState": true,
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "2e6y127dzi",
+  "label": "Default",
+  "labelPosition": "Left",
+  "leftColumn": 34,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "mobileBottomRow": 12,
+  "mobileLeftColumn": 34,
+  "mobileRightColumn": 46,
+  "mobileTopRow": 8,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 11.375,
+  "parentId": "2pte814ggl",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 46,
+  "topRow": 8,
+  "type": "SWITCH_WIDGET",
+  "version": 1,
+  "widgetId": "3t7kltobyt",
+  "widgetName": "WarehouseDefaultSwitch"
+}

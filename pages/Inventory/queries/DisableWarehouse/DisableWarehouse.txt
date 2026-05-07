@@ -1,0 +1,4 @@
+UPDATE warehouses
+SET is_active = 0
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.warehouseId}};

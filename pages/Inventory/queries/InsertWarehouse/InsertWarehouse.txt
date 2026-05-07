@@ -1,0 +1,38 @@
+INSERT INTO warehouses (
+    company_id,
+    code,
+    name,
+    address_line1,
+    address_line2,
+    city,
+    postal_code,
+    country_code,
+    manager_name,
+    phone,
+    email,
+    is_default,
+	  minimum_capacity,
+    maximum_capacity,
+    capacity_unit_id,
+    capacity_note,
+    is_active
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{WarehouseCodeInput.text.trim()}},
+    {{WarehouseNameInput.text.trim()}},
+    {{WarehouseAddressLine1Input.text.trim() || null}},
+    {{WarehouseAddressLine2Input.text.trim() || null}},
+    {{WarehouseCityInput.text.trim() || null}},
+    {{WarehousePostalCodeInput.text.trim() || null}},
+    {{WarehouseCountryCodeSelect.selectedOptionValue || 'HR'}},
+    {{WarehouseManagerNameInput.text.trim() || null}},
+    {{WarehousePhoneInput.text.trim() || null}},
+    {{WarehouseEmailInput.text.trim() || null}},
+    {{WarehouseDefaultSwitch.isSwitchedOn ? 1 : 0}},
+	  {{WarehouseMinimumCapacityInput.text || null}},
+    {{WarehouseMaximumCapacityInput.text || null}},
+    {{WarehouseCapacityUnitSelect.selectedOptionValue || null}},
+    {{WarehouseCapacityNoteInput.text.trim() || null}},
+    {{WarehouseActiveSwitch.isSwitchedOn ? 1 : 0}}
+);

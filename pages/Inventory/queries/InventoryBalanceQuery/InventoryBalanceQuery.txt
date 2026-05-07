@@ -1,0 +1,99 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    u.code AS unitCode,
+    u.name AS unitName,
+
+    p.minimum_stock AS minimumStock,
+    p.maximum_stock AS maximumStock,
+    p.reorder_level AS reorderLevel,
+
+    COALESCE(ib.quantity_balance, 0) AS currentStock,
+    COALESCE(ib.cost_balance, 0) AS stockValue,
+
+    CASE
+        WHEN COALESCE(ib.quantity_balance, 0) <= 0 THEN 'OUT_OF_STOCK'
+        WHEN p.minimum_stock > 0
+         AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock THEN 'LOW_STOCK'
+        WHEN p.maximum_stock > 0
+         AND COALESCE(ib.quantity_balance, 0) > p.maximum_stock THEN 'OVERSTOCK'
+        ELSE 'IN_STOCK'
+    END AS stockStatus,
+
+    CASE
+        WHEN p.minimum_stock > 0
+         AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock
+        THEN p.minimum_stock - COALESCE(ib.quantity_balance, 0)
+        ELSE 0
+    END AS missingQuantity,
+
+    CASE
+        WHEN COALESCE(ib.quantity_balance, 0) <> 0
+        THEN COALESCE(ib.cost_balance, 0) / COALESCE(ib.quantity_balance, 0)
+        ELSE COALESCE(p.purchase_price, 0)
+    END AS averageUnitCost,
+
+    COALESCE(last_move.lastMovementDate, '') AS lastMovementDate
+
+FROM products p
+
+JOIN warehouses w
+  ON w.company_id = p.company_id
+ AND w.is_active = 1
+
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = p.company_id
+ AND ib.warehouse_id = w.id
+ AND ib.product_id = p.id
+
+LEFT JOIN (
+    SELECT
+        sm.company_id,
+        sm.warehouse_id,
+        sm.product_id,
+        MAX(sm.movement_date) AS lastMovementDate
+    FROM stock_movements sm
+    WHERE sm.company_id = {{appsmith.store.companyId}}
+    GROUP BY
+        sm.company_id,
+        sm.warehouse_id,
+        sm.product_id
+) last_move
+  ON last_move.company_id = p.company_id
+ AND last_move.warehouse_id = w.id
+ AND last_move.product_id = p.id
+
+WHERE p.company_id = {{appsmith.store.companyId}}
+  AND p.track_stock = 1
+  AND p.is_active = 1
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR w.id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      {{!InventorySearchInput.text}}
+      OR p.code LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR p.name LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR p.barcode LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+      OR p.sku LIKE CONCAT('%', {{InventorySearchInput.text}}, '%')
+  )
+ORDER BY
+    CASE
+        WHEN COALESCE(ib.quantity_balance, 0) <= 0 THEN 1
+        WHEN p.minimum_stock > 0
+         AND COALESCE(ib.quantity_balance, 0) < p.minimum_stock THEN 2
+        ELSE 3
+    END,
+    p.name ASC,
+    w.name ASC;
