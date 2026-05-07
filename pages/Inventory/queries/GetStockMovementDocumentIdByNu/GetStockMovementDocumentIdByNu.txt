@@ -1,0 +1,9 @@
+SELECT
+    id AS documentId,
+    document_number AS documentNumber,
+    document_type AS documentType
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_number = {{MovementNumberInput.text.trim()}}
+ORDER BY id DESC
+LIMIT 1;

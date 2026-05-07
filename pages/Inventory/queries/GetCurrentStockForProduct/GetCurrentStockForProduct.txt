@@ -1,0 +1,7 @@
+SELECT
+    COALESCE(quantity_balance, 0) AS currentStock
+FROM v_inventory_balance
+WHERE company_id = {{appsmith.store.companyId}}
+  AND warehouse_id = {{this.params.warehouseId}}
+  AND product_id = {{this.params.productId}}
+LIMIT 1;

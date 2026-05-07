@@ -1,0 +1,29 @@
+SELECT
+    CONCAT(
+        x.prefix,
+        '-',
+        YEAR(CURDATE()),
+        '-',
+        LPAD(COALESCE(MAX(CAST(SUBSTRING(d.document_number, LENGTH(CONCAT(x.prefix, '-', YEAR(CURDATE()), '-')) + 1) AS UNSIGNED)), 0) + 1, 6, '0')
+    ) AS nextDocumentNumber,
+    x.documentType AS documentType
+FROM (
+    SELECT
+        CASE
+            WHEN {{StockMovementTypeSelect.selectedOptionValue}} = 'IN' THEN 'SIN'
+            WHEN {{StockMovementTypeSelect.selectedOptionValue}} = 'OUT' THEN 'SOUT'
+            ELSE 'SADJ'
+        END AS prefix,
+        CASE
+            WHEN {{StockMovementTypeSelect.selectedOptionValue}} = 'IN' THEN 'STOCK_IN'
+            WHEN {{StockMovementTypeSelect.selectedOptionValue}} = 'OUT' THEN 'STOCK_OUT'
+            ELSE 'STOCK_ADJUSTMENT'
+        END AS documentType
+) x
+LEFT JOIN documents d
+  ON d.company_id = {{appsmith.store.companyId}}
+ AND d.document_type = x.documentType
+ AND d.document_number LIKE CONCAT(x.prefix, '-', YEAR(CURDATE()), '-%')
+GROUP BY
+    x.prefix,
+    x.documentType;

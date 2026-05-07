@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 43,
+  "bottomRow": 78,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -11,6 +11,9 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "text"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -21,30 +24,32 @@
   "isLoading": false,
   "isVisible": true,
   "key": "6id775w2g5",
-  "leftColumn": 0,
+  "leftColumn": 7,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 42,
+  "mobileBottomRow": 62,
   "mobileLeftColumn": 0,
   "mobileRightColumn": 16,
-  "mobileTopRow": 38,
+  "mobileTopRow": 58,
   "needsErrorInfo": false,
+  "originalBottomRow": 78,
+  "originalTopRow": 74,
   "overflow": "NONE",
   "parentColumnSpace": 13.34375,
-  "parentId": "wl9pz6vj3k",
+  "parentId": "wsetjbr441",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 16,
+  "rightColumn": 15,
   "shouldTruncate": false,
-  "text": "Capacity report : ",
+  "text": "{{\n  (appsmith.store.stockMovementItems || [])\n    .reduce((sum, row) => sum + Number(row.lineTotal || (Number(row.quantity || 0) * Number(row.unitCost || 0))), 0)\n    .toFixed(2)\n}}\n",
   "textAlign": "LEFT",
-  "textColor": "#231F20",
-  "topRow": 39,
+  "textColor": "#ef4444",
+  "topRow": 74,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
-  "widgetId": "qgilafh9r2",
-  "widgetName": "Text4"
+  "widgetId": "i6mm2tja4e",
+  "widgetName": "sumtotal"
 }

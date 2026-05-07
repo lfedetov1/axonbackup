@@ -1,0 +1,84 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    d.document_type AS documentType,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS documentStatus,
+
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    di.description AS description,
+
+    u.code AS unitCode,
+    u.name AS unitName,
+
+    di.quantity AS documentQuantity,
+    di.unit_price AS unitPrice,
+    di.discount_percent AS discountPercent,
+    di.discount_amount AS discountAmount,
+    di.line_subtotal AS lineSubtotal,
+    di.tax_amount AS taxAmount,
+    di.line_total AS lineTotal,
+
+    di.serial_number AS serialNumber,
+    di.batch_number AS batchNumber,
+    di.expiry_date AS expiryDate,
+    di.note AS itemNote,
+
+    sm.id AS movementId,
+    sm.movement_type AS movementType,
+    sm.movement_date AS movementDate,
+    sm.quantity AS movementQuantity,
+    sm.unit_cost AS movementUnitCost,
+    sm.total_cost AS movementTotalCost,
+
+    CASE
+        WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT') THEN -ABS(sm.quantity)
+        WHEN sm.movement_type IN ('IN', 'TRANSFER_IN') THEN ABS(sm.quantity)
+        WHEN sm.movement_type = 'ADJUSTMENT' THEN sm.quantity
+        ELSE sm.quantity
+    END AS signedMovementQuantity
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+LEFT JOIN warehouses w
+  ON w.id = COALESCE(di.warehouse_id, d.warehouse_id)
+
+LEFT JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN stock_movements sm
+  ON sm.document_item_id = di.id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND (
+      {{!StockMovementsTable.selectedRow?.movementId}}
+      OR sm.id = {{StockMovementsTable.selectedRow?.movementId || 0}}
+      OR d.id = {{StockMovementsTable.selectedRow?.documentId || 0}}
+  )
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR COALESCE(di.warehouse_id, d.warehouse_id) = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+
+ORDER BY
+    d.document_date DESC,
+    d.id DESC,
+    di.line_no ASC;

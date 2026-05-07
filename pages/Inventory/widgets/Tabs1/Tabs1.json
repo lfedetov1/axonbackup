@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 109,
+  "bottomRow": 118,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -102,7 +102,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -147,7 +147,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -192,7 +192,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -237,7 +237,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -282,7 +282,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -327,7 +327,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -372,7 +372,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -417,7 +417,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -459,6 +459,51 @@
       "version": 1,
       "widgetId": "4ai564r9eh",
       "widgetName": "Canvas12"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 860,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "s7hipl7gbj",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 400,
+      "minWidth": 450,
+      "mobileBottomRow": 401,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 874,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "fyir0g9gci",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 874,
+      "tabId": "tabftlfwgdec8",
+      "tabName": "New Stock Movements",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "wsetjbr441",
+      "widgetName": "Canvas14"
     }
   ],
   "defaultTab": "Stock Overview",
@@ -471,9 +516,77 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tab38i3kj2l9u.isVisible"
+    },
+    {
+      "key": "tabsObj.tabip3o2rq5b7.isVisible"
+    },
+    {
+      "key": "tabsObj.tabggqeu3hxov.isVisible"
+    },
+    {
+      "key": "tabsObj.tabe6hjmh7552.isVisible"
+    },
+    {
+      "key": "tabsObj.tabcc3e88vj0a.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtuqxhesetq.isVisible"
+    },
+    {
+      "key": "tabsObj.tabp0ip66jgil.isVisible"
+    },
+    {
+      "key": "tabsObj.tabgplqpv1t04.isVisible"
+    },
+    {
+      "key": "tabsObj.tab1.isVisible"
+    },
+    {
+      "key": "tabsObj.tabftlfwgdec8.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tab38i3kj2l9u.isVisible"
+    },
+    {
+      "key": "tabsObj.tabip3o2rq5b7.isVisible"
+    },
+    {
+      "key": "tabsObj.tabggqeu3hxov.isVisible"
+    },
+    {
+      "key": "tabsObj.tabe6hjmh7552.isVisible"
+    },
+    {
+      "key": "tabsObj.tabcc3e88vj0a.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtuqxhesetq.isVisible"
+    },
+    {
+      "key": "tabsObj.tabp0ip66jgil.isVisible"
+    },
+    {
+      "key": "tabsObj.tabgplqpv1t04.isVisible"
+    },
+    {
+      "key": "tabsObj.tab1.isVisible"
+    },
+    {
+      "key": "tabsObj.tabftlfwgdec8.isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
@@ -489,7 +602,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 20,
   "needsErrorInfo": false,
-  "originalBottomRow": 109,
+  "originalBottomRow": 118,
   "originalTopRow": 28,
   "parentColumnSpace": 13.65625,
   "parentId": "0",
@@ -504,7 +617,7 @@
       "id": "tab1",
       "index": 2,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Inventory",
       "positioning": "vertical",
       "widgetId": "b7cxkucm8k"
@@ -513,7 +626,7 @@
       "id": "tab2",
       "index": 0,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Overview",
       "positioning": "vertical",
       "widgetId": "1kw6ifuhlv"
@@ -522,7 +635,7 @@
       "id": "tab38i3kj2l9u",
       "index": 1,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Warehouses",
       "widgetId": "wl9pz6vj3k"
     },
@@ -530,7 +643,7 @@
       "id": "tabcc3e88vj0a",
       "index": 6,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Transfer",
       "widgetId": "xgmy4r2ipx"
     },
@@ -538,15 +651,22 @@
       "id": "tabe6hjmh7552",
       "index": 5,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Issue",
       "widgetId": "5313dzcpfl"
+    },
+    "tabftlfwgdec8": {
+      "id": "tabftlfwgdec8",
+      "index": 10,
+      "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_MOVEMENT\" }}\n",
+      "label": "New Stock Movements",
+      "widgetId": "wsetjbr441"
     },
     "tabggqeu3hxov": {
       "id": "tabggqeu3hxov",
       "index": 4,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Goods Receipt",
       "widgetId": "99fekk6jhv"
     },
@@ -554,7 +674,7 @@
       "id": "tabgplqpv1t04",
       "index": 9,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Opening Stock",
       "widgetId": "4ai564r9eh"
     },
@@ -562,7 +682,7 @@
       "id": "tabip3o2rq5b7",
       "index": 3,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Movements",
       "widgetId": "r5bz4tn5ev"
     },
@@ -570,7 +690,7 @@
       "id": "tabp0ip66jgil",
       "index": 8,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Inventory Count",
       "widgetId": "xj5k0cmvgt"
     },
@@ -578,7 +698,7 @@
       "id": "tabtuqxhesetq",
       "index": 7,
       "isDuplicateLabel": false,
-      "isVisible": true,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Adjustment",
       "widgetId": "h2iqrk9r7d"
     }

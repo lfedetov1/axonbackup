@@ -1,0 +1,15 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.status AS status,
+    d.document_date AS documentDate,
+    d.warehouse_id AS warehouseId,
+    d.source_warehouse_id AS sourceWarehouseId,
+    d.destination_warehouse_id AS destinationWarehouseId,
+    d.note AS note,
+    d.total_amount AS totalAmount
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_number = {{MovementNumberInput.text.trim()}}
+LIMIT 1;

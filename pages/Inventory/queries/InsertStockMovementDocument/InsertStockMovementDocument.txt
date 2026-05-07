@@ -1,0 +1,34 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    created_by_user_id,
+    document_type,
+    status,
+    document_number,
+    document_date,
+    currency_code,
+    source_warehouse_id,
+    destination_warehouse_id,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.warehouseId || null}},
+    {{appsmith.store.userId}},
+    {{this.params.documentType}},
+    'POSTED',
+    {{MovementNumberInput.text.trim()}},
+    {{this.params.documentDate}},
+    'EUR',
+    {{this.params.sourceWarehouseId || null}},
+    {{this.params.destinationWarehouseId || null}},
+    {{this.params.note || null}},
+    {{this.params.subtotalAmount || 0}},
+    0,
+    0,
+    {{this.params.totalAmount || 0}}
+);

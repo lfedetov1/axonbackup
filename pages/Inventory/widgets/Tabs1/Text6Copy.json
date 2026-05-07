@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 43,
+  "bottomRow": 78,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -25,26 +25,26 @@
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 42,
+  "mobileBottomRow": 62,
   "mobileLeftColumn": 0,
   "mobileRightColumn": 16,
-  "mobileTopRow": 38,
+  "mobileTopRow": 58,
   "needsErrorInfo": false,
   "overflow": "NONE",
   "parentColumnSpace": 13.34375,
-  "parentId": "wl9pz6vj3k",
+  "parentId": "wsetjbr441",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 16,
+  "rightColumn": 5,
   "shouldTruncate": false,
-  "text": "Capacity report : ",
+  "text": "Price : ",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 39,
+  "topRow": 74,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
-  "widgetId": "qgilafh9r2",
-  "widgetName": "Text4"
+  "widgetId": "1j3fnsio8o",
+  "widgetName": "Text6Copy"
 }

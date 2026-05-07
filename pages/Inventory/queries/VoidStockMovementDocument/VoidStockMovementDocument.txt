@@ -1,0 +1,4 @@
+UPDATE documents
+SET status = 'CANCELLED'
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.documentId}};
