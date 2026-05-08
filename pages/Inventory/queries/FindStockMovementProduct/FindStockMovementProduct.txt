@@ -17,8 +17,6 @@ LEFT JOIN units_of_measure u
 LEFT JOIN v_inventory_balance ib
   ON ib.company_id = p.company_id
  AND ib.product_id = p.id
- AND ib.warehouse_id = {{this.params.warehouseId}}
-WHERE p.company_id = {{appsmith.store.companyId}}
   AND p.is_active = 1
   AND (
       p.code = {{this.params.lookup}}

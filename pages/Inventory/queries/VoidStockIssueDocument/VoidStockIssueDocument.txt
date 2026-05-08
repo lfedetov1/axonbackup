@@ -1,0 +1,6 @@
+UPDATE documents
+SET status = 'CANCELLED'
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.issueId}}
+  AND document_type = 'STOCK_OUT'
+  AND status = 'POSTED';

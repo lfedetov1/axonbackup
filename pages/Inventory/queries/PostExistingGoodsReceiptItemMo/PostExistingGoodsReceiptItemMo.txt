@@ -1,0 +1,35 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    document_id,
+    document_item_id,
+    movement_type,
+    movement_date,
+    quantity,
+    unit_cost,
+    total_cost,
+    serial_number,
+    batch_number,
+    note
+)
+SELECT
+    d.company_id,
+    d.warehouse_id,
+    di.product_id,
+    d.id,
+    di.id,
+    'IN',
+    d.document_date,
+    di.quantity,
+    di.unit_price,
+    di.line_total,
+    di.serial_number,
+    di.batch_number,
+    di.note
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.id = {{this.params.receiptId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.status = 'DRAFT';

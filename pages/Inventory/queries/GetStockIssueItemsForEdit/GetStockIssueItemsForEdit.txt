@@ -1,0 +1,30 @@
+SELECT
+    di.id AS itemId,
+    di.line_no AS lineNo,
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+    di.unit_id AS unitId,
+    u.code AS unitCode,
+    di.quantity AS quantity,
+    di.unit_price AS unitCost,
+    di.line_total AS lineTotal,
+    di.batch_number AS batchNumber,
+    di.serial_number AS serialNumber,
+    di.expiry_date AS expiryDate,
+    di.note AS note,
+    COALESCE(ib.quantity_balance, 0) AS currentStock
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = d.company_id
+ AND ib.product_id = p.id
+ AND ib.warehouse_id = d.warehouse_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'STOCK_OUT'
+  AND d.id = {{this.params.issueId}}
+ORDER BY di.line_no ASC;

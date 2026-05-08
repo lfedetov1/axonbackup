@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_2b80e10e-1ac2-4930-8e03-9fccabd7bbf9",
+  "id": "Inventory_StockIssueForm",
+  "unpublishedCollection": {
+    "name": "StockIssueForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

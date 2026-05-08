@@ -1,0 +1,26 @@
+SELECT
+    CONCAT(
+        'SI',
+        '-',
+        YEAR(CURDATE()),
+        '-',
+        LPAD(
+            COALESCE(
+                MAX(
+                    CAST(
+                        SUBSTRING(
+                            d.document_number,
+                            LENGTH(CONCAT('SI', '-', YEAR(CURDATE()), '-')) + 1
+                        ) AS UNSIGNED
+                    )
+                ),
+                0
+            ) + 1,
+            6,
+            '0'
+        )
+    ) AS nextIssueNumber
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'STOCK_OUT'
+  AND d.document_number LIKE CONCAT('SI', '-', YEAR(CURDATE()), '-%');

@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 65,
+  "boxShadow": "none",
+  "buttonColor": "#93c5fd",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "floppy-disk",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "9tv47ucfbn",
+  "leftColumn": 53,
+  "minWidth": 120,
+  "mobileBottomRow": 59,
+  "mobileLeftColumn": 42,
+  "mobileRightColumn": 58,
+  "mobileTopRow": 55,
+  "needsErrorInfo": false,
+  "onClick": "{{ StockIssueForm.saveDraft() }}\n",
+  "parentColumnSpace": 13.34375,
+  "parentId": "ol2vfchox4",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Save",
+  "topRow": 61,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "ehz4p470u1",
+  "widgetName": "Button16"
+}

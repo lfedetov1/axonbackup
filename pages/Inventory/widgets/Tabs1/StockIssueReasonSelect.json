@@ -1,0 +1,59 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 16,
+  "boxShadow": "none",
+  "defaultOptionValue": "WRITE_OFF",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "fle88f70dh",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Issue Reason :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 16,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 20,
+  "mobileTopRow": 9,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 13.34375,
+  "parentId": "ol2vfchox4",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 20,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  {\n    \"label\": \"Write-off\",\n    \"value\": \"WRITE_OFF\"\n  },\n  {\n    \"label\": \"Damaged Goods\",\n    \"value\": \"DAMAGED\"\n  },\n  {\n    \"label\": \"Expired Goods\",\n    \"value\": \"EXPIRED\"\n  },\n  {\n    \"label\": \"Internal Consumption\",\n    \"value\": \"INTERNAL_CONSUMPTION\"\n  },\n  {\n    \"label\": \"Inventory Shortage\",\n    \"value\": \"INVENTORY_SHORTAGE\"\n  },\n  {\n    \"label\": \"Sample / Demo Use\",\n    \"value\": \"SAMPLE_DEMO\"\n  },\n  {\n    \"label\": \"Other\",\n    \"value\": \"OTHER\"\n  }\n]\n",
+  "topRow": 9,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "8v511y8h1o",
+  "widgetName": "StockIssueReasonSelect"
+}

@@ -1,0 +1,12 @@
+UPDATE documents
+SET
+    warehouse_id = {{this.params.warehouseId}},
+    partner_id = {{this.params.supplierId || null}},
+    document_date = {{this.params.receiptDate}},
+    note = {{this.params.note || null}},
+    subtotal_amount = {{this.params.totalAmount || 0}},
+    total_amount = {{this.params.totalAmount || 0}}
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.receiptId}}
+  AND document_type = 'PURCHASE_RECEIPT'
+  AND status = 'DRAFT';

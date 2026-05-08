@@ -1,0 +1,57 @@
+SELECT
+    di.id AS `Item ID`,
+    di.line_no AS `Line`,
+    d.document_number AS `Receipt Number`,
+    d.document_date AS `Receipt Date`,
+
+    p.id AS `Product ID`,
+    p.code AS `Product Code`,
+    p.name AS `Product`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    di.description AS `Description`,
+
+    u.code AS `Unit`,
+    di.quantity AS `Quantity`,
+    di.unit_price AS `Unit Cost`,
+    di.line_total AS `Line Total`,
+
+    di.batch_number AS `Batch Number`,
+    di.serial_number AS `Serial Number`,
+    di.expiry_date AS `Expiry Date`,
+    di.note AS `Note`,
+
+    COALESCE(sm_posted.posted_quantity, 0) AS `Posted Quantity`
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+LEFT JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN (
+    SELECT
+        document_item_id,
+        SUM(quantity) AS posted_quantity
+    FROM stock_movements
+    WHERE movement_type = 'IN'
+    GROUP BY document_item_id
+) sm_posted
+  ON sm_posted.document_item_id = di.id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.id = {{
+      GoodsReceiptTable.selectedRow?.["Receipt ID"]
+      || this.params.receiptId
+      || 0
+  }}
+
+ORDER BY
+    di.line_no ASC;

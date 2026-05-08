@@ -1,0 +1,34 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+    p.unit_id AS unitId,
+    u.code AS unitCode,
+    p.purchase_price AS purchasePrice,
+    p.track_stock AS trackStock,
+    COALESCE(ib.quantity_balance, 0) AS currentStock
+FROM products p
+LEFT JOIN units_of_measure u ON u.id = p.unit_id
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = p.company_id
+ AND ib.product_id = p.id
+ AND ib.warehouse_id = {{this.params.warehouseId}}
+WHERE p.is_active = 1
+  AND p.track_stock = 1
+  AND (
+      p.code = TRIM({{this.params.lookup}})
+      OR p.barcode = TRIM({{this.params.lookup}})
+      OR p.sku = TRIM({{this.params.lookup}})
+      OR p.name LIKE CONCAT('%', TRIM({{this.params.lookup}}), '%')
+  )
+ORDER BY
+    CASE
+        WHEN p.barcode = TRIM({{this.params.lookup}}) THEN 1
+        WHEN p.code = TRIM({{this.params.lookup}}) THEN 2
+        WHEN p.sku = TRIM({{this.params.lookup}}) THEN 3
+        ELSE 4
+    END,
+    p.name ASC
+LIMIT 1;

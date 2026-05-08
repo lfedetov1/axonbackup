@@ -1,0 +1,55 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#93c5fd",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "ban-circle",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "8w7eb48e8j",
+  "leftColumn": 54,
+  "minWidth": 120,
+  "mobileBottomRow": 9,
+  "mobileLeftColumn": 35,
+  "mobileRightColumn": 51,
+  "mobileTopRow": 5,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  StockMovementForm.cancel();\n  InventoryUI.showList();\n}}\n",
+  "parentColumnSpace": 13.34375,
+  "parentId": "ol2vfchox4",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 64,
+  "text": "Cancel",
+  "tooltip": "",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "8wlm750ctf",
+  "widgetName": "Button8CopyCopy1"
+}

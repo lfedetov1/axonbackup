@@ -1,0 +1,51 @@
+SELECT
+    d.id AS `Receipt ID`,
+    d.company_id AS `Company ID`,
+    d.document_number AS `Receipt Number`,
+    d.document_date AS `Receipt Date`,
+    d.status AS `Status`,
+
+    bp.code AS `Supplier Code`,
+    bp.name AS `Supplier`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    d.total_amount AS `Total Value`,
+
+    d.note AS `Note`,
+    d.created_at AS `Created At`,
+    d.updated_at AS `Updated At`
+
+FROM documents d
+
+LEFT JOIN business_partners bp
+  ON bp.id = d.partner_id
+
+LEFT JOIN warehouses w
+  ON w.id = d.warehouse_id
+
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+
+WHERE d.document_type = 'PURCHASE_RECEIPT'
+
+GROUP BY
+    d.id,
+    d.company_id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    bp.code,
+    bp.name,
+    w.code,
+    w.name,
+    d.total_amount,
+    d.note,
+    d.created_at,
+    d.updated_at
+
+ORDER BY
+    d.id DESC;

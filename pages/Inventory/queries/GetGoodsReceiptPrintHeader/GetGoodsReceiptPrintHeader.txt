@@ -1,0 +1,47 @@
+SELECT
+    d.id AS receiptId,
+    d.document_number AS receiptNumber,
+    d.document_date AS receiptDate,
+    d.status AS status,
+    d.created_at AS createdAt,
+    d.note AS note,
+    d.total_amount AS totalAmount,
+
+    c.name AS companyName,
+    c.legal_name AS companyLegalName,
+    c.tax_number AS companyTaxNumber,
+    c.address_line1 AS companyAddressLine1,
+    c.address_line2 AS companyAddressLine2,
+    c.postal_code AS companyPostalCode,
+    c.city AS companyCity,
+    c.country_code AS companyCountryCode,
+    c.phone AS companyPhone,
+    c.email AS companyEmail,
+    c.website AS companyWebsite,
+    c.logo_path AS companyLogoPath,
+
+    bp.code AS supplierCode,
+    bp.name AS supplierName,
+    bp.tax_number AS supplierTaxNumber,
+    bp.address_line1 AS supplierAddressLine1,
+    bp.address_line2 AS supplierAddressLine2,
+    bp.postal_code AS supplierPostalCode,
+    bp.city_name AS supplierCity,
+    bp.phone AS supplierPhone,
+    bp.email AS supplierEmail,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    w.address_line1 AS warehouseAddressLine1,
+    w.city AS warehouseCity,
+
+    d.created_by_user_id AS createdByUserId
+
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+
+WHERE d.document_type = 'PURCHASE_RECEIPT'
+  AND d.id = {{this.params.receiptId}}
+LIMIT 1;

@@ -1,0 +1,13 @@
+SELECT
+    d.id AS issueId,
+    d.document_number AS issueNumber,
+    d.document_date AS issueDate,
+    d.status AS status,
+    d.warehouse_id AS warehouseId,
+    d.note AS note,
+    d.total_amount AS totalValue
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'STOCK_OUT'
+  AND d.id = {{this.params.issueId}}
+LIMIT 1;

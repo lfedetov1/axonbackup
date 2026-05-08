@@ -1,0 +1,6 @@
+UPDATE documents
+SET status = 'CANCELLED'
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.receiptId}}
+  AND document_type = 'PURCHASE_RECEIPT'
+  AND status = 'POSTED';

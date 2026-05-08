@@ -1,0 +1,43 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.status AS status,
+    d.document_date AS documentDate,
+    d.created_at AS createdAt,
+    d.note AS note,
+    d.total_amount AS totalAmount,
+
+    c.name AS companyName,
+    c.legal_name AS companyLegalName,
+    c.tax_number AS companyTaxNumber,
+    c.address_line1 AS companyAddressLine1,
+    c.address_line2 AS companyAddressLine2,
+    c.postal_code AS companyPostalCode,
+    c.city AS companyCity,
+    c.country_code AS companyCountryCode,
+    c.phone AS companyPhone,
+    c.email AS companyEmail,
+    c.website AS companyWebsite,
+    c.logo_path AS companyLogoPath,
+
+    wh.code AS warehouseCode,
+    wh.name AS warehouseName,
+
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    d.created_by_user_id AS createdByUserId
+
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN warehouses wh ON wh.id = d.warehouse_id
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_number = {{this.params.documentNumber}}
+LIMIT 1;

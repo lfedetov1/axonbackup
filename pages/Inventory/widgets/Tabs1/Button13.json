@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 63,
+  "boxShadow": "none",
+  "buttonColor": "#93c5fd",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "floppy-disk",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "7fam1cqhk7",
+  "leftColumn": 53,
+  "minWidth": 120,
+  "mobileBottomRow": 63,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 59,
+  "needsErrorInfo": false,
+  "onClick": "{{ GoodsReceiptForm.saveDraft() }}\n",
+  "parentColumnSpace": 13.34375,
+  "parentId": "rl7p2vxmzg",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Save",
+  "topRow": 59,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "ri12hminup",
+  "widgetName": "Button13"
+}

@@ -481,6 +481,20 @@ export default {
       console.log(error);
     }
   },
+	
+	getDocumentNumberFromRow(row) {
+  return (
+    row?.documentNumber ||
+    row?.document_number ||
+    row?.DocumentNumber ||
+    row?.["Document Number"] ||
+    row?.documentNo ||
+    row?.["Document No."] ||
+    row?.document_number ||
+    ""
+  );
+},
+
 
   async loadByNumber() {
     if (!MovementNumberInput.text.trim()) {

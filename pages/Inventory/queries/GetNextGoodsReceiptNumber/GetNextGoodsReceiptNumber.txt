@@ -1,0 +1,26 @@
+SELECT
+    CONCAT(
+        'GR',
+        '-',
+        YEAR(CURDATE()),
+        '-',
+        LPAD(
+            COALESCE(
+                MAX(
+                    CAST(
+                        SUBSTRING(
+                            d.document_number,
+                            LENGTH(CONCAT('GR', '-', YEAR(CURDATE()), '-')) + 1
+                        ) AS UNSIGNED
+                    )
+                ),
+                0
+            ) + 1,
+            6,
+            '0'
+        )
+    ) AS nextReceiptNumber
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.document_number LIKE CONCAT('GR', '-', YEAR(CURDATE()), '-%');

@@ -4,7 +4,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 70,
+  "bottomRow": 69,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "cachedTableData": {},
   "canFreezeColumn": true,
@@ -32,7 +32,6 @@
     }
   },
   "columnOrder": [
-    "lookup",
     "barcode",
     "productId",
     "productCode",
@@ -48,9 +47,11 @@
     "serialNumber",
     "note",
     "lineNo",
+    "lookup",
+    "customColumn1",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1778147133585,
+  "columnUpdatedAt": 1778228014715,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -72,9 +73,6 @@
     },
     {
       "key": "tableData"
-    },
-    {
-      "key": "primaryColumns.lookup.computedValue"
     },
     {
       "key": "primaryColumns.barcode.computedValue"
@@ -135,6 +133,15 @@
     },
     {
       "key": "primaryColumns.EditActions1.isDiscardDisabled"
+    },
+    {
+      "key": "primaryColumns.lookup.computedValue"
+    },
+    {
+      "key": "primaryColumns.customColumn1.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn1.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -148,24 +155,30 @@
       "key": "primaryColumns.EditActions1.isDiscardDisabled"
     },
     {
-      "key": "primaryColumns.lookup.onSubmit"
-    },
-    {
       "key": "primaryColumns.quantity.onSubmit"
     },
     {
       "key": "primaryColumns.unitCost.onSubmit"
+    },
+    {
+      "key": "primaryColumns.barcode.onSubmit"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
     }
   ],
   "dynamicTriggerPathList": [
     {
-      "key": "primaryColumns.lookup.onSubmit"
-    },
-    {
       "key": "primaryColumns.quantity.onSubmit"
     },
     {
       "key": "primaryColumns.unitCost.onSubmit"
+    },
+    {
+      "key": "primaryColumns.barcode.onSubmit"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -246,16 +259,17 @@
       "horizontalAlignment": "LEFT",
       "id": "barcode",
       "index": 1,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "Barcode",
       "notation": "standard",
+      "onSubmit": "{{ StockMovementForm.resolveProduct(TableProduct1.triggeredRowIndex, TableProduct1.updatedRow.barcode) }}",
       "originalId": "barcode",
       "sticky": "",
       "textSize": "0.875rem",
@@ -319,6 +333,45 @@
       "label": "currentStock",
       "notation": "standard",
       "originalId": "currentStock",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn1": {
+      "alias": "Remove",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{TableProduct1.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{TableProduct1.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "key-delete",
+      "id": "customColumn1",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Remove",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ StockMovementForm.removeRow(TableProduct1.triggeredRowIndex) }}\n",
+      "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
@@ -392,28 +445,30 @@
       "alias": "lookup",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "cellBackground": "",
       "columnType": "text",
       "computedValue": "{{(() => { const tableData = TableProduct1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"lookup\"])) : lookup })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
+      "fontStyle": "",
       "horizontalAlignment": "LEFT",
       "id": "lookup",
       "index": 0,
-      "isCellEditable": true,
+      "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": true,
+      "isEditable": false,
       "isSaveVisible": true,
-      "isVisible": true,
-      "label": "Look up",
+      "isVisible": false,
+      "label": "lookup",
       "notation": "standard",
-      "onSubmit": "{{ StockMovementForm.resolveProduct(TableProduct1.triggeredRowIndex, TableProduct1.updatedRow.barcode) }}\n",
       "originalId": "lookup",
       "sticky": "",
+      "textColor": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},
@@ -740,7 +795,7 @@
   "showInlineEditingOptionDropdown": true,
   "tableData": "{{ appsmith.store.stockMovementItems || [] }}\n",
   "textSize": "0.875rem",
-  "topRow": 33,
+  "topRow": 32,
   "totalRecordsCount": 0,
   "type": "TABLE_WIDGET_V2",
   "version": 2,

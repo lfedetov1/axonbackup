@@ -1,0 +1,14 @@
+SELECT
+    d.id AS receiptId,
+    d.document_number AS receiptNumber,
+    d.document_date AS receiptDate,
+    d.status AS status,
+    d.partner_id AS supplierId,
+    d.warehouse_id AS warehouseId,
+    d.note AS note,
+    d.total_amount AS totalValue
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.id = {{this.params.receiptId}}
+LIMIT 1;

@@ -1,0 +1,19 @@
+SELECT
+    di.line_no AS lineNo,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    di.description AS description,
+    u.code AS unitCode,
+    di.quantity AS quantity,
+    di.unit_price AS unitCost,
+    di.line_total AS lineTotal,
+    di.batch_number AS batchNumber,
+    di.serial_number AS serialNumber,
+    di.expiry_date AS expiryDate,
+    di.note AS note
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+WHERE di.document_id = {{this.params.receiptId}}
+ORDER BY di.line_no ASC;

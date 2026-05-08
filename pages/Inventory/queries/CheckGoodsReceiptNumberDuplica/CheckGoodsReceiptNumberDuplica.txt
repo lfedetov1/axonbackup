@@ -1,0 +1,9 @@
+SELECT
+    id AS receiptId,
+    document_number AS receiptNumber,
+    status AS status
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'PURCHASE_RECEIPT'
+  AND document_number = {{GoodsReceiptNumberInput.text.trim()}}
+LIMIT 1;
