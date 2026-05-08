@@ -1,0 +1,93 @@
+SELECT
+    wl.id AS locationId,
+    wl.company_id AS companyId,
+    wl.warehouse_id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    wl.code AS locationCode,
+    wl.name AS locationName,
+    wl.location_type AS locationType,
+
+    wl.zone_code AS zoneCode,
+    wl.aisle_code AS aisleCode,
+    wl.rack_code AS rackCode,
+    wl.shelf_code AS shelfCode,
+    wl.bin_code AS binCode,
+
+    wl.capacity_quantity AS capacityQuantity,
+    cu.code AS capacityUnitCode,
+
+    wl.is_pickable AS isPickable,
+    wl.is_receiving_area AS isReceivingArea,
+    wl.is_shipping_area AS isShippingArea,
+    wl.is_active AS isActive,
+    wl.note AS note,
+
+    COALESCE(lp.productCount, 0) AS productCount,
+    COALESCE(lp.assignedMinQuantity, 0) AS assignedMinQuantity,
+    COALESCE(lp.assignedMaxQuantity, 0) AS assignedMaxQuantity,
+
+    CASE
+        WHEN wl.is_active = 0 THEN 'INACTIVE'
+        WHEN wl.is_receiving_area = 1 THEN 'RECEIVING'
+        WHEN wl.is_shipping_area = 1 THEN 'SHIPPING'
+        WHEN COALESCE(lp.productCount, 0) = 0 THEN 'EMPTY'
+        WHEN wl.capacity_quantity > 0
+         AND COALESCE(lp.assignedMaxQuantity, 0) >= wl.capacity_quantity THEN 'FULL'
+        ELSE 'ASSIGNED'
+    END AS locationStatus,
+
+    CASE
+        WHEN wl.capacity_quantity > 0
+        THEN ROUND((COALESCE(lp.assignedMaxQuantity, 0) / wl.capacity_quantity) * 100, 2)
+        ELSE 0
+    END AS capacityPercent
+
+FROM warehouse_locations wl
+
+JOIN warehouses w
+  ON w.id = wl.warehouse_id
+
+LEFT JOIN units_of_measure cu
+  ON cu.id = wl.capacity_unit_id
+
+LEFT JOIN (
+    SELECT
+        location_id,
+        COUNT(DISTINCT product_id) AS productCount,
+        SUM(COALESCE(minimum_quantity, 0)) AS assignedMinQuantity,
+        SUM(COALESCE(maximum_quantity, 0)) AS assignedMaxQuantity
+    FROM warehouse_location_products
+    WHERE is_active = 1
+    GROUP BY location_id
+) lp
+  ON lp.location_id = wl.id
+
+WHERE wl.company_id = {{appsmith.store.companyId}}
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR wl.warehouse_id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      {{!StockMapLocationTypeSelect.selectedOptionValue}}
+      OR {{StockMapLocationTypeSelect.selectedOptionValue}} = 'ALL'
+      OR wl.location_type = {{StockMapLocationTypeSelect.selectedOptionValue}}
+  )
+  AND (
+      {{!StockMapSearchInput.text}}
+      OR wl.code LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+      OR wl.name LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+      OR wl.zone_code LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+      OR wl.rack_code LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+      OR wl.shelf_code LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+      OR wl.bin_code LIKE CONCAT('%', {{StockMapSearchInput.text}}, '%')
+  )
+
+ORDER BY
+    wl.zone_code ASC,
+    wl.aisle_code ASC,
+    wl.rack_code ASC,
+    wl.shelf_code ASC,
+    wl.sort_order ASC,
+    wl.code ASC;

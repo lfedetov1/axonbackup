@@ -1,0 +1,15 @@
+SELECT
+    wl.id AS value,
+    CONCAT(wl.code, ' - ', wl.name) AS label,
+    wl.id AS locationId,
+    wl.code AS locationCode,
+    wl.name AS locationName
+FROM warehouse_locations wl
+WHERE wl.company_id = {{appsmith.store.companyId}}
+  AND wl.is_active = 1
+  AND wl.location_type IN ('BIN', 'SHELF', 'FLOOR', 'RECEIVING', 'SHIPPING')
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR wl.warehouse_id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+ORDER BY wl.code ASC;

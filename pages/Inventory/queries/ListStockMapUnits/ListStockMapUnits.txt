@@ -1,0 +1,8 @@
+SELECT
+    id AS value,
+    CONCAT(code, ' - ', name) AS label,
+    code AS unitCode,
+    name AS unitName
+FROM units_of_measure
+WHERE is_active = 1
+ORDER BY name ASC;
