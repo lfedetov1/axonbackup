@@ -1,0 +1,54 @@
+SELECT
+    di.line_no AS lineNo,
+
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    u.code AS unitCode,
+
+    di.quantity AS requiredQuantity,
+
+    COALESCE(SUM(wpi.picked_quantity), 0) AS pickedQuantity,
+    di.quantity - COALESCE(SUM(wpi.picked_quantity), 0) AS remainingQuantity,
+
+    GROUP_CONCAT(
+      DISTINCT CONCAT(wl.code, ' - ', wl.name)
+      ORDER BY wl.code
+      SEPARATOR ', '
+    ) AS pickLocations
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN warehouse_pick_items wpi
+  ON wpi.document_item_id = di.id
+
+LEFT JOIN warehouse_locations wl
+  ON wl.id = wpi.location_id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND di.document_id = {{this.params.documentId}}
+
+GROUP BY
+    di.id,
+    di.line_no,
+    p.code,
+    p.name,
+    p.barcode,
+    p.sku,
+    u.code,
+    di.quantity
+
+ORDER BY
+    di.line_no,
+    p.name;

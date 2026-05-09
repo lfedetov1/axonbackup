@@ -1,0 +1,18 @@
+UPDATE warehouse_location_products
+SET
+    location_id = {{StockMapMoveToLocationSelect.selectedOptionValue}},
+    note = CONCAT(
+        COALESCE(note, ''),
+        CASE WHEN COALESCE(note, '') = '' THEN '' ELSE '\n' END,
+        'Moved from ',
+        {{this.params.fromLocationCode}},
+        ' to ',
+        {{this.params.toLocationCode}},
+        CASE
+            WHEN {{StockMapMoveNoteInput.text || ''}} = '' THEN ''
+            ELSE CONCAT(' - ', {{StockMapMoveNoteInput.text}})
+        END
+    ),
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.mappingId}};

@@ -1,0 +1,23 @@
+SELECT
+    id AS locationId,
+    warehouse_id AS warehouseId,
+    code AS locationCode,
+    name AS locationName,
+    location_type AS locationType,
+    zone_code AS zoneCode,
+    aisle_code AS aisleCode,
+    rack_code AS rackCode,
+    shelf_code AS shelfCode,
+    bin_code AS binCode,
+    sort_order AS sortOrder,
+    capacity_quantity AS capacityQuantity,
+    capacity_unit_id AS capacityUnitId,
+    is_pickable AS isPickable,
+    is_receiving_area AS isReceivingArea,
+    is_shipping_area AS isShippingArea,
+    is_active AS isActive,
+    note AS note
+FROM warehouse_locations
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.locationId}}
+LIMIT 1;

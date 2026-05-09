@@ -408,7 +408,7 @@ export default {
   },
 
   async loadForEdit(row = null) {
-    const selected = row || StockIssueTable.triggeredRow || StockIssueTable.selectedRow;
+    const selected = row || StockIssueDocumentsTable.triggeredRow || StockIssueDocumentsTable.selectedRow;
     const issueId =
       selected?.["Issue ID"] ||
       selected?.issueId ||
@@ -469,7 +469,7 @@ export default {
   },
 
   async voidIssue(row = null) {
-    const selected = row || StockIssueTable.triggeredRow || StockIssueTable.selectedRow;
+    const selected = row || StockIssueDocumentsTable.triggeredRow || StockIssueDocumentsTable.selectedRow;
     const issueId =
       selected?.["Issue ID"] ||
       selected?.issueId ||

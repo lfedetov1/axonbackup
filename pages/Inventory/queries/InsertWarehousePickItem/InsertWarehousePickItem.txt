@@ -1,0 +1,24 @@
+INSERT INTO warehouse_pick_items (
+    company_id,
+    document_id,
+    document_item_id,
+    warehouse_id,
+    location_id,
+    product_id,
+    picked_quantity,
+    picked_by_user_id,
+    picked_at,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.documentId}},
+    {{this.params.documentItemId}},
+    {{this.params.warehouseId}},
+    {{this.params.locationId}},
+    {{this.params.productId}},
+    {{this.params.pickedQuantity}},
+    {{appsmith.store.userId || null}},
+    NOW(),
+    {{this.params.note || null}}
+);

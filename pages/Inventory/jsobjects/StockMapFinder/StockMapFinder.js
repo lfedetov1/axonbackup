@@ -48,6 +48,7 @@ export default {
 
     showAlert(`Location found: ${primary.locationCode}`, "success");
   },
+	
 
   async clearNavigation() {
     StockMapFindProductInput.setValue("");

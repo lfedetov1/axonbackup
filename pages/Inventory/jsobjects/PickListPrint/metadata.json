@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_c24ce34b-6487-4dce-b009-19576e9ac743",
+  "id": "Inventory_PickListPrint",
+  "unpublishedCollection": {
+    "name": "PickListPrint",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

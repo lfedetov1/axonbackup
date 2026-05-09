@@ -13,6 +13,11 @@
       "key": "borderRadius"
     }
   ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "dynamicTriggerPathList": [
     {
       "key": "onClick"
@@ -31,7 +36,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{closeModal(StockMapFindProductModal.name);}}",
+  "onClick": "{{\n  StockMapFinder.clearNavigation();\n  closeModal(StockMapFindProductModal.name);\n}}\n",
   "parentId": "0krnaw6thc",
   "renderMode": "CANVAS",
   "responsiveBehavior": "hug",

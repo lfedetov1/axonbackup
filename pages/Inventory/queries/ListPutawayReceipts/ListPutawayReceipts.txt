@@ -1,0 +1,39 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Receipt Number`,
+    d.document_date AS `Receipt Date`,
+    bp.name AS `Supplier`,
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+    COUNT(di.id) AS `Line Count`,
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    d.status AS `Status`,
+    d.note AS `Note`
+FROM documents d
+LEFT JOIN business_partners bp
+  ON bp.id = d.partner_id
+LEFT JOIN warehouses w
+  ON w.id = d.warehouse_id
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.status IN ('POSTED', 'APPROVED')
+  AND (
+      {{PutawaySearchInput.text || ''}} = ''
+      OR d.document_number LIKE CONCAT('%', {{PutawaySearchInput.text || ''}}, '%')
+      OR bp.name LIKE CONCAT('%', {{PutawaySearchInput.text || ''}}, '%')
+      OR bp.code LIKE CONCAT('%', {{PutawaySearchInput.text || ''}}, '%')
+  )
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    bp.name,
+    w.code,
+    w.name,
+    d.status,
+    d.note
+ORDER BY
+    d.document_date DESC,
+    d.id DESC;

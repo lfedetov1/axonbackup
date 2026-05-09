@@ -46,6 +46,27 @@ export default {
     await InsertWarehouseLocationProduct.run({
       productId: product.productId
     });
+		if (typeof AuditLog !== "undefined") {
+  await AuditLog.insert({
+    entityName: "warehouse_location_products",
+    entityId: product.productId,
+    actionType: "ASSIGN",
+    newValues: {
+      product_id: product.productId,
+      product_code: product.productCode,
+      product_name: product.productName,
+      location_id: appsmith.store.selectedWarehouseLocationId,
+      location_code: location.locationCode,
+      location_name: location.locationName,
+      is_primary_location: StockMapPrimarySwitch.isSwitchedOn,
+      minimum_quantity: StockMapMinQuantityInput.text || null,
+      maximum_quantity: StockMapMaxQuantityInput.text || null,
+      reorder_quantity: StockMapReorderQuantityInput.text || null,
+      note: StockMapProductNoteInput.text || null
+    }
+  });
+}
+
 
     await ListWarehouseLocations.run();
     await ListWarehouseLocationProducts.run({

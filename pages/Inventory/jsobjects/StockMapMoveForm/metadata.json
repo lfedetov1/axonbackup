@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_40c9ddd1-484b-40d0-9cae-c231dfabf0f9",
+  "id": "Inventory_StockMapMoveForm",
+  "unpublishedCollection": {
+    "name": "StockMapMoveForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

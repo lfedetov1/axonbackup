@@ -37,9 +37,12 @@ LEFT JOIN v_inventory_balance ib
  AND ib.warehouse_id = wlp.warehouse_id
  AND ib.product_id = wlp.product_id
 
-WHERE wlp.company_id = {{appsmith.store.companyId}}
-  AND wlp.location_id = {{this.params.locationId || appsmith.store.selectedWarehouseLocationId || 0}}
-  AND wlp.is_active = 1
+WHERE wlp.location_id = {{Number(this.params.locationId || appsmith.store.selectedWarehouseLocationId || 0)}}
+  AND (
+      {{Number(appsmith.store.companyId || 0)}} = 0
+      OR wlp.company_id = {{Number(appsmith.store.companyId || 0)}}
+  )
+  AND COALESCE(wlp.is_active, 1) = 1
 
 ORDER BY
     wlp.is_primary_location DESC,

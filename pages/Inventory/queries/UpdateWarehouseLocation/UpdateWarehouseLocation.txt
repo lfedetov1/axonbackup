@@ -1,0 +1,22 @@
+UPDATE warehouse_locations
+SET
+    warehouse_id = {{StockLocationWarehouseSelect.selectedOptionValue}},
+    code = {{StockLocationCodeInput.text.trim()}},
+    name = {{StockLocationNameInput.text.trim()}},
+    location_type = {{StockLocationTypeSelect.selectedOptionValue || 'BIN'}},
+    zone_code = {{StockLocationZoneInput.text.trim() || null}},
+    aisle_code = {{StockLocationAisleInput.text.trim() || null}},
+    rack_code = {{StockLocationRackInput.text.trim() || null}},
+    shelf_code = {{StockLocationShelfInput.text.trim() || null}},
+    bin_code = {{StockLocationBinInput.text.trim() || null}},
+    sort_order = {{StockLocationSortOrderInput.text || 0}},
+    capacity_quantity = {{StockLocationCapacityInput.text || null}},
+    capacity_unit_id = {{StockLocationCapacityUnitSelec.selectedOptionValue || null}},
+    is_pickable = {{StockLocationPickableSwitch.isSwitchedOn ? 1 : 0}},
+    is_receiving_area = {{StockLocationReceivingSwitch.isSwitchedOn ? 1 : 0}},
+    is_shipping_area = {{StockLocationShippingSwitch.isSwitchedOn ? 1 : 0}},
+    is_active = {{StockLocationActiveSwitch.isSwitchedOn ? 1 : 0}},
+    note = {{StockLocationNoteInput.text.trim() || null}},
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.locationId}};

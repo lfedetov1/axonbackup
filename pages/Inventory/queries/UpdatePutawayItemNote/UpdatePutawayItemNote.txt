@@ -1,0 +1,10 @@
+UPDATE document_items
+SET
+    note = CONCAT(
+      COALESCE(note, ''),
+      CASE WHEN COALESCE(note, '') = '' THEN '' ELSE '\n' END,
+      'Putaway assigned to location ',
+      {{this.params.locationCode}}
+    ),
+    updated_at = NOW()
+WHERE id = {{this.params.documentItemId}};

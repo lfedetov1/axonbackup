@@ -1,0 +1,25 @@
+UPDATE documents d
+SET
+    d.status = (
+        SELECT
+            CASE
+                WHEN COALESCE(SUM(picked.total_picked), 0) = 0 THEN 'POSTED'
+                WHEN COALESCE(SUM(picked.total_picked), 0) < COALESCE(SUM(di.quantity), 0) THEN 'PARTIAL_PICKED'
+                ELSE 'PICKED'
+            END
+        FROM document_items di
+        LEFT JOIN (
+            SELECT
+                document_item_id,
+                SUM(picked_quantity) AS total_picked
+            FROM warehouse_pick_items
+            WHERE company_id = {{appsmith.store.companyId}}
+              AND document_id = {{this.params.documentId}}
+            GROUP BY document_item_id
+        ) picked
+          ON picked.document_item_id = di.id
+        WHERE di.document_id = {{this.params.documentId}}
+    ),
+    d.updated_at = NOW()
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.id = {{this.params.documentId}};

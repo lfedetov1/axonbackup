@@ -1,0 +1,31 @@
+INSERT INTO warehouse_location_products (
+    company_id,
+    warehouse_id,
+    location_id,
+    product_id,
+    is_primary_location,
+    minimum_quantity,
+    maximum_quantity,
+    reorder_quantity,
+    note,
+    is_active
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.warehouseId}},
+    {{PutawayLocationSelect.selectedOptionValue}},
+    {{this.params.productId}},
+    {{PutawayPrimarySwitch.isSwitchedOn ? 1 : 0}},
+    {{PutawayMinQuantityInput.text || null}},
+    {{PutawayMaxQuantityInput.text || null}},
+    {{PutawayReorderQuantityInput.text || null}},
+    {{PutawayNoteInput.text || null}},
+    1
+)
+ON DUPLICATE KEY UPDATE
+    is_primary_location = VALUES(is_primary_location),
+    minimum_quantity = VALUES(minimum_quantity),
+    maximum_quantity = VALUES(maximum_quantity),
+    reorder_quantity = VALUES(reorder_quantity),
+    note = VALUES(note),
+    is_active = 1;
