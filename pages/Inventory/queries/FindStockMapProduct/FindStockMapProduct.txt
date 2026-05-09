@@ -1,0 +1,26 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+    u.code AS unitCode
+FROM products p
+LEFT JOIN units_of_measure u ON u.id = p.unit_id
+WHERE p.company_id = {{appsmith.store.companyId}}
+  AND p.is_active = 1
+  AND (
+      p.code = TRIM({{this.params.lookup}})
+      OR p.barcode = TRIM({{this.params.lookup}})
+      OR p.sku = TRIM({{this.params.lookup}})
+      OR p.name LIKE CONCAT('%', TRIM({{this.params.lookup}}), '%')
+  )
+ORDER BY
+    CASE
+        WHEN p.barcode = TRIM({{this.params.lookup}}) THEN 1
+        WHEN p.code = TRIM({{this.params.lookup}}) THEN 2
+        WHEN p.sku = TRIM({{this.params.lookup}}) THEN 3
+        ELSE 4
+    END,
+    p.name ASC
+LIMIT 1;

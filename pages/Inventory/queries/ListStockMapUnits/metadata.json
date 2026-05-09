@@ -25,7 +25,7 @@
     "dynamicBindingPathList": [],
     "name": "ListStockMapUnits",
     "pageId": "Inventory",
-    "runBehaviour": "MANUAL",
+    "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false
   }
 }

@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0d3dfac4-cf5f-418f-87fa-e2247accbe25",
+  "id": "Inventory_StockMapFinder",
+  "unpublishedCollection": {
+    "name": "StockMapFinder",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

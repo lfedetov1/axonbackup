@@ -1,0 +1,66 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    wl.id AS locationId,
+    wl.code AS locationCode,
+    wl.name AS locationName,
+    wl.zone_code AS zoneCode,
+    wl.aisle_code AS aisleCode,
+    wl.rack_code AS rackCode,
+    wl.shelf_code AS shelfCode,
+    wl.bin_code AS binCode,
+
+    wlp.minimum_quantity AS minimumQuantity,
+    wlp.maximum_quantity AS maximumQuantity,
+    wlp.reorder_quantity AS reorderQuantity,
+    wlp.is_primary_location AS isPrimaryLocation,
+
+    COALESCE((
+        SELECT SUM(
+            CASE
+                WHEN sm.movement_type IN ('IN', 'STOCK_IN', 'PURCHASE_RECEIPT', 'TRANSFER_IN', 'ADJUSTMENT_IN')
+                    THEN sm.quantity
+                WHEN sm.movement_type IN ('OUT', 'STOCK_OUT', 'STOCK_ISSUE', 'WRITE_OFF', 'TRANSFER_OUT', 'ADJUSTMENT_OUT')
+                    THEN -sm.quantity
+                ELSE 0
+            END
+        )
+        FROM stock_movements sm
+        WHERE sm.product_id = p.id
+          AND sm.warehouse_id = wl.warehouse_id
+          AND sm.company_id = {{appsmith.store.companyId}}
+    ), 0) AS warehouseStock
+
+FROM warehouse_location_products wlp
+
+INNER JOIN warehouse_locations wl
+  ON wl.id = wlp.location_id
+
+INNER JOIN products p
+  ON p.id = wlp.product_id
+
+WHERE wlp.company_id = {{appsmith.store.companyId}}
+  AND wlp.is_active = 1
+  AND wl.is_active = 1
+  AND (
+      {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}} = 0
+      OR wl.warehouse_id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+  )
+  AND (
+      p.code = TRIM({{StockMapFindProductInput.text}})
+      OR p.barcode = TRIM({{StockMapFindProductInput.text}})
+      OR p.sku = TRIM({{StockMapFindProductInput.text}})
+      OR p.name LIKE CONCAT('%', TRIM({{StockMapFindProductInput.text}}), '%')
+  )
+ORDER BY
+    wlp.is_primary_location DESC,
+    wl.zone_code,
+    wl.aisle_code,
+    wl.rack_code,
+    wl.shelf_code,
+    wl.bin_code
+LIMIT 20;
