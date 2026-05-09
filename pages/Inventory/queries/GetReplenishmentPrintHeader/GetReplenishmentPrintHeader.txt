@@ -1,0 +1,31 @@
+SELECT
+    c.name AS companyName,
+    c.legal_name AS companyLegalName,
+    c.address_line1 AS companyAddressLine1,
+    c.postal_code AS companyPostalCode,
+    c.city AS companyCity,
+    c.country_code AS companyCountryCode,
+    c.tax_number AS companyTaxNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.logo_path AS companyLogoPath,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    CASE
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+      ELSE CURDATE()
+    END AS reportDate,
+
+    {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} AS periodLabel,
+    {{appsmith.store.username || ''}} AS printedBy
+
+FROM companies c
+
+LEFT JOIN warehouses w
+  ON w.id = {{InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0}}
+
+WHERE c.id = {{appsmith.store.companyId}}
+LIMIT 1;

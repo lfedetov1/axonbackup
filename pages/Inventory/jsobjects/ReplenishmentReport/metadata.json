@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_368822eb-4a35-46f0-a7ac-4990b86a863f",
+  "id": "Inventory_ReplenishmentReport",
+  "unpublishedCollection": {
+    "name": "ReplenishmentReport",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

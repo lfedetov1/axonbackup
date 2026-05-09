@@ -1,0 +1,31 @@
+INSERT INTO warehouse_replenishment_done (
+    company_id,
+    warehouse_id,
+    product_id,
+    location_id,
+    report_date,
+    status,
+    done_by_user_id,
+    done_at,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.warehouseId}},
+    {{this.params.productId}},
+    {{this.params.locationId || null}},
+    CASE
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+      ELSE CURDATE()
+    END,
+    'DONE',
+    {{appsmith.store.userId || null}},
+    NOW(),
+    {{this.params.note || null}}
+)
+ON DUPLICATE KEY UPDATE
+    status = 'DONE',
+    done_by_user_id = VALUES(done_by_user_id),
+    done_at = NOW(),
+    note = VALUES(note);

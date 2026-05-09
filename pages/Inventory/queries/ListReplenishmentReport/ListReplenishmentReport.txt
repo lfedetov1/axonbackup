@@ -1,0 +1,123 @@
+SELECT
+    wlp.warehouse_id AS warehouseId,
+    wlp.product_id AS productId,
+    wlp.location_id AS locationId,
+
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    wl.code AS `Location Code`,
+    wl.name AS `Location Name`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COALESCE(ib.quantity_balance, 0) AS `Current Stock`,
+    COALESCE(wlp.minimum_quantity, 0) AS `Minimum Quantity`,
+    COALESCE(wlp.maximum_quantity, 0) AS `Maximum Quantity`,
+
+    COALESCE(sold.sold_quantity, 0) AS `Sold Quantity`,
+
+    GREATEST(
+        COALESCE(wlp.maximum_quantity, 0) - COALESCE(ib.quantity_balance, 0),
+        COALESCE(sold.sold_quantity, 0),
+        0
+    ) AS `Suggested Replenishment`,
+
+    CASE
+        WHEN COALESCE(ib.quantity_balance, 0) <= 0 THEN 'URGENT'
+        WHEN COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0) THEN 'LOW'
+        WHEN COALESCE(sold.sold_quantity, 0) > COALESCE(ib.quantity_balance, 0) THEN 'SALES_DEMAND'
+        ELSE 'OK'
+    END AS `Priority`
+
+FROM warehouse_location_products wlp
+
+JOIN products p
+  ON p.id = wlp.product_id
+
+JOIN warehouse_locations wl
+  ON wl.id = wlp.location_id
+
+JOIN warehouses w
+  ON w.id = wlp.warehouse_id
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = wlp.company_id
+ AND ib.warehouse_id = wlp.warehouse_id
+ AND ib.product_id = wlp.product_id
+
+LEFT JOIN (
+    SELECT
+        d.company_id,
+        d.warehouse_id,
+        di.product_id,
+        SUM(di.quantity) AS sold_quantity
+    FROM documents d
+    JOIN document_items di
+      ON di.document_id = d.id
+    WHERE d.company_id = {{appsmith.store.companyId}}
+      AND d.document_type IN ('SALES_INVOICE', 'SALES_RECEIPT', 'DELIVERY_NOTE', 'STOCK_ISSUE', 'POS_SALE')
+      AND d.status IN ('POSTED', 'PICKED', 'PARTIAL_PICKED')
+      AND d.document_date =
+        CASE
+          WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+          WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+          ELSE CURDATE()
+        END
+    GROUP BY
+        d.company_id,
+        d.warehouse_id,
+        di.product_id
+) sold
+  ON sold.company_id = wlp.company_id
+ AND sold.warehouse_id = wlp.warehouse_id
+ AND sold.product_id = wlp.product_id
+
+LEFT JOIN warehouse_replenishment_done wrd
+  ON wrd.company_id = wlp.company_id
+ AND wrd.warehouse_id = wlp.warehouse_id
+ AND wrd.product_id = wlp.product_id
+ AND COALESCE(wrd.location_id, 0) = COALESCE(wlp.location_id, 0)
+ AND wrd.report_date =
+    CASE
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+      ELSE CURDATE()
+    END
+
+WHERE wlp.company_id = {{appsmith.store.companyId}}
+  AND wlp.is_active = 1
+  AND wl.is_active = 1
+  AND COALESCE(wrd.id, 0) = 0
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR wlp.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+  AND (
+      {{ReplenishmentSearchInput.text || ''}} = ''
+      OR p.code LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
+      OR p.name LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
+      OR p.barcode LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
+      OR wl.code LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
+  )
+  AND (
+      COALESCE(wlp.minimum_quantity, 0) > 0
+      OR COALESCE(sold.sold_quantity, 0) > 0
+  )
+  AND (
+      COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0)
+      OR COALESCE(sold.sold_quantity, 0) > 0
+  )
+
+ORDER BY
+    CASE
+      WHEN COALESCE(ib.quantity_balance, 0) <= 0 THEN 1
+      WHEN COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0) THEN 2
+      WHEN COALESCE(sold.sold_quantity, 0) > 0 THEN 3
+      ELSE 4
+    END,
+    `Suggested Replenishment` DESC,
+    p.name;

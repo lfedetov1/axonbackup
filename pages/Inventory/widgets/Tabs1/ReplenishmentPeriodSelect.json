@@ -1,0 +1,62 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 124,
+  "boxShadow": "none",
+  "defaultOptionValue": "TODAY",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "o6xbj5jbuq",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Period :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 124,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 20,
+  "mobileTopRow": 117,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 13.34375,
+  "parentId": "qes94bm038",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 20,
+  "serverSideFiltering": false,
+  "sourceData": "{{\n[\n  { label: \"Yesterday\", value: \"YESTERDAY\" },\n  { label: \"Today\", value: \"TODAY\" },\n  { label: \"Tomorrow\", value: \"TOMORROW\" }\n]\n}}",
+  "topRow": 117,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "757pxgu34z",
+  "widgetName": "ReplenishmentPeriodSelect"
+}
