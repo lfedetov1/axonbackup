@@ -1,0 +1,62 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS status,
+    d.note AS note,
+    d.total_amount AS totalAmount,
+    d.created_at AS createdAt,
+
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS company_logo_path,
+
+    u.username AS createdBy,
+
+    COUNT(di.id) AS lineCount,
+    COALESCE(SUM(di.quantity), 0) AS totalQuantity,
+    COALESCE(SUM(di.line_total), 0) AS totalValue
+
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+LEFT JOIN document_items di ON di.document_id = d.id
+
+WHERE d.id = {{this.params.documentId || appsmith.store.currentOpeningStockId || OpeningStockTable.selectedRow.documentId || 0}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'OPENING_STOCK'
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    d.note,
+    d.total_amount,
+    d.created_at,
+    w.id,
+    w.code,
+    w.name,
+    c.name,
+    c.tax_number,
+    c.registration_number,
+    c.email,
+    c.phone,
+    c.address_line1,
+    c.city,
+    c.postal_code,
+    c.logo_path,
+    u.username
+
+LIMIT 1;

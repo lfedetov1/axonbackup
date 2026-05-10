@@ -1,0 +1,10 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.status AS status
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'OPENING_STOCK'
+  AND d.document_number = {{OpeningStockNumberInput.text}}
+ORDER BY d.id DESC
+LIMIT 1;

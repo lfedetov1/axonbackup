@@ -1,0 +1,9 @@
+UPDATE documents
+SET
+    status = 'CANCELLED',
+    cancelled_by_user_id = {{appsmith.store.userId}},
+    cancelled_at = NOW()
+WHERE id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INVENTORY_COUNT'
+  AND status IN ('DRAFT', 'COUNTING', 'COUNTED', 'APPROVED');

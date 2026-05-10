@@ -1,0 +1,32 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    created_by_user_id,
+    document_type,
+    status,
+    document_number,
+    document_date,
+    currency_code,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount,
+    paid_amount
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{OpeningStockWarehouseSelect.selectedOptionValue}},
+    {{appsmith.store.userId}},
+    'OPENING_STOCK',
+    {{this.params.status || 'DRAFT'}},
+    {{OpeningStockNumberInput.text}},
+    {{moment(OpeningStockDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+    'EUR',
+    {{OpeningStockNoteInput.text || null}},
+    {{this.params.totalAmount || 0}},
+    0,
+    0,
+    {{this.params.totalAmount || 0}},
+    0
+);

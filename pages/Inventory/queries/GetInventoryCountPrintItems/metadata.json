@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    di.id AS documentItemId,\n    di.line_no AS lineNo,\n\n    p.id AS productId,\n    p.code AS productCode,\n    p.name AS productName,\n    p.barcode AS barcode,\n    p.sku AS sku,\n\n    u.code AS unitCode,\n\n    COALESCE(di.system_quantity, 0) AS systemQuantity,\n    COALESCE(di.counted_quantity, 0) AS countedQuantity,\n    COALESCE(di.variance_quantity, 0) AS varianceQuantity,\n    COALESCE(di.unit_price, 0) AS unitCost,\n    COALESCE(di.variance_value, 0) AS varianceValue,\n\n    wl.code AS locationCode,\n\n    di.batch_number AS batchNumber,\n    di.serial_number AS serialNumber,\n    di.note AS note,\n\n    cb.username AS countedBy,\n    di.counted_at AS countedAt\n\nFROM document_items di\nJOIN products p ON p.id = di.product_id\nLEFT JOIN units_of_measure u ON u.id = di.unit_id\nLEFT JOIN warehouse_locations wl ON wl.id = di.warehouse_location_id\nLEFT JOIN users cb ON cb.id = di.counted_by_user_id\n\nWHERE di.document_id = {{this.params.documentId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}\n\nORDER BY di.line_no;\n",
+      "body": "SELECT\n    snapshot.id AS documentItemId,\n    snapshot.line_no AS lineNo,\n\n    p.id AS productId,\n    p.code AS productCode,\n    p.name AS productName,\n    p.barcode AS barcode,\n    p.sku AS sku,\n\n    u.code AS unitCode,\n\n    COALESCE(snapshot.system_quantity, 0) AS systemQuantity,\n    COALESCE(counted.counted_quantity, 0) AS countedQuantity,\n    COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0) AS varianceQuantity,\n\n    COALESCE(snapshot.unit_price, 0) AS unitCost,\n    (COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0) AS varianceValue,\n\n    wl.code AS locationCode,\n\n    snapshot.batch_number AS batchNumber,\n    snapshot.serial_number AS serialNumber,\n    snapshot.note AS note\n\nFROM document_items snapshot\nJOIN documents inv ON inv.id = snapshot.document_id\nJOIN products p ON p.id = snapshot.product_id\nLEFT JOIN units_of_measure u ON u.id = snapshot.unit_id\nLEFT JOIN warehouse_locations wl ON wl.id = snapshot.warehouse_location_id\n\nLEFT JOIN (\n    SELECT\n        d2.source_document_id AS inventoryCountId,\n        di2.product_id,\n        SUM(di2.counted_quantity) AS counted_quantity\n    FROM documents d2\n    JOIN document_items di2 ON di2.document_id = d2.id\n    WHERE d2.company_id = {{appsmith.store.companyId}}\n      AND d2.document_type = 'INVENTORY_COUNT_DOCUMENT'\n      AND d2.source_document_id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}\n    GROUP BY\n        d2.source_document_id,\n        di2.product_id\n) counted\n  ON counted.inventoryCountId = inv.id\n AND counted.product_id = snapshot.product_id\n\nWHERE inv.id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}\n  AND inv.company_id = {{appsmith.store.companyId}}\n  AND inv.document_type = 'INVENTORY_COUNT'\n\nORDER BY\n    p.code;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -29,7 +29,7 @@
     ],
     "name": "GetInventoryCountPrintItems",
     "pageId": "Inventory",
-    "runBehaviour": "MANUAL",
+    "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false
   }
 }

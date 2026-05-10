@@ -1,6 +1,6 @@
 SELECT
-    di.id AS documentItemId,
-    di.line_no AS lineNo,
+    snapshot.id AS documentItemId,
+    snapshot.line_no AS lineNo,
 
     p.id AS productId,
     p.code AS productCode,
@@ -10,27 +10,45 @@ SELECT
 
     u.code AS unitCode,
 
-    COALESCE(di.system_quantity, 0) AS systemQuantity,
-    COALESCE(di.counted_quantity, 0) AS countedQuantity,
-    COALESCE(di.variance_quantity, 0) AS varianceQuantity,
-    COALESCE(di.unit_price, 0) AS unitCost,
-    COALESCE(di.variance_value, 0) AS varianceValue,
+    COALESCE(snapshot.system_quantity, 0) AS systemQuantity,
+    COALESCE(counted.counted_quantity, 0) AS countedQuantity,
+    COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0) AS varianceQuantity,
+
+    COALESCE(snapshot.unit_price, 0) AS unitCost,
+    (COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0) AS varianceValue,
 
     wl.code AS locationCode,
 
-    di.batch_number AS batchNumber,
-    di.serial_number AS serialNumber,
-    di.note AS note,
+    snapshot.batch_number AS batchNumber,
+    snapshot.serial_number AS serialNumber,
+    snapshot.note AS note
 
-    cb.username AS countedBy,
-    di.counted_at AS countedAt
+FROM document_items snapshot
+JOIN documents inv ON inv.id = snapshot.document_id
+JOIN products p ON p.id = snapshot.product_id
+LEFT JOIN units_of_measure u ON u.id = snapshot.unit_id
+LEFT JOIN warehouse_locations wl ON wl.id = snapshot.warehouse_location_id
 
-FROM document_items di
-JOIN products p ON p.id = di.product_id
-LEFT JOIN units_of_measure u ON u.id = di.unit_id
-LEFT JOIN warehouse_locations wl ON wl.id = di.warehouse_location_id
-LEFT JOIN users cb ON cb.id = di.counted_by_user_id
+LEFT JOIN (
+    SELECT
+        d2.source_document_id AS inventoryCountId,
+        di2.product_id,
+        SUM(di2.counted_quantity) AS counted_quantity
+    FROM documents d2
+    JOIN document_items di2 ON di2.document_id = d2.id
+    WHERE d2.company_id = {{appsmith.store.companyId}}
+      AND d2.document_type = 'INVENTORY_COUNT_DOCUMENT'
+      AND d2.source_document_id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+    GROUP BY
+        d2.source_document_id,
+        di2.product_id
+) counted
+  ON counted.inventoryCountId = inv.id
+ AND counted.product_id = snapshot.product_id
 
-WHERE di.document_id = {{this.params.documentId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+WHERE inv.id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+  AND inv.company_id = {{appsmith.store.companyId}}
+  AND inv.document_type = 'INVENTORY_COUNT'
 
-ORDER BY di.line_no;
+ORDER BY
+    p.code;

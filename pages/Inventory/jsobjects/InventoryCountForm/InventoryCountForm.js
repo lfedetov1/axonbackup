@@ -454,6 +454,146 @@ export default {
       await ListInventoryCountVariance.run();
     }
   },
+	  getInventoryCountIdFromRow(row = null) {
+    const selected = row || InventoryCountTable.triggeredRow || InventoryCountTable.selectedRow || {};
+
+    return (
+      selected.inventoryCountId ||
+      selected.documentId ||
+      selected.id ||
+      selected.ID ||
+      selected["Inventory Count ID"] ||
+      selected["Document ID"] ||
+      appsmith.store.currentInventoryCountId ||
+      null
+    );
+  },
+
+  async markCounted(row = null) {
+    const inventoryCountId = this.getInventoryCountIdFromRow(row);
+
+    if (!inventoryCountId) {
+      showAlert("Select inventory count first.", "warning");
+      return;
+    }
+
+    const statusRows = await CheckInventoryCountStatus.run({ inventoryCountId });
+    const status = statusRows?.[0]?.status || CheckInventoryCountStatus.data?.[0]?.status;
+
+    if (status !== "COUNTING") {
+      showAlert("Only COUNTING inventory counts can be marked as counted.", "warning");
+      return;
+    }
+
+    await MarkInventoryCountCounted.run({ inventoryCountId });
+
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: inventoryCountId,
+        actionType: "UPDATE",
+        newValues: {
+          source: "Inventory count",
+          status: "COUNTED"
+        }
+      });
+    }
+
+    await storeValue("currentInventoryCountStatus", "COUNTED");
+    await this.refreshLists();
+
+    showAlert("Inventory count was marked as counted.", "success");
+  },
+
+  async cancelInventoryCount(row = null) {
+    const inventoryCountId = this.getInventoryCountIdFromRow(row);
+
+    if (!inventoryCountId) {
+      showAlert("Select inventory count first.", "warning");
+      return;
+    }
+
+    const statusRows = await CheckInventoryCountStatus.run({ inventoryCountId });
+    const status = statusRows?.[0]?.status || CheckInventoryCountStatus.data?.[0]?.status;
+
+    if (["POSTED", "CANCELLED"].includes(status)) {
+      showAlert("This inventory count cannot be cancelled.", "warning");
+      return;
+    }
+
+    await CancelInventoryCount.run({ inventoryCountId });
+
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: inventoryCountId,
+        actionType: "UPDATE",
+        oldValues: { status },
+        newValues: {
+          source: "Inventory count",
+          status: "CANCELLED"
+        }
+      });
+    }
+
+    await storeValue("currentInventoryCountStatus", "CANCELLED");
+    await this.refreshLists();
+
+    showAlert("Inventory count was cancelled.", "success");
+  },
+
+  async postInventoryAdjustment(row = null) {
+    const inventoryCountId = this.getInventoryCountIdFromRow(row);
+
+    if (!inventoryCountId) {
+      showAlert("Select inventory count first.", "warning");
+      return;
+    }
+
+    const statusRows = await CheckInventoryCountStatus.run({ inventoryCountId });
+    const status = statusRows?.[0]?.status || CheckInventoryCountStatus.data?.[0]?.status;
+
+    if (!["COUNTED", "APPROVED"].includes(status)) {
+      showAlert("Inventory count must be COUNTED before posting adjustment.", "warning");
+      return;
+    }
+
+    const varianceRows = await GetInventoryCountVarianceForPo.run({ inventoryCountId });
+    const rows = varianceRows || GetInventoryCountVarianceForPo.data || [];
+
+    for (let i = 0; i < rows.length; i += 1) {
+      await InsertInventoryCountAdjustment.run({
+        inventoryCountId,
+        warehouseId: rows[i].warehouseId || appsmith.store.currentInventoryCountWarehouseId,
+        productId: rows[i].productId,
+        documentItemId: rows[i].snapshotItemId,
+        varianceQuantity: rows[i].varianceQuantity,
+        unitCost: rows[i].unitCost,
+        totalCost: rows[i].totalCost,
+        note: `Inventory count adjustment ${appsmith.store.currentInventoryCountNumber || ""}`
+      });
+    }
+
+    await PostInventoryCount.run({ inventoryCountId });
+
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: inventoryCountId,
+        actionType: "POST",
+        newValues: {
+          source: "Inventory count",
+          status: "POSTED",
+          movement_count: rows.length
+        }
+      });
+    }
+
+    await storeValue("currentInventoryCountStatus", "POSTED");
+    await this.refreshLists();
+
+    showAlert("Inventory adjustment was posted.", "success");
+  },
 
   async cancel() {
     await storeValue("inventoryCountDocumentItems", []);

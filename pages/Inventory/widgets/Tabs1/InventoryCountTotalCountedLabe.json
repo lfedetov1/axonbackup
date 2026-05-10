@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 57,
+  "bottomRow": 56,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -33,8 +33,8 @@
   "mobileRightColumn": 16,
   "mobileTopRow": 52,
   "needsErrorInfo": false,
-  "originalBottomRow": 56,
-  "originalTopRow": 52,
+  "originalBottomRow": 57,
+  "originalTopRow": 53,
   "overflow": "NONE",
   "parentColumnSpace": 13.34375,
   "parentId": "lhanj5x9tj",
@@ -46,7 +46,7 @@
   "text": "{{\n  \"Total Counted Qty: \" + Number(InventoryCountForm.totals().countedQuantity || 0).toFixed(4)\n}}\n",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 53,
+  "topRow": 52,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

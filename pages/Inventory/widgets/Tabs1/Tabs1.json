@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 820,
+      "bottomRow": 850,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -101,7 +101,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 740,
+      "bottomRow": 770,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -146,7 +146,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1080,
+      "bottomRow": 820,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -416,7 +416,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 770,
+      "bottomRow": 800,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -596,7 +596,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 750,
+      "bottomRow": 760,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -686,7 +686,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 760,
+      "bottomRow": 750,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -818,6 +818,96 @@
       "version": 1,
       "widgetId": "ahg0gtsta7",
       "widgetName": "Canvas35"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 780,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "3668ziodn1",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 730,
+      "minWidth": 450,
+      "mobileBottomRow": 731,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 874,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "fyir0g9gci",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 874,
+      "tabId": "tabnnkjyy0u9q",
+      "tabName": "Inventory Control",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "su8e8mo94f",
+      "widgetName": "Canvas55"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 690,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "3668ziodn1",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 840,
+      "minWidth": 450,
+      "mobileBottomRow": 841,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 874,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "fyir0g9gci",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 874,
+      "tabId": "tab6e482sulbi",
+      "tabName": "New Opening Stock ",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "1hla2w5ort",
+      "widgetName": "Canvas58"
     }
   ],
   "defaultTab": "Stock maping",
@@ -884,6 +974,9 @@
     },
     {
       "key": "tabsObj.tabfvo711hyaw.isVisible"
+    },
+    {
+      "key": "tabsObj.tabnnkjyy0u9q.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -947,6 +1040,9 @@
     },
     {
       "key": "tabsObj.tabfvo711hyaw.isVisible"
+    },
+    {
+      "key": "tabsObj.tabnnkjyy0u9q.isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -964,7 +1060,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 20,
   "needsErrorInfo": false,
-  "originalBottomRow": 101,
+  "originalBottomRow": 102,
   "originalTopRow": 28,
   "parentColumnSpace": 13.65625,
   "parentId": "0",
@@ -986,7 +1082,7 @@
     },
     "tab38i3kj2l9u": {
       "id": "tab38i3kj2l9u",
-      "index": 2,
+      "index": 3,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Warehouses",
@@ -994,7 +1090,7 @@
     },
     "tab3bu593bymf": {
       "id": "tab3bu593bymf",
-      "index": 13,
+      "index": 14,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_GOODS_RECEIPT\" }}\n",
       "label": "New Goods Receipt",
@@ -1010,7 +1106,7 @@
     },
     "tab4wq4kxge44": {
       "id": "tab4wq4kxge44",
-      "index": 9,
+      "index": 10,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Putaway",
@@ -1018,15 +1114,22 @@
     },
     "tab5e3c5qd0m7": {
       "id": "tab5e3c5qd0m7",
-      "index": 8,
+      "index": 9,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Delivery Note",
       "widgetId": "7buld5qsm0"
     },
+    "tab6e482sulbi": {
+      "id": "tab6e482sulbi",
+      "index": 19,
+      "isVisible": true,
+      "label": "New Opening Stock ",
+      "widgetId": "1hla2w5ort"
+    },
     "tab7xtz3a4ljr": {
       "id": "tab7xtz3a4ljr",
-      "index": 5,
+      "index": 6,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}\n",
       "label": "Inbound Delivery",
@@ -1034,7 +1137,7 @@
     },
     "tabcc3e88vj0a": {
       "id": "tabcc3e88vj0a",
-      "index": 7,
+      "index": 8,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Transfer",
@@ -1042,7 +1145,7 @@
     },
     "tabe6hjmh7552": {
       "id": "tabe6hjmh7552",
-      "index": 6,
+      "index": 7,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Issue",
@@ -1050,7 +1153,7 @@
     },
     "tabftlfwgdec8": {
       "id": "tabftlfwgdec8",
-      "index": 12,
+      "index": 13,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_MOVEMENT\" }}\n",
       "label": "New Stock Movements",
@@ -1058,7 +1161,7 @@
     },
     "tabfvo711hyaw": {
       "id": "tabfvo711hyaw",
-      "index": 16,
+      "index": 17,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"INVENTORY_COUNT_DOCUMENT\"\n}}\n\n",
       "label": "New Invetory Count Document",
@@ -1066,7 +1169,7 @@
     },
     "tabg29qooo1s0": {
       "id": "tabg29qooo1s0",
-      "index": 14,
+      "index": 15,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_ISSUE\" }}\n",
       "label": "New Stock Issue",
@@ -1074,7 +1177,7 @@
     },
     "tabggqeu3hxov": {
       "id": "tabggqeu3hxov",
-      "index": 4,
+      "index": 5,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Goods Receipt",
@@ -1082,7 +1185,7 @@
     },
     "tabgplqpv1t04": {
       "id": "tabgplqpv1t04",
-      "index": 11,
+      "index": 12,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Returns",
@@ -1090,7 +1193,7 @@
     },
     "tabip3o2rq5b7": {
       "id": "tabip3o2rq5b7",
-      "index": 3,
+      "index": 4,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Movements",
@@ -1098,7 +1201,7 @@
     },
     "tabj4upica26p": {
       "id": "tabj4upica26p",
-      "index": 15,
+      "index": 16,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"DELIVERY_NOTE_NEW\"\n  || appsmith.store.inventoryMode === \"DELIVERY_NOTE_EDIT\"\n}}\n",
       "label": "New Delivery Note",
@@ -1106,14 +1209,23 @@
     },
     "tabmxmuninmeb": {
       "id": "tabmxmuninmeb",
-      "index": 17,
+      "index": 18,
+      "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"INBOUND_DELIVERY_NEW\"\n  || appsmith.store.inventoryMode === \"INBOUND_DELIVERY_EDIT\"\n}}\n",
       "label": "New Inbound Delivery",
       "widgetId": "ahg0gtsta7"
     },
+    "tabnnkjyy0u9q": {
+      "id": "tabnnkjyy0u9q",
+      "index": 2,
+      "isDuplicateLabel": false,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "label": "Inventory Control",
+      "widgetId": "su8e8mo94f"
+    },
     "tabp0ip66jgil": {
       "id": "tabp0ip66jgil",
-      "index": 10,
+      "index": 11,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Inventory Count",

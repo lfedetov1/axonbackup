@@ -254,7 +254,7 @@
       "label": "Created At",
       "notation": "standard",
       "originalId": "Created At",
-      "outputFormat": "DD/MM/YYYY",
+      "outputFormat": "DD/MM/YYYY HH:mm",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",

@@ -1,0 +1,30 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+    p.unit_id AS unitId,
+    u.code AS unitCode,
+    COALESCE(pp.price, 0) AS unitCost
+FROM products p
+LEFT JOIN units_of_measure u ON u.id = p.unit_id
+LEFT JOIN product_prices pp
+  ON pp.product_id = p.id
+ AND pp.price_type = 'PURCHASE'
+WHERE p.is_active = 1
+  AND (
+      p.barcode = {{this.params.lookup || ""}}
+      OR p.code = {{this.params.lookup || ""}}
+      OR p.sku = {{this.params.lookup || ""}}
+      OR p.name LIKE CONCAT('%', {{this.params.lookup || ""}}, '%')
+  )
+ORDER BY
+    CASE
+      WHEN p.barcode = {{this.params.lookup || ""}} THEN 1
+      WHEN p.code = {{this.params.lookup || ""}} THEN 2
+      WHEN p.sku = {{this.params.lookup || ""}} THEN 3
+      ELSE 4
+    END,
+    p.name
+LIMIT 1;

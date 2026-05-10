@@ -47,9 +47,11 @@
     "Created_By",
     "Note",
     "Created_At",
-    "Updated_At"
+    "Updated_At",
+    "customColumn1",
+    "customColumn2"
   ],
-  "columnUpdatedAt": 1778440869346,
+  "columnUpdatedAt": 1778442566261,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -119,6 +121,18 @@
     },
     {
       "key": "primaryColumns.Updated_At.computedValue"
+    },
+    {
+      "key": "primaryColumns.customColumn1.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn1.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn2.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn2.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -127,11 +141,23 @@
     },
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -155,7 +181,7 @@
   "mobileRightColumn": 35,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  storeValue(\n    \"currentInventoryCountId\",\n    InventoryCountTable.selectedRow.inventoryCountId\n      || InventoryCountTable.selectedRow.documentId\n      || InventoryCountTable.selectedRow[\"Inventory Count ID\"]\n  );\n\n  storeValue(\n    \"currentInventoryCountNumber\",\n    InventoryCountTable.selectedRow[\"Count Number\"]\n      || InventoryCountTable.selectedRow.inventoryCountNumber\n      || InventoryCountTable.selectedRow.documentNumber\n  );\n\n  storeValue(\n    \"currentInventoryCountStatus\",\n    InventoryCountTable.selectedRow.Status\n      || InventoryCountTable.selectedRow.status\n  );\n\n  ListInventoryCountDocuments.run();\n  ListInventoryCountVariance.run();\n}}\n",
+  "onRowSelected": "{{\n  (() => {\n    const row = InventoryCountTable.selectedRow || {};\n\n    const id =\n      row.inventoryCountId ||\n      row.documentId ||\n      row.id ||\n      row.ID ||\n      row[\"Inventory Count ID\"] ||\n      row[\"Document ID\"];\n\n    storeValue(\"currentInventoryCountId\", id);\n    storeValue(\"currentInventoryCountNumber\", row[\"Count Number\"] || row.documentNumber || \"\");\n    storeValue(\"currentInventoryCountStatus\", row.Status || row.status || \"\");\n    storeValue(\"currentInventoryCountWarehouseText\", `${row[\"Warehouse Code\"] || \"\"} - ${row.Warehouse || \"\"}`);\n\n    ListInventoryCountDocuments.run();\n    ListInventoryCountVariance.run();\n\n    return id;\n  })()\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "xj5k0cmvgt",
   "parentRowSpace": 10,
@@ -633,6 +659,84 @@
       "originalId": "Warehouse Code",
       "sticky": "",
       "textColor": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn1": {
+      "alias": "Print Count Sheet",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{InventoryCountTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{InventoryCountTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "print",
+      "id": "customColumn1",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Print Count Sheet",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ InventoryCountPrint.open(InventoryCountTable.triggeredRow, \"COUNT_SHEET\") }}\n",
+      "originalId": "customColumn1",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn2": {
+      "alias": "Print Variance Report",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{InventoryCountTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{InventoryCountTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "th-list",
+      "id": "customColumn2",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Print Variance Report",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ InventoryCountPrint.open(InventoryCountTable.triggeredRow, \"VARIANCE_REPORT\") }}\n",
+      "originalId": "customColumn2",
+      "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},

@@ -1,0 +1,60 @@
+SELECT
+    snapshot.id AS documentItemId,
+    snapshot.id AS snapshotItemId,
+    snapshot.line_no AS lineNo,
+
+    inv.warehouse_id AS warehouseId,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    u.code AS unitCode,
+
+    COALESCE(snapshot.system_quantity, 0) AS systemQuantity,
+    COALESCE(counted.counted_quantity, 0) AS countedQuantity,
+    COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0) AS varianceQuantity,
+
+    COALESCE(snapshot.unit_price, 0) AS unitCost,
+    ABS((COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0)) AS totalCost,
+    (COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0) AS varianceValue,
+
+    wl.code AS locationCode,
+
+    snapshot.batch_number AS batchNumber,
+    snapshot.serial_number AS serialNumber,
+    snapshot.note AS note
+
+FROM document_items snapshot
+JOIN documents inv ON inv.id = snapshot.document_id
+JOIN products p ON p.id = snapshot.product_id
+LEFT JOIN units_of_measure u ON u.id = snapshot.unit_id
+LEFT JOIN warehouse_locations wl ON wl.id = snapshot.warehouse_location_id
+
+LEFT JOIN (
+    SELECT
+        d2.source_document_id AS inventoryCountId,
+        di2.product_id,
+        SUM(di2.counted_quantity) AS counted_quantity
+    FROM documents d2
+    JOIN document_items di2 ON di2.document_id = d2.id
+    WHERE d2.company_id = {{appsmith.store.companyId}}
+      AND d2.document_type = 'INVENTORY_COUNT_DOCUMENT'
+      AND d2.source_document_id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+    GROUP BY
+        d2.source_document_id,
+        di2.product_id
+) counted
+  ON counted.inventoryCountId = inv.id
+ AND counted.product_id = snapshot.product_id
+
+WHERE inv.id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+  AND inv.company_id = {{appsmith.store.companyId}}
+  AND inv.document_type = 'INVENTORY_COUNT'
+  AND (COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) <> 0
+
+ORDER BY
+    ABS((COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0)) DESC,
+    p.code;

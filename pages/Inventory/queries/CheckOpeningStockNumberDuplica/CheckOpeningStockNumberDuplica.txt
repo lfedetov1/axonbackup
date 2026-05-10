@@ -1,0 +1,8 @@
+SELECT
+    d.id AS documentId
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'OPENING_STOCK'
+  AND d.document_number = {{OpeningStockNumberInput.text}}
+  AND d.id <> {{appsmith.store.currentOpeningStockId || 0}}
+LIMIT 1;

@@ -1,0 +1,19 @@
+SELECT
+    CONCAT(
+        'OS-',
+        YEAR({{this.params.documentDate || OpeningStockDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+        '-',
+        LPAD(
+            COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,
+            5,
+            '0'
+        )
+    ) AS nextNumber
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'OPENING_STOCK'
+  AND d.document_number LIKE CONCAT(
+      'OS-',
+      YEAR({{this.params.documentDate || OpeningStockDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+      '-%'
+  );

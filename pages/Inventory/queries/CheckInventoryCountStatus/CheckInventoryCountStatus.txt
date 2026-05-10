@@ -1,0 +1,9 @@
+SELECT
+    id AS inventoryCountId,
+    document_number AS inventoryCountNumber,
+    status AS status
+FROM documents
+WHERE id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INVENTORY_COUNT'
+LIMIT 1;

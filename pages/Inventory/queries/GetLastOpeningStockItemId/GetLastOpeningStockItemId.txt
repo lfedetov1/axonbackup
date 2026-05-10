@@ -1,0 +1,7 @@
+SELECT
+    di.id AS documentItemId
+FROM document_items di
+WHERE di.document_id = {{this.params.documentId}}
+  AND di.line_no = {{this.params.lineNo}}
+ORDER BY di.id DESC
+LIMIT 1;

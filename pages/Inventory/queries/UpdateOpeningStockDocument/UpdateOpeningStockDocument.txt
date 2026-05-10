@@ -1,0 +1,11 @@
+UPDATE documents
+SET
+    warehouse_id = {{OpeningStockWarehouseSelect.selectedOptionValue}},
+    document_date = {{moment(OpeningStockDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+    note = {{OpeningStockNoteInput.text || null}},
+    subtotal_amount = {{this.params.totalAmount || 0}},
+    total_amount = {{this.params.totalAmount || 0}}
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'OPENING_STOCK'
+  AND status = 'DRAFT';

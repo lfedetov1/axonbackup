@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_a47935a3-f7b9-47e1-9961-422ae905d8a5",
+  "id": "Inventory_InventoryCountPrint",
+  "unpublishedCollection": {
+    "name": "InventoryCountPrint",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

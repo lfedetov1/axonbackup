@@ -1,0 +1,32 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    unit_id,
+    warehouse_id,
+    quantity,
+    unit_price,
+    line_subtotal,
+    line_total,
+    batch_number,
+    serial_number,
+    expiry_date,
+    note
+)
+VALUES (
+    {{this.params.documentId}},
+    {{this.params.lineNo}},
+    {{this.params.productId}},
+    {{this.params.description || null}},
+    {{this.params.unitId}},
+    {{OpeningStockWarehouseSelect.selectedOptionValue}},
+    {{this.params.quantity}},
+    {{this.params.unitCost || 0}},
+    {{this.params.lineTotal || 0}},
+    {{this.params.lineTotal || 0}},
+    {{this.params.batchNumber || null}},
+    {{this.params.serialNumber || null}},
+    {{this.params.expiryDate || null}},
+    {{this.params.note || null}}
+);

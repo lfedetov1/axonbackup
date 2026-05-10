@@ -1,0 +1,22 @@
+SELECT
+    sm.id AS stockMovementId,
+    sm.warehouse_id AS warehouseId,
+    sm.product_id AS productId,
+    sm.document_id AS documentId,
+    sm.document_item_id AS documentItemId,
+    sm.quantity AS quantity,
+    sm.unit_cost AS unitCost,
+    sm.total_cost AS totalCost,
+    sm.batch_number AS batchNumber,
+    sm.serial_number AS serialNumber,
+
+    p.code AS productCode,
+    w.code AS warehouseCode
+
+FROM stock_movements sm
+JOIN products p ON p.id = sm.product_id
+JOIN warehouses w ON w.id = sm.warehouse_id
+
+WHERE sm.company_id = {{appsmith.store.companyId}}
+  AND sm.document_id = {{this.params.documentId}}
+  AND sm.movement_type = 'IN';

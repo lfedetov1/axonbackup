@@ -1,0 +1,30 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    document_id,
+    document_item_id,
+    movement_type,
+    movement_date,
+    quantity,
+    unit_cost,
+    total_cost,
+    batch_number,
+    serial_number,
+    note
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{OpeningStockWarehouseSelect.selectedOptionValue}},
+    {{this.params.productId}},
+    {{this.params.documentId}},
+    {{this.params.documentItemId || null}},
+    'IN',
+    {{moment(OpeningStockDateInput.selectedDate || moment()).format("YYYY-MM-DD HH:mm:ss")}},
+    {{this.params.quantity}},
+    {{this.params.unitCost || 0}},
+    {{this.params.lineTotal || 0}},
+    {{this.params.batchNumber || null}},
+    {{this.params.serialNumber || null}},
+    {{this.params.note || 'Opening stock'}}
+);

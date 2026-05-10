@@ -1,0 +1,8 @@
+UPDATE documents
+SET
+    status = 'COUNTED',
+    approved_by_user_id = {{appsmith.store.userId}}
+WHERE id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INVENTORY_COUNT'
+  AND status = 'COUNTING';

@@ -24,20 +24,37 @@ SELECT
     u.username AS createdBy,
     au.username AS approvedBy,
 
-    COUNT(di.id) AS lineCount,
-    COALESCE(SUM(di.system_quantity), 0) AS totalSystemQuantity,
-    COALESCE(SUM(di.counted_quantity), 0) AS totalCountedQuantity,
-    COALESCE(SUM(di.variance_quantity), 0) AS totalVarianceQuantity,
-    COALESCE(SUM(di.variance_value), 0) AS totalVarianceValue
+    COUNT(snapshot.id) AS lineCount,
+    COALESCE(SUM(snapshot.system_quantity), 0) AS totalSystemQuantity,
+    COALESCE(SUM(COALESCE(counted.counted_quantity, 0)), 0) AS totalCountedQuantity,
+    COALESCE(SUM(COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)), 0) AS totalVarianceQuantity,
+    COALESCE(SUM((COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0)), 0) AS totalVarianceValue
 
 FROM documents d
 JOIN companies c ON c.id = d.company_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 LEFT JOIN users au ON au.id = d.approved_by_user_id
-LEFT JOIN document_items di ON di.document_id = d.id
+LEFT JOIN document_items snapshot ON snapshot.document_id = d.id
 
-WHERE d.id = {{this.params.documentId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+LEFT JOIN (
+    SELECT
+        d2.source_document_id AS inventoryCountId,
+        di2.product_id,
+        SUM(di2.counted_quantity) AS counted_quantity
+    FROM documents d2
+    JOIN document_items di2 ON di2.document_id = d2.id
+    WHERE d2.company_id = {{appsmith.store.companyId}}
+      AND d2.document_type = 'INVENTORY_COUNT_DOCUMENT'
+      AND d2.source_document_id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || 0}}
+    GROUP BY
+        d2.source_document_id,
+        di2.product_id
+) counted
+  ON counted.inventoryCountId = d.id
+ AND counted.product_id = snapshot.product_id
+
+WHERE d.id = {{this.params.inventoryCountId || appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
   AND d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'INVENTORY_COUNT'
 

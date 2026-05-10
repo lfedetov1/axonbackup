@@ -1,0 +1,12 @@
+UPDATE documents
+SET
+    status = {{this.params.status}},
+    posting_status = CASE
+        WHEN {{this.params.status}} = 'POSTED' THEN 'POSTED'
+        ELSE posting_status
+    END,
+    total_amount = {{this.params.totalAmount || 0}},
+    subtotal_amount = {{this.params.totalAmount || 0}}
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'OPENING_STOCK';
