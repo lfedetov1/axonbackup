@@ -29,7 +29,7 @@
     ],
     "name": "GetInvoiceChangeLog",
     "pageId": "Sales",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

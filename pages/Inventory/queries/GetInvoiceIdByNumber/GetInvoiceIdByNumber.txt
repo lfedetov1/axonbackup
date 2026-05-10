@@ -1,0 +1,8 @@
+SELECT
+    id AS invoiceId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_INVOICE'
+  AND document_number = {{this.params.invoiceNumber}}
+ORDER BY id DESC
+LIMIT 1;

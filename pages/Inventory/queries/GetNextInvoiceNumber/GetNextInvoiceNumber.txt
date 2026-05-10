@@ -1,0 +1,15 @@
+SELECT
+    CONCAT(
+        'INV-',
+        YEAR(CURDATE()),
+        '-',
+        LPAD(
+            COALESCE(MAX(CAST(RIGHT(document_number, 5) AS UNSIGNED)), 0) + 1,
+            5,
+            '0'
+        )
+    ) AS nextInvoiceNumber
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_INVOICE'
+  AND document_number LIKE CONCAT('INV-', YEAR(CURDATE()), '-%');

@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_617874a9-a0c7-40b0-b575-dc6d057790e6",
+  "id": "Inventory_DeliveryNoteInvoice",
+  "unpublishedCollection": {
+    "name": "DeliveryNoteInvoice",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

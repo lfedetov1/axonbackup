@@ -1,0 +1,24 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    quantity,
+    unit_id,
+    unit_price,
+    line_total,
+    note
+)
+SELECT
+    {{this.params.invoiceId}},
+    di.line_no,
+    di.product_id,
+    di.description,
+    di.quantity,
+    di.unit_id,
+    di.unit_price,
+    di.line_total,
+    CONCAT('From delivery note item ', di.id)
+FROM document_items di
+WHERE di.document_id = {{this.params.deliveryNoteId}}
+ORDER BY di.line_no;
