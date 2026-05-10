@@ -1,0 +1,29 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    status,
+    partner_id,
+    warehouse_id,
+    reference_number,
+    total_amount,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    'DELIVERY_NOTE',
+    {{DeliveryNoteNumberInput.text}},
+    {{moment(DeliveryNoteDateInput.selectedDate || DeliveryNoteDateInput.formattedDate || DeliveryNoteDateInput.text).format("YYYY-MM-DD")}},
+    'DRAFT',
+    {{DeliveryNoteCustomerSelect.selectedOptionValue}},
+    {{DeliveryNoteWarehouseSelectFor.selectedOptionValue}},
+    {{DeliveryNoteReferenceInput.text || null}},
+    {{
+      (appsmith.store.deliveryNoteItems || [])
+        .reduce((s, r) => s + Number(r["Line Total"] || 0), 0)
+    }},
+    {{DeliveryNoteNoteInput.text || null}},
+    {{appsmith.store.userId || null}}
+);

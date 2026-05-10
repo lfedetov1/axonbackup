@@ -270,7 +270,7 @@
       "label": "Issue Date",
       "notation": "standard",
       "originalId": "Issue Date",
-      "outputFormat": "DD/MM/YYYY HH:mm",
+      "outputFormat": "DD/MM/YYYY",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",

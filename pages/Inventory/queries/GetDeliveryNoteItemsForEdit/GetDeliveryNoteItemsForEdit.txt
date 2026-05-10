@@ -1,0 +1,44 @@
+SELECT
+    di.id AS documentItemId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS Barcode,
+
+    di.description AS Description,
+    di.quantity AS Quantity,
+
+    u.id AS unitId,
+    u.code AS Unit,
+
+    di.unit_price AS `Unit Price`,
+    di.line_total AS `Line Total`,
+    di.note AS Note,
+
+    p.track_stock AS trackStock,
+
+    COALESCE(ib.quantity_balance, 0) AS availableStock
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = d.company_id
+ AND ib.warehouse_id = d.warehouse_id
+ AND ib.product_id = p.id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND di.document_id = {{this.params.documentId}}
+
+ORDER BY
+    di.line_no;

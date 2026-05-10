@@ -1,0 +1,8 @@
+SELECT
+    id AS documentId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'DELIVERY_NOTE'
+  AND document_number = {{DeliveryNoteNumberInput.text}}
+ORDER BY id DESC
+LIMIT 1;

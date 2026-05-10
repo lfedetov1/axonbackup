@@ -15,6 +15,7 @@
     }
   ],
   "dynamicHeight": "FIXED",
+  "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
@@ -22,7 +23,7 @@
   "isRequired": false,
   "isVisible": true,
   "key": "mp0adr12me",
-  "label": "Label",
+  "label": "Note :",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",

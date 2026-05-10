@@ -15,6 +15,24 @@ export default {
     return !!this.receiptId();
   },
 
+  getReceiptDate() {
+    return moment(
+      GoodsReceiptDateInput.selectedDate ||
+      GoodsReceiptDateInput.formattedDate ||
+      GoodsReceiptDateInput.text ||
+      moment()
+    ).format("YYYY-MM-DD");
+  },
+
+  getReceiptDateTime() {
+    return moment(
+      GoodsReceiptDateInput.selectedDate ||
+      GoodsReceiptDateInput.formattedDate ||
+      GoodsReceiptDateInput.text ||
+      moment()
+    ).format("YYYY-MM-DD HH:mm:ss");
+  },
+
   recalcRow(row) {
     const quantity = Number(row.quantity || 0);
     const unitCost = Number(row.unitCost || 0);
@@ -166,7 +184,7 @@ export default {
       return false;
     }
 
-    if (!GoodsReceiptDateInput.selectedDate && !GoodsReceiptDateInput.text) {
+    if (!GoodsReceiptDateInput.selectedDate && !GoodsReceiptDateInput.formattedDate && !GoodsReceiptDateInput.text) {
       showAlert("Receipt date is required.", "warning");
       return false;
     }
@@ -198,7 +216,7 @@ export default {
 
   async insertItems(receiptId, postStock = false) {
     const warehouseId = GoodsReceiptWarehouseSelect.selectedOptionValue;
-    const receiptDate = GoodsReceiptDateInput.selectedDate || GoodsReceiptDateInput.selectedDate || moment().format("YYYY-MM-DD");
+    const receiptDate = this.getReceiptDate();
 
     for (const row of this.rows()) {
       const quantity = Math.abs(Number(row.quantity || 0));
@@ -258,7 +276,7 @@ export default {
 
     const totals = this.totals();
     const warehouseId = GoodsReceiptWarehouseSelect.selectedOptionValue;
-    const receiptDate = GoodsReceiptDateInput.selectedDate || GoodsReceiptDateInput.text || moment().format("YYYY-MM-DD");
+    const receiptDate = this.getReceiptDate();
 
     await InsertGoodsReceiptDocument.run({
       warehouseId,
@@ -305,7 +323,7 @@ export default {
       receiptId,
       warehouseId: GoodsReceiptWarehouseSelect.selectedOptionValue,
       supplierId: GoodsReceiptSupplierSelect.selectedOptionValue || null,
-      receiptDate: GoodsReceiptDateInput.selectedDate || GoodsReceiptDateInput.selectedDate || moment().format("YYYY-MM-DD"),
+      receiptDate: this.getReceiptDate(),
       note: GoodsReceiptNoteInput.text || null,
       totalAmount: totals.value
     });
@@ -449,7 +467,7 @@ export default {
 
     if (doc.status === "DRAFT") {
       await UpdateGoodsReceiptStatus.run({ receiptId, status: "CANCELLED" });
-      await this.writeAudit("UPDATE", receiptId, doc, { ...doc, status: "CANCELLED" });
+      await this.writeAudit("VOID", receiptId, doc, { ...doc, status: "CANCELLED" });
       await this.afterSave();
       showAlert("Draft goods receipt was cancelled.", "success");
       return;
@@ -464,7 +482,11 @@ export default {
         warehouseId: row.warehouseId
       });
 
-      const available = Number(availableRows?.[0]?.currentStock || GetCurrentStockForProduct.data?.[0]?.currentStock || 0);
+      const available = Number(
+        availableRows?.[0]?.currentStock ||
+        GetCurrentStockForProduct.data?.[0]?.currentStock ||
+        0
+      );
 
       if (Number(row.quantity || 0) > available) {
         showAlert(
@@ -491,7 +513,7 @@ export default {
     }
 
     await VoidGoodsReceiptDocument.run({ receiptId });
-    await this.writeAudit("UPDATE", receiptId, doc, { ...doc, status: "CANCELLED" });
+    await this.writeAudit("VOID", receiptId, doc, { ...doc, status: "CANCELLED" });
 
     await this.afterSave();
     showAlert("Goods receipt was voided and stock was reversed.", "success");
@@ -508,7 +530,7 @@ export default {
       status,
       warehouse_id: GoodsReceiptWarehouseSelect.selectedOptionValue,
       supplier_id: GoodsReceiptSupplierSelect.selectedOptionValue || null,
-      receipt_date: GoodsReceiptDateInput.selectedDate || GoodsReceiptDateInput.text || null,
+      receipt_date: this.getReceiptDate(),
       total_quantity: totals.quantity,
       total_value: totals.value,
       item_count: this.rows().length,

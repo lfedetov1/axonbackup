@@ -35,7 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "",
+  "onClick": "{{\n  ListDeliveryNoteCustomers.run();\n  ListInventoryWarehouses.run();\n  GetNextDeliveryNoteNumber.run().then(() => {\n    DeliveryNoteForm.startNew();\n  });\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "7buld5qsm0",
   "parentRowSpace": 10,

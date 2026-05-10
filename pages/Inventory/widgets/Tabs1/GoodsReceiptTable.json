@@ -385,6 +385,7 @@
       "label": "Receipt Date",
       "notation": "standard",
       "originalId": "Receipt Date",
+      "outputFormat": "DD/MM/YYYY",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",

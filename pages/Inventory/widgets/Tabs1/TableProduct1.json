@@ -32,6 +32,7 @@
     }
   },
   "columnOrder": [
+    "lineNo",
     "barcode",
     "productId",
     "productCode",
@@ -46,12 +47,11 @@
     "batchNumber",
     "serialNumber",
     "note",
-    "lineNo",
     "lookup",
     "customColumn1",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1778228014715,
+  "columnUpdatedAt": 1778408739744,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -399,8 +399,8 @@
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
-      "isVisible": false,
-      "label": "lineNo",
+      "isVisible": true,
+      "label": "#",
       "notation": "standard",
       "originalId": "lineNo",
       "sticky": "",

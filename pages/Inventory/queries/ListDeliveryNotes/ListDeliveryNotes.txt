@@ -1,0 +1,69 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Delivery Note Number`,
+    d.document_date AS `Delivery Date`,
+    d.status AS `Status`,
+
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(di.id) AS `Line Count`,
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    d.total_amount AS `Total Amount`,
+
+    d.reference_number AS `Reference Number`,
+    d.note AS `Note`,
+    d.created_at AS `Created At`,
+    d.updated_at AS `Updated At`
+
+FROM documents d
+
+LEFT JOIN business_partners bp
+  ON bp.id = d.partner_id
+
+LEFT JOIN warehouses w
+  ON w.id = d.warehouse_id
+
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+
+WHERE d.document_type = 'DELIVERY_NOTE'
+  AND (
+      {{Number(appsmith.store.companyId || 0)}} = 0
+      OR d.company_id = {{Number(appsmith.store.companyId || 0)}}
+  )
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR d.reference_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || 0)}} = 0
+      OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || 0)}}
+  )
+  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || '2000-01-01').format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || '2099-12-31').format("YYYY-MM-DD")}}
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    bp.code,
+    bp.name,
+    w.code,
+    w.name,
+    d.total_amount,
+    d.reference_number,
+    d.note,
+    d.created_at,
+    d.updated_at
+
+ORDER BY
+    d.document_date DESC,
+    d.id DESC;

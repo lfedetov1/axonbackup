@@ -19,8 +19,10 @@ export default {
     if (this.isTransfer()) return "STOCK_TRANSFER";
 
     const type = StockMovementTypeSelect.selectedOptionValue;
+
     if (type === "IN") return "STOCK_IN";
     if (type === "OUT") return "STOCK_OUT";
+
     return "STOCK_ADJUSTMENT";
   },
 
@@ -28,15 +30,19 @@ export default {
     if (this.isTransfer()) return null;
 
     const type = StockMovementTypeSelect.selectedOptionValue;
+
     if (type === "IN") return StockMovementDestinationWareho.selectedOptionValue;
     if (type === "OUT") return StockMovementSourceWarehouseSe.selectedOptionValue;
 
-    return StockMovementSourceWarehouseSe.selectedOptionValue ||
-      StockMovementDestinationWareho.selectedOptionValue;
+    return (
+      StockMovementSourceWarehouseSe.selectedOptionValue ||
+      StockMovementDestinationWareho.selectedOptionValue
+    );
   },
 
   getSourceWarehouseId() {
     if (this.isTransfer()) return StockMovementSourceWarehouseSe.selectedOptionValue;
+
     return StockMovementTypeSelect.selectedOptionValue === "OUT"
       ? StockMovementSourceWarehouseSe.selectedOptionValue
       : null;
@@ -44,6 +50,7 @@ export default {
 
   getDestinationWarehouseId() {
     if (this.isTransfer()) return StockMovementDestinationWareho.selectedOptionValue;
+
     return StockMovementTypeSelect.selectedOptionValue === "IN"
       ? StockMovementDestinationWareho.selectedOptionValue
       : null;
@@ -54,9 +61,12 @@ export default {
   },
 
   getMovementDate() {
-    return StockMovementDateInput.selectedDate ||
+    return moment(
       StockMovementDateInput.selectedDate ||
-      moment().format("YYYY-MM-DD");
+      StockMovementDateInput.formattedDate ||
+      StockMovementDateInput.text ||
+      moment()
+    ).format("YYYY-MM-DD");
   },
 
   recalcRow(row) {
@@ -141,6 +151,7 @@ export default {
 
   async clearRow(rowIndex) {
     const rows = [...this.rows()];
+
     rows[rowIndex] = {
       lookup: "",
       barcode: "",
@@ -158,6 +169,7 @@ export default {
       serialNumber: "",
       note: ""
     };
+
     await this.setRows(rows);
   },
 
@@ -167,10 +179,12 @@ export default {
 
   async updateRow(rowIndex, patch) {
     const rows = [...this.rows()];
+
     rows[rowIndex] = this.recalcRow({
       ...(rows[rowIndex] || {}),
       ...patch
     });
+
     await this.setRows(rows);
   },
 
@@ -227,7 +241,12 @@ export default {
 
   async getFreshStock(productId, warehouseId) {
     const result = await GetCurrentStockForProduct.run({ productId, warehouseId });
-    return Number(result?.[0]?.currentStock || GetCurrentStockForProduct.data?.[0]?.currentStock || 0);
+
+    return Number(
+      result?.[0]?.currentStock ||
+      GetCurrentStockForProduct.data?.[0]?.currentStock ||
+      0
+    );
   },
 
   async validateStockAvailability() {
@@ -241,6 +260,7 @@ export default {
 
     for (const row of this.rows()) {
       const qty = Number(row.quantity || 0);
+
       const needsStockCheck =
         this.isTransfer() ||
         type === "OUT" ||
@@ -338,7 +358,8 @@ export default {
         unit_cost: row.unitCost,
         line_total: row.lineTotal,
         batch_number: row.batchNumber || null,
-        serial_number: row.serialNumber || null
+        serial_number: row.serialNumber || null,
+        note: row.note || null
       }))
     };
   },
@@ -364,6 +385,7 @@ export default {
     if (!(await this.validateBeforeSave())) return;
 
     const duplicate = await CheckStockMovementNumberDuplic.run();
+
     if (duplicate?.length || CheckStockMovementNumberDuplic.data?.length) {
       showAlert("Movement number already exists.", "error");
       return;
@@ -385,7 +407,9 @@ export default {
       });
 
       const docRows = await GetStockMovementDocumentIdByNu.run();
-      const documentId = docRows?.[0]?.documentId || GetStockMovementDocumentIdByNu.data?.[0]?.documentId;
+      const documentId =
+        docRows?.[0]?.documentId ||
+        GetStockMovementDocumentIdByNu.data?.[0]?.documentId;
 
       if (!documentId) {
         showAlert("Document was saved, but document ID was not found.", "error");
@@ -418,7 +442,9 @@ export default {
           lineNo: row.lineNo
         });
 
-        const documentItemId = itemRows?.[0]?.documentItemId || GetLastDocumentItemId.data?.[0]?.documentItemId;
+        const documentItemId =
+          itemRows?.[0]?.documentItemId ||
+          GetLastDocumentItemId.data?.[0]?.documentItemId;
 
         if (this.isTransfer()) {
           await InsertStockMovement.run({
@@ -481,20 +507,18 @@ export default {
       console.log(error);
     }
   },
-	
-	getDocumentNumberFromRow(row) {
-  return (
-    row?.documentNumber ||
-    row?.document_number ||
-    row?.DocumentNumber ||
-    row?.["Document Number"] ||
-    row?.documentNo ||
-    row?.["Document No."] ||
-    row?.document_number ||
-    ""
-  );
-},
 
+  getDocumentNumberFromRow(row) {
+    return (
+      row?.documentNumber ||
+      row?.document_number ||
+      row?.DocumentNumber ||
+      row?.["Document Number"] ||
+      row?.documentNo ||
+      row?.["Document No."] ||
+      ""
+    );
+  },
 
   async loadByNumber() {
     if (!MovementNumberInput.text.trim()) {
@@ -558,6 +582,7 @@ export default {
     if (type === "OUT") return "IN";
     if (type === "TRANSFER_IN") return "TRANSFER_OUT";
     if (type === "TRANSFER_OUT") return "TRANSFER_IN";
+
     return "ADJUSTMENT";
   },
 
@@ -612,7 +637,7 @@ export default {
       await VoidStockMovementDocument.run({ documentId });
 
       await this.writeAudit(
-        "UPDATE",
+        "VOID",
         documentId,
         appsmith.store.stockMovementBeforeVoid || null,
         {
@@ -625,6 +650,7 @@ export default {
       );
 
       await this.afterSave();
+
       showAlert("Stock movement was voided and stock was reversed.", "success");
     } catch (error) {
       showAlert("Error while voiding stock movement: " + error.message, "error");

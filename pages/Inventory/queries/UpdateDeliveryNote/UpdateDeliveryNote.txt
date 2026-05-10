@@ -1,0 +1,16 @@
+UPDATE documents
+SET
+    document_number = {{DeliveryNoteNumberInput.text}},
+    document_date = {{DeliveryNoteDateInput.selectedDate || DeliveryNoteDateInput.formattedDate}},
+    partner_id = {{DeliveryNoteCustomerSelect.selectedOptionValue}},
+    warehouse_id = {{DeliveryNoteWarehouseSelectFor.selectedOptionValue}},
+    reference_number = {{DeliveryNoteReferenceInput.text || null}},
+    total_amount = {{
+      (appsmith.store.deliveryNoteItems || [])
+        .reduce((s, r) => s + Number(r["Line Total"] || 0), 0)
+    }},
+    note = {{DeliveryNoteNoteInput.text || null}},
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.documentId}}
+  AND status = 'DRAFT';

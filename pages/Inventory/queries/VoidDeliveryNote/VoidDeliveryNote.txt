@@ -1,0 +1,10 @@
+UPDATE documents
+SET
+    status = 'VOID',
+    voided_at = NOW(),
+    voided_by_user_id = {{appsmith.store.userId || null}},
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.documentId}}
+  AND document_type = 'DELIVERY_NOTE'
+  AND status = 'POSTED';

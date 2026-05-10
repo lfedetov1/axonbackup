@@ -15,6 +15,24 @@ export default {
     return !!this.issueId();
   },
 
+  getIssueDate() {
+    return moment(
+      StockIssueDateInput.selectedDate ||
+      StockIssueDateInput.formattedDate ||
+      StockIssueDateInput.text ||
+      moment()
+    ).format("YYYY-MM-DD");
+  },
+
+  getIssueDateTime() {
+    return moment(
+      StockIssueDateInput.selectedDate ||
+      StockIssueDateInput.formattedDate ||
+      StockIssueDateInput.text ||
+      moment()
+    ).format("YYYY-MM-DD HH:mm:ss");
+  },
+
   recalcRow(row) {
     const quantity = Number(row.quantity || 0);
     const unitCost = Number(row.unitCost || 0);
@@ -184,7 +202,12 @@ export default {
 
   async getFreshStock(productId, warehouseId) {
     const result = await GetCurrentStockForProduct.run({ productId, warehouseId });
-    return Number(result?.[0]?.currentStock || GetCurrentStockForProduct.data?.[0]?.currentStock || 0);
+
+    return Number(
+      result?.[0]?.currentStock ||
+      GetCurrentStockForProduct.data?.[0]?.currentStock ||
+      0
+    );
   },
 
   async validateStockAvailability() {
@@ -209,7 +232,7 @@ export default {
       return false;
     }
 
-    if (!StockIssueDateInput.selectedDate && !StockIssueDateInput.text) {
+    if (!StockIssueDateInput.selectedDate && !StockIssueDateInput.formattedDate && !StockIssueDateInput.text) {
       showAlert("Issue date is required.", "warning");
       return false;
     }
@@ -252,7 +275,7 @@ export default {
 
   async insertItems(issueId, postStock = false) {
     const warehouseId = StockIssueWarehouseSelect.selectedOptionValue;
-    const issueDate = StockIssueDateInput.selectedDate || StockIssueDateInput.selectedDate || moment().format("YYYY-MM-DD");
+    const issueDate = this.getIssueDate();
 
     for (const row of this.rows()) {
       const quantity = Math.abs(Number(row.quantity || 0));
@@ -312,7 +335,7 @@ export default {
 
     const totals = this.totals();
     const warehouseId = StockIssueWarehouseSelect.selectedOptionValue;
-    const issueDate = StockIssueDateInput.selectedDate || StockIssueDateInput.selectedDate || moment().format("YYYY-MM-DD");
+    const issueDate = this.getIssueDate();
 
     await InsertStockIssueDocument.run({
       warehouseId,
@@ -357,7 +380,7 @@ export default {
     await UpdateStockIssueDocument.run({
       issueId,
       warehouseId: StockIssueWarehouseSelect.selectedOptionValue,
-      issueDate: StockIssueDateInput.selectedDate || StockIssueDateInput.selectedDate || moment().format("YYYY-MM-DD"),
+      issueDate: this.getIssueDate(),
       note: this.getNoteWithReason(),
       totalAmount: totals.value
     });
@@ -495,7 +518,7 @@ export default {
 
     if (doc.status === "DRAFT") {
       await UpdateStockIssueStatus.run({ issueId, status: "CANCELLED" });
-      await this.writeAudit("UPDATE", issueId, doc, { ...doc, status: "CANCELLED" });
+      await this.writeAudit("VOID", issueId, doc, { ...doc, status: "CANCELLED" });
       await this.afterSave();
       showAlert("Draft stock issue was cancelled.", "success");
       return;
@@ -522,7 +545,7 @@ export default {
     }
 
     await VoidStockIssueDocument.run({ issueId });
-    await this.writeAudit("UPDATE", issueId, doc, { ...doc, status: "CANCELLED" });
+    await this.writeAudit("VOID", issueId, doc, { ...doc, status: "CANCELLED" });
 
     await this.afterSave();
     showAlert("Stock issue was voided and stock was returned.", "success");
@@ -539,7 +562,7 @@ export default {
       status,
       warehouse_id: StockIssueWarehouseSelect.selectedOptionValue,
       reason: StockIssueReasonSelect.selectedOptionValue || null,
-      issue_date: StockIssueDateInput.selectedDate || StockIssueDateInput.text || null,
+      issue_date: this.getIssueDate(),
       total_quantity: totals.quantity,
       total_value: totals.value,
       item_count: this.rows().length,
