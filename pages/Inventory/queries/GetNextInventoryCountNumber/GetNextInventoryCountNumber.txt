@@ -1,0 +1,19 @@
+SELECT
+    CONCAT(
+        'IC-',
+        YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+        '-',
+        LPAD(
+            COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,
+            5,
+            '0'
+        )
+    ) AS nextCountNumber
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT'
+  AND d.document_number LIKE CONCAT(
+      'IC-',
+      YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+      '-%'
+  );

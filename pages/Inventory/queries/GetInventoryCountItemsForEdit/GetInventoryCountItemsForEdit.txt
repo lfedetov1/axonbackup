@@ -1,0 +1,30 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    u.id AS unitId,
+    u.code AS unitCode,
+
+    COALESCE(di.system_quantity, 0) AS systemQuantity,
+    COALESCE(di.counted_quantity, 0) AS countedQuantity,
+    COALESCE(di.variance_quantity, 0) AS varianceQuantity,
+    COALESCE(di.unit_price, 0) AS unitCost,
+    COALESCE(di.variance_value, 0) AS varianceValue,
+
+    wl.id AS warehouseLocationId,
+    wl.code AS locationCode,
+
+    di.note AS note
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN warehouse_locations wl ON wl.id = di.warehouse_location_id
+WHERE di.document_id = {{this.params.documentId || appsmith.store.currentInventoryCountId || 0}}
+ORDER BY di.line_no;

@@ -1,0 +1,16 @@
+UPDATE documents d
+SET
+    d.subtotal_amount = (
+        SELECT COALESCE(SUM(ABS(di.variance_value)), 0)
+        FROM document_items di
+        WHERE di.document_id = {{this.params.documentId}}
+    ),
+    d.total_amount = (
+        SELECT COALESCE(SUM(ABS(di.variance_value)), 0)
+        FROM document_items di
+        WHERE di.document_id = {{this.params.documentId}}
+    ),
+    d.note = {{this.params.note || null}}
+WHERE d.id = {{this.params.documentId}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT';

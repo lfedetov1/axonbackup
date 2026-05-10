@@ -1,0 +1,53 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Count Number`,
+    d.document_date AS `Count Date`,
+    d.status AS `Status`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.system_quantity), 0) AS `System Quantity`,
+    COALESCE(SUM(di.counted_quantity), 0) AS `Counted Quantity`,
+    COALESCE(SUM(di.variance_quantity), 0) AS `Variance`,
+    COALESCE(SUM(di.variance_value), 0) AS `Variance Value`,
+
+    u.username AS `Created By`,
+    d.note AS `Note`,
+    d.created_at AS `Created At`,
+    d.updated_at AS `Updated At`
+
+FROM documents d
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+LEFT JOIN document_items di ON di.document_id = d.id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT'
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR w.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR w.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+  AND d.document_date >= {{InventoryDateFrom.selectedDate || moment().startOf("month").format("YYYY-MM-DD")}}
+  AND d.document_date <= {{InventoryDateTo.selectedDate || moment().format("YYYY-MM-DD")}}
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    w.code,
+    w.name,
+    u.username,
+    d.note,
+    d.created_at,
+    d.updated_at
+
+ORDER BY d.document_date DESC, d.id DESC;

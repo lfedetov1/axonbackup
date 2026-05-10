@@ -1,0 +1,15 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS status,
+    d.warehouse_id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    d.note AS note
+FROM documents d
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.id = {{this.params.documentId || appsmith.store.currentInventoryCountId || 0}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT'
+LIMIT 1;

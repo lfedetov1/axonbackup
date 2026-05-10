@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_3fa97479-2d02-4273-8f5b-f3172b70cb40",
-  "id": "Inventory_Query1",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_e7133b27-4862-4845-afdb-8e1bb0cc79e3",
+  "id": "Inventory_DeleteInventoryCountItems",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "DELETE FROM document_items\nWHERE document_id = {{this.params.documentId}};\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,12 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "DeleteInventoryCountItems",
     "pageId": "Inventory",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

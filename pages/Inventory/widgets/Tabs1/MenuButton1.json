@@ -1,0 +1,96 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 5,
+  "boxShadow": "none",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isCompact": false,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "pvm9x56x1x",
+  "label": "Menu",
+  "leftColumn": 51,
+  "menuColor": "#dbeafe",
+  "menuItems": {
+    "menuItem1": {
+      "id": "menuItem1",
+      "index": 0,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New  Inventory Count",
+      "widgetId": ""
+    },
+    "menuItem2": {
+      "id": "menuItem2",
+      "index": 1,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New Inventory document",
+      "widgetId": ""
+    },
+    "menuItem3": {
+      "id": "menuItem3",
+      "index": 2,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Post Inventory Adjustment",
+      "widgetId": ""
+    },
+    "menuItem86861ajas9": {
+      "id": "menuItem86861ajas9",
+      "index": 6,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Print Variance Report",
+      "widgetId": "ev7jlu9znw"
+    },
+    "menuItemct7hbzvvvd": {
+      "id": "menuItemct7hbzvvvd",
+      "index": 4,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Cancel",
+      "widgetId": "qcwphy7bx1"
+    },
+    "menuItemvgb37r8zp1": {
+      "id": "menuItemvgb37r8zp1",
+      "index": 3,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Mark Counted",
+      "widgetId": "ucfhaf2c7q"
+    },
+    "menuItemvgnj6awofp": {
+      "id": "menuItemvgnj6awofp",
+      "index": 5,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Print Count Sheet",
+      "widgetId": "q6fwbdne7p"
+    }
+  },
+  "menuItemsSource": "STATIC",
+  "menuVariant": "PRIMARY",
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 13.34375,
+  "parentId": "xj5k0cmvgt",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "renderMode": "CANVAS",
+  "rightColumn": 63,
+  "topRow": 1,
+  "type": "MENU_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "n7uo9xbs7e",
+  "widgetName": "MenuButton1"
+}

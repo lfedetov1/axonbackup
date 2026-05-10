@@ -1,0 +1,9 @@
+SELECT
+    d.id AS documentId,
+    d.status AS status,
+    d.updated_at AS updatedAt
+FROM documents d
+WHERE d.id = {{this.params.documentId || appsmith.store.currentInventoryCountId || 0}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT'
+LIMIT 1;

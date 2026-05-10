@@ -1,0 +1,10 @@
+UPDATE documents
+SET
+    status = {{this.params.status}},
+    approved_by_user_id = CASE
+        WHEN {{this.params.status}} IN ('APPROVED', 'POSTED') THEN {{appsmith.store.userId}}
+        ELSE approved_by_user_id
+    END
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INVENTORY_COUNT';

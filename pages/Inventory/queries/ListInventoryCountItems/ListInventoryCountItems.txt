@@ -1,0 +1,36 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS `Line No`,
+
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    u.id AS unitId,
+    u.code AS `Unit`,
+
+    di.system_quantity AS `System Quantity`,
+    di.counted_quantity AS `Counted Quantity`,
+    di.variance_quantity AS `Variance`,
+    di.unit_price AS `Unit Cost`,
+    di.variance_value AS `Variance Value`,
+
+    wl.id AS warehouseLocationId,
+    wl.code AS `Location`,
+
+    di.note AS `Note`,
+    cb.username AS `Counted By`,
+    di.counted_at AS `Counted At`
+
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN warehouse_locations wl ON wl.id = di.warehouse_location_id
+LEFT JOIN users cb ON cb.id = di.counted_by_user_id
+
+WHERE di.document_id = {{this.params.documentId || InventoryCountTable.selectedRow.documentId || 0}}
+
+ORDER BY di.line_no;
