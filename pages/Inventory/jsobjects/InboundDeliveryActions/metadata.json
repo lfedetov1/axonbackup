@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_142e2821-e510-43f2-af31-985217fbf8fd",
+  "id": "Inventory_InboundDeliveryActions",
+  "unpublishedCollection": {
+    "name": "InboundDeliveryActions",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

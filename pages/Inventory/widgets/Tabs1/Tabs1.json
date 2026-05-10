@@ -5,7 +5,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 124,
+  "bottomRow": 111,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 820,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -101,7 +101,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -191,7 +191,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -236,7 +236,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -281,7 +281,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 830,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -326,7 +326,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -371,7 +371,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 900,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -416,7 +416,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -461,7 +461,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -551,7 +551,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -596,7 +596,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -641,7 +641,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -686,7 +686,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 920,
+      "bottomRow": 790,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -728,6 +728,96 @@
       "version": 1,
       "widgetId": "lhanj5x9tj",
       "widgetName": "Canvas33"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 790,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "p285lg4ghz",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 1580,
+      "minWidth": 450,
+      "mobileBottomRow": 1581,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 874,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "fyir0g9gci",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 874,
+      "tabId": "tab7xtz3a4ljr",
+      "tabName": "Inbound Delivery",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "tvtqewmo08",
+      "widgetName": "Canvas34"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 840,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "p285lg4ghz",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 680,
+      "minWidth": 450,
+      "mobileBottomRow": 681,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 874,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "fyir0g9gci",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 874,
+      "tabId": "tabmxmuninmeb",
+      "tabName": "New Inbound Delivery",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "ahg0gtsta7",
+      "widgetName": "Canvas35"
     }
   ],
   "defaultTab": "Stock maping",
@@ -785,6 +875,9 @@
     },
     {
       "key": "tabsObj.tabj4upica26p.isVisible"
+    },
+    {
+      "key": "tabsObj.tab7xtz3a4ljr.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -839,6 +932,12 @@
     },
     {
       "key": "tabsObj.tabj4upica26p.isVisible"
+    },
+    {
+      "key": "tabsObj.tab7xtz3a4ljr.isVisible"
+    },
+    {
+      "key": "tabsObj.tabmxmuninmeb.isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -856,7 +955,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 20,
   "needsErrorInfo": false,
-  "originalBottomRow": 124,
+  "originalBottomRow": 96,
   "originalTopRow": 28,
   "parentColumnSpace": 13.65625,
   "parentId": "0",
@@ -886,7 +985,7 @@
     },
     "tab3bu593bymf": {
       "id": "tab3bu593bymf",
-      "index": 12,
+      "index": 13,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_GOODS_RECEIPT\" }}\n",
       "label": "New Goods Receipt",
@@ -902,7 +1001,7 @@
     },
     "tab4wq4kxge44": {
       "id": "tab4wq4kxge44",
-      "index": 8,
+      "index": 9,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Putaway",
@@ -910,15 +1009,23 @@
     },
     "tab5e3c5qd0m7": {
       "id": "tab5e3c5qd0m7",
-      "index": 7,
+      "index": 8,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Delivery Note",
       "widgetId": "7buld5qsm0"
     },
+    "tab7xtz3a4ljr": {
+      "id": "tab7xtz3a4ljr",
+      "index": 5,
+      "isDuplicateLabel": false,
+      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}\n",
+      "label": "Inbound Delivery",
+      "widgetId": "tvtqewmo08"
+    },
     "tabcc3e88vj0a": {
       "id": "tabcc3e88vj0a",
-      "index": 6,
+      "index": 7,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Transfer",
@@ -926,7 +1033,7 @@
     },
     "tabe6hjmh7552": {
       "id": "tabe6hjmh7552",
-      "index": 5,
+      "index": 6,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Stock Issue",
@@ -934,7 +1041,7 @@
     },
     "tabftlfwgdec8": {
       "id": "tabftlfwgdec8",
-      "index": 11,
+      "index": 12,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_MOVEMENT\" }}\n",
       "label": "New Stock Movements",
@@ -942,14 +1049,15 @@
     },
     "tabfvo711hyaw": {
       "id": "tabfvo711hyaw",
-      "index": 15,
+      "index": 16,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "New Invetory Count",
       "widgetId": "lhanj5x9tj"
     },
     "tabg29qooo1s0": {
       "id": "tabg29qooo1s0",
-      "index": 13,
+      "index": 14,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_ISSUE\" }}\n",
       "label": "New Stock Issue",
@@ -965,7 +1073,7 @@
     },
     "tabgplqpv1t04": {
       "id": "tabgplqpv1t04",
-      "index": 10,
+      "index": 11,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Returns",
@@ -981,15 +1089,22 @@
     },
     "tabj4upica26p": {
       "id": "tabj4upica26p",
-      "index": 14,
+      "index": 15,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"DELIVERY_NOTE_NEW\"\n  || appsmith.store.inventoryMode === \"DELIVERY_NOTE_EDIT\"\n}}\n",
       "label": "New Delivery Note",
       "widgetId": "qhafxrqcvl"
     },
+    "tabmxmuninmeb": {
+      "id": "tabmxmuninmeb",
+      "index": 17,
+      "isVisible": "true",
+      "label": "New Inbound Delivery",
+      "widgetId": "ahg0gtsta7"
+    },
     "tabp0ip66jgil": {
       "id": "tabp0ip66jgil",
-      "index": 9,
+      "index": 10,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
       "label": "Inventory Count",

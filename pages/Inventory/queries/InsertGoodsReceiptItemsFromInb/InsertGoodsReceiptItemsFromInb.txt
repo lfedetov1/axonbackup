@@ -1,0 +1,25 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    quantity,
+    unit_id,
+    unit_price,
+    line_total,
+    note
+)
+SELECT
+    {{this.params.receiptId}},
+    di.line_no,
+    di.product_id,
+    di.description,
+    COALESCE(di.received_quantity, 0),
+    di.unit_id,
+    di.unit_price,
+    COALESCE(di.received_quantity, 0) * COALESCE(di.unit_price, 0),
+    CONCAT('From inbound delivery item ', di.id)
+FROM document_items di
+WHERE di.document_id = {{this.params.inboundId}}
+  AND COALESCE(di.received_quantity, 0) > 0
+ORDER BY di.line_no;

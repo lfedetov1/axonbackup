@@ -1,0 +1,8 @@
+SELECT
+    id AS receiptId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'PURCHASE_RECEIPT'
+  AND document_number = {{this.params.receiptNumber}}
+ORDER BY id DESC
+LIMIT 1;

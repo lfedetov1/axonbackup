@@ -1,0 +1,30 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    status,
+    partner_id,
+    warehouse_id,
+    reference_number,
+    source_document_id,
+    total_amount,
+    note,
+    created_by_user_id
+)
+SELECT
+    d.company_id,
+    'PURCHASE_RECEIPT',
+    {{this.params.receiptNumber}},
+    CURDATE(),
+    'DRAFT',
+    d.partner_id,
+    d.warehouse_id,
+    d.document_number,
+    d.id,
+    d.total_amount,
+    CONCAT('Created from inbound delivery ', d.document_number),
+    {{appsmith.store.userId || null}}
+FROM documents d
+WHERE d.id = {{this.params.inboundId}}
+  AND d.document_type = 'INBOUND_DELIVERY';

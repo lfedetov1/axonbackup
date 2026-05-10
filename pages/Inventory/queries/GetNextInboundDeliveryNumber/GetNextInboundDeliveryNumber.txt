@@ -1,0 +1,15 @@
+SELECT
+    CONCAT(
+        'INB-',
+        YEAR(CURDATE()),
+        '-',
+        LPAD(
+            COALESCE(MAX(CAST(RIGHT(document_number, 5) AS UNSIGNED)), 0) + 1,
+            5,
+            '0'
+        )
+    ) AS nextInboundNumber
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INBOUND_DELIVERY'
+  AND document_number LIKE CONCAT('INB-', YEAR(CURDATE()), '-%');

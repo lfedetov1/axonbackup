@@ -1,0 +1,16 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.expected_date AS expectedDate,
+    d.status AS status,
+    d.partner_id AS supplierId,
+    d.warehouse_id AS warehouseId,
+    d.reference_number AS referenceNumber,
+    d.total_amount AS totalAmount,
+    d.note AS note
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.id = {{this.params.documentId}}
+  AND d.document_type = 'INBOUND_DELIVERY'
+LIMIT 1;

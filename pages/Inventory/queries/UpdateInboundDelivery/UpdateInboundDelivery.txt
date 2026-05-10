@@ -1,0 +1,18 @@
+UPDATE documents
+SET
+    document_number = {{InboundDeliveryNumberInput.text}},
+    document_date = {{moment(InboundDeliveryDateInput.selectedDate || InboundDeliveryDateInput.formattedDate || InboundDeliveryDateInput.text).format("YYYY-MM-DD")}},
+    expected_date = {{moment(InboundExpectedDateInput.selectedDate || InboundExpectedDateInput.formattedDate || InboundExpectedDateInput.text).format("YYYY-MM-DD")}},
+    partner_id = {{InboundSupplierSelect.selectedOptionValue || null}},
+    warehouse_id = {{InboundWarehouseSelect.selectedOptionValue}},
+    reference_number = {{InboundReferenceInput.text || null}},
+    total_amount = {{
+      (appsmith.store.inboundDeliveryItems || [])
+        .reduce((s, r) => s + Number(r["Line Total"] || 0), 0)
+    }},
+    note = {{InboundNoteInput.text || null}},
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.documentId}}
+  AND document_type = 'INBOUND_DELIVERY'
+  AND status IN ('DRAFT', 'IN_TRANSIT', 'ARRIVED', 'RECEIVING');

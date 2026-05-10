@@ -15,5 +15,7 @@ export default {
     await GetDeliveryNotePrintItems.run({ documentId });
 
     showModal(DeliveryNotePrintModal.name);
-  }
+  },
+}
+
 };

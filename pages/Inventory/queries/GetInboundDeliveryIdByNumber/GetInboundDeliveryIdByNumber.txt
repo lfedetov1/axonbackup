@@ -1,0 +1,8 @@
+SELECT
+    id AS documentId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'INBOUND_DELIVERY'
+  AND document_number = {{InboundDeliveryNumberInput.text}}
+ORDER BY id DESC
+LIMIT 1;

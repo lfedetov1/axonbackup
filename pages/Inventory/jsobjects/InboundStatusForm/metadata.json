@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7a3658bb-a58f-4fd9-85cc-367e920d4584",
+  "id": "Inventory_InboundStatusForm",
+  "unpublishedCollection": {
+    "name": "InboundStatusForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

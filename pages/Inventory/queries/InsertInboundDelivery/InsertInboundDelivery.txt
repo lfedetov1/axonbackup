@@ -1,0 +1,31 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    expected_date,
+    status,
+    partner_id,
+    warehouse_id,
+    reference_number,
+    total_amount,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    'INBOUND_DELIVERY',
+    {{InboundDeliveryNumberInput.text}},
+    {{moment(InboundDeliveryDateInput.selectedDate || InboundDeliveryDateInput.formattedDate || InboundDeliveryDateInput.text).format("YYYY-MM-DD")}},
+    {{moment(InboundExpectedDateInput.selectedDate || InboundExpectedDateInput.formattedDate || InboundExpectedDateInput.text).format("YYYY-MM-DD")}},
+    'DRAFT',
+    {{InboundSupplierSelect.selectedOptionValue || null}},
+    {{InboundWarehouseSelect.selectedOptionValue}},
+    {{InboundReferenceInput.text || null}},
+    {{
+      (appsmith.store.inboundDeliveryItems || [])
+        .reduce((s, r) => s + Number(r["Line Total"] || 0), 0)
+    }},
+    {{InboundNoteInput.text || null}},
+    {{appsmith.store.userId || null}}
+);

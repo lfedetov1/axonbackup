@@ -1,0 +1,7 @@
+UPDATE documents
+SET
+    status = {{this.params.status}},
+    updated_at = NOW()
+WHERE company_id = {{appsmith.store.companyId}}
+  AND id = {{this.params.documentId}}
+  AND document_type = 'INBOUND_DELIVERY';

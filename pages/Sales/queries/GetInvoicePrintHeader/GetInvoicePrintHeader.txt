@@ -1,6 +1,14 @@
 SELECT
     d.id AS documentId,
     d.document_number AS documentNumber,
+
+    COALESCE(d.fiscal_number, d.document_number) AS fiscalNumber,
+    d.fiscal_jir AS jir,
+    d.fiscal_zki AS zki,
+    d.fiscal_qr_url AS fiscalVerificationUrl,
+    d.fiscalized_at AS fiscalizedAt,
+    d.fiscal_status AS fiscalStatus,
+
     d.document_date AS documentDate,
     d.created_at AS createdAt,
     d.document_type AS documentType,

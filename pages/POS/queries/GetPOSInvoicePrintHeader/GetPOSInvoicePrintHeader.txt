@@ -1,6 +1,8 @@
 SELECT
     d.id AS documentId,
     d.document_number AS documentNumber,
+    COALESCE(d.fiscal_number, d.document_number) AS fiscalNumber,
+
     d.document_date AS documentDate,
     d.created_at AS createdAt,
     d.payment_method AS paymentMethod,
@@ -44,6 +46,6 @@ LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 LEFT JOIN users cu ON cu.id = d.cashier_user_id
-WHERE d.document_number = '{{ appsmith.store.posPrintDocumentNumber || "" }}'
+WHERE d.document_number = {{ appsmith.store.posPrintDocumentNumber || "" }}
   AND d.document_type = 'POS_SALE'
 LIMIT 1;

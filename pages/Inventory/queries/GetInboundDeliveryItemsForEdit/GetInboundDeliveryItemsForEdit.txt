@@ -1,0 +1,30 @@
+SELECT
+    di.id AS documentItemId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS Barcode,
+    p.sku AS SKU,
+
+    di.description AS Description,
+
+    COALESCE(di.expected_quantity, di.quantity, 0) AS `Expected Qty`,
+    COALESCE(di.received_quantity, 0) AS `Received Qty`,
+    COALESCE(di.variance_quantity, 0) AS Variance,
+
+    u.id AS unitId,
+    u.code AS Unit,
+
+    di.unit_price AS `Unit Cost`,
+    di.line_total AS `Line Total`,
+    di.note AS Note
+FROM document_items di
+JOIN products p
+  ON p.id = di.product_id
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+WHERE di.document_id = {{this.params.documentId}}
+ORDER BY
+    di.line_no;
