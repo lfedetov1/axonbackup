@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 31,
+  "bottomRow": 39,
   "boxShadow": "none",
   "buttonColor": "#93c5fd",
   "buttonVariant": "PRIMARY",
@@ -46,7 +46,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 63,
   "text": "Delete row",
-  "topRow": 27,
+  "topRow": 35,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "ve16acfkbi",

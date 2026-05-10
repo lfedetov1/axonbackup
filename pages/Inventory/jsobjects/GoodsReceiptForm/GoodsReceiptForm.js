@@ -177,6 +177,89 @@ export default {
 
     await this.setRows(rows);
   },
+async scanProductDebounced(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup) return;
+
+  if (lookup.length < 3) return;
+
+  await storeValue("goodsReceiptScanLastValue", lookup);
+
+  setTimeout(() => {
+    if (appsmith.store.goodsReceiptScanLastValue === lookup) {
+      GoodsReceiptForm.scanProduct(lookup);
+    }
+  }, 350);
+},
+
+async scanProduct(lookupValue = null) {
+  const lookup = String(lookupValue || GoodsReceiptScanInput.text || "").trim();
+
+  if (!lookup) {
+    return;
+  }
+
+  const warehouseId = GoodsReceiptWarehouseSelect.selectedOptionValue;
+
+  if (!warehouseId || Number(warehouseId) === 0) {
+    showAlert("Select warehouse first.", "warning");
+    GoodsReceiptScanInput.setValue("");
+    return;
+  }
+
+  const result = await FindGoodsReceiptProduct.run({
+    lookup,
+    warehouseId
+  });
+
+  const product =
+    (Array.isArray(result) ? result[0] : null) ||
+    (Array.isArray(FindGoodsReceiptProduct.data) ? FindGoodsReceiptProduct.data[0] : null);
+
+  if (!product) {
+    showAlert("Product was not found.", "warning");
+    GoodsReceiptScanInput.setValue("");
+    return;
+  }
+
+  const rows = [...this.rows()];
+  const existingIndex = rows.findIndex(
+    row => Number(row.productId) === Number(product.productId)
+  );
+
+  if (existingIndex >= 0) {
+    const currentQty = Number(rows[existingIndex].quantity || 0);
+
+    rows[existingIndex] = this.recalcRow({
+      ...rows[existingIndex],
+      quantity: String(currentQty + 1)
+    });
+  } else {
+    rows.push(this.recalcRow({
+      barcode: product.barcode || lookup,
+      productId: product.productId,
+      productCode: product.productCode,
+      productName: product.productName,
+      sku: product.sku || "",
+      unitId: product.unitId,
+      unitCode: product.unitCode || "",
+      currentStock: Number(product.currentStock || 0),
+      quantity: "1",
+      unitCost: String(product.purchasePrice || 0),
+      lineTotal: Number(product.purchasePrice || 0),
+      batchNumber: "",
+      serialNumber: "",
+      expiryDate: "",
+      note: ""
+    }));
+  }
+
+  await this.setRows(rows);
+
+  await storeValue("goodsReceiptScanLastValue", "");
+  GoodsReceiptScanInput.setValue("");
+},
 
   validateBeforeSave() {
     if (!GoodsReceiptNumberInput.text.trim()) {

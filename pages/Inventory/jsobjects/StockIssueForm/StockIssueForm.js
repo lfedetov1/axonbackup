@@ -19,7 +19,7 @@ export default {
     return moment(
       StockIssueDateInput.selectedDate ||
       StockIssueDateInput.formattedDate ||
-      StockIssueDateInput.text ||
+      StockIssueDateInput.selectedDate ||
       moment()
     ).format("YYYY-MM-DD");
   },
@@ -28,7 +28,7 @@ export default {
     return moment(
       StockIssueDateInput.selectedDate ||
       StockIssueDateInput.formattedDate ||
-      StockIssueDateInput.text ||
+      StockIssueDateInput.selectedDate||
       moment()
     ).format("YYYY-MM-DD HH:mm:ss");
   },
@@ -199,6 +199,105 @@ export default {
 
     await this.setRows(rows);
   },
+	async scanProductDebounced(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup) return;
+  if (lookup.length < 3) return;
+
+  await storeValue("stockIssueScanLastValue", lookup);
+
+  setTimeout(() => {
+    if (appsmith.store.stockIssueScanLastValue === lookup) {
+      StockIssueForm.scanProduct(lookup);
+    }
+  }, 350);
+},
+
+async scanProduct(lookupValue = null) {
+  const lookup = String(lookupValue || StockIssueScanInput.text || "").trim();
+
+  if (!lookup) {
+    return;
+  }
+
+  const warehouseId = StockIssueWarehouseSelect.selectedOptionValue;
+
+  if (!warehouseId || Number(warehouseId) === 0) {
+    showAlert("Select warehouse first.", "warning");
+    StockIssueScanInput.setValue("");
+    return;
+  }
+
+  const result = await FindStockIssueProduct.run({
+    lookup,
+    warehouseId
+  });
+
+  const product =
+    (Array.isArray(result) ? result[0] : null) ||
+    (Array.isArray(FindStockIssueProduct.data) ? FindStockIssueProduct.data[0] : null) ||
+    result?.data?.[0] ||
+    null;
+
+  if (!product) {
+    showAlert("Product was not found.", "warning");
+    StockIssueScanInput.setValue("");
+    return;
+  }
+
+  const available = Number(product.currentStock || 0);
+
+  if (available <= 0) {
+    showAlert("Product has no available stock in selected warehouse.", "warning");
+    StockIssueScanInput.setValue("");
+    return;
+  }
+
+  const rows = [...this.rows()];
+  const existingIndex = rows.findIndex(
+    row => Number(row.productId) === Number(product.productId)
+  );
+
+  if (existingIndex >= 0) {
+    const currentQty = Number(rows[existingIndex].quantity || 0);
+
+    if (currentQty + 1 > available) {
+      showAlert(`Not enough stock for ${product.productCode}. Available: ${available}`, "error");
+      StockIssueScanInput.setValue("");
+      return;
+    }
+
+    rows[existingIndex] = this.recalcRow({
+      ...rows[existingIndex],
+      quantity: String(currentQty + 1)
+    });
+  } else {
+    rows.push(this.recalcRow({
+      barcode: product.barcode || lookup,
+      productId: product.productId,
+      productCode: product.productCode,
+      productName: product.productName,
+      sku: product.sku || "",
+      unitId: product.unitId,
+      unitCode: product.unitCode || "",
+      currentStock: available,
+      quantity: "1",
+      unitCost: String(product.purchasePrice || 0),
+      lineTotal: Number(product.purchasePrice || 0),
+      batchNumber: "",
+      serialNumber: "",
+      expiryDate: "",
+      note: ""
+    }));
+  }
+
+  await this.setRows(rows);
+
+  await storeValue("stockIssueScanLastValue", "");
+  StockIssueScanInput.setValue("");
+},
+
 
   async getFreshStock(productId, warehouseId) {
     const result = await GetCurrentStockForProduct.run({ productId, warehouseId });

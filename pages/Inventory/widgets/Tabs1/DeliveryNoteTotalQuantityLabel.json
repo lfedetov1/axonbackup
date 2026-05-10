@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 63,
+  "bottomRow": 68,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -44,7 +44,7 @@
   "text": "{{\n  \"Quantity :   \" +\n  (appsmith.store.deliveryNoteItems || []).reduce((s, r) => s + Number(r.Quantity || r.quantity || 0), 0).toFixed(4)\n}}\n",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 59,
+  "topRow": 64,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

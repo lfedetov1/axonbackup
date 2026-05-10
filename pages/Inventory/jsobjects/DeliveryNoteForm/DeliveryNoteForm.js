@@ -206,6 +206,94 @@ export default {
 
     await storeValue("deliveryNoteItems", this.recalc(nextRows));
   },
+	
+	async scanProductDebounced(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup) return;
+  if (lookup.length < 3) return;
+
+  await storeValue("deliveryNoteScanLastValue", lookup);
+
+  setTimeout(() => {
+    if (appsmith.store.deliveryNoteScanLastValue === lookup) {
+      DeliveryNoteForm.scanProduct(lookup);
+    }
+  }, 350);
+},
+
+async scanProduct(lookupValue = null) {
+  const lookup = String(lookupValue || DeliveryNoteScanInput.text || "").trim();
+
+  if (!lookup) {
+    return;
+  }
+
+  if (!DeliveryNoteWarehouseSelectFor.selectedOptionValue) {
+    showAlert("Select warehouse first.", "warning");
+    DeliveryNoteScanInput.setValue("");
+    return;
+  }
+
+  const result = await FindDeliveryNoteProduct.run({ lookup });
+  const product = result?.[0] || FindDeliveryNoteProduct.data?.[0];
+
+  if (!product) {
+    showAlert("Product was not found.", "warning");
+    DeliveryNoteScanInput.setValue("");
+    return;
+  }
+
+  const available = Number(product.availableStock || 0);
+
+  if (Number(product.trackStock || 0) === 1 && available <= 0) {
+    showAlert("Product has no available stock in selected warehouse.", "warning");
+    DeliveryNoteScanInput.setValue("");
+    return;
+  }
+
+  const rows = [...this.rows()];
+  const existingIndex = rows.findIndex(
+    row => Number(row.productId) === Number(product.productId)
+  );
+
+  if (existingIndex >= 0) {
+    const currentQty = Number(rows[existingIndex].Quantity || 0);
+
+    if (Number(product.trackStock || 0) === 1 && currentQty + 1 > available) {
+      showAlert(`Not enough stock for ${product.productCode}. Available: ${available}`, "error");
+      DeliveryNoteScanInput.setValue("");
+      return;
+    }
+
+    rows[existingIndex] = {
+      ...rows[existingIndex],
+      Quantity: currentQty + 1
+    };
+  } else {
+    rows.push({
+      lineNo: rows.length + 1,
+      productId: product.productId,
+      unitId: product.unitId,
+      Barcode: product.barcode || lookup,
+      "Product Code": product.productCode,
+      "Product Name": product.productName,
+      Description: product.description || product.productName,
+      Quantity: 1,
+      Unit: product.unitCode,
+      "Unit Price": Number(product.salePrice || 0),
+      "Line Total": Number(product.salePrice || 0),
+      availableStock: available,
+      trackStock: Number(product.trackStock || 0),
+      Note: ""
+    });
+  }
+
+  await storeValue("deliveryNoteItems", this.recalc(rows));
+
+  await storeValue("deliveryNoteScanLastValue", "");
+  DeliveryNoteScanInput.setValue("");
+},
 
   async updateRows() {
     const tableRows = DeliveryNoteItemsEditTable.tableData || this.rows();

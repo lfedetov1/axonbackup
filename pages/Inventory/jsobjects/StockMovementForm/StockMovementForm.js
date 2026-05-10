@@ -248,6 +248,114 @@ export default {
       0
     );
   },
+	
+	async scanProductDebounced(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup) return;
+  if (lookup.length < 3) return;
+
+  await storeValue("stockMovementScanLastValue", lookup);
+
+  setTimeout(() => {
+    if (appsmith.store.stockMovementScanLastValue === lookup) {
+      StockMovementForm.scanProduct(lookup);
+    }
+  }, 350);
+},
+
+async scanProduct(lookupValue = null) {
+  const lookup = String(lookupValue || StockMovementScanInput.text || "").trim();
+  const warehouseId = this.getLookupWarehouseId();
+
+  if (!lookup) {
+    return;
+  }
+
+  if (!warehouseId || Number(warehouseId) === 0) {
+    showAlert("Select warehouse first.", "warning");
+    StockMovementScanInput.setValue("");
+    return;
+  }
+
+  const result = await FindStockMovementProduct.run({
+    lookup,
+    warehouseId
+  });
+
+  const product = result?.[0] || FindStockMovementProduct.data?.[0];
+
+  if (!product) {
+    showAlert("Product was not found.", "warning");
+    StockMovementScanInput.setValue("");
+    return;
+  }
+
+  if (Number(product.trackStock || 0) !== 1) {
+    showAlert("This product does not track stock.", "warning");
+    StockMovementScanInput.setValue("");
+    return;
+  }
+
+  const movementType = StockMovementTypeSelect.selectedOptionValue;
+  const isStockDecrease =
+    this.isTransfer() ||
+    movementType === "OUT" ||
+    movementType === "ADJUSTMENT";
+
+  const available = Number(product.currentStock || 0);
+
+  if (isStockDecrease && available <= 0) {
+    showAlert("Product has no available stock in selected warehouse.", "warning");
+    StockMovementScanInput.setValue("");
+    return;
+  }
+
+  const rows = [...this.rows()];
+  const existingIndex = rows.findIndex(
+    row => Number(row.productId) === Number(product.productId)
+  );
+
+  if (existingIndex >= 0) {
+    const currentQty = Number(rows[existingIndex].quantity || 0);
+    const nextQty = currentQty + 1;
+
+    if (isStockDecrease && nextQty > available) {
+      showAlert(`Not enough stock for ${product.productCode}. Available: ${available}`, "error");
+      StockMovementScanInput.setValue("");
+      return;
+    }
+
+    rows[existingIndex] = this.recalcRow({
+      ...rows[existingIndex],
+      quantity: String(nextQty)
+    });
+  } else {
+    rows.push(this.recalcRow({
+      lookup,
+      barcode: product.barcode || lookup,
+      productId: product.productId,
+      productCode: product.productCode,
+      productName: product.productName,
+      sku: product.sku || "",
+      unitId: product.unitId,
+      unitCode: product.unitCode || "",
+      currentStock: available,
+      quantity: "1",
+      unitCost: String(product.purchasePrice || 0),
+      lineTotal: Number(product.purchasePrice || 0),
+      batchNumber: "",
+      serialNumber: "",
+      note: ""
+    }));
+  }
+
+  await this.setRows(rows);
+
+  await storeValue("stockMovementScanLastValue", "");
+  StockMovementScanInput.setValue("");
+},
+
 
   async validateStockAvailability() {
     const type = StockMovementTypeSelect.selectedOptionValue;

@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 78,
+  "bottomRow": 85,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -46,7 +46,7 @@
   "text": "{{\n  (appsmith.store.stockMovementItems || [])\n    .reduce((sum, row) => sum + Number(row.lineTotal || (Number(row.quantity || 0) * Number(row.unitCost || 0))), 0)\n    .toFixed(2)\n}}\n",
   "textAlign": "LEFT",
   "textColor": "#ef4444",
-  "topRow": 74,
+  "topRow": 81,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

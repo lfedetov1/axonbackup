@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 78,
+  "bottomRow": 85,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -41,7 +41,7 @@
   "text": "Price : ",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 74,
+  "topRow": 81,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
