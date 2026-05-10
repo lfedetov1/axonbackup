@@ -1,5 +1,6 @@
 SELECT
     d.id AS documentId,
+    d.id AS inventoryCountId,
     d.document_number AS `Count Number`,
     d.document_date AS `Count Date`,
     d.status AS `Status`,
@@ -9,9 +10,12 @@ SELECT
 
     COUNT(di.id) AS `Lines`,
     COALESCE(SUM(di.system_quantity), 0) AS `System Quantity`,
-    COALESCE(SUM(di.counted_quantity), 0) AS `Counted Quantity`,
-    COALESCE(SUM(di.variance_quantity), 0) AS `Variance`,
-    COALESCE(SUM(di.variance_value), 0) AS `Variance Value`,
+
+    COALESCE(counted.total_counted_quantity, 0) AS `Counted Quantity`,
+    COALESCE(counted.total_counted_quantity, 0) - COALESCE(SUM(di.system_quantity), 0) AS `Variance`,
+    COALESCE(SUM(
+      (COALESCE(counted.counted_quantity_per_product, 0) - COALESCE(di.system_quantity, 0)) * COALESCE(di.unit_price, 0)
+    ), 0) AS `Variance Value`,
 
     u.username AS `Created By`,
     d.note AS `Note`,
@@ -22,6 +26,23 @@ FROM documents d
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 LEFT JOIN document_items di ON di.document_id = d.id
+
+LEFT JOIN (
+    SELECT
+        d2.source_document_id AS inventoryCountId,
+        di2.product_id,
+        SUM(di2.counted_quantity) AS counted_quantity_per_product,
+        SUM(SUM(di2.counted_quantity)) OVER (PARTITION BY d2.source_document_id) AS total_counted_quantity
+    FROM documents d2
+    JOIN document_items di2 ON di2.document_id = d2.id
+    WHERE d2.company_id = {{appsmith.store.companyId}}
+      AND d2.document_type = 'INVENTORY_COUNT_DOCUMENT'
+    GROUP BY
+        d2.source_document_id,
+        di2.product_id
+) counted
+  ON counted.inventoryCountId = d.id
+ AND counted.product_id = di.product_id
 
 WHERE d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'INVENTORY_COUNT'
@@ -35,8 +56,8 @@ WHERE d.company_id = {{appsmith.store.companyId}}
       {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
       OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
   )
-  AND d.document_date >= {{InventoryDateFrom.selectedDate || moment().startOf("month").format("YYYY-MM-DD")}}
-  AND d.document_date <= {{InventoryDateTo.selectedDate || moment().format("YYYY-MM-DD")}}
+  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
 
 GROUP BY
     d.id,
@@ -48,6 +69,7 @@ GROUP BY
     u.username,
     d.note,
     d.created_at,
-    d.updated_at
+    d.updated_at,
+    counted.total_counted_quantity
 
 ORDER BY d.document_date DESC, d.id DESC;

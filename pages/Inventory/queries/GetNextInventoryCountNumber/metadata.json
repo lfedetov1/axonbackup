@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    CONCAT(\n        'IC-',\n        YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format(\"YYYY-MM-DD\")}}),\n        '-',\n        LPAD(\n            COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,\n            5,\n            '0'\n        )\n    ) AS nextCountNumber\nFROM documents d\nWHERE d.company_id = {{appsmith.store.companyId}}\n  AND d.document_type = 'INVENTORY_COUNT'\n  AND d.document_number LIKE CONCAT(\n      'IC-',\n      YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format(\"YYYY-MM-DD\")}}),\n      '-%'\n  );\n",
+      "body": "SELECT\n    CONCAT(\n        'IC-',\n        YEAR({{this.params.countDate || InventoryCountDocumentDateInpu.selectedDate || moment().format(\"YYYY-MM-DD\")}}),\n        '-',\n        LPAD(\n            COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,\n            5,\n            '0'\n        )\n    ) AS nextCountNumber\nFROM documents d\nWHERE d.company_id = {{appsmith.store.companyId}}\n  AND d.document_type = 'INVENTORY_COUNT'\n  AND d.document_number LIKE CONCAT(\n      'IC-',\n      YEAR({{this.params.countDate || InventoryCountDocumentDateInpu.selectedDate || moment().format(\"YYYY-MM-DD\")}}),\n      '-%'\n  );\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

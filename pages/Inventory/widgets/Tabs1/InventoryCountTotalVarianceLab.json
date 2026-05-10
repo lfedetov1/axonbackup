@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 66,
+  "bottomRow": 67,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -17,6 +17,7 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "fontSize": "1rem",
   "fontStyle": "BOLD",
@@ -32,6 +33,8 @@
   "mobileRightColumn": 16,
   "mobileTopRow": 52,
   "needsErrorInfo": false,
+  "originalBottomRow": 66,
+  "originalTopRow": 62,
   "overflow": "NONE",
   "parentColumnSpace": 13.34375,
   "parentId": "lhanj5x9tj",
@@ -40,10 +43,10 @@
   "responsiveBehavior": "fill",
   "rightColumn": 16,
   "shouldTruncate": false,
-  "text": "Hello {{appsmith.user.name || appsmith.user.email}}",
+  "text": "{{\n  \"Variance Value: \" + Number(InventoryCountForm.totals().varianceValue || 0).toFixed(2)\n}}\n",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 62,
+  "topRow": 63,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

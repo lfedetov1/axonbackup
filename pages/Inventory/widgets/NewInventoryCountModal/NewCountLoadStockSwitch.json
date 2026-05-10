@@ -38,5 +38,5 @@
   "type": "SWITCH_WIDGET",
   "version": 1,
   "widgetId": "2rjnyohso0",
-  "widgetName": "InventoryCountLoadStockSwitch"
+  "widgetName": "NewCountLoadStockSwitch"
 }

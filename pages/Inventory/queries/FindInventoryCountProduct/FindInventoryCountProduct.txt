@@ -15,6 +15,7 @@ SELECT
 
 FROM products p
 LEFT JOIN units_of_measure u ON u.id = p.unit_id
+
 LEFT JOIN v_inventory_balance ib
   ON ib.company_id = {{appsmith.store.companyId}}
  AND ib.warehouse_id = {{this.params.warehouseId || appsmith.store.currentInventoryCountWarehouseId || 0}}
@@ -23,7 +24,6 @@ LEFT JOIN v_inventory_balance ib
 LEFT JOIN product_prices pp
   ON pp.product_id = p.id
  AND pp.price_type = 'PURCHASE'
- AND pp.is_active = 1
 
 LEFT JOIN warehouse_location_products wlp
   ON wlp.company_id = {{appsmith.store.companyId}}

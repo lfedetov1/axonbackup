@@ -1,0 +1,42 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    unit_id,
+    warehouse_id,
+    quantity,
+    system_quantity,
+    counted_quantity,
+    variance_quantity,
+    variance_value,
+    unit_price,
+    line_subtotal,
+    line_total,
+    note
+)
+SELECT
+    {{this.params.inventoryCountId}},
+    ROW_NUMBER() OVER (ORDER BY p.code),
+    p.id,
+    p.name,
+    p.unit_id,
+    {{this.params.warehouseId}},
+    0,
+    COALESCE(ib.quantity_balance, 0),
+    0,
+    0 - COALESCE(ib.quantity_balance, 0),
+    (0 - COALESCE(ib.quantity_balance, 0)) * COALESCE(pp.price, 0),
+    COALESCE(pp.price, 0),
+    ABS((0 - COALESCE(ib.quantity_balance, 0)) * COALESCE(pp.price, 0)),
+    ABS((0 - COALESCE(ib.quantity_balance, 0)) * COALESCE(pp.price, 0)),
+    NULL
+FROM v_inventory_balance ib
+JOIN products p ON p.id = ib.product_id
+LEFT JOIN product_prices pp
+  ON pp.product_id = p.id
+ AND pp.price_type = 'PURCHASE'
+WHERE ib.company_id = {{appsmith.store.companyId}}
+  AND ib.warehouse_id = {{this.params.warehouseId}}
+  AND COALESCE(ib.quantity_balance, 0) <> 0
+  AND p.is_active = 1;

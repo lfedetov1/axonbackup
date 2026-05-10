@@ -1,7 +1,7 @@
 SELECT
     CONCAT(
         'IC-',
-        YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+        YEAR({{this.params.countDate || InventoryCountDocumentDateInpu.selectedDate || moment().format("YYYY-MM-DD")}}),
         '-',
         LPAD(
             COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,
@@ -14,6 +14,6 @@ WHERE d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'INVENTORY_COUNT'
   AND d.document_number LIKE CONCAT(
       'IC-',
-      YEAR({{this.params.countDate || NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+      YEAR({{this.params.countDate || InventoryCountDocumentDateInpu.selectedDate || moment().format("YYYY-MM-DD")}}),
       '-%'
   );

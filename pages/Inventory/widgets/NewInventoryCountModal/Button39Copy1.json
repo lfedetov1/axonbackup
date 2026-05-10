@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 8,
+  "bottomRow": 36,
   "boxShadow": "none",
   "buttonColor": "#93c5fd",
   "buttonVariant": "PRIMARY",
@@ -11,34 +11,44 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
-  "iconName": "document-open",
+  "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
   "isVisible": true,
   "key": "3dxm9d5duf",
-  "leftColumn": 35,
+  "leftColumn": 44,
   "minWidth": 120,
   "mobileBottomRow": 5,
   "mobileLeftColumn": 47,
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{ InventoryCountForm.createInventoryCount() }}\n",
   "parentColumnSpace": 13.34375,
-  "parentId": "lhanj5x9tj",
+  "parentId": "swk5uw7z7y",
   "parentRowSpace": 10,
   "placement": "CENTER",
   "recaptchaType": "V3",
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 48,
-  "text": "Create document ",
-  "topRow": 4,
+  "rightColumn": 63,
+  "text": "Create",
+  "topRow": 32,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "o9k5kirx6s",
+  "widgetId": "vg0xzc2he1",
   "widgetName": "Button39Copy1"
 }

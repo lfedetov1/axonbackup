@@ -1,0 +1,48 @@
+INSERT INTO documents (
+    company_id,
+    warehouse_id,
+    created_by_user_id,
+    document_type,
+    status,
+    document_number,
+    document_date,
+    currency_code,
+    note,
+    subtotal_amount,
+    tax_amount,
+    discount_amount,
+    total_amount,
+    paid_amount
+)
+SELECT
+    {{appsmith.store.companyId}},
+    {{NewCountWarehouseSelect.selectedOptionValue}},
+    {{appsmith.store.userId}},
+    'INVENTORY_COUNT',
+    'COUNTING',
+    CONCAT(
+        'INV-',
+        YEAR({{moment(NewCountDateInput1.selectedDate || moment()).format("YYYY-MM-DD")}}),
+        '-',
+        LPAD(
+            COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,
+            5,
+            '0'
+        )
+    ),
+    {{moment(NewCountDateInput1.selectedDate || moment()).format("YYYY-MM-DD")}},
+    'EUR',
+    {{NewCountNoteInput.text || null}},
+    0,
+    0,
+    0,
+    0,
+    0
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT'
+  AND d.document_number LIKE CONCAT(
+      'INV-',
+      YEAR({{moment(NewCountDateInput1.selectedDate || moment()).format("YYYY-MM-DD")}}),
+      '-%'
+  );

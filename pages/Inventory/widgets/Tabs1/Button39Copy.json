@@ -11,7 +11,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
@@ -26,6 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{\nInventoryCountForm.addBlankRow()\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "lhanj5x9tj",
   "parentRowSpace": 10,

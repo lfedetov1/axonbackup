@@ -1,0 +1,40 @@
+SELECT
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+    u.code AS `Unit`,
+
+    COALESCE(snapshot.system_quantity, 0) AS `System Quantity`,
+    COALESCE(counted.counted_quantity, 0) AS `Counted Quantity`,
+    COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0) AS `Variance`,
+
+    COALESCE(snapshot.unit_price, 0) AS `Unit Cost`,
+    (COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0) AS `Variance Value`
+
+FROM document_items snapshot
+JOIN documents inv ON inv.id = snapshot.document_id
+JOIN products p ON p.id = snapshot.product_id
+LEFT JOIN units_of_measure u ON u.id = snapshot.unit_id
+
+LEFT JOIN (
+    SELECT
+        di.product_id,
+        SUM(di.counted_quantity) AS counted_quantity
+    FROM document_items di
+    JOIN documents d ON d.id = di.document_id
+    WHERE d.company_id = {{appsmith.store.companyId}}
+      AND d.document_type = 'INVENTORY_COUNT_DOCUMENT'
+      AND d.source_document_id = {{appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.inventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+    GROUP BY di.product_id
+) counted
+  ON counted.product_id = snapshot.product_id
+
+WHERE inv.id = {{appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.inventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+  AND inv.company_id = {{appsmith.store.companyId}}
+  AND inv.document_type = 'INVENTORY_COUNT'
+
+ORDER BY
+    ABS((COALESCE(counted.counted_quantity, 0) - COALESCE(snapshot.system_quantity, 0)) * COALESCE(snapshot.unit_price, 0)) DESC,
+    p.code;

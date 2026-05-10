@@ -8,7 +8,22 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    }
+  ],
   "isCompact": false,
   "isDisabled": false,
   "isLoading": false,
@@ -24,6 +39,7 @@
       "isDisabled": false,
       "isVisible": true,
       "label": "New  Inventory Count",
+      "onClick": "{{ showModal(NewInventoryCountModal.name) }}\n",
       "widgetId": ""
     },
     "menuItem2": {
@@ -32,6 +48,7 @@
       "isDisabled": false,
       "isVisible": true,
       "label": "New Inventory document",
+      "onClick": "{{\n  storeValue(\"inventoryMode\", \"INVENTORY_COUNT_DOCUMENT\");\n  InventoryCountForm.resetCountDocumentForm();\n}}\n",
       "widgetId": ""
     },
     "menuItem3": {

@@ -1,0 +1,25 @@
+SELECT
+    d.id AS countDocumentId,
+    d.document_number AS `Count Document Number`,
+    d.document_date AS `Date`,
+    d.status AS `Status`,
+    u.username AS `Counted By`,
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.counted_quantity), 0) AS `Counted Quantity`,
+    d.note AS `Note`,
+    d.created_at AS `Created At`
+FROM documents d
+LEFT JOIN users u ON u.id = d.created_by_user_id
+LEFT JOIN document_items di ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT_DOCUMENT'
+  AND d.source_document_id = {{appsmith.store.currentInventoryCountId || InventoryCountTable.selectedRow.inventoryCountId || InventoryCountTable.selectedRow.documentId || 0}}
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    u.username,
+    d.note,
+    d.created_at
+ORDER BY d.id DESC;

@@ -1,8 +1,9 @@
 SELECT
-    d.id AS documentId,
-    d.document_number AS documentNumber,
-    d.document_date AS documentDate,
+    d.id AS countDocumentId,
+    d.document_number AS countDocumentNumber,
+    d.document_date AS countDocumentDate,
     d.status AS status,
+    d.source_document_id AS inventoryCountId,
     d.warehouse_id AS warehouseId,
     w.code AS warehouseCode,
     w.name AS warehouseName,
@@ -10,7 +11,7 @@ SELECT
 FROM documents d
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 WHERE d.company_id = {{appsmith.store.companyId}}
-  AND d.document_type = 'INVENTORY_COUNT'
+  AND d.document_type = 'INVENTORY_COUNT_DOCUMENT'
   AND d.created_by_user_id = {{appsmith.store.userId}}
 ORDER BY d.id DESC
 LIMIT 1;

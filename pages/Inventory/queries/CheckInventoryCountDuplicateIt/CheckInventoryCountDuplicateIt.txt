@@ -1,0 +1,14 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    d.document_number AS countDocumentNumber
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+JOIN products p ON p.id = di.product_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'INVENTORY_COUNT_DOCUMENT'
+  AND d.source_document_id = {{appsmith.store.currentInventoryCountId}}
+  AND di.product_id IN (
+      {{this.params.productIds.join(",") || 0}}
+  )
+LIMIT 1;

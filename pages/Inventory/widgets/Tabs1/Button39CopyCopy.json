@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 75,
+  "bottomRow": 76,
   "boxShadow": "none",
   "buttonColor": "#93c5fd",
   "buttonVariant": "PRIMARY",
@@ -11,7 +11,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
@@ -26,6 +35,9 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{ InventoryCountForm.saveCountDocument() }}\n",
+  "originalBottomRow": 75,
+  "originalTopRow": 71,
   "parentColumnSpace": 13.34375,
   "parentId": "lhanj5x9tj",
   "parentRowSpace": 10,
@@ -36,7 +48,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 63,
   "text": "Save & New Count",
-  "topRow": 71,
+  "topRow": 72,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "swl096wsmq",

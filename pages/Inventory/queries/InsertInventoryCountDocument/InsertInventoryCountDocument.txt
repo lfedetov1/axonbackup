@@ -2,6 +2,7 @@ INSERT INTO documents (
     company_id,
     warehouse_id,
     created_by_user_id,
+    source_document_id,
     document_type,
     status,
     document_number,
@@ -16,13 +17,14 @@ INSERT INTO documents (
 )
 SELECT
     {{appsmith.store.companyId}},
-    {{NewCountWarehouseSelect.selectedOptionValue}},
+    {{appsmith.store.currentInventoryCountWarehouseId}},
     {{appsmith.store.userId}},
-    'INVENTORY_COUNT',
-    'COUNTING',
+    {{appsmith.store.currentInventoryCountId}},
+    'INVENTORY_COUNT_DOCUMENT',
+    'COUNTED',
     CONCAT(
-        'IC-',
-        YEAR({{NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}),
+        'ICD-',
+        YEAR({{moment(InventoryCountDocumentDateInpu.selectedDate || moment()).format("YYYY-MM-DD")}}),
         '-',
         LPAD(
             COALESCE(MAX(CAST(RIGHT(d.document_number, 5) AS UNSIGNED)), 0) + 1,
@@ -30,9 +32,9 @@ SELECT
             '0'
         )
     ),
-    {{NewCountDateInput1.selectedDate || moment().format("YYYY-MM-DD")}},
+    {{moment(InventoryCountDocumentDateInpu.selectedDate || moment()).format("YYYY-MM-DD")}},
     'EUR',
-    {{NewCountNoteInput.text || null}},
+    {{InventoryCountDocumentNoteInpu.text || null}},
     0,
     0,
     0,
@@ -40,5 +42,9 @@ SELECT
     0
 FROM documents d
 WHERE d.company_id = {{appsmith.store.companyId}}
-  AND d.document_type = 'INVENTORY_COUNT'
-  AND d.document_number LIKE CONCAT('IC-', YEAR({{NewCountDateInput.selectedDate || moment().format("YYYY-MM-DD")}}), '-%');
+  AND d.document_type = 'INVENTORY_COUNT_DOCUMENT'
+  AND d.document_number LIKE CONCAT(
+      'ICD-',
+      YEAR({{moment(InventoryCountDocumentDateInpu.selectedDate || moment()).format("YYYY-MM-DD")}}),
+      '-%'
+  );
