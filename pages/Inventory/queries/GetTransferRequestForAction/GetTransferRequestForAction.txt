@@ -1,0 +1,16 @@
+SELECT
+  d.id AS documentId,
+  d.document_number AS documentNumber,
+  d.document_date AS documentDate,
+  d.status AS status,
+  d.source_warehouse_id AS sourceWarehouseId,
+  d.destination_warehouse_id AS destinationWarehouseId,
+  sw.code AS sourceWarehouseCode,
+  dw.code AS destinationWarehouseCode
+FROM documents d
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+WHERE d.id = {{this.params.documentId}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'TRANSFER_REQUEST'
+LIMIT 1;

@@ -1,0 +1,5 @@
+SELECT CONCAT('TR-', YEAR(CURDATE()), '-', LPAD(COALESCE(MAX(CAST(SUBSTRING_INDEX(document_number, '-', -1) AS UNSIGNED)), 0) + 1, 5, '0')) AS nextTransferRequestNumber
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'TRANSFER_REQUEST'
+  AND document_number LIKE CONCAT('TR-', YEAR(CURDATE()), '-%');

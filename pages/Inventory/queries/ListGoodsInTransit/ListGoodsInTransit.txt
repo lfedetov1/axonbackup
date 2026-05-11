@@ -1,0 +1,21 @@
+SELECT
+  d.id AS documentId,
+  d.document_number AS `Transfer Number`,
+  d.document_date AS `Transfer Date`,
+  sw.code AS `From Code`,
+  sw.name AS `From Warehouse`,
+  dw.code AS `To Code`,
+  dw.name AS `To Warehouse`,
+  COUNT(di.id) AS `Lines`,
+  COALESCE(SUM(di.quantity), 0) AS `Quantity In Transit`,
+  d.status AS `Status`,
+  d.note AS `Note`
+FROM documents d
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+LEFT JOIN document_items di ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'TRANSFER_REQUEST'
+  AND d.status = 'SHIPPED'
+GROUP BY d.id, d.document_number, d.document_date, sw.code, sw.name, dw.code, dw.name, d.status, d.note
+ORDER BY d.document_date DESC, d.id DESC;

@@ -1,0 +1,6 @@
+UPDATE documents
+SET status = 'PICKED', updated_at = NOW()
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'TRANSFER_REQUEST'
+  AND status IN ('DRAFT', 'REQUESTED');

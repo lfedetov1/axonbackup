@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_8eca9c0a-75c8-40b1-85b2-44d6f29ea032",
+  "id": "Inventory_TransferRequestForm",
+  "unpublishedCollection": {
+    "name": "TransferRequestForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

@@ -2,6 +2,8 @@ SELECT
     d.id AS documentId,
     d.document_number AS documentNumber,
     d.document_date AS documentDate,
+    d.created_at AS createdAt,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
     d.valid_until AS validUntil,
     d.due_date AS dueDate,
     d.currency_code AS currencyCode,

@@ -1,0 +1,36 @@
+SELECT
+  p.id AS productId,
+  p.code AS productCode,
+  p.name AS productName,
+  p.barcode AS barcode,
+  p.sku AS sku,
+  p.unit_id AS unitId,
+  u.code AS unitCode,
+  p.track_stock AS trackStock,
+  COALESCE(pp.price, 0) AS unitCost,
+  COALESCE(ib.quantity_balance, 0) AS availableStock
+FROM products p
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+LEFT JOIN product_prices pp
+  ON pp.product_id = p.id
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = p.company_id
+ AND ib.product_id = p.id
+ AND ib.warehouse_id = {{this.params.sourceWarehouseId || TransferRequestSourceWarehouse.selectedOptionValue || 0}}
+WHERE p.company_id = {{appsmith.store.companyId}}
+  AND p.is_active = 1
+  AND (
+    p.barcode = {{this.params.lookup}}
+    OR p.code = {{this.params.lookup}}
+    OR p.sku = {{this.params.lookup}}
+    OR p.name LIKE CONCAT('%', {{this.params.lookup}}, '%')
+  )
+ORDER BY
+  CASE
+    WHEN p.barcode = {{this.params.lookup}} THEN 1
+    WHEN p.code = {{this.params.lookup}} THEN 2
+    WHEN p.sku = {{this.params.lookup}} THEN 3
+    ELSE 4
+  END
+LIMIT 1;

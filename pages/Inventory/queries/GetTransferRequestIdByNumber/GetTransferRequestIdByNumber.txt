@@ -1,0 +1,7 @@
+SELECT id AS documentId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'TRANSFER_REQUEST'
+  AND document_number = {{TransferRequestNumberInput.text}}
+ORDER BY id DESC
+LIMIT 1;

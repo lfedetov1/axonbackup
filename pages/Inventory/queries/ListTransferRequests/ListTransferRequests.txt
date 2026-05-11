@@ -1,0 +1,32 @@
+SELECT
+  d.id AS documentId,
+  d.document_number AS `Transfer Number`,
+  d.document_date AS `Transfer Date`,
+  d.status AS `Status`,
+  sw.code AS `Source Code`,
+  sw.name AS `Source Warehouse`,
+  dw.code AS `Destination Code`,
+  dw.name AS `Destination Warehouse`,
+  COUNT(di.id) AS `Lines`,
+  COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+  d.total_amount AS `Total Value`,
+  d.note AS `Note`,
+  u.username AS `Created By`,
+  d.created_at AS `Created At`
+FROM documents d
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+LEFT JOIN document_items di ON di.document_id = d.id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'TRANSFER_REQUEST'
+  AND (
+    {{InventorySearchInput.text || ''}} = ''
+    OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+    OR sw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+    OR dw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+GROUP BY d.id, d.document_number, d.document_date, d.status, sw.code, sw.name, dw.code, dw.name, d.total_amount, d.note, u.username, d.created_at
+ORDER BY d.document_date DESC, d.id DESC;

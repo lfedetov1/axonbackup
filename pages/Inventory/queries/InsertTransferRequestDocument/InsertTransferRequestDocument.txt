@@ -1,0 +1,18 @@
+INSERT INTO documents (
+  company_id, document_type, document_number, document_date, status,
+  source_warehouse_id, destination_warehouse_id,
+  subtotal_amount, total_amount, note, created_by_user_id
+)
+VALUES (
+  {{appsmith.store.companyId}},
+  'TRANSFER_REQUEST',
+  {{TransferRequestNumberInput.text}},
+  {{moment(TransferRequestDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+  {{this.params.status || 'DRAFT'}},
+  {{TransferRequestSourceWarehouse.selectedOptionValue}},
+  {{TransferRequestDestinationWare.selectedOptionValue}},
+  {{this.params.totalAmount || 0}},
+  {{this.params.totalAmount || 0}},
+  {{TransferRequestNoteInput.text || null}},
+  {{appsmith.store.userId || null}}
+);
