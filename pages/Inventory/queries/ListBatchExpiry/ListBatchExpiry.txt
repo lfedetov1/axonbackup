@@ -1,0 +1,94 @@
+SELECT
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    w.id AS warehouseId,
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COALESCE(sm.batch_number, di.batch_number, '') AS `Batch Number`,
+    COALESCE(sm.serial_number, di.serial_number, '') AS `Serial Number`,
+    di.expiry_date AS `Expiry Date`,
+
+    u.code AS `Unit`,
+
+    SUM(
+      CASE
+        WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT_IN') THEN sm.quantity
+        WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT', 'ADJUSTMENT_OUT') THEN -sm.quantity
+        WHEN sm.movement_type = 'ADJUSTMENT' THEN sm.quantity
+        ELSE 0
+      END
+    ) AS `Current Quantity`,
+
+    DATEDIFF(di.expiry_date, CURDATE()) AS `Days To Expiry`,
+
+    CASE
+      WHEN COALESCE(di.expiry_date, '') = '' THEN 'NO EXPIRY'
+      WHEN DATEDIFF(di.expiry_date, CURDATE()) < 0 THEN 'EXPIRED'
+      WHEN DATEDIFF(di.expiry_date, CURDATE()) <= 30 THEN 'EXPIRING SOON'
+      ELSE 'OK'
+    END AS `Expiry Status`
+
+FROM stock_movements sm
+
+JOIN products p
+  ON p.id = sm.product_id
+
+LEFT JOIN document_items di
+  ON di.id = sm.document_item_id
+
+LEFT JOIN warehouses w
+  ON w.id = sm.warehouse_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+WHERE sm.company_id = {{appsmith.store.companyId}}
+  AND (
+      COALESCE(sm.batch_number, '') <> ''
+      OR COALESCE(sm.serial_number, '') <> ''
+      OR COALESCE(di.expiry_date, '') <> ''
+  )
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR p.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.barcode LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.sku LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR COALESCE(sm.batch_number, di.batch_number, '') LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR COALESCE(sm.serial_number, di.serial_number, '') LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR sm.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    p.barcode,
+    p.sku,
+    w.id,
+    w.code,
+    w.name,
+    COALESCE(sm.batch_number, di.batch_number, ''),
+    COALESCE(sm.serial_number, di.serial_number, ''),
+    di.expiry_date,
+    u.code
+
+HAVING `Current Quantity` <> 0
+
+ORDER BY
+    CASE
+      WHEN COALESCE(di.expiry_date, '') = '' THEN 3
+      WHEN DATEDIFF(di.expiry_date, CURDATE()) < 0 THEN 0
+      WHEN DATEDIFF(di.expiry_date, CURDATE()) <= 30 THEN 1
+      ELSE 2
+    END,
+    di.expiry_date ASC,
+    p.name ASC;

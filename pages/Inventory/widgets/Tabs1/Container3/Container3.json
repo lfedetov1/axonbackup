@@ -4,7 +4,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 78,
+  "bottomRow": 69,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
@@ -57,22 +57,15 @@
     },
     {
       "key": "boxShadow"
-    },
-    {
-      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
-  "dynamicPropertyPathList": [
-    {
-      "key": "isVisible"
-    }
-  ],
+  "dynamicPropertyPathList": [],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": "{{\n  InventoryControlViewSelect.selectedOptionValue === \"OPENING_STOCK\"\n}}\n",
+  "isVisible": true,
   "key": "5h95bp4yxg",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,
@@ -83,8 +76,8 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 9,
   "needsErrorInfo": false,
-  "originalBottomRow": 78,
-  "originalTopRow": 9,
+  "originalBottomRow": 69,
+  "originalTopRow": 0,
   "parentColumnSpace": 16.96875,
   "parentId": "su8e8mo94f",
   "parentRowSpace": 10,
@@ -92,7 +85,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 64,
   "shouldScrollContents": true,
-  "topRow": 9,
+  "topRow": 0,
   "type": "CONTAINER_WIDGET",
   "version": 1,
   "widgetId": "w9e5igcxqn",

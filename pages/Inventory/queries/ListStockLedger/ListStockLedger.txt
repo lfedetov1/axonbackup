@@ -1,0 +1,89 @@
+SELECT
+    sm.id AS movementId,
+    sm.movement_date AS `Movement Date`,
+
+    d.document_number AS `Document Number`,
+    d.document_type AS `Document Type`,
+    sm.movement_type AS `Movement Type`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    u.code AS `Unit`,
+
+    CASE
+        WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT_IN') THEN sm.quantity
+        WHEN sm.movement_type = 'ADJUSTMENT' AND sm.quantity > 0 THEN sm.quantity
+        ELSE 0
+    END AS `Qty In`,
+
+    CASE
+        WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT', 'ADJUSTMENT_OUT') THEN sm.quantity
+        WHEN sm.movement_type = 'ADJUSTMENT' AND sm.quantity < 0 THEN ABS(sm.quantity)
+        ELSE 0
+    END AS `Qty Out`,
+
+    CASE
+        WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT_IN') THEN sm.quantity
+        WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT', 'ADJUSTMENT_OUT') THEN -sm.quantity
+        WHEN sm.movement_type = 'ADJUSTMENT' THEN sm.quantity
+        ELSE 0
+    END AS `Signed Qty`,
+
+    sm.unit_cost AS `Unit Cost`,
+    sm.total_cost AS `Total Cost`,
+
+    sm.batch_number AS `Batch Number`,
+    sm.serial_number AS `Serial Number`,
+    sm.note AS `Note`,
+
+    SUM(
+      CASE
+          WHEN sm.movement_type IN ('IN', 'TRANSFER_IN', 'ADJUSTMENT_IN') THEN sm.quantity
+          WHEN sm.movement_type IN ('OUT', 'TRANSFER_OUT', 'ADJUSTMENT_OUT') THEN -sm.quantity
+          WHEN sm.movement_type = 'ADJUSTMENT' THEN sm.quantity
+          ELSE 0
+      END
+    ) OVER (
+      PARTITION BY sm.company_id, sm.warehouse_id, sm.product_id
+      ORDER BY sm.movement_date, sm.id
+    ) AS `Running Balance`
+
+FROM stock_movements sm
+
+JOIN products p
+  ON p.id = sm.product_id
+
+LEFT JOIN documents d
+  ON d.id = sm.document_id
+
+LEFT JOIN warehouses w
+  ON w.id = sm.warehouse_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+WHERE sm.company_id = {{appsmith.store.companyId}}
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR p.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.barcode LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.sku LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR sm.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+  AND sm.movement_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
+  AND sm.movement_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD 23:59:59")}}
+
+ORDER BY
+    sm.movement_date DESC,
+    sm.id DESC;

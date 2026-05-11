@@ -35,7 +35,7 @@
   "mobileRightColumn": 60,
   "mobileTopRow": 22,
   "needsErrorInfo": false,
-  "onClick": "{{ storeValue(\"inventoryMode\", \"LIST\") }}\n",
+  "onClick": "{{ InventoryRefresh.runAll() }}\n",
   "originalBottomRow": 26,
   "originalTopRow": 22,
   "parentColumnSpace": 13.65625,
