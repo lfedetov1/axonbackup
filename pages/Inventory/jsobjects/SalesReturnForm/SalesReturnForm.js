@@ -208,6 +208,78 @@ export default {
       }
     ]);
   },
+	
+	async loadForEdit(row = null) {
+  const selected = row || SalesReturnsTable.selectedRow || {};
+  const documentId =
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    selected["Return ID"];
+
+  if (!documentId) {
+    showAlert("Select sales return first.", "warning");
+    return;
+  }
+
+  const headerRows = await GetSalesReturnForEdit.run({ documentId });
+  const header = headerRows?.[0] || GetSalesReturnForEdit.data?.[0];
+
+  if (!header) {
+    showAlert("Sales return was not found.", "error");
+    return;
+  }
+
+  if (header.status !== "DRAFT") {
+    showAlert("Only draft sales returns can be edited.", "warning");
+    return;
+  }
+
+  const itemRows = await GetSalesReturnItemsForEdit.run({ documentId });
+  const items = itemRows || GetSalesReturnItemsForEdit.data || [];
+
+  await storeValue("currentSalesReturnId", header.documentId);
+  await storeValue("salesReturnEditMode", true);
+  await storeValue("salesReturnSourceDocumentId", header.sourceDocumentId);
+  await storeValue("salesReturnBeforeEdit", { header, items });
+
+  SalesReturnNumberInput.setValue(header.documentNumber || "");
+  SalesReturnStatusInput.setValue(header.status || "DRAFT");
+  SalesReturnDateInput.setValue(header.documentDate || "");
+  SalesReturnSourceTypeSelect.setSelectedOption(header.sourceDocumentType || "POS_SALE");
+  SalesReturnSourceNumberInput.setValue(header.sourceDocumentNumber || "");
+  SalesReturnCustomerSelect.setSelectedOption(header.customerId ? String(header.customerId) : "");
+  SalesReturnWarehouseSelect.setSelectedOption(header.warehouseId ? String(header.warehouseId) : "");
+  SalesReturnReasonSelect.setSelectedOption("CUSTOMER_RETURN");
+  SalesReturnConditionSelect.setSelectedOption("SELLABLE");
+  SalesReturnNoteInput.setValue(header.note || "");
+
+  await this.setRows(
+    items.map(row => ({
+      lineNo: row.lineNo,
+      barcode: row.barcode || "",
+      productId: row.productId,
+      productCode: row.productCode,
+      productName: row.productName,
+      sku: row.sku || "",
+      description: row.description || row.productName,
+      unitId: row.unitId,
+      unitCode: row.unitCode || "",
+      soldQuantity: Number(row.returnQuantity || 0),
+      alreadyReturnedQuantity: 0,
+      remainingQuantity: Number(row.returnQuantity || 0),
+      returnQuantity: Number(row.returnQuantity || 0),
+      unitPrice: Number(row.unitPrice || 0),
+      lineTotal: Number(row.lineTotal || 0),
+      condition: "SELLABLE",
+      reason: "CUSTOMER_RETURN",
+      note: row.note || ""
+    }))
+  );
+
+  showModal(NewSalesReturnModal.name);
+},
+
 
   async removeSelectedRow() {
     const selectedIndex =

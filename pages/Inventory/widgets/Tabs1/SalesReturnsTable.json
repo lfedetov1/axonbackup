@@ -123,6 +123,39 @@
     },
     {
       "key": "primaryColumns.Updated_At.computedValue"
+    },
+    {
+      "key": "primaryColumns.customColumn1.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn1.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn4.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn4.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -131,11 +164,44 @@
     },
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -636,20 +702,25 @@
       "alias": "Edit ",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
       "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "text",
+      "columnType": "iconButton",
       "computedValue": "",
       "currencyCode": "USD",
+      "customAlias": "",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
+      "iconName": "edit",
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = SalesReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ((currentRow || {}).Status ||\n   (currentRow || {}).status ||\n   \"\") !== \"DRAFT\"\n)) : \n  ((currentRow || {}).Status ||\n   (currentRow || {}).status ||\n   \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -657,6 +728,7 @@
       "label": "Edit ",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ SalesReturnForm.loadForEdit(SalesReturnsTable.triggeredRow) }}\n",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",
@@ -669,20 +741,25 @@
       "alias": "Post",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
       "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "text",
+      "columnType": "iconButton",
       "computedValue": "",
       "currencyCode": "USD",
+      "customAlias": "",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
+      "iconName": "cloud-upload",
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = SalesReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ((currentRow || {}).Status ||\n   (currentRow || {}).status ||\n   \"\") !== \"DRAFT\"\n)) : \n  ((currentRow || {}).Status ||\n   (currentRow || {}).status ||\n   \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -690,6 +767,7 @@
       "label": "Post",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ SalesReturnForm.post(SalesReturnsTable.triggeredRow) }}\n",
       "originalId": "customColumn2",
       "sticky": "",
       "textSize": "0.875rem",
@@ -702,20 +780,25 @@
       "alias": "Void",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
       "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "text",
+      "columnType": "iconButton",
       "computedValue": "",
       "currencyCode": "USD",
+      "customAlias": "",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
+      "iconName": "delete",
       "id": "customColumn3",
       "index": 10,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = SalesReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"POSTED\"].includes(\n    ((currentRow || {}).Status ||\n     (currentRow || {}).status ||\n     \"\")\n  )\n)) : \n  ![\"DRAFT\", \"POSTED\"].includes(\n    ((currentRow || {}).Status ||\n     (currentRow || {}).status ||\n     \"\")\n  )\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -723,6 +806,7 @@
       "label": "Void",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ SalesReturnForm.voidReturn(SalesReturnsTable.triggeredRow) }}\n",
       "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",
@@ -735,14 +819,19 @@
       "alias": "Print",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SalesReturnsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
       "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "text",
+      "columnType": "iconButton",
       "computedValue": "",
       "currencyCode": "USD",
+      "customAlias": "",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
+      "iconName": "print",
       "id": "customColumn4",
       "index": 10,
       "isCellEditable": false,
@@ -756,6 +845,7 @@
       "label": "Print",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ SalesReturnPrint.open(currentRow) }}\n",
       "originalId": "customColumn4",
       "sticky": "",
       "textSize": "0.875rem",

@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  TaxRate AS taxRate,\n  SUM(Subtotal) AS taxableAmount,\n  SUM(TaxAmount) AS taxAmount,\n  SUM(Total) AS totalAmount\nFROM SalesInvoiceItems\nWHERE Number = {{ appsmith.store.selectedDocumentId }}\nGROUP BY TaxRate\nORDER BY TaxRate;\n",
+      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE'\n        THEN -ABS(COALESCE(di.line_subtotal, di.quantity * di.unit_price, 0) - COALESCE(di.discount_amount, 0))\n        ELSE COALESCE(di.line_subtotal, di.quantity * di.unit_price, 0) - COALESCE(di.discount_amount, 0)\n      END\n    ) AS taxableAmount,\n\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE'\n        THEN -ABS(COALESCE(di.tax_amount, 0))\n        ELSE COALESCE(di.tax_amount, 0)\n      END\n    ) AS taxAmount,\n\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE'\n        THEN -ABS(COALESCE(di.line_total, 0))\n        ELSE COALESCE(di.line_total, 0)\n      END\n    ) AS totalAmount\n\nFROM documents d\n\nJOIN document_items di\n  ON di.document_id = d.id\n\nLEFT JOIN tax_rates tr\n  ON tr.id = di.tax_rate_id\n\nWHERE d.document_number = {{ this.params.invoiceNumber || appsmith.store.currentInvoiceNumber || \"\" }}\n  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')\n\nGROUP BY\n    COALESCE(tr.rate, 0)\n\nORDER BY\n    COALESCE(tr.rate, 0);\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

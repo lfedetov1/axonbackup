@@ -11,6 +11,8 @@ SELECT
 
     d.document_date AS documentDate,
     d.created_at AS createdAt,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
+
     d.document_type AS documentType,
     d.payment_method AS paymentMethod,
     d.currency_code AS currencyCode,
@@ -45,5 +47,5 @@ LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 WHERE d.id = {{ appsmith.store.currentInvoiceId || tblInvoices.selectedRow.ID || 0 }}
-  AND d.document_type = 'SALES_INVOICE'
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
 LIMIT 1;

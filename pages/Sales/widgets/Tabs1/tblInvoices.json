@@ -672,7 +672,7 @@
       "label": "Action",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{ DocumentPrintActions.openInvoicePrint() }}\n",
+      "onClick": "{{\n  (() => {\n    const row = currentRow || tblInvoices.triggeredRow || tblInvoices.selectedRow || {};\n\n    const invoiceNumber =\n      row[\"Number\"] ||\n      row.Number ||\n      row[\"Document Number\"] ||\n      row.documentNumber ||\n      row.document_number ||\n      \"\";\n\n    showAlert(\"Printing: \" + invoiceNumber, \"info\");\n\n    return GetInvoicePrintHeader.run({ invoiceNumber }).then(() => {\n      return GetInvoicePrintItems.run({ invoiceNumber });\n    }).then(() => {\n      return GetInvoicePrintTaxSummary.run({ invoiceNumber });\n    }).then(() => {\n      return storeValue(\"currentInvoiceNumber\", invoiceNumber);\n    }).then(() => {\n      showModal(InvoicePrintModal1.name);\n    });\n  })()\n}}\n",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",

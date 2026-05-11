@@ -50,10 +50,9 @@
     "condition",
     "reason",
     "note",
-    "sourceItemId",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1778487500930,
+  "columnUpdatedAt": 1778492039734,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -144,9 +143,6 @@
     },
     {
       "key": "primaryColumns.EditActions1.isDiscardDisabled"
-    },
-    {
-      "key": "primaryColumns.sourceItemId.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -748,37 +744,6 @@
       "originalId": "soldQuantity",
       "sticky": "",
       "textColor": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "sourceItemId": {
-      "alias": "sourceItemId",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = SalesReturnItemsEditTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"sourceItemId\"])) : sourceItemId })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "horizontalAlignment": "LEFT",
-      "id": "sourceItemId",
-      "index": 1,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "sourceItemId",
-      "notation": "standard",
-      "originalId": "sourceItemId",
-      "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},

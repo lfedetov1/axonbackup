@@ -1,19 +1,60 @@
 SELECT
-  ID AS id,
-  DocumentID AS documentId,
-  LineNo AS lineNo,
-  ProductID AS productId,
-  ProductCode AS productCode,
-  Product AS productName,
-  Description AS description,
-  Unit AS unitName,
-  Quantity AS quantity,
-  UnitPrice AS unitPrice,
-  DiscountAmount AS discountAmount,
-  Subtotal AS lineSubtotal,
-  TaxRate AS taxRate,
-  TaxAmount AS taxAmount,
-  Total AS lineTotal
-FROM SalesInvoiceItems
-WHERE Number = {{ appsmith.store.selectedDocumentId }}
-ORDER BY LineNo;
+    di.id AS id,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    COALESCE(di.description, p.name) AS description,
+
+    u.code AS unitName,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+      ELSE COALESCE(di.quantity, 0)
+    END AS quantity,
+
+    COALESCE(di.unit_price, 0) AS unitPrice,
+    COALESCE(di.discount_amount, 0) AS discountAmount,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+      ELSE COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+    END AS lineSubtotal,
+
+    COALESCE(tr.rate, 0) AS taxRate,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0))
+      ELSE COALESCE(di.tax_amount, 0)
+    END AS taxAmount,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+      ELSE COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+    END AS lineTotal
+
+FROM documents d
+
+JOIN document_items di
+  ON di.document_id = d.id
+
+LEFT JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN tax_rates tr
+  ON tr.id = di.tax_rate_id
+
+WHERE d.document_number = {{ this.params.invoiceNumber || appsmith.store.currentInvoiceNumber || "" }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+ORDER BY
+    di.line_no;

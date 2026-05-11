@@ -1,14 +1,14 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 262,
+  "bottomRow": 562,
   "boxShadow": "none",
   "canEscapeKeyClose": true,
   "canOutsideClickClose": true,
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 240,
+      "bottomRow": 540,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -57,7 +57,7 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
-  "height": 240,
+  "height": 540,
   "isCanvas": true,
   "isLoading": false,
   "key": "i86b9ru4yl",
@@ -80,5 +80,5 @@
   "version": 2,
   "widgetId": "xut1qosg7u",
   "widgetName": "SalesReturnPrintModal",
-  "width": 456
+  "width": 1062.1
 }
