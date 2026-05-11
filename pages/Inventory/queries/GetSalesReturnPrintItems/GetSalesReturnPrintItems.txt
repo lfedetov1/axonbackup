@@ -1,0 +1,16 @@
+SELECT
+    di.line_no AS lineNo,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    di.description AS description,
+    di.quantity AS quantity,
+    u.code AS unitCode,
+    di.unit_price AS unitPrice,
+    di.line_total AS lineTotal,
+    di.note AS note
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+WHERE di.document_id = {{this.params.documentId || SalesReturnsTable.selectedRow.documentId || 0}}
+ORDER BY di.line_no;

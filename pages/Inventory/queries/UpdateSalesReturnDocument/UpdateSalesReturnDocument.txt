@@ -1,0 +1,15 @@
+UPDATE documents
+SET
+    document_date = {{moment(SalesReturnDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+    source_document_id = {{appsmith.store.salesReturnSourceDocumentId || null}},
+    partner_id = {{SalesReturnCustomerSelect.selectedOptionValue || null}},
+    warehouse_id = {{SalesReturnWarehouseSelect.selectedOptionValue || null}},
+    reference_number = {{SalesReturnSourceNumberInput.text || null}},
+    subtotal_amount = {{this.params.totalAmount || 0}},
+    total_amount = {{this.params.totalAmount || 0}},
+    note = {{SalesReturnNoteInput.text || null}},
+    updated_at = NOW()
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_RETURN'
+  AND status = 'DRAFT';

@@ -46,6 +46,6 @@ LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 LEFT JOIN users cu ON cu.id = d.cashier_user_id
-WHERE d.document_number = {{ String(appsmith.store.posPrintDocumentNumber || "").trim() }}
+WHERE d.id = {{appsmith.store.posPrintDocumentId || 0}}
   AND d.document_type = 'POS_SALE'
 LIMIT 1;

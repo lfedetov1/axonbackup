@@ -1,0 +1,26 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.track_stock AS trackStock,
+
+    di.quantity AS quantity,
+    di.unit_id AS unitId,
+    di.unit_price AS unitPrice,
+    di.line_total AS lineTotal,
+    di.note AS note,
+
+    CASE
+      WHEN di.note LIKE '%Condition: SELLABLE%' THEN 'SELLABLE'
+      WHEN di.note LIKE '%Condition: DAMAGED%' THEN 'DAMAGED'
+      WHEN di.note LIKE '%Condition: SCRAP%' THEN 'SCRAP'
+      ELSE 'SELLABLE'
+    END AS returnCondition
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+WHERE di.document_id = {{this.params.documentId}}
+ORDER BY di.line_no;

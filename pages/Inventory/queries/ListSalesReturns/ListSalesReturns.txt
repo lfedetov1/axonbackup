@@ -1,0 +1,48 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Return Number`,
+    d.document_date AS `Return Date`,
+    d.status AS `Status`,
+
+    src.document_number AS `Source Number`,
+    src.document_type AS `Source Type`,
+
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    d.total_amount AS `Total Value`,
+
+    d.note AS `Note`,
+    d.created_at AS `Created At`,
+    d.updated_at AS `Updated At`
+FROM documents d
+LEFT JOIN documents src ON src.id = d.source_document_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN document_items di ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'SALES_RETURN'
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR src.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+GROUP BY
+    d.id, d.document_number, d.document_date, d.status,
+    src.document_number, src.document_type,
+    bp.code, bp.name, w.code, w.name,
+    d.total_amount, d.note, d.created_at, d.updated_at
+ORDER BY d.document_date DESC, d.id DESC;

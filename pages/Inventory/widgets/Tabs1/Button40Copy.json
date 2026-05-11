@@ -35,7 +35,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "",
+  "onClick": "{{ SalesReturnForm.startNew() }}\n",
   "originalBottomRow": 106,
   "originalTopRow": 102,
   "parentColumnSpace": 16.65625,

@@ -1,0 +1,7 @@
+SELECT id
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_RETURN'
+  AND document_number = {{SalesReturnNumberInput.text}}
+  AND id <> {{appsmith.store.currentSalesReturnId || 0}}
+LIMIT 1;

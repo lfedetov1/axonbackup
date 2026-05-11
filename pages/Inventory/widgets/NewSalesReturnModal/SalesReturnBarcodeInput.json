@@ -1,10 +1,11 @@
 {
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
+  "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 31,
+  "bottomRow": 38,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultText": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -16,43 +17,49 @@
   "dynamicHeight": "FIXED",
   "dynamicPropertyPathList": [
     {
-      "key": "sourceData"
+      "key": "onTextChanged"
     }
   ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "iconAlign": "left",
+  "inputType": "TEXT",
   "isDisabled": false,
-  "isFilterable": true,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "oehf63pdba",
+  "key": "08spiqkkhn",
+  "label": "",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelText": "Label",
+  "labelStyle": "",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
   "leftColumn": 1,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 23,
-  "mobileLeftColumn": 1,
-  "mobileRightColumn": 21,
-  "mobileTopRow": 16,
+  "mobileBottomRow": 16,
+  "mobileLeftColumn": 22,
+  "mobileRightColumn": 42,
+  "mobileTopRow": 9,
   "needsErrorInfo": false,
-  "optionLabel": "name",
-  "optionValue": "code",
-  "parentColumnSpace": 16.4078125,
+  "onTextChanged": "{{ SalesReturnForm.scanBarcodeDebounced(SalesReturnBarcodeInput.text) }}\n",
+  "parentColumnSpace": 13.34375,
   "parentId": "agzmdwedso",
   "parentRowSpace": 10,
-  "placeholderText": "Select option",
+  "placeholderText": "Scan barcode or enter product code",
   "renderMode": "CANVAS",
+  "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 14,
-  "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
-  "topRow": 24,
-  "type": "SELECT_WIDGET",
-  "version": 1,
-  "widgetId": "qnvr8q50be",
-  "widgetName": "Select1Copy2"
+  "rightColumn": 34,
+  "showStepArrows": false,
+  "topRow": 33,
+  "type": "INPUT_WIDGET_V2",
+  "version": 2,
+  "widgetId": "6yjvuku6q9",
+  "widgetName": "SalesReturnBarcodeInput"
 }

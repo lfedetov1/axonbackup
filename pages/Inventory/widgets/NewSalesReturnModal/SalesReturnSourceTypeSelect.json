@@ -19,6 +19,7 @@
       "key": "sourceData"
     }
   ],
+  "dynamicTriggerPathList": [],
   "isDisabled": false,
   "isFilterable": true,
   "isLoading": false,
@@ -27,7 +28,7 @@
   "key": "oehf63pdba",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelText": "Label",
+  "labelText": "Return Source :",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
   "leftColumn": 29,
@@ -39,8 +40,8 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 16,
   "needsErrorInfo": false,
-  "optionLabel": "name",
-  "optionValue": "code",
+  "optionLabel": "label",
+  "optionValue": "value",
   "parentColumnSpace": 16.4078125,
   "parentId": "agzmdwedso",
   "parentRowSpace": 10,
@@ -49,10 +50,10 @@
   "responsiveBehavior": "fill",
   "rightColumn": 42,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "sourceData": "[\n  { \"label\": \"POS Receipt\", \"value\": \"POS_SALE\" },\n  { \"label\": \"Sales Invoice\", \"value\": \"SALES_INVOICE\" },\n  { \"label\": \"Delivery Note\", \"value\": \"DELIVERY_NOTE\" }\n]\n",
   "topRow": 16,
   "type": "SELECT_WIDGET",
   "version": 1,
   "widgetId": "59eetdf290",
-  "widgetName": "Select1Copy1"
+  "widgetName": "SalesReturnSourceTypeSelect"
 }

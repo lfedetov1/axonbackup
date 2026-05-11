@@ -1,0 +1,28 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    document_id,
+    document_item_id,
+    movement_type,
+    movement_date,
+    quantity,
+    unit_cost,
+    total_cost,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{this.params.warehouseId}},
+    {{this.params.productId}},
+    {{this.params.documentId}},
+    {{this.params.documentItemId}},
+    'OUT',
+    {{moment().format("YYYY-MM-DD HH:mm:ss")}},
+    {{this.params.quantity}},
+    {{this.params.unitCost || 0}},
+    {{this.params.totalCost || 0}},
+    {{this.params.note || null}},
+    {{appsmith.store.userId || null}}
+);

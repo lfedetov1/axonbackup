@@ -1,0 +1,15 @@
+SELECT
+  CONCAT(
+    'SR-',
+    YEAR(CURDATE()),
+    '-',
+    LPAD(
+      COALESCE(MAX(CAST(SUBSTRING_INDEX(document_number, '-', -1) AS UNSIGNED)), 0) + 1,
+      5,
+      '0'
+    )
+  ) AS nextSalesReturnNumber
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_RETURN'
+  AND document_number LIKE CONCAT('SR-', YEAR(CURDATE()), '-%');

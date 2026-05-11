@@ -15,6 +15,7 @@
     }
   ],
   "dynamicHeight": "FIXED",
+  "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
@@ -22,7 +23,7 @@
   "isRequired": false,
   "isVisible": true,
   "key": "a97fn5qh6r",
-  "label": "Label",
+  "label": "Note :",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
@@ -49,5 +50,5 @@
   "type": "INPUT_WIDGET_V2",
   "version": 2,
   "widgetId": "b2ei6g7bws",
-  "widgetName": "Input1CopyCopyCopy"
+  "widgetName": "SalesReturnNoteInput"
 }
