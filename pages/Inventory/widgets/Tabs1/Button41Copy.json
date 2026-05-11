@@ -11,9 +11,18 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
-  "iconName": "ban-circle",
+  "iconName": "add",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
@@ -26,6 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{  OpeningStockForm.addBlankRow()\n}}\n",
   "parentColumnSpace": 16.96875,
   "parentId": "1hla2w5ort",
   "parentRowSpace": 10,

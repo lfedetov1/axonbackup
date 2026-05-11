@@ -29,7 +29,7 @@
     ],
     "name": "ListOpeningStock",
     "pageId": "Inventory",
-    "runBehaviour": "MANUAL",
+    "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false
   }
 }

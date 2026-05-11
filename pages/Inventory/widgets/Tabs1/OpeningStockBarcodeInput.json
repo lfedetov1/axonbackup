@@ -47,7 +47,7 @@
   "mobileRightColumn": 42,
   "mobileTopRow": 9,
   "needsErrorInfo": false,
-  "onTextChanged": "{{ DeliveryNoteForm.scanProductDebounced(DeliveryNoteScanInput.text) }}\n",
+  "onTextChanged": "{{ OpeningStockForm.scanProductDebounced(OpeningStockBarcodeInput.text) }}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "1hla2w5ort",
   "parentRowSpace": 10,

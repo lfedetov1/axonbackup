@@ -6,6 +6,18 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItemvgb37r8zp1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem86861ajas9.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -23,6 +35,18 @@
     },
     {
       "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItemvgb37r8zp1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem86861ajas9.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -63,7 +87,7 @@
     "menuItem2": {
       "id": "menuItem2",
       "index": 1,
-      "isDisabled": false,
+      "isDisabled": "{{\n  appsmith.store.currentInventoryCountStatus !== \"COUNTING\"\n}}\n",
       "isVisible": true,
       "label": "New Inventory document",
       "onClick": "{{\n  storeValue(\"inventoryMode\", \"INVENTORY_COUNT_DOCUMENT\");\n  InventoryCountForm.resetCountDocumentForm();\n}}\n",
@@ -72,7 +96,7 @@
     "menuItem3": {
       "id": "menuItem3",
       "index": 2,
-      "isDisabled": false,
+      "isDisabled": "{{\n  ![\"COUNTED\", \"APPROVED\"].includes(\n    InventoryCountTable.selectedRow?.Status ||\n    InventoryCountTable.selectedRow?.status ||\n    \"\"\n  )\n}}\n",
       "isVisible": true,
       "label": "Post Inventory Adjustment",
       "onClick": "{{ InventoryCountForm.postInventoryAdjustment(InventoryCountTable.triggeredRow) }}\n",
@@ -81,7 +105,7 @@
     "menuItem86861ajas9": {
       "id": "menuItem86861ajas9",
       "index": 6,
-      "isDisabled": false,
+      "isDisabled": "{{\n  ![\"COUNTING\", \"COUNTED\", \"APPROVED\", \"POSTED\"].includes(\n    InventoryCountTable.selectedRow?.Status ||\n    InventoryCountTable.selectedRow?.status ||\n    \"\"\n  )\n}}\n",
       "isVisible": true,
       "label": "Print Variance Report",
       "widgetId": "ev7jlu9znw"
@@ -98,7 +122,7 @@
     "menuItemvgb37r8zp1": {
       "id": "menuItemvgb37r8zp1",
       "index": 3,
-      "isDisabled": false,
+      "isDisabled": "{{\n  (InventoryCountTable.triggeredRow?.Status ||\n   InventoryCountTable.selectedRow?.Status ||\n   \"\") !== \"COUNTING\"\n}}\n",
       "isVisible": true,
       "label": "Mark Counted",
       "onClick": "{{ InventoryCountForm.markCounted(InventoryCountTable.triggeredRow) }}\n",

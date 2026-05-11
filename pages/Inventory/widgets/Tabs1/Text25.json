@@ -17,6 +17,7 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "fontSize": "1rem",
   "fontStyle": "BOLD",
@@ -40,7 +41,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 16,
   "shouldTruncate": false,
-  "text": "Hello {{appsmith.user.name || appsmith.user.email}}",
+  "text": "{{ \"Total Qty: \" + Number(OpeningStockForm.totals().quantity || 0).toFixed(4) }}\n",
   "textAlign": "LEFT",
   "textColor": "#231F20",
   "topRow": 53,

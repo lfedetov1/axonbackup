@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_aea4a31f-5cf8-4b8c-98d6-3fae3961e5ce",
+  "id": "Inventory_OpeningStockForm",
+  "unpublishedCollection": {
+    "name": "OpeningStockForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

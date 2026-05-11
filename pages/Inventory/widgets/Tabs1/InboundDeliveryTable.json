@@ -154,6 +154,15 @@
     },
     {
       "key": "primaryColumns.customColumn4.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -180,6 +189,15 @@
     },
     {
       "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -766,7 +784,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"IN_TRANSIT\", \"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"IN_TRANSIT\", \"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -844,7 +862,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n)) : \n  ![\"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -883,7 +901,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  [\"RECEIVED\", \"CANCELLED\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  [\"RECEIVED\", \"CANCELLED\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

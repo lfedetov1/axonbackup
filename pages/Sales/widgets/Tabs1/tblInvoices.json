@@ -134,6 +134,9 @@
     },
     {
       "key": "primaryColumns.Document_Type.computedValue"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -151,6 +154,9 @@
     },
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -697,7 +703,7 @@
       "isCellEditable": false,
       "isCellVisible": "{{(() => { const tableData = tblInvoices.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.invoice.manage\"]))) : JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.invoice.manage\"]) })()}}",
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = tblInvoices.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"POSTED\"\n)) : \n  currentRow.Status !== \"POSTED\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

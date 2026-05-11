@@ -47,10 +47,9 @@
     "customColumn1",
     "customColumn2",
     "customColumn3",
-    "customColumn4",
     "customColumn5"
   ],
-  "columnUpdatedAt": 1778231395464,
+  "columnUpdatedAt": 1778448001103,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -116,12 +115,6 @@
       "key": "primaryColumns.customColumn3.boxShadow"
     },
     {
-      "key": "primaryColumns.customColumn4.borderRadius"
-    },
-    {
-      "key": "primaryColumns.customColumn4.boxShadow"
-    },
-    {
       "key": "primaryColumns.customColumn1.borderRadius"
     },
     {
@@ -138,6 +131,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -151,9 +153,6 @@
       "key": "primaryColumns.customColumn3.onClick"
     },
     {
-      "key": "primaryColumns.customColumn4.onClick"
-    },
-    {
       "key": "primaryColumns.customColumn1.onClick"
     },
     {
@@ -161,6 +160,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -169,9 +177,6 @@
     },
     {
       "key": "primaryColumns.customColumn3.onClick"
-    },
-    {
-      "key": "primaryColumns.customColumn4.onClick"
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
@@ -642,7 +647,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -681,7 +686,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -720,7 +725,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -730,45 +735,6 @@
       "notation": "standard",
       "onClick": "{{ StockIssueForm.post() }}\n",
       "originalId": "customColumn3",
-      "sticky": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "customColumn4": {
-      "alias": "Cancel",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "borderRadius": "{{StockIssueDocumentsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
-      "boxShadow": "{{StockIssueDocumentsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
-      "buttonColor": "#93c5fd",
-      "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "iconButton",
-      "computedValue": "",
-      "currencyCode": "USD",
-      "customAlias": "",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "horizontalAlignment": "LEFT",
-      "iconName": "key-delete",
-      "id": "customColumn4",
-      "index": 10,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": true,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "Cancel",
-      "labelColor": "#FFFFFF",
-      "notation": "standard",
-      "onClick": "{{ StockIssueForm.cancel() }}\n",
-      "originalId": "customColumn4",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

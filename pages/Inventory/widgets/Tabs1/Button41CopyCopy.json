@@ -11,7 +11,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
@@ -26,6 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{ OpeningStockForm.saveDraft() }}\n",
   "parentColumnSpace": 16.96875,
   "parentId": "1hla2w5ort",
   "parentRowSpace": 10,
