@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7c2c5bfc-b0c7-490a-af01-d058a2aceade",
+  "id": "Inventory_SupplierReturnForm",
+  "unpublishedCollection": {
+    "name": "SupplierReturnForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

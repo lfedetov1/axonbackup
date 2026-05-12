@@ -1,0 +1,30 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    status,
+    source_document_id,
+    partner_id,
+    warehouse_id,
+    reference_number,
+    subtotal_amount,
+    total_amount,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    'PURCHASE_RETURN',
+    {{SupplierReturnNumberInput.text}},
+    {{moment(SupplierReturnDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+    {{this.params.status || 'DRAFT'}},
+    {{appsmith.store.supplierReturnSourceDocumentId || null}},
+    {{SupplierReturnSupplierSelect.selectedOptionValue || null}},
+    {{SupplierReturnWarehouseSelect.selectedOptionValue || null}},
+    {{SupplierReturnSourceNumberInpu.text || null}},
+    {{this.params.totalAmount || 0}},
+    {{this.params.totalAmount || 0}},
+    {{SupplierReturnNoteInput.text || null}},
+    {{appsmith.store.userId || null}}
+);

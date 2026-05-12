@@ -1,0 +1,9 @@
+UPDATE documents
+SET
+    status = 'POSTED',
+    posting_status = 'POSTED',
+    updated_at = NOW()
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'PURCHASE_RETURN'
+  AND status = 'DRAFT';

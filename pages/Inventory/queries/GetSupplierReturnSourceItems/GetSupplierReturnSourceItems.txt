@@ -1,0 +1,44 @@
+SELECT
+    di.id AS sourceItemId,
+    di.document_id AS sourceDocumentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    di.description AS description,
+    di.quantity AS receivedQuantity,
+
+    COALESCE(returned.returnedQuantity, 0) AS alreadyReturnedQuantity,
+    GREATEST(di.quantity - COALESCE(returned.returnedQuantity, 0), 0) AS remainingQuantity,
+
+    u.id AS unitId,
+    u.code AS unitCode,
+
+    di.unit_price AS unitCost,
+    di.line_total AS lineTotal,
+    di.note AS note
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+
+LEFT JOIN (
+    SELECT
+        r.source_document_id,
+        ri.product_id,
+        SUM(ri.quantity) AS returnedQuantity
+    FROM documents r
+    JOIN document_items ri ON ri.document_id = r.id
+    WHERE r.document_type = 'PURCHASE_RETURN'
+      AND r.status <> 'CANCELLED'
+      AND r.source_document_id = {{this.params.sourceDocumentId || 0}}
+    GROUP BY r.source_document_id, ri.product_id
+) returned
+  ON returned.source_document_id = di.document_id
+ AND returned.product_id = di.product_id
+
+WHERE di.document_id = {{this.params.sourceDocumentId || 0}}
+ORDER BY di.line_no;

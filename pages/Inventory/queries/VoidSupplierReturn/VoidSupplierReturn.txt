@@ -1,0 +1,9 @@
+UPDATE documents
+SET
+    status = 'CANCELLED',
+    posting_status = 'CANCELLED',
+    updated_at = NOW()
+WHERE id = {{this.params.documentId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND document_type = 'PURCHASE_RETURN'
+  AND status IN ('DRAFT', 'POSTED');

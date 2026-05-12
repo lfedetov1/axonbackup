@@ -1,0 +1,19 @@
+SELECT
+    d.id AS sourceDocumentId,
+    d.document_number AS sourceDocumentNumber,
+    d.document_type AS sourceDocumentType,
+    d.document_date AS sourceDocumentDate,
+    d.status AS sourceStatus,
+    d.partner_id AS supplierId,
+    bp.code AS supplierCode,
+    bp.name AS supplierName,
+    d.warehouse_id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RECEIPT'
+  AND d.document_number = {{SupplierReturnSourceNumberInpu.text}}
+LIMIT 1;

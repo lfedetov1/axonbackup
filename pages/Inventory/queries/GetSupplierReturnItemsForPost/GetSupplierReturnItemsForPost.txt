@@ -1,0 +1,15 @@
+SELECT
+    di.id AS documentItemId,
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.track_stock AS trackStock,
+    di.quantity AS quantity,
+    di.unit_id AS unitId,
+    di.unit_price AS unitCost,
+    di.line_total AS lineTotal,
+    di.note AS note
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+WHERE di.document_id = {{this.params.documentId}}
+ORDER BY di.line_no;

@@ -1,0 +1,14 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS status,
+    d.warehouse_id AS warehouseId,
+    d.partner_id AS supplierId,
+    d.source_document_id AS sourceDocumentId,
+    d.note AS note
+FROM documents d
+WHERE d.id = {{this.params.documentId}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RETURN'
+LIMIT 1;

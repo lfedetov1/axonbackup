@@ -1,0 +1,16 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS status,
+    d.source_document_id AS sourceDocumentId,
+    src.document_number AS sourceDocumentNumber,
+    d.partner_id AS supplierId,
+    d.warehouse_id AS warehouseId,
+    d.note AS note
+FROM documents d
+LEFT JOIN documents src ON src.id = d.source_document_id
+WHERE d.id = {{this.params.documentId}}
+  AND d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'PURCHASE_RETURN'
+LIMIT 1;
