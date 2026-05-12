@@ -1,0 +1,3 @@
+UPDATE document_items
+SET picked_quantity = 0
+WHERE id = {{this.params.documentItemId}};

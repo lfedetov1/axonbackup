@@ -1,0 +1,24 @@
+SELECT
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddressLine1,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    DATE_FORMAT({{InventoryDateFrom.selectedDate || moment().format("YYYY-MM-DD")}}, '%d.%m.%Y') AS reportDate,
+    DATE_FORMAT(NOW(), '%d.%m.%Y %H:%i:%s') AS printTime,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    u.username AS printedBy
+FROM companies c
+LEFT JOIN warehouses w
+  ON w.id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+LEFT JOIN users u
+  ON u.id = {{appsmith.store.userId || 0}}
+WHERE c.id = {{appsmith.store.companyId}}
+LIMIT 1;

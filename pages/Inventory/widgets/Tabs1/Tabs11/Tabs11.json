@@ -53,9 +53,54 @@
       "version": 1,
       "widgetId": "vfrhyn8bgu",
       "widgetName": "Canvas69"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 300,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "dxq6ztxzwt",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1086,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "f0aqxv30ep",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1086,
+      "tabId": "tab4zvbmdxfjm",
+      "tabName": "In Traznit",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "bzw4zyvew7",
+      "widgetName": "Canvas71"
     }
   ],
-  "defaultTab": "Itmes",
+  "defaultTab": "Items",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -101,6 +146,13 @@
       "label": "Items",
       "positioning": "vertical",
       "widgetId": "vfrhyn8bgu"
+    },
+    "tab4zvbmdxfjm": {
+      "id": "tab4zvbmdxfjm",
+      "index": 1,
+      "isVisible": true,
+      "label": "In Traznit",
+      "widgetId": "bzw4zyvew7"
     }
   },
   "topRow": 34,

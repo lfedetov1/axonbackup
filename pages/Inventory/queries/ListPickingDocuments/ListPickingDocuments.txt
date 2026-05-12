@@ -1,0 +1,67 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Document Number`,
+    d.document_type AS `Document Type`,
+    d.document_date AS `Document Date`,
+    d.status AS `Status`,
+
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    d.total_amount AS `Total Value`,
+
+    d.note AS `Note`,
+    d.created_at AS `Created At`
+
+FROM documents d
+
+LEFT JOIN business_partners bp
+  ON bp.id = d.partner_id
+
+LEFT JOIN warehouses w
+  ON w.id = d.warehouse_id
+
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type IN ('DELIVERY_NOTE', 'STOCK_OUT', 'TRANSFER_REQUEST')
+  AND d.status IN ('DRAFT', 'APPROVED', 'READY', 'PICKING', 'PICKED')
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR bp.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR w.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR w.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      OR d.source_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_type,
+    d.document_date,
+    d.status,
+    bp.code,
+    bp.name,
+    w.code,
+    w.name,
+    d.total_amount,
+    d.note,
+    d.created_at
+
+ORDER BY
+    d.document_date ASC,
+    d.id ASC;

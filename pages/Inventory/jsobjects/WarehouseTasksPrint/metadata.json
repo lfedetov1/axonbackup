@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_a60e42ff-eb41-45b4-9476-1f0e01894727",
+  "id": "Inventory_WarehouseTasksPrint",
+  "unpublishedCollection": {
+    "name": "WarehouseTasksPrint",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

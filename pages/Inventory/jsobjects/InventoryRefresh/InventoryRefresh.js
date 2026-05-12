@@ -17,6 +17,23 @@ export default {
       "InventoryBalanceQuery",
       "StockMovementsQuery",
       "RecentStockMovementsQuery",
+			"ListTransferRequests",
+      "ListTransferRequestItems",
+      "ListGoodsInTransit",
+
+     "ListPickingDocuments",
+     "ListPickingItems",
+
+      "ListWarehouseTasks",
+
+      "ListReplenishmentReport",
+      "ListReplenishmentDone", 
+			"ListSupplierReturns",
+      "ListSupplierReturnItems",
+			"ListGoodsInTransitItems",
+
+
+
 
       "ListWarehouses",
       "ListInventoryWarehouses",

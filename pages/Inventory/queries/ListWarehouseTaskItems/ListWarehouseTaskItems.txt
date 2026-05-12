@@ -1,0 +1,44 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS `Line No`,
+
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    di.description AS `Description`,
+    di.quantity AS `Quantity`,
+    COALESCE(di.picked_quantity, 0) AS `Picked Quantity`,
+    COALESCE(di.received_quantity, 0) AS `Received Quantity`,
+
+    u.code AS `Unit`,
+
+    wl.code AS `Location`,
+    di.batch_number AS `Batch Number`,
+    di.serial_number AS `Serial Number`,
+    di.expiry_date AS `Expiry Date`,
+
+    di.note AS `Note`
+
+FROM document_items di
+
+JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN warehouse_location_products wlp
+  ON wlp.product_id = di.product_id
+ AND wlp.is_primary_location = 1
+ AND wlp.is_active = 1
+
+LEFT JOIN warehouse_locations wl
+  ON wl.id = wlp.location_id
+
+WHERE di.document_id = {{this.params.documentId || WarehouseTasksTable.selectedRow?.documentId || 0}}
+
+ORDER BY
+    di.line_no;

@@ -1,0 +1,60 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS `Line No`,
+
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    di.description AS `Description`,
+    di.quantity AS `Required Quantity`,
+    COALESCE(di.picked_quantity, 0) AS `Picked Quantity`,
+    GREATEST(di.quantity - COALESCE(di.picked_quantity, 0), 0) AS `Remaining Quantity`,
+
+    u.id AS unitId,
+    u.code AS `Unit`,
+
+    COALESCE(ib.quantity_balance, 0) AS `Available Stock`,
+
+    wl.code AS `Location`,
+
+    CASE
+      WHEN COALESCE(di.picked_quantity, 0) >= di.quantity THEN 'PICKED'
+      WHEN COALESCE(di.picked_quantity, 0) > 0 THEN 'PARTIAL'
+      ELSE 'OPEN'
+    END AS `Pick Status`,
+
+    di.note AS `Note`
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.company_id = d.company_id
+ AND ib.product_id = di.product_id
+ AND ib.warehouse_id = COALESCE(d.warehouse_id, d.source_warehouse_id)
+
+LEFT JOIN warehouse_location_products wlp
+  ON wlp.product_id = di.product_id
+ AND wlp.warehouse_id = COALESCE(d.warehouse_id, d.source_warehouse_id)
+ AND wlp.is_primary_location = 1
+ AND wlp.is_active = 1
+
+LEFT JOIN warehouse_locations wl
+  ON wl.id = wlp.location_id
+
+WHERE di.document_id = {{this.params.documentId || PickingPackingTable.selectedRow?.documentId || 0}}
+
+ORDER BY
+    di.line_no;

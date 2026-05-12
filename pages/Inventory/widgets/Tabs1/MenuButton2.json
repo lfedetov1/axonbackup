@@ -1,0 +1,127 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 5,
+  "boxShadow": "none",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "menuItems.menuItem1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItemncvksgjsqm.isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItemncvksgjsqm.onClick"
+    },
+    {
+      "key": "menuItems.menuItem1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItemncvksgjsqm.isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItemncvksgjsqm.onClick"
+    }
+  ],
+  "isCompact": false,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "80uqlrb53u",
+  "label": "Menu",
+  "leftColumn": 54,
+  "menuColor": "#dbeafe",
+  "menuItems": {
+    "menuItem1": {
+      "id": "menuItem1",
+      "index": 0,
+      "isDisabled": "{{\n  ![\"DRAFT\", \"APPROVED\", \"READY\"].includes(\n    PickingPackingTable.selectedRow?.Status || \"\"\n  )\n}}\n",
+      "isVisible": true,
+      "label": "Start Picking",
+      "onClick": "{{ PickingPackingForm.startPicking(PickingPackingTable.selectedRow) }}\n",
+      "widgetId": ""
+    },
+    "menuItem2": {
+      "id": "menuItem2",
+      "index": 1,
+      "isDisabled": "{{\n  (PickingPackingTable.selectedRow?.Status || \"\") !== \"PICKING\"\n}}\n",
+      "isVisible": true,
+      "label": "Mark Picked",
+      "onClick": "{{ PickingPackingForm.markPicked(PickingPackingTable.selectedRow) }}\n",
+      "widgetId": ""
+    },
+    "menuItem3": {
+      "id": "menuItem3",
+      "index": 2,
+      "isDisabled": "{{\n  (PickingPackingTable.selectedRow?.Status || \"\") !== \"PICKED\"\n}}\n",
+      "isVisible": true,
+      "label": "Mark Packed",
+      "onClick": "{{ PickingPackingForm.markPacked(PickingPackingTable.selectedRow) }}\n",
+      "widgetId": ""
+    },
+    "menuItemncvksgjsqm": {
+      "id": "menuItemncvksgjsqm",
+      "index": 3,
+      "isDisabled": "{{ !PickingPackingItemsTable.selectedRow }}\n",
+      "isVisible": true,
+      "label": "Reset rows",
+      "onClick": "{{ PickingPackingForm.resetSelectedItem() }}\n",
+      "widgetId": "oxb1wvxyz6"
+    }
+  },
+  "menuItemsSource": "STATIC",
+  "menuVariant": "PRIMARY",
+  "mobileBottomRow": 6,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 2,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 16.96875,
+  "parentId": "byz0qema5u",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "renderMode": "CANVAS",
+  "rightColumn": 63,
+  "topRow": 1,
+  "type": "MENU_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "tqme0grngu",
+  "widgetName": "MenuButton2"
+}

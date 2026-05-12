@@ -1,0 +1,80 @@
+INSERT INTO warehouse_tasks (
+    company_id,
+    warehouse_id,
+    document_id,
+    task_number,
+    task_type,
+    status,
+    priority,
+    source_warehouse_id,
+    destination_warehouse_id,
+    quantity,
+    note,
+    created_by_user_id
+)
+SELECT
+    d.company_id,
+    COALESCE(d.warehouse_id, d.source_warehouse_id, d.destination_warehouse_id) AS warehouse_id,
+    d.id AS document_id,
+    CONCAT('WT-', d.document_number) AS task_number,
+
+    CASE
+      WHEN d.document_type = 'PURCHASE_RECEIPT' AND d.status IN ('POSTED', 'APPROVED') THEN 'PUTAWAY'
+      WHEN d.document_type = 'INBOUND_DELIVERY' AND d.status IN ('ARRIVED', 'RECEIVING') THEN 'RECEIVING'
+      WHEN d.document_type IN ('DELIVERY_NOTE', 'STOCK_OUT') AND d.status IN ('DRAFT', 'APPROVED', 'READY', 'PICKING') THEN 'PICKING'
+      WHEN d.document_type IN ('DELIVERY_NOTE', 'STOCK_OUT') AND d.status = 'PICKED' THEN 'PACKING'
+      WHEN d.document_type = 'TRANSFER_REQUEST' AND d.status IN ('DRAFT', 'REQUESTED', 'PICKED') THEN 'TRANSFER'
+      WHEN d.document_type = 'TRANSFER_REQUEST' AND d.status = 'SHIPPED' THEN 'RECEIVE_TRANSFER'
+      WHEN d.document_type = 'INVENTORY_COUNT' AND d.status IN ('DRAFT', 'COUNTING') THEN 'COUNTING'
+      ELSE 'OTHER'
+    END AS task_type,
+
+    CASE
+      WHEN d.status IN ('DRAFT', 'APPROVED', 'READY', 'REQUESTED', 'ARRIVED') THEN 'OPEN'
+      WHEN d.status IN ('PICKING', 'RECEIVING', 'COUNTING') THEN 'IN_PROGRESS'
+      WHEN d.status IN ('PICKED', 'SHIPPED') THEN 'READY_FOR_NEXT_STEP'
+      WHEN d.status IN ('POSTED', 'RECEIVED', 'PACKED', 'COUNTED') THEN 'DONE'
+      ELSE 'OPEN'
+    END AS status,
+
+    'NORMAL' AS priority,
+    d.source_warehouse_id,
+    d.destination_warehouse_id,
+    COALESCE(SUM(di.quantity), 0) AS quantity,
+    d.note,
+    d.created_by_user_id
+
+FROM documents d
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+
+WHERE d.document_type IN (
+      'PURCHASE_RECEIPT',
+      'INBOUND_DELIVERY',
+      'DELIVERY_NOTE',
+      'STOCK_OUT',
+      'TRANSFER_REQUEST',
+      'INVENTORY_COUNT'
+  )
+  AND d.status NOT IN ('CANCELLED')
+
+GROUP BY
+    d.id,
+    d.company_id,
+    d.warehouse_id,
+    d.source_warehouse_id,
+    d.destination_warehouse_id,
+    d.document_number,
+    d.document_type,
+    d.status,
+    d.note,
+    d.created_by_user_id
+
+ON DUPLICATE KEY UPDATE
+    warehouse_id = VALUES(warehouse_id),
+    task_type = VALUES(task_type),
+    status = VALUES(status),
+    source_warehouse_id = VALUES(source_warehouse_id),
+    destination_warehouse_id = VALUES(destination_warehouse_id),
+    quantity = VALUES(quantity),
+    note = VALUES(note);

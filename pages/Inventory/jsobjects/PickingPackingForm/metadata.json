@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_6e627b1a-5bf9-4df1-ab51-29c63a696aed",
+  "id": "Inventory_PickingPackingForm",
+  "unpublishedCollection": {
+    "name": "PickingPackingForm",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

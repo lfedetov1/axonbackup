@@ -1,0 +1,9 @@
+UPDATE warehouse_tasks
+SET
+    status = 'DONE',
+    completed_quantity = COALESCE(quantity, completed_quantity),
+    completed_at = NOW(),
+    updated_at = NOW()
+WHERE id = {{this.params.taskId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP');

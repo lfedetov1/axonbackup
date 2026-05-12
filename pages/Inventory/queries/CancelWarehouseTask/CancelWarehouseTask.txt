@@ -1,0 +1,7 @@
+UPDATE warehouse_tasks
+SET
+    status = 'CANCELLED',
+    updated_at = NOW()
+WHERE id = {{this.params.taskId}}
+  AND company_id = {{appsmith.store.companyId}}
+  AND status <> 'DONE';

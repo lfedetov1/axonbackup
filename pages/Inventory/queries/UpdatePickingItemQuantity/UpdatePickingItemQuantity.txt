@@ -1,0 +1,4 @@
+UPDATE document_items
+SET
+    picked_quantity = LEAST(quantity, COALESCE(picked_quantity, 0) + {{this.params.quantity || 1}})
+WHERE id = {{this.params.documentItemId}};

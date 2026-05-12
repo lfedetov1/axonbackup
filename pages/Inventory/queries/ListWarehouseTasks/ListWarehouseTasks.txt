@@ -1,0 +1,91 @@
+SELECT
+    wt.id AS taskId,
+    wt.task_number AS `Task Number`,
+    wt.task_type AS `Task Type`,
+    wt.status AS `Task Status`,
+    wt.priority AS `Priority`,
+
+    d.id AS documentId,
+    d.document_number AS `Document Number`,
+    d.document_type AS `Document Type`,
+    d.document_date AS `Document Date`,
+    d.status AS `Document Status`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    sw.code AS `Source Code`,
+    sw.name AS `Source Warehouse`,
+    dw.code AS `Destination Code`,
+    dw.name AS `Destination Warehouse`,
+
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+
+    wt.quantity AS `Quantity`,
+    wt.completed_quantity AS `Completed Quantity`,
+
+    au.username AS `Assigned To`,
+    wt.due_at AS `Due At`,
+    wt.started_at AS `Started At`,
+    wt.completed_at AS `Completed At`,
+
+    wt.note AS `Note`,
+    wt.created_at AS `Created At`
+
+FROM warehouse_tasks wt
+
+LEFT JOIN documents d
+  ON d.id = wt.document_id
+
+LEFT JOIN warehouses w
+  ON w.id = wt.warehouse_id
+
+LEFT JOIN warehouses sw
+  ON sw.id = wt.source_warehouse_id
+
+LEFT JOIN warehouses dw
+  ON dw.id = wt.destination_warehouse_id
+
+LEFT JOIN products p
+  ON p.id = wt.product_id
+
+LEFT JOIN users au
+  ON au.id = wt.assigned_to_user_id
+
+WHERE wt.company_id = {{appsmith.store.companyId}}
+  AND wt.status <> 'CANCELLED'
+  AND (
+      {{InventorySearchInput.text || ''}} = ''
+      OR wt.task_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR p.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR w.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR sw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+      OR dw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
+  )
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR wt.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      OR wt.source_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      OR wt.destination_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+
+ORDER BY
+    CASE wt.priority
+      WHEN 'URGENT' THEN 1
+      WHEN 'HIGH' THEN 2
+      WHEN 'NORMAL' THEN 3
+      WHEN 'LOW' THEN 4
+      ELSE 5
+    END,
+    CASE wt.status
+      WHEN 'IN_PROGRESS' THEN 1
+      WHEN 'OPEN' THEN 2
+      WHEN 'READY_FOR_NEXT_STEP' THEN 3
+      WHEN 'DONE' THEN 4
+      ELSE 5
+    END,
+    wt.due_at ASC,
+    wt.created_at ASC;

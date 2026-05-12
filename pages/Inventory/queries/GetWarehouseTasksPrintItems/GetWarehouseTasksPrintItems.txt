@@ -1,0 +1,81 @@
+SELECT
+    wt.task_number AS taskNumber,
+    wt.task_type AS taskType,
+    wt.status AS taskStatus,
+    wt.priority AS priority,
+
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.document_date AS documentDate,
+    d.status AS documentStatus,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    p.code AS productCode,
+    p.name AS productName,
+
+    wt.quantity AS quantity,
+    wt.completed_quantity AS completedQuantity,
+
+    au.username AS assignedTo,
+
+    wt.due_at AS dueAt,
+    wt.started_at AS startedAt,
+    wt.completed_at AS completedAt,
+
+    wt.note AS note
+
+FROM warehouse_tasks wt
+
+LEFT JOIN documents d
+  ON d.id = wt.document_id
+
+LEFT JOIN warehouses w
+  ON w.id = wt.warehouse_id
+
+LEFT JOIN warehouses sw
+  ON sw.id = wt.source_warehouse_id
+
+LEFT JOIN warehouses dw
+  ON dw.id = wt.destination_warehouse_id
+
+LEFT JOIN products p
+  ON p.id = wt.product_id
+
+LEFT JOIN users au
+  ON au.id = wt.assigned_to_user_id
+
+WHERE wt.company_id = {{appsmith.store.companyId}}
+  AND wt.status <> 'CANCELLED'
+  AND DATE(wt.created_at) >= {{moment(InventoryDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND DATE(wt.created_at) <= {{moment(InventoryDateTo.selectedDate || InventoryDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND (
+      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      OR wt.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      OR wt.source_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      OR wt.destination_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+
+ORDER BY
+    CASE wt.priority
+      WHEN 'URGENT' THEN 1
+      WHEN 'HIGH' THEN 2
+      WHEN 'NORMAL' THEN 3
+      WHEN 'LOW' THEN 4
+      ELSE 5
+    END,
+    CASE wt.status
+      WHEN 'IN_PROGRESS' THEN 1
+      WHEN 'OPEN' THEN 2
+      WHEN 'READY_FOR_NEXT_STEP' THEN 3
+      WHEN 'DONE' THEN 4
+      ELSE 5
+    END,
+    wt.task_type,
+    wt.created_at;
