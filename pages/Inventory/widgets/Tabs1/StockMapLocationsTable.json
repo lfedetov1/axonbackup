@@ -169,6 +169,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -180,6 +183,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -197,7 +203,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ !Auth.can(\"inventory.stock_mapping.manage\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,

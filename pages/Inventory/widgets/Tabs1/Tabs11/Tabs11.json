@@ -110,14 +110,22 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.transfer_request.view\") }}\n",
   "key": "uijyvvfkl3",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

@@ -111,14 +111,22 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.stock_movement.view\") }}\n",
   "key": "iuathwgk4k",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

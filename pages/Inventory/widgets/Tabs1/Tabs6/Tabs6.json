@@ -99,51 +99,6 @@
       "version": 1,
       "widgetId": "imj7an6bxh",
       "widgetName": "Canvas48"
-    },
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 350,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": false,
-      "containerStyle": "none",
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isLoading": false,
-      "isVisible": true,
-      "key": "3668ziodn1",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 390,
-      "minWidth": 450,
-      "mobileBottomRow": 391,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 1086,
-      "mobileTopRow": 1,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "f3rhtv7v5f",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 1086,
-      "tabId": "tabakkjmxf4dg",
-      "tabName": "Informations",
-      "topRow": 1,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "3nnpfhn8xc",
-      "widgetName": "Canvas49"
     }
   ],
   "defaultTab": "Items",
@@ -156,14 +111,22 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.stock_issue.view\") }}\n",
   "key": "iuathwgk4k",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,
@@ -200,13 +163,6 @@
       "label": "Pick list",
       "positioning": "vertical",
       "widgetId": "imj7an6bxh"
-    },
-    "tabakkjmxf4dg": {
-      "id": "tabakkjmxf4dg",
-      "index": 2,
-      "isVisible": true,
-      "label": "Informations",
-      "widgetId": "3nnpfhn8xc"
     }
   },
   "topRow": 43,

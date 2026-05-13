@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -24,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.stock_movement.create\") }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "8w7eb48e8j",

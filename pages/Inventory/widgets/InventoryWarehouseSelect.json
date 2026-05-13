@@ -4,7 +4,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 27,
   "boxShadow": "none",
-  "defaultOptionValue": "{{ ((options, serverSideFiltering) => (  appsmith.store.warehouseId || 0 ))(InventoryWarehouseSelect.options, InventoryWarehouseSelect.serverSideFiltering) }}",
+  "defaultOptionValue": "{{ ((options, serverSideFiltering) => ( \n  String(\n    appsmith.store.warehouseId ||\n    ListInventoryWarehouses.data?.find(w => Number(w.warehouseId || 0) > 0)?.warehouseId ||\n    \"\"\n  )\n))(InventoryWarehouseSelect.options, InventoryWarehouseSelect.serverSideFiltering) }}",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -17,16 +17,22 @@
     },
     {
       "key": "defaultOptionValue"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
   "dynamicPropertyPathList": [
     {
       "key": "sourceData"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [],
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.warehouse.view_all\") }}\n",
   "isFilterable": true,
   "isLoading": false,
   "isRequired": false,

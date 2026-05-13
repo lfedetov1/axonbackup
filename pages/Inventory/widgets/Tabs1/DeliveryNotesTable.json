@@ -48,13 +48,13 @@
     "Created_At",
     "Updated_At",
     "customColumn1",
-    "customColumn2",
     "customColumn3",
+    "customColumn2",
     "customColumn5",
     "customColumn4",
     "customColumn6"
   ],
-  "columnUpdatedAt": 1778434104744,
+  "columnUpdatedAt": 1778662535194,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -162,13 +162,16 @@
       "key": "primaryColumns.customColumn1.isDisabled"
     },
     {
-      "key": "primaryColumns.customColumn3.isDisabled"
-    },
-    {
       "key": "primaryColumns.customColumn2.isDisabled"
     },
     {
       "key": "primaryColumns.customColumn5.isDisabled"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -204,6 +207,9 @@
     },
     {
       "key": "primaryColumns.customColumn5.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -233,7 +239,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.delivery_note.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -753,7 +759,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.delivery_note.edit\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.delivery_note.edit\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -792,7 +798,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"POSTED\"\n)) : \n  currentRow.Status !== \"POSTED\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.delivery_note.void\")\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n)) : \n  !Auth.can(\"inventory.delivery_note.void\")\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -831,7 +837,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.delivery_note.post\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.delivery_note.post\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -910,7 +916,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"POSTED\"\n)) : \n  currentRow.Status !== \"POSTED\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = DeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.canAny([\"sales.invoices.create\", \"sales.manage\"])\n  || currentRow.Status !== \"POSTED\"\n)) : \n  !Auth.canAny([\"sales.invoices.create\", \"sales.manage\"])\n  || currentRow.Status !== \"POSTED\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

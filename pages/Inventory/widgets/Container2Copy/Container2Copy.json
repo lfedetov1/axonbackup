@@ -54,14 +54,22 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.canAny([\"sales.view\", \"sales.analysis.view\"]) }}\n",
   "key": "a0xssqq3ns",
   "leftColumn": 16,
   "maxDynamicHeight": 9000,

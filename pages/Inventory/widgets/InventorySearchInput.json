@@ -12,13 +12,21 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isDisabled"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.view\") }}\n",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,

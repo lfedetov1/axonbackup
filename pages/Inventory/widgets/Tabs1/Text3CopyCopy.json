@@ -11,15 +11,23 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "fontSize": "1rem",
   "fontStyle": "BOLD",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.balance.view\") }}\n",
   "key": "eq03nbxre1",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,
@@ -40,7 +48,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 18,
   "shouldTruncate": false,
-  "text": "Stock balance :",
+  "text": "Stock Balance :",
   "textAlign": "LEFT",
   "textColor": "#231F20",
   "topRow": 62,

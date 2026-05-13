@@ -11,7 +11,7 @@
       "key": "borderRadius"
     },
     {
-      "key": "isVisible"
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -19,7 +19,7 @@
       "key": "onClick"
     },
     {
-      "key": "isVisible"
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -30,9 +30,9 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.supplier_return.create\") }}",
   "isLoading": false,
-  "isVisible": "{{ !Auth.can(\"inventory.supplier_return.create\") }}\n",
+  "isVisible": true,
   "key": "fxhh1kirgz",
   "leftColumn": 55,
   "minWidth": 120,

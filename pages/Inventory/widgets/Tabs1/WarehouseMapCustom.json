@@ -15,6 +15,9 @@
     },
     {
       "key": "defaultModel"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -24,6 +27,9 @@
     },
     {
       "key": "onLocationClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -41,7 +47,7 @@
   "isCanvas": false,
   "isLoading": false,
   "isSearchWildcard": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.stock_mapping.view\") }}\n",
   "key": "ers0gax5lc",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

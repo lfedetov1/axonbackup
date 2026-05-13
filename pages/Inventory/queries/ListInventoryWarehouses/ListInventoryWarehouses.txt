@@ -1,19 +1,50 @@
 SELECT
-    0 AS value,
-    'All warehouses' AS label,
     0 AS warehouseId,
     'ALL' AS warehouseCode,
-    'All warehouses' AS warehouseName
+    'All Warehouses' AS warehouseName,
+    'ALL - All Warehouses' AS label,
+    '0' AS value,
+    0 AS sortOrder
+
+WHERE EXISTS (
+    SELECT 1
+    FROM company_users cu
+    JOIN roles r ON r.id = cu.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE cu.company_id = {{appsmith.store.companyId}}
+      AND cu.user_id = {{appsmith.store.userId}}
+      AND p.code = 'inventory.warehouse.view_all'
+)
 
 UNION ALL
 
 SELECT
-    w.id AS value,
-    CONCAT(w.code, ' - ', w.name) AS label,
     w.id AS warehouseId,
     w.code AS warehouseCode,
-    w.name AS warehouseName
+    w.name AS warehouseName,
+    CONCAT(w.code, ' - ', w.name) AS label,
+    CAST(w.id AS CHAR) AS value,
+    1 AS sortOrder
+
 FROM warehouses w
+
 WHERE w.company_id = {{appsmith.store.companyId}}
   AND w.is_active = 1
-ORDER BY label ASC;
+  AND (
+      EXISTS (
+          SELECT 1
+          FROM company_users cu
+          JOIN roles r ON r.id = cu.role_id
+          JOIN role_permissions rp ON rp.role_id = r.id
+          JOIN permissions p ON p.id = rp.permission_id
+          WHERE cu.company_id = {{appsmith.store.companyId}}
+            AND cu.user_id = {{appsmith.store.userId}}
+            AND p.code = 'inventory.warehouse.view_all'
+      )
+      OR w.id = {{Number(appsmith.store.warehouseId || 0)}}
+  )
+
+ORDER BY
+    sortOrder,
+    warehouseCode;

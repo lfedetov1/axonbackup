@@ -80,13 +80,21 @@
     },
     {
       "key": "chartData.53ny5v8ib0.data"
+    },
+    {
+      "key": "isVisible"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "start",
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.balance.view\") }}",
   "key": "0dle29332f",
   "labelOrientation": "auto",
   "leftColumn": 0,

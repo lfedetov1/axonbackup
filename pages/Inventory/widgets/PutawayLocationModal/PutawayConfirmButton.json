@@ -10,11 +10,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -25,7 +31,7 @@
   "iconAlign": "left",
   "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.putaway.execute\") }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "tvy0r4hgur",

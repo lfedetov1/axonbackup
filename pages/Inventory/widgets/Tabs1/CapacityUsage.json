@@ -15,16 +15,24 @@
     },
     {
       "key": "defaultText"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.balance.view\") }}",
   "key": "2dg8obeiua",
   "label": "Capacity Usage",
   "labelAlignment": "left",

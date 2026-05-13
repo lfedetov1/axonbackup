@@ -11,15 +11,23 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
   "fontSize": "1rem",
   "fontStyle": "BOLD",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ !Auth.can(\"inventory.tasks.view\") }}\n",
   "key": "af3fhll7b3",
   "leftColumn": 39,
   "maxDynamicHeight": 9000,

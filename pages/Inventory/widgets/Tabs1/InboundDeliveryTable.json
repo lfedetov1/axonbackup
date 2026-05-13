@@ -50,11 +50,11 @@
     "Note",
     "Created_At",
     "Updated_At",
+    "customColumn3",
     "customColumn1",
-    "customColumn2",
-    "customColumn3"
+    "customColumn2"
   ],
-  "columnUpdatedAt": 1778430790029,
+  "columnUpdatedAt": 1778662691985,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -163,6 +163,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -198,6 +201,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -227,7 +233,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.inbound.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -784,7 +790,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"IN_TRANSIT\", \"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"IN_TRANSIT\", \"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.inbound.edit\")\n  || [\"POSTED\", \"CANCELLED\", \"RECEIVED\"].includes(currentRow.Status)\n)) : \n  !Auth.can(\"inventory.inbound.edit\")\n  || [\"POSTED\", \"CANCELLED\", \"RECEIVED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -862,7 +868,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n)) : \n  ![\"ARRIVED\", \"RECEIVING\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.inbound.receive\")\n  || ![\"ARRIVED\", \"RECEIVING\", \"CONFIRMED\"].includes(currentRow.Status)\n)) : \n  !Auth.can(\"inventory.inbound.receive\")\n  || ![\"ARRIVED\", \"RECEIVING\", \"CONFIRMED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -901,7 +907,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  [\"RECEIVED\", \"CANCELLED\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  [\"RECEIVED\", \"CANCELLED\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = InboundDeliveryTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.inbound.status\")\n  || [\"CANCELLED\", \"RECEIVED\"].includes(currentRow.Status)\n)) : \n  !Auth.can(\"inventory.inbound.status\")\n  || [\"CANCELLED\", \"RECEIVED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

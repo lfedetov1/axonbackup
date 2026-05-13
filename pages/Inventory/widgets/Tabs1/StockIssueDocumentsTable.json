@@ -140,6 +140,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -169,6 +172,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -195,7 +201,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.stock_issue.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -647,7 +653,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.stock_issue.edit\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.stock_issue.edit\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -686,7 +692,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.stock_issue.void\")\n  || currentRow.Status === \"CANCELLED\"\n)) : \n  !Auth.can(\"inventory.stock_issue.void\")\n  || currentRow.Status === \"CANCELLED\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -725,7 +731,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = StockIssueDocumentsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.stock_issue.post\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.stock_issue.post\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

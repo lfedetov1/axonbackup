@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -24,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "refresh",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.view\") }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "ztmsy7gqpj",

@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -24,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "cloud-upload",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.opening_stock.import\") }}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "upyc9ljujr",

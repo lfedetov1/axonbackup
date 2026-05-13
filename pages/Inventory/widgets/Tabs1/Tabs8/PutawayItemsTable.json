@@ -114,6 +114,9 @@
     },
     {
       "key": "primaryColumns.customColumn1.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -122,6 +125,9 @@
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -453,7 +459,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = PutawayItemsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( !Auth.can(\"inventory.putaway.execute\") )) :  !Auth.can(\"inventory.putaway.execute\")  })()}}",
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,

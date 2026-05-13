@@ -135,11 +135,17 @@
     },
     {
       "key": "primaryColumns.createdAt.computedValue"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "tableData"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -150,7 +156,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.balance.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,

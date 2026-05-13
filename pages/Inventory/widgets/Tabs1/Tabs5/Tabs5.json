@@ -53,52 +53,6 @@
       "version": 1,
       "widgetId": "vwg06h2z2j",
       "widgetName": "Canvas45"
-    },
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 270,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": true,
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isDisabled": false,
-      "isLoading": false,
-      "isVisible": true,
-      "key": "3668ziodn1",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 150,
-      "minWidth": 450,
-      "mobileBottomRow": 150,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 407.25,
-      "mobileTopRow": 0,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "g8dran0nr5",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 407.25,
-      "shouldScrollContents": false,
-      "tabId": "tab2",
-      "tabName": "Informations",
-      "topRow": 0,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "2k8yghieuz",
-      "widgetName": "Canvas46"
     }
   ],
   "defaultTab": "Items",
@@ -111,14 +65,22 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.inbound.view\") }}\n",
   "key": "iuathwgk4k",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,
@@ -147,14 +109,6 @@
       "label": "Items",
       "positioning": "vertical",
       "widgetId": "vwg06h2z2j"
-    },
-    "tab2": {
-      "id": "tab2",
-      "index": 1,
-      "isVisible": true,
-      "label": "Informations",
-      "positioning": "vertical",
-      "widgetId": "2k8yghieuz"
     }
   },
   "topRow": 34,

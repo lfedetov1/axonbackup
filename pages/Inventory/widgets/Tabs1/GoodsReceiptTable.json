@@ -159,6 +159,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -191,6 +197,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -220,7 +232,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.goods_receipt.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -775,7 +787,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.goods_receipt.edit\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.goods_receipt.edit\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -814,7 +826,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.goods_receipt.void\")\n  || currentRow.Status === \"CANCELLED\"\n)) : \n  !Auth.can(\"inventory.goods_receipt.void\")\n  || currentRow.Status === \"CANCELLED\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -853,7 +865,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.goods_receipt.post\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.goods_receipt.post\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -890,7 +902,7 @@
       "id": "customColumn4",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = GoodsReceiptTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.goods_receipt.void\")\n  || currentRow.Status === \"CANCELLED\"\n)) : \n  !Auth.can(\"inventory.goods_receipt.void\")\n  || currentRow.Status === \"CANCELLED\"\n })()}}",
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,

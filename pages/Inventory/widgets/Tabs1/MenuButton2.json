@@ -18,6 +18,9 @@
     },
     {
       "key": "menuItems.menuItemncvksgjsqm.isDisabled"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -44,6 +47,12 @@
     },
     {
       "key": "menuItems.menuItemncvksgjsqm.isDisabled"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -61,9 +70,9 @@
     }
   ],
   "isCompact": false,
-  "isDisabled": false,
+  "isDisabled": "{{\n  !Auth.can(\"inventory.picking.pick\")\n  || ![\"DRAFT\", \"READY\", \"APPROVED\"].includes(PickingPackingTable.triggeredRow?.Status)\n}}\n",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "true",
   "key": "80uqlrb53u",
   "label": "Menu",
   "leftColumn": 54,
@@ -81,7 +90,7 @@
     "menuItem2": {
       "id": "menuItem2",
       "index": 1,
-      "isDisabled": "{{\n  (PickingPackingTable.selectedRow?.Status || \"\") !== \"PICKING\"\n}}\n",
+      "isDisabled": "{{\n  !Auth.can(\"inventory.picking.pick\")\n  || ![\"PICKING\", \"READY\"].includes(PickingPackingTable.selectedRow?.Status)\n}}\n",
       "isVisible": true,
       "label": "Mark Picked",
       "onClick": "{{ PickingPackingForm.markPicked(PickingPackingTable.selectedRow) }}\n",
@@ -90,7 +99,7 @@
     "menuItem3": {
       "id": "menuItem3",
       "index": 2,
-      "isDisabled": "{{\n  (PickingPackingTable.selectedRow?.Status || \"\") !== \"PICKED\"\n}}\n",
+      "isDisabled": "{{\n  !Auth.can(\"inventory.picking.pack\")\n  || PickingPackingTable.selectedRow?.Status !== \"PICKED\"\n}}\n",
       "isVisible": true,
       "label": "Mark Packed",
       "onClick": "{{ PickingPackingForm.markPacked(PickingPackingTable.selectedRow) }}\n",
@@ -99,7 +108,7 @@
     "menuItemncvksgjsqm": {
       "id": "menuItemncvksgjsqm",
       "index": 3,
-      "isDisabled": "{{ !PickingPackingItemsTable.selectedRow }}\n",
+      "isDisabled": "{{ !Auth.can(\"inventory.picking.pick\") }}\n",
       "isVisible": true,
       "label": "Reset rows",
       "onClick": "{{ PickingPackingForm.resetSelectedItem() }}\n",

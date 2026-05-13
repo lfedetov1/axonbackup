@@ -46,11 +46,11 @@
     "Created_At",
     "Updated_At",
     "customColumn1",
-    "customColumn2",
     "customColumn3",
+    "customColumn2",
     "customColumn4"
   ],
-  "columnUpdatedAt": 1778447073546,
+  "columnUpdatedAt": 1778661989559,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -144,6 +144,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -173,6 +176,9 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -199,7 +205,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{ Auth.can(\"inventory.opening_stock.view\") }}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -651,7 +657,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.opening_stock.create\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.opening_stock.create\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -690,7 +696,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n)) : \n  ![\"DRAFT\", \"POSTED\"].includes(currentRow.Status)\n })()}}",
+      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.opening_stock.void\")\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n)) : \n  !Auth.can(\"inventory.opening_stock.void\")\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -729,7 +735,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  currentRow.Status !== \"DRAFT\"\n)) : \n  currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = OpeningStockTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.opening_stock.post\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.opening_stock.post\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

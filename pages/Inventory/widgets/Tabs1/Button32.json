@@ -9,11 +9,20 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -24,11 +33,11 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{ !Auth.can(\"inventory.inbound.create\") }}\n",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "true",
   "key": "r7qe3g1qa4",
-  "leftColumn": 51,
+  "leftColumn": 56,
   "minWidth": 120,
   "mobileBottomRow": 4,
   "mobileLeftColumn": 47,
