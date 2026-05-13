@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -24,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.sales_return.create\")\n  )\n}}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "3dctatnuu9",

@@ -12,16 +12,27 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": false,
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.stock_mapping.view\")\n  )\n}}\n",
   "isLoading": false,
   "isRequired": false,
-  "isVisible": true,
+  "isVisible": "true",
   "key": "lxx3si6r24",
   "label": "Search :",
   "labelAlignment": "left",

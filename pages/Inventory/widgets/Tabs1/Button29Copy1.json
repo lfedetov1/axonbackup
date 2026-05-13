@@ -30,7 +30,7 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{ !Auth.can(\"inventory.supplier_return.create\") }}",
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.create\")\n  )\n}}\n",
   "isLoading": false,
   "isVisible": true,
   "key": "fxhh1kirgz",

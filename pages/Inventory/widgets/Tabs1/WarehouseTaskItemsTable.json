@@ -75,7 +75,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": "{{ !Auth.can(\"inventory.tasks.view\") }}\n",
+  "isVisible": "{{\n  (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n  || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n  || (appsmith.store.permissions || []).includes(\"inventory.locations.view\")\n  || (appsmith.store.permissions || []).includes(\"inventory.warehouse.view_all\")\n}}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,

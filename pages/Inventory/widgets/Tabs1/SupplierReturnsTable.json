@@ -48,11 +48,11 @@
     "Created_At",
     "Updated_At",
     "customColumn1",
-    "customColumn2",
     "customColumn3",
+    "customColumn2",
     "customColumn4"
   ],
-  "columnUpdatedAt": 1778658595613,
+  "columnUpdatedAt": 1778664327034,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -152,6 +152,9 @@
     },
     {
       "key": "primaryColumns.customColumn4.boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -187,6 +190,9 @@
     },
     {
       "key": "primaryColumns.customColumn4.onClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -213,7 +219,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": true,
+  "isVisible": "{{\n  (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n  || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n  || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.view\")\n}}\n",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,
@@ -733,7 +739,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow.Status !== \"DRAFT\" )) :  currentRow.Status !== \"DRAFT\"  })()}}",
+      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.edit\")\n  )\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.edit\")\n  )\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -772,7 +778,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.supplier_return.void\")\n  || currentRow.Status === \"CANCELLED\"\n)) : \n  !Auth.can(\"inventory.supplier_return.void\")\n  || currentRow.Status === \"CANCELLED\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.void\")\n  )\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n)) : \n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.void\")\n  )\n  || [\"CANCELLED\", \"VOIDED\"].includes(currentRow.Status)\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -811,7 +817,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !Auth.can(\"inventory.supplier_return.post\")\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !Auth.can(\"inventory.supplier_return.post\")\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
+      "isDisabled": "{{(() => { const tableData = SupplierReturnsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.post\")\n  )\n  || currentRow.Status !== \"DRAFT\"\n)) : \n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.post\")\n  )\n  || currentRow.Status !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

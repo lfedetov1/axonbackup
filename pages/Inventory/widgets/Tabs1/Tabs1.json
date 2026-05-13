@@ -5,7 +5,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 93,
+  "bottomRow": 103,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
@@ -191,52 +191,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 610,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": false,
-      "containerStyle": "none",
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isLoading": false,
-      "isVisible": true,
-      "key": "u2g09610nt",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 190,
-      "minWidth": 450,
-      "mobileBottomRow": 191,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 874,
-      "mobileTopRow": 1,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "fyir0g9gci",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 874,
-      "tabId": "tabcc3e88vj0a",
-      "tabName": "Stock Transfer",
-      "topRow": 1,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "xgmy4r2ipx",
-      "widgetName": "Canvas8"
-    },
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 670,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -326,7 +281,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 690,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -461,7 +416,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 630,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -551,7 +506,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 650,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -731,7 +686,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 650,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -821,7 +776,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 690,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -866,7 +821,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 670,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -911,7 +866,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 610,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -956,7 +911,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 610,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -1001,7 +956,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 610,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -1046,7 +1001,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 680,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -1136,7 +1091,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 610,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -1250,9 +1205,6 @@
     },
     {
       "key": "tabsObj.tabe6hjmh7552.isVisible"
-    },
-    {
-      "key": "tabsObj.tabcc3e88vj0a.isVisible"
     },
     {
       "key": "tabsObj.tabp0ip66jgil.isVisible"
@@ -1423,7 +1375,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 20,
   "needsErrorInfo": false,
-  "originalBottomRow": 99,
+  "originalBottomRow": 1738,
   "originalTopRow": 28,
   "parentColumnSpace": 13.65625,
   "parentId": "0",
@@ -1453,7 +1405,7 @@
     },
     "tab3bu593bymf": {
       "id": "tab3bu593bymf",
-      "index": 21,
+      "index": 20,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_GOODS_RECEIPT\" }}\n",
       "label": "New Goods Receipt",
@@ -1469,7 +1421,7 @@
     },
     "tab4wq4kxge44": {
       "id": "tab4wq4kxge44",
-      "index": 13,
+      "index": 12,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  Auth.can(\"inventory.putaway.view\")\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Putaway",
@@ -1477,7 +1429,7 @@
     },
     "tab5e3c5qd0m7": {
       "id": "tab5e3c5qd0m7",
-      "index": 12,
+      "index": 11,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  Auth.can(\"inventory.delivery_note.view\")\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Delivery Note",
@@ -1485,7 +1437,7 @@
     },
     "tab6e482sulbi": {
       "id": "tab6e482sulbi",
-      "index": 26,
+      "index": 25,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"OPENING_STOCK_NEW\"\n  || appsmith.store.inventoryMode === \"OPENING_STOCK_EDIT\"\n}}\n",
       "label": "New Opening Stock ",
@@ -1499,19 +1451,11 @@
       "label": "Inbound Delivery",
       "widgetId": "tvtqewmo08"
     },
-    "tabcc3e88vj0a": {
-      "id": "tabcc3e88vj0a",
-      "index": 11,
-      "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
-      "label": "Stock Transfer",
-      "widgetId": "xgmy4r2ipx"
-    },
     "tabcmm45t7q5r": {
       "id": "tabcmm45t7q5r",
-      "index": 15,
+      "index": 14,
       "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "isVisible": "{{\n  (\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.supplier_return.view\")\n  )\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Supplier Return",
       "widgetId": "fnzi8tt2hu"
     },
@@ -1533,7 +1477,7 @@
     },
     "tabftlfwgdec8": {
       "id": "tabftlfwgdec8",
-      "index": 20,
+      "index": 19,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_MOVEMENT\" }}\n",
       "label": "New Stock Movements",
@@ -1541,7 +1485,7 @@
     },
     "tabfvo711hyaw": {
       "id": "tabfvo711hyaw",
-      "index": 24,
+      "index": 23,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"INVENTORY_COUNT_DOCUMENT\"\n}}\n\n",
       "label": "New Invetory Count Document",
@@ -1549,7 +1493,7 @@
     },
     "tabg29qooo1s0": {
       "id": "tabg29qooo1s0",
-      "index": 22,
+      "index": 21,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.inventoryMode === \"NEW_STOCK_ISSUE\" }}\n",
       "label": "New Stock Issue",
@@ -1565,9 +1509,9 @@
     },
     "tabgplqpv1t04": {
       "id": "tabgplqpv1t04",
-      "index": 16,
+      "index": 15,
       "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "isVisible": "{{\n  (\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.sales_return.view\")\n  )\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Sales Return",
       "widgetId": "4ai564r9eh"
     },
@@ -1589,15 +1533,15 @@
     },
     "tabj1xt91jksa": {
       "id": "tabj1xt91jksa",
-      "index": 19,
+      "index": 18,
       "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "isVisible": "{{\n  (\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.reports.view\")\n    || (appsmith.store.permissions || []).includes(\"inventory.balance.view\")\n  )\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Batch / Expiry",
       "widgetId": "1jxajjp765"
     },
     "tabj4upica26p": {
       "id": "tabj4upica26p",
-      "index": 23,
+      "index": 22,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"DELIVERY_NOTE_NEW\"\n  || appsmith.store.inventoryMode === \"DELIVERY_NOTE_EDIT\"\n}}\n",
       "label": "New Delivery Note",
@@ -1607,13 +1551,13 @@
       "id": "tablrd0krqzrr",
       "index": 3,
       "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "isVisible": "{{\n  (\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.reports.view\")\n    || (appsmith.store.permissions || []).includes(\"inventory.balance.view\")\n  )\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Stock Ledger",
       "widgetId": "a00p2iuedc"
     },
     "tabmxmuninmeb": {
       "id": "tabmxmuninmeb",
-      "index": 25,
+      "index": 24,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  appsmith.store.inventoryMode === \"INBOUND_DELIVERY_NEW\"\n  || appsmith.store.inventoryMode === \"INBOUND_DELIVERY_EDIT\"\n}}\n",
       "label": "New Inbound Delivery",
@@ -1621,7 +1565,7 @@
     },
     "tabnnkjyy0u9q": {
       "id": "tabnnkjyy0u9q",
-      "index": 18,
+      "index": 17,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  Auth.can(\"inventory.opening_stock.view\")\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Opening Stock",
@@ -1629,15 +1573,15 @@
     },
     "tabob4b8o2frd": {
       "id": "tabob4b8o2frd",
-      "index": 17,
+      "index": 16,
       "isDuplicateLabel": false,
-      "isVisible": "{{\n  !appsmith.store.inventoryMode\n  || appsmith.store.inventoryMode === \"LIST\"\n}}",
+      "isVisible": "{{\n  (\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.reports.view\")\n    || (appsmith.store.permissions || []).includes(\"inventory.balance.view\")\n  )\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Reserved Stock",
       "widgetId": "daty8wihng"
     },
     "tabp0ip66jgil": {
       "id": "tabp0ip66jgil",
-      "index": 14,
+      "index": 13,
       "isDuplicateLabel": false,
       "isVisible": "{{\n  Auth.can(\"inventory.count.view\")\n  && (\n    !appsmith.store.inventoryMode\n    || appsmith.store.inventoryMode === \"LIST\"\n  )\n}}\n",
       "label": "Inventory Count",

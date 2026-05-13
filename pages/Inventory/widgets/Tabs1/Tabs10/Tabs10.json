@@ -55,7 +55,7 @@
       "widgetName": "Canvas65"
     }
   ],
-  "defaultTab": "Tab 1",
+  "defaultTab": "Items",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -65,14 +65,22 @@
     },
     {
       "key": "boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isVisible"
+    }
+  ],
   "dynamicTriggerPathList": [],
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{\n  (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n  || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n  || (appsmith.store.permissions || []).includes(\"inventory.sales_return.view\")\n}}\n",
   "key": "ksvxvx2u14",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

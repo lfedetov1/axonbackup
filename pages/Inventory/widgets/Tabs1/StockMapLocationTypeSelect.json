@@ -14,6 +14,9 @@
     },
     {
       "key": "sourceData"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -23,6 +26,9 @@
     },
     {
       "key": "onDropdownOpen"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -30,7 +36,7 @@
       "key": "onDropdownOpen"
     }
   ],
-  "isDisabled": false,
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.stock_mapping.view\")\n  )\n}}\n",
   "isFilterable": true,
   "isLoading": false,
   "isRequired": false,

@@ -70,7 +70,7 @@
     }
   ],
   "isCompact": false,
-  "isDisabled": "{{\n  !Auth.can(\"inventory.picking.pick\")\n  || ![\"DRAFT\", \"READY\", \"APPROVED\"].includes(PickingPackingTable.triggeredRow?.Status)\n}}\n",
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.permissions || []).includes(\"inventory.picking.pick\")\n  )\n}}\n",
   "isLoading": false,
   "isVisible": "true",
   "key": "80uqlrb53u",

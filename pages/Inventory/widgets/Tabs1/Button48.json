@@ -35,7 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onClick": "{{\n  SyncWarehouseTasksFromDocument.run().then(() => {\n    return ListWarehouseTasks.run();\n  }).then(() => {\n    return ListWarehouseTaskItems.run({\n      documentId: WarehouseTasksTable.selectedRow?.documentId || 0\n    });\n  })\n}}\n",
+  "onClick": "{{\n  SyncWarehouseTasksFromDocument.run().then(() => {\n    return ListWarehouseTasks.run();\n  }).then(() => {\n    return ListWarehouseTaskItems.run({\n      documentId: WarehouseTasksTable.selectedRow?.documentId || 0\n    });\n  })\n}}\n\n",
   "parentColumnSpace": 16.96875,
   "parentId": "v8mejzkeb3",
   "parentRowSpace": 10,

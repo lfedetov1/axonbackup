@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    r.code AS roleCode,\n    r.name AS roleName,\n    p.code AS permissionCode\nFROM company_users cu\nJOIN roles r\n  ON r.id = cu.role_id\nJOIN role_permissions rp\n  ON rp.role_id = r.id\nJOIN permissions p\n  ON p.id = rp.permission_id\nJOIN users u\n  ON u.id = cu.user_id\nWHERE cu.company_id = {{appsmith.store.companyId}}\n  AND cu.user_id = {{appsmith.store.userId}}\n  AND u.is_active = 1\nORDER BY\n    p.code;\n",
+      "body": "SELECT\n    r.code AS roleCode,\n    r.name AS roleName,\n    p.code AS permissionCode\nFROM company_users cu\nJOIN roles r\n  ON r.id = cu.role_id\nJOIN users u\n  ON u.id = cu.user_id\nLEFT JOIN role_permissions rp\n  ON rp.role_id = r.id\nLEFT JOIN permissions p\n  ON p.id = rp.permission_id\nWHERE cu.company_id = {{appsmith.store.companyId}}\n  AND cu.user_id = {{appsmith.store.userId}}\n  AND u.is_active = 1\nORDER BY\n    p.code;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

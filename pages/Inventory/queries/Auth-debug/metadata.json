@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_c0c8e045-40de-46d4-babb-9d7bc9cbf50c",
-  "id": "Inventory_Auth.roleCode",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_f6d4feef-be1b-452a-961b-242d23bd0c65",
+  "id": "Inventory_Auth.debug",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -22,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "Auth.roleCode",
-    "name": "roleCode",
+    "fullyQualifiedName": "Auth.debug",
+    "name": "debug",
     "pageId": "Inventory",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
