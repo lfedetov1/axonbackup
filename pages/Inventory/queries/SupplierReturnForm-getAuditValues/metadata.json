@@ -12,7 +12,7 @@
         },
         {
           "name": "rows",
-          "value": "{{JSObject1.rows()}}"
+          "value": "{{SupplierReturnForm.rows()}}"
         }
       ],
       "paginationType": "NONE",

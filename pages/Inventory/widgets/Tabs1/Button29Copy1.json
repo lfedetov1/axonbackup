@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -26,7 +32,7 @@
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ !Auth.can(\"inventory.supplier_return.create\") }}\n",
   "key": "fxhh1kirgz",
   "leftColumn": 55,
   "minWidth": 120,
@@ -35,7 +41,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "{{\n  ListDeliveryNoteCustomers.run();\n  ListInventoryWarehouses.run();\n  GetNextDeliveryNoteNumber.run().then(() => {\n    DeliveryNoteForm.startNew();\n  });\n}}\n",
+  "onClick": "{{\n  SupplierReturnForm.startNew().then(() => {\n    showModal(SupplierReturnModal.name);\n  })\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "fnzi8tt2hu",
   "parentRowSpace": 10,

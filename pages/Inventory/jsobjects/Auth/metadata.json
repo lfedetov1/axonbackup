@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_e26d5bc6-7c0c-4412-b472-a8327f20b866",
+  "id": "Inventory_Auth",
+  "unpublishedCollection": {
+    "name": "Auth",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

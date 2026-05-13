@@ -50,9 +50,10 @@
     "lineTotal",
     "reason",
     "note",
+    "customColumn1",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1778574668068,
+  "columnUpdatedAt": 1778657740832,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -145,7 +146,10 @@
       "key": "primaryColumns.EditActions1.isDiscardDisabled"
     },
     {
-      "key": "primaryColumns.returnQuantity.isCellEditable"
+      "key": "primaryColumns.customColumn1.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn1.boxShadow"
     }
   ],
   "dynamicPropertyPathList": [
@@ -165,13 +169,19 @@
       "key": "primaryColumns.receivedQuantity.onSubmit"
     },
     {
-      "key": "primaryColumns.returnQuantity.isCellEditable"
-    },
-    {
       "key": "primaryColumns.reason.onSubmit"
     },
     {
       "key": "primaryColumns.note.onSubmit"
+    },
+    {
+      "key": "primaryColumns.returnQuantity.onSubmit"
+    },
+    {
+      "key": "primaryColumns.EditActions1.onSave"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -186,6 +196,15 @@
     },
     {
       "key": "primaryColumns.note.onSubmit"
+    },
+    {
+      "key": "primaryColumns.returnQuantity.onSubmit"
+    },
+    {
+      "key": "primaryColumns.EditActions1.onSave"
+    },
+    {
+      "key": "primaryColumns.customColumn1.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -245,6 +264,7 @@
       "isVisible": false,
       "label": "Save / Discard",
       "notation": "standard",
+      "onSave": "{{ SupplierReturnForm.updateRows() }}\n",
       "originalId": "EditActions1",
       "saveActionLabel": "Save",
       "saveBorderRadius": "{{SupplierReturnItemsEditTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
@@ -311,6 +331,45 @@
       "notation": "standard",
       "onSubmit": "{{ SupplierReturnForm.updateRows() }}\n",
       "originalId": "barcode",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn1": {
+      "alias": "Remove",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SupplierReturnItemsEditTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SupplierReturnItemsEditTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "key-delete",
+      "id": "customColumn1",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Remove",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ SupplierReturnForm.removeSelectedRow() }}\n",
+      "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
@@ -581,12 +640,12 @@
       "horizontalAlignment": "LEFT",
       "id": "receivedQuantity",
       "index": 10,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "Received Quantity",
@@ -644,16 +703,17 @@
       "horizontalAlignment": "LEFT",
       "id": "returnQuantity",
       "index": 13,
-      "isCellEditable": "{{(() => { const tableData = SupplierReturnItemsEditTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( SupplierReturnForm.updateRows() )) :  SupplierReturnForm.updateRows()  })()}}",
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "Return Quantity",
       "notation": "standard",
+      "onSubmit": "{{ SupplierReturnForm.updateRows() }}",
       "originalId": "returnQuantity",
       "sticky": "",
       "textSize": "0.875rem",

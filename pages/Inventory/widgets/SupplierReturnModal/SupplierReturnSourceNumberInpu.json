@@ -15,7 +15,16 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
@@ -38,6 +47,7 @@
   "mobileRightColumn": 56,
   "mobileTopRow": 14,
   "needsErrorInfo": false,
+  "onTextChanged": "{{ SupplierReturnForm.loadSourceDocument() }}\n",
   "parentColumnSpace": 15.40625,
   "parentId": "hhkgf0xq92",
   "parentRowSpace": 10,

@@ -1,17 +1,12 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_a20ae8c5-db99-4a66-800d-e634cdca1c4a",
-  "id": "Inventory_SupplierReturnForm.totals",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_cd75d295-a58a-45d2-9f2a-f55fe6444733",
+  "id": "Inventory_SupplierReturnForm.tableRows",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [
-        {
-          "name": "rows",
-          "value": "{{SupplierReturnForm.rows()}}"
-        }
-      ],
+      "jsArguments": [],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -27,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "SupplierReturnForm.totals",
-    "name": "totals",
+    "fullyQualifiedName": "SupplierReturnForm.tableRows",
+    "name": "tableRows",
     "pageId": "Inventory",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

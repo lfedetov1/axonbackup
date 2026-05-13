@@ -12,7 +12,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "upload",
   "isDefaultClickDisabled": true,
@@ -27,6 +36,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
+  "onClick": "{{ SupplierReturnForm.loadSourceDocument() }}\n",
   "originalBottomRow": 41,
   "originalTopRow": 37,
   "parentId": "hhkgf0xq92",

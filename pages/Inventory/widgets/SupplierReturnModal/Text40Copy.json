@@ -43,7 +43,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 23,
   "shouldTruncate": false,
-  "text": "{{ \"Return Value: \" + Number(SupplierReturnForm.totals().value || 0).toFixed(2) }}\n",
+  "text": "{{\n  \"Return Value: \" +\n  Number((appsmith.store.supplierReturnItems || []).reduce((s, r) => s + Number(r.lineTotal || 0), 0)).toFixed(2) \n}}\n",
   "textAlign": "LEFT",
   "textColor": "#ef4444",
   "topRow": 85,

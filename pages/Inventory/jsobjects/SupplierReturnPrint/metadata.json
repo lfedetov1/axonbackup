@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_34be30db-5a39-4d16-a831-4b3f2af4ead3",
+  "id": "Inventory_SupplierReturnPrint",
+  "unpublishedCollection": {
+    "name": "SupplierReturnPrint",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

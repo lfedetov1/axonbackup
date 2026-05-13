@@ -11,6 +11,9 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -40,8 +43,8 @@
   "mobileRightColumn": 25,
   "mobileTopRow": 25,
   "needsErrorInfo": false,
-  "optionLabel": "name",
-  "optionValue": "code",
+  "optionLabel": "label",
+  "optionValue": "value",
   "originalBottomRow": 26,
   "originalTopRow": 19,
   "parentColumnSpace": 15.40625,
@@ -52,7 +55,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 37,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "sourceData": "{{\n  (ListInventoryWarehouses.data || InventoryWarehouseSelect.options || [])\n    .map(w => ({\n      label: w.label || `${w.warehouseCode || w.code || w[\"Warehouse Code\"] || \"\"} - ${w.warehouseName || w.name || w.Warehouse || \"\"}`,\n      value: String(w.value || w.warehouseId || w.id || w[\"Warehouse ID\"] || \"\")\n    }))\n    .filter(w => Number(w.value || 0) > 0)\n}}\n",
   "topRow": 17,
   "type": "SELECT_WIDGET",
   "version": 1,

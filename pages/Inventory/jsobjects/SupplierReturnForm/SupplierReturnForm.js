@@ -20,17 +20,30 @@ export default {
         ...row,
         lineNo: index + 1,
         returnQuantity,
+        unitCost,
         lineTotal: Number((returnQuantity * unitCost).toFixed(2))
       };
     });
   },
 
   async setRows(rows) {
-    await storeValue("supplierReturnItems", this.recalc(rows));
+    await storeValue("supplierReturnItems", this.recalc(rows || []));
   },
 
-  totals() {
-    return this.rows().reduce(
+  tableRows() {
+    if (
+      typeof SupplierReturnItemsEditTable !== "undefined" &&
+      Array.isArray(SupplierReturnItemsEditTable.tableData) &&
+      SupplierReturnItemsEditTable.tableData.length
+    ) {
+      return SupplierReturnItemsEditTable.tableData;
+    }
+
+    return this.rows();
+  },
+
+  totals(rows = this.rows()) {
+    return (rows || []).reduce(
       (sum, row) => ({
         quantity: sum.quantity + Number(row.returnQuantity || 0),
         value: sum.value + Number(row.lineTotal || 0)
@@ -48,10 +61,7 @@ export default {
 
     await GetNextSupplierReturnNumber.run();
 
-    SupplierReturnNumberInput.setValue(
-      GetNextSupplierReturnNumber.data?.[0]?.nextSupplierReturnNumber || ""
-    );
-
+    SupplierReturnNumberInput.setValue(GetNextSupplierReturnNumber.data?.[0]?.nextSupplierReturnNumber || "");
     SupplierReturnStatusInput.setValue("DRAFT");
     SupplierReturnDateInput.setValue(moment().format("YYYY-MM-DD"));
     SupplierReturnSourceNumberInpu.setValue("");
@@ -71,6 +81,15 @@ export default {
   },
 
   async loadSourceDocument() {
+    const pick = (row, keys, fallback = "") => {
+      for (const key of keys) {
+        if (row?.[key] !== undefined && row?.[key] !== null) return row[key];
+      }
+      return fallback;
+    };
+
+    const num = (row, keys, fallback = 0) => Number(pick(row, keys, fallback) || 0);
+
     if (!SupplierReturnSourceNumberInpu.text.trim()) {
       showAlert("Source receipt number is required.", "warning");
       return;
@@ -84,48 +103,69 @@ export default {
       return;
     }
 
-    await storeValue("supplierReturnSourceDocumentId", source.sourceDocumentId);
+    const sourceDocumentId = source.sourceDocumentId || source.documentId || source.id || source.ID;
+
+    await storeValue("supplierReturnSourceDocumentId", sourceDocumentId);
 
     SupplierReturnSupplierSelect.setSelectedOption(source.supplierId ? String(source.supplierId) : "");
     SupplierReturnWarehouseSelect.setSelectedOption(source.warehouseId ? String(source.warehouseId) : "");
 
-    const itemRows = await GetSupplierReturnSourceItems.run({
-      sourceDocumentId: source.sourceDocumentId
-    });
+    const itemRows = await GetSupplierReturnSourceItems.run({ sourceDocumentId });
+    const rawItems = itemRows || GetSupplierReturnSourceItems.data || [];
 
-    const items = itemRows || GetSupplierReturnSourceItems.data || [];
+    const mapped = rawItems.map(row => {
+      const receivedQuantity = num(row, ["receivedQuantity", "Received Quantity", "quantity", "Quantity"]);
+      const alreadyReturnedQuantity = num(row, ["alreadyReturnedQuantity", "Already Returned Quantity"]);
+      const remainingQuantity = num(row, ["remainingQuantity", "Remaining Quantity"], receivedQuantity - alreadyReturnedQuantity);
 
-    await this.setRows(
-      items
-        .filter(row => Number(row.remainingQuantity || 0) > 0)
-        .map(row => ({
-          lineNo: row.lineNo,
-          sourceItemId: row.sourceItemId,
-          barcode: row.barcode || "",
-          productId: row.productId,
-          productCode: row.productCode,
-          productName: row.productName,
-          sku: row.sku || "",
-          description: row.description || row.productName,
-          unitId: row.unitId,
-          unitCode: row.unitCode || "",
-          receivedQuantity: Number(row.receivedQuantity || 0),
-          alreadyReturnedQuantity: Number(row.alreadyReturnedQuantity || 0),
-          remainingQuantity: Number(row.remainingQuantity || 0),
-          returnQuantity: 0,
-          unitCost: Number(row.unitCost || 0),
-          lineTotal: 0,
-          reason: SupplierReturnReasonSelect.selectedOptionValue || "RETURN_TO_SUPPLIER",
-          note: ""
-        }))
-    );
+      return {
+        lineNo: num(row, ["lineNo", "Line No"]),
+        sourceItemId: pick(row, ["sourceItemId", "Source Item ID", "documentItemId"]),
+        barcode: pick(row, ["barcode", "Barcode"]),
+        productId: pick(row, ["productId", "Product ID"]),
+        productCode: pick(row, ["productCode", "Product Code"]),
+        productName: pick(row, ["productName", "Product Name"]),
+        sku: pick(row, ["sku", "SKU"]),
+        description: pick(row, ["description", "Description", "productName", "Product Name"]),
+        unitId: pick(row, ["unitId", "Unit ID"]),
+        unitCode: pick(row, ["unitCode", "Unit"]),
+        receivedQuantity,
+        alreadyReturnedQuantity,
+        remainingQuantity,
+        returnQuantity: 0,
+        unitCost: num(row, ["unitCost", "Unit Cost", "unitPrice", "Unit Price"]),
+        lineTotal: 0,
+        reason: SupplierReturnReasonSelect.selectedOptionValue || "RETURN_TO_SUPPLIER",
+        note: ""
+      };
+    }).filter(row => Number(row.remainingQuantity || 0) > 0);
 
-    showAlert("Source receipt loaded.", "success");
+    await this.setRows(mapped);
+    showAlert(`${mapped.length} source item(s) loaded.`, "success");
+  },
+
+  async updateRows() {
+    await this.setRows(this.tableRows());
+  },
+
+  async removeSelectedRow() {
+    const rows = this.rows();
+    let selectedIndex = SupplierReturnItemsEditTable.selectedRowIndex ?? SupplierReturnItemsEditTable.triggeredRowIndex ?? -1;
+
+    if (selectedIndex < 0 && SupplierReturnItemsEditTable.selectedRow?.lineNo) {
+      selectedIndex = rows.findIndex(row => Number(row.lineNo) === Number(SupplierReturnItemsEditTable.selectedRow.lineNo));
+    }
+
+    if (selectedIndex < 0) {
+      showAlert("Select row first.", "warning");
+      return;
+    }
+
+    await this.setRows(rows.filter((_, index) => index !== selectedIndex));
   },
 
   async scanBarcode(value) {
     const lookup = String(value || "").trim();
-
     if (!lookup) return;
 
     const rows = [...this.rows()];
@@ -143,26 +183,20 @@ export default {
 
     const row = rows[index];
     const nextQty = Number(row.returnQuantity || 0) + 1;
-    const maxQty = Number(row.remainingQuantity || 0);
 
-    if (nextQty > maxQty) {
+    if (nextQty > Number(row.remainingQuantity || 0)) {
       showAlert(`Cannot return more than remaining quantity for ${row.productCode}.`, "warning");
       SupplierReturnBarcodeInput.setValue("");
       return;
     }
 
-    rows[index] = {
-      ...row,
-      returnQuantity: nextQty
-    };
-
+    rows[index] = { ...row, returnQuantity: nextQty };
     await this.setRows(rows);
     SupplierReturnBarcodeInput.setValue("");
   },
 
   async scanBarcodeDebounced(value) {
     const lookup = String(value || "").trim();
-
     if (!lookup || lookup.length < 3) return;
 
     await storeValue("supplierReturnScanLastValue", lookup);
@@ -174,52 +208,7 @@ export default {
     }, 300);
   },
 
-  async updateRows() {
-    const tableRows = SupplierReturnItemsEditTable.tableData || this.rows();
-    await this.setRows(tableRows);
-  },
-
-  async addBlankRow() {
-    await this.setRows([
-      ...this.rows(),
-      {
-        lineNo: this.rows().length + 1,
-        sourceItemId: null,
-        barcode: "",
-        productId: null,
-        productCode: "",
-        productName: "",
-        sku: "",
-        description: "",
-        unitId: null,
-        unitCode: "",
-        receivedQuantity: 0,
-        alreadyReturnedQuantity: 0,
-        remainingQuantity: 0,
-        returnQuantity: 0,
-        unitCost: 0,
-        lineTotal: 0,
-        reason: SupplierReturnReasonSelect.selectedOptionValue || "RETURN_TO_SUPPLIER",
-        note: ""
-      }
-    ]);
-  },
-
-  async removeSelectedRow() {
-    const selectedIndex =
-      SupplierReturnItemsEditTable.selectedRowIndex ??
-      SupplierReturnItemsEditTable.triggeredRowIndex ??
-      -1;
-
-    if (selectedIndex < 0) {
-      showAlert("Select row first.", "warning");
-      return;
-    }
-
-    await this.setRows(this.rows().filter((_, index) => index !== selectedIndex));
-  },
-
-  validate() {
+  validate(rows) {
     if (!SupplierReturnNumberInput.text.trim()) {
       showAlert("Return number is required.", "warning");
       return false;
@@ -235,19 +224,19 @@ export default {
       return false;
     }
 
-    if (!SupplierReturnWarehouseSelect.selectedOptionValue) {
+    if (!SupplierReturnWarehouseSelect.selectedOptionValue || Number(SupplierReturnWarehouseSelect.selectedOptionValue) === 0) {
       showAlert("Warehouse is required.", "warning");
       return false;
     }
 
-    const rows = this.rows().filter(row => Number(row.returnQuantity || 0) > 0);
+    const activeRows = (rows || []).filter(row => Number(row.returnQuantity || 0) > 0);
 
-    if (!rows.length) {
+    if (!activeRows.length) {
       showAlert("Enter return quantity for at least one item.", "warning");
       return false;
     }
 
-    const invalid = rows.find(row =>
+    const invalid = activeRows.find(row =>
       !row.productId ||
       Number(row.returnQuantity || 0) <= 0 ||
       Number(row.returnQuantity || 0) > Number(row.remainingQuantity || 0)
@@ -262,48 +251,43 @@ export default {
   },
 
   async saveDraft() {
-    await this.updateRows();
-
-    if (!this.validate()) return;
-
-    const duplicate = await CheckSupplierReturnNumberDupli.run();
-
-    if (duplicate?.length || CheckSupplierReturnNumberDupli.data?.length) {
-      showAlert("Supplier return number already exists.", "error");
-      return;
-    }
-
     try {
-      const wasEditMode = this.isEditMode();
-      const rows = this.recalc(this.rows().filter(row => Number(row.returnQuantity || 0) > 0));
-      const totalAmount = rows.reduce((s, r) => s + Number(r.lineTotal || 0), 0);
+      const syncedRows = this.recalc(this.tableRows());
+      await storeValue("supplierReturnItems", syncedRows);
 
+      if (!this.validate(syncedRows)) return;
+
+      const wasEditMode = this.isEditMode();
+      const documentIdForDuplicate = this.documentId() || 0;
+
+      const duplicate = await CheckSupplierReturnNumberDupli.run({ documentId: documentIdForDuplicate });
+
+      if (duplicate?.length || CheckSupplierReturnNumberDupli.data?.length) {
+        showAlert("Supplier return number already exists.", "error");
+        return;
+      }
+
+      const rows = this.recalc(syncedRows.filter(row => Number(row.returnQuantity || 0) > 0));
+      const totals = this.totals(rows);
       let documentId = this.documentId();
 
       if (wasEditMode) {
-        await UpdateSupplierReturnDocument.run({
-          documentId,
-          totalAmount
-        });
-
+        await UpdateSupplierReturnDocument.run({ documentId, totalAmount: totals.value });
         await DeleteSupplierReturnItems.run({ documentId });
       } else {
         await InsertSupplierReturnDocument.run({
           status: "DRAFT",
-          totalAmount
+          totalAmount: totals.value
         });
 
         const idRows = await GetSupplierReturnIdByNumber.run();
         const found = idRows?.[0] || GetSupplierReturnIdByNumber.data?.[0];
-
         documentId = found?.documentId;
 
         if (!documentId) {
           showAlert("Supplier return was saved, but ID was not found.", "error");
           return;
         }
-
-        await storeValue("currentSupplierReturnId", documentId);
       }
 
       for (let i = 0; i < rows.length; i += 1) {
@@ -333,7 +317,7 @@ export default {
         });
       }
 
-      await this.afterSave();
+      await this.afterSave(documentId);
       showAlert(wasEditMode ? "Supplier return was updated." : "Supplier return was saved.", "success");
     } catch (error) {
       showAlert("Error while saving supplier return: " + error.message, "error");
@@ -392,7 +376,7 @@ export default {
       unitCode: row.unitCode || "",
       receivedQuantity: Number(row.returnQuantity || 0),
       alreadyReturnedQuantity: 0,
-      remainingQuantity: Number(row.returnQuantity || 0),
+      remainingQuantity: Number(row.remainingQuantity || row.returnQuantity || 0),
       returnQuantity: Number(row.returnQuantity || 0),
       unitCost: Number(row.unitCost || 0),
       lineTotal: Number(row.lineTotal || 0),
@@ -407,101 +391,111 @@ export default {
     const documentId = this.getDocumentIdFromRow(row);
     if (!documentId) return;
 
-    const headerRows = await GetSupplierReturnForPost.run({ documentId });
-    const header = headerRows?.[0] || GetSupplierReturnForPost.data?.[0];
+    try {
+      const headerRows = await GetSupplierReturnForPost.run({ documentId });
+      const header = headerRows?.[0] || GetSupplierReturnForPost.data?.[0];
 
-    if (!header || header.status !== "DRAFT") {
-      showAlert("Only draft supplier returns can be posted.", "warning");
-      return;
-    }
+      if (!header || header.status !== "DRAFT") {
+        showAlert("Only draft supplier returns can be posted.", "warning");
+        return;
+      }
 
-    const itemRows = await GetSupplierReturnItemsForPost.run({ documentId });
-    const items = itemRows || GetSupplierReturnItemsForPost.data || [];
+      const itemRows = await GetSupplierReturnItemsForPost.run({ documentId });
+      const items = itemRows || GetSupplierReturnItemsForPost.data || [];
 
-    for (const item of items) {
-      if (Number(item.trackStock || 0) === 1) {
-        await InsertSupplierReturnStockMovem.run({
-          documentId,
-          documentItemId: item.documentItemId,
-          warehouseId: header.warehouseId,
-          productId: item.productId,
-          movementDate: header.documentDate,
-          quantity: item.quantity,
-          unitCost: item.unitCost || 0,
-          totalCost: item.lineTotal || 0,
-          note: `Supplier return ${header.documentNumber}`
+      for (const item of items) {
+        if (Number(item.trackStock || 0) === 1) {
+          await InsertSupplierReturnStockMovem.run({
+            documentId,
+            documentItemId: item.documentItemId,
+            warehouseId: header.warehouseId,
+            productId: item.productId,
+            movementDate: moment(header.documentDate).format("YYYY-MM-DD"),
+            quantity: item.quantity,
+            unitCost: item.unitCost || 0,
+            totalCost: item.lineTotal || 0,
+            note: `Supplier return ${header.documentNumber}`
+          });
+        }
+      }
+
+      await PostSupplierReturn.run({ documentId });
+
+      if (typeof AuditLog !== "undefined") {
+        await AuditLog.insert({
+          entityName: "documents",
+          entityId: documentId,
+          actionType: "POST",
+          newValues: {
+            source: "Supplier Return",
+            document_number: header.documentNumber,
+            status: "POSTED"
+          }
         });
       }
+
+      await this.refreshLists(documentId);
+      showAlert("Supplier return was posted.", "success");
+    } catch (error) {
+      showAlert("Error while posting supplier return: " + error.message, "error");
+      console.log(error);
     }
-
-    await PostSupplierReturn.run({ documentId });
-
-    if (typeof AuditLog !== "undefined") {
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: documentId,
-        actionType: "POST",
-        newValues: {
-          source: "Supplier Return",
-          document_number: header.documentNumber,
-          status: "POSTED"
-        }
-      });
-    }
-
-    await this.refreshLists();
-    showAlert("Supplier return was posted.", "success");
   },
 
   async voidReturn(row = null) {
     const documentId = this.getDocumentIdFromRow(row);
     if (!documentId) return;
 
-    const headerRows = await GetSupplierReturnForPost.run({ documentId });
-    const header = headerRows?.[0] || GetSupplierReturnForPost.data?.[0];
+    try {
+      const headerRows = await GetSupplierReturnForPost.run({ documentId });
+      const header = headerRows?.[0] || GetSupplierReturnForPost.data?.[0];
 
-    if (!header) {
-      showAlert("Supplier return was not found.", "error");
-      return;
-    }
+      if (!header) {
+        showAlert("Supplier return was not found.", "error");
+        return;
+      }
 
-    if (header.status === "POSTED") {
-      const itemRows = await GetSupplierReturnItemsForPost.run({ documentId });
-      const items = itemRows || GetSupplierReturnItemsForPost.data || [];
+      if (header.status === "POSTED") {
+        const itemRows = await GetSupplierReturnItemsForPost.run({ documentId });
+        const items = itemRows || GetSupplierReturnItemsForPost.data || [];
 
-      for (const item of items) {
-        if (Number(item.trackStock || 0) === 1) {
-          await InsertSupplierReturnVoidMoveme.run({
-            documentId,
-            documentItemId: item.documentItemId,
-            warehouseId: header.warehouseId,
-            productId: item.productId,
-            quantity: item.quantity,
-            unitCost: item.unitCost || 0,
-            totalCost: item.lineTotal || 0,
-            note: `Void supplier return ${header.documentNumber}`
-          });
+        for (const item of items) {
+          if (Number(item.trackStock || 0) === 1) {
+            await InsertSupplierReturnVoidMoveme.run({
+              documentId,
+              documentItemId: item.documentItemId,
+              warehouseId: header.warehouseId,
+              productId: item.productId,
+              quantity: item.quantity,
+              unitCost: item.unitCost || 0,
+              totalCost: item.lineTotal || 0,
+              note: `Void supplier return ${header.documentNumber}`
+            });
+          }
         }
       }
+
+      await VoidSupplierReturn.run({ documentId });
+
+      if (typeof AuditLog !== "undefined") {
+        await AuditLog.insert({
+          entityName: "documents",
+          entityId: documentId,
+          actionType: "VOID",
+          newValues: {
+            source: "Supplier Return",
+            document_number: header.documentNumber,
+            status: "CANCELLED"
+          }
+        });
+      }
+
+      await this.refreshLists(documentId);
+      showAlert("Supplier return was cancelled.", "success");
+    } catch (error) {
+      showAlert("Error while voiding supplier return: " + error.message, "error");
+      console.log(error);
     }
-
-    await VoidSupplierReturn.run({ documentId });
-
-    if (typeof AuditLog !== "undefined") {
-      await AuditLog.insert({
-        entityName: "documents",
-        entityId: documentId,
-        actionType: "VOID",
-        newValues: {
-          source: "Supplier Return",
-          document_number: header.documentNumber,
-          status: "CANCELLED"
-        }
-      });
-    }
-
-    await this.refreshLists();
-    showAlert("Supplier return was cancelled.", "success");
   },
 
   getDocumentIdFromRow(row = null) {
@@ -517,7 +511,7 @@ export default {
   },
 
   getAuditValues(documentId, rows = this.rows()) {
-    const totals = this.totals();
+    const totals = this.totals(rows);
 
     return {
       source: "Supplier Return form",
@@ -533,34 +527,38 @@ export default {
     };
   },
 
-  async refreshLists() {
+  async refreshLists(documentId = 0) {
     if (typeof ListSupplierReturns !== "undefined") await ListSupplierReturns.run();
+
     if (typeof ListSupplierReturnItems !== "undefined") {
       await ListSupplierReturnItems.run({
-        documentId: SupplierReturnsTable.selectedRow?.documentId || 0
+        documentId: documentId || SupplierReturnsTable.selectedRow?.documentId || 0
       });
     }
+
     if (typeof InventoryBalanceQuery !== "undefined") await InventoryBalanceQuery.run();
     if (typeof StockMovementsQuery !== "undefined") await StockMovementsQuery.run();
   },
 
-  async afterSave() {
+  async afterSave(documentId = 0) {
+    closeModal(SupplierReturnModal.name);
+
+    await this.refreshLists(documentId);
+
     await storeValue("currentSupplierReturnId", null);
     await storeValue("supplierReturnEditMode", false);
     await storeValue("supplierReturnBeforeEdit", null);
     await storeValue("supplierReturnSourceDocumentId", null);
     await storeValue("supplierReturnItems", []);
-
-    await this.refreshLists();
-    closeModal(SupplierReturnModal.name);
   },
 
   async cancel() {
+    closeModal(SupplierReturnModal.name);
+
     await storeValue("currentSupplierReturnId", null);
     await storeValue("supplierReturnEditMode", false);
     await storeValue("supplierReturnBeforeEdit", null);
     await storeValue("supplierReturnSourceDocumentId", null);
     await storeValue("supplierReturnItems", []);
-    closeModal(SupplierReturnModal.name);
   }
 };
