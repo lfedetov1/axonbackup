@@ -1,0 +1,62 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 26,
+  "boxShadow": "none",
+  "buttonColor": "#dbeafe",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "print",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"inventory.reports.view\")\n  )\n}}\n",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "ztmsy7gqpj",
+  "leftColumn": 53,
+  "minWidth": 120,
+  "mobileBottomRow": 26,
+  "mobileLeftColumn": 44,
+  "mobileRightColumn": 60,
+  "mobileTopRow": 22,
+  "needsErrorInfo": false,
+  "onClick": "{{ WarehouseReportPrint.open() }}\n",
+  "originalBottomRow": 26,
+  "originalTopRow": 22,
+  "parentColumnSpace": 13.65625,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 59,
+  "text": "Print",
+  "topRow": 22,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "i6e3it5hze",
+  "widgetName": "Button3Copy"
+}

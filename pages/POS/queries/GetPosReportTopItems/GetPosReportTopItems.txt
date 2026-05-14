@@ -1,0 +1,28 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    COALESCE(SUM(di.quantity), 0) AS quantity,
+    COALESCE(SUM(di.line_total), 0) AS totalAmount
+FROM documents d
+JOIN document_items di
+  ON di.document_id = d.id
+LEFT JOIN products p
+  ON p.id = di.product_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'POS_SALE'
+  AND d.status IN ('POSTED', 'APPROVED')
+  AND d.document_date >= {{moment(PosReportDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(PosReportDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND (
+      {{Number(appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(appsmith.store.warehouseId || 0)}}
+  )
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    p.barcode
+ORDER BY
+    totalAmount DESC
+LIMIT 20;

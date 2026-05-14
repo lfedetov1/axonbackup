@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 11,
+  "bottomRow": 8,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -33,8 +33,8 @@
   "mobileRightColumn": 17,
   "mobileTopRow": 4,
   "needsErrorInfo": false,
-  "originalBottomRow": 8,
-  "originalTopRow": 4,
+  "originalBottomRow": 11,
+  "originalTopRow": 7,
   "overflow": "NONE",
   "parentColumnSpace": 3.12890625,
   "parentId": "ua81m7iv1j",
@@ -46,7 +46,7 @@
   "text": "{{ \"€ \" + Number(DashboardSummaryQuery.data?.[0]?.today_revenue || 0).toLocaleString(\"en-US\", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n",
   "textAlign": "LEFT",
   "textColor": "#ffffff",
-  "topRow": 7,
+  "topRow": 4,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

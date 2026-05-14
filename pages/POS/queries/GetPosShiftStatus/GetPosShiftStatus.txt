@@ -1,0 +1,101 @@
+SELECT
+    cr.id AS cashRegisterId,
+    cr.code AS cashRegisterCode,
+    cr.name AS cashRegisterName,
+    cr.currency_code AS currencyCode,
+
+    COALESCE(opening.openingAmount, cr.opening_balance, 0) AS openingAmount,
+    COALESCE(cashTotals.cashInAmount, 0) AS cashInAmount,
+    COALESCE(cashTotals.cashOutAmount, 0) AS cashOutAmount,
+    COALESCE(sales.cashSalesAmount, 0) AS cashSalesAmount,
+    COALESCE(sales.cardSalesAmount, 0) AS cardSalesAmount,
+    COALESCE(sales.bankSalesAmount, 0) AS bankSalesAmount,
+    COALESCE(sales.otherSalesAmount, 0) AS otherSalesAmount,
+    COALESCE(sales.totalSalesAmount, 0) AS totalSalesAmount,
+    COALESCE(sales.receiptCount, 0) AS receiptCount,
+
+    (
+      COALESCE(opening.openingAmount, cr.opening_balance, 0)
+      + COALESCE(sales.cashSalesAmount, 0)
+      + COALESCE(cashTotals.cashInAmount, 0)
+      - COALESCE(cashTotals.cashOutAmount, 0)
+    ) AS expectedCashAmount,
+
+    CASE
+      WHEN COALESCE(opening.openingCount, 0) > 0
+       AND COALESCE(closing.closingCount, 0) = 0
+      THEN 'OPEN'
+      WHEN COALESCE(closing.closingCount, 0) > 0
+      THEN 'CLOSED'
+      ELSE 'NOT_OPENED'
+    END AS shiftStatus,
+
+    opening.openedAt AS openedAt,
+    closing.closedAt AS closedAt
+
+FROM cash_registers cr
+
+LEFT JOIN (
+    SELECT
+        cash_register_id,
+        COUNT(*) AS openingCount,
+        SUM(amount) AS openingAmount,
+        MIN(transaction_date) AS openedAt
+    FROM cash_transactions
+    WHERE transaction_type = 'OPENING'
+      AND DATE(transaction_date) = {{moment().format("YYYY-MM-DD")}}
+    GROUP BY cash_register_id
+) opening
+  ON opening.cash_register_id = cr.id
+
+LEFT JOIN (
+    SELECT
+        cash_register_id,
+        COUNT(*) AS closingCount,
+        MAX(transaction_date) AS closedAt
+    FROM cash_transactions
+    WHERE transaction_type = 'CLOSING'
+      AND DATE(transaction_date) = {{moment().format("YYYY-MM-DD")}}
+    GROUP BY cash_register_id
+) closing
+  ON closing.cash_register_id = cr.id
+
+LEFT JOIN (
+    SELECT
+        cash_register_id,
+        SUM(CASE WHEN transaction_type IN ('IN', 'TRANSFER_IN') THEN amount ELSE 0 END) AS cashInAmount,
+        SUM(CASE WHEN transaction_type IN ('OUT', 'TRANSFER_OUT') THEN amount ELSE 0 END) AS cashOutAmount
+    FROM cash_transactions
+    WHERE DATE(transaction_date) = {{moment().format("YYYY-MM-DD")}}
+    GROUP BY cash_register_id
+) cashTotals
+  ON cashTotals.cash_register_id = cr.id
+
+LEFT JOIN (
+    SELECT
+        d.company_id,
+        d.warehouse_id,
+        COUNT(d.id) AS receiptCount,
+        SUM(d.total_amount) AS totalSalesAmount,
+        SUM(CASE WHEN d.payment_method = 'CASH' THEN d.total_amount ELSE 0 END) AS cashSalesAmount,
+        SUM(CASE WHEN d.payment_method = 'CARD' THEN d.total_amount ELSE 0 END) AS cardSalesAmount,
+        SUM(CASE WHEN d.payment_method = 'BANK' THEN d.total_amount ELSE 0 END) AS bankSalesAmount,
+        SUM(CASE WHEN d.payment_method IN ('OTHER', 'MIXED') THEN d.total_amount ELSE 0 END) AS otherSalesAmount
+    FROM documents d
+    WHERE d.company_id = {{appsmith.store.companyId}}
+      AND d.document_type = 'POS_SALE'
+      AND d.status IN ('POSTED', 'APPROVED')
+      AND d.document_date = {{moment().format("YYYY-MM-DD")}}
+    GROUP BY
+        d.company_id,
+        d.warehouse_id
+) sales
+  ON sales.company_id = cr.company_id
+ AND (
+      cr.warehouse_id = sales.warehouse_id
+      OR cr.warehouse_id = {{Number(appsmith.store.warehouseId || 0)}}
+ )
+
+WHERE cr.company_id = {{appsmith.store.companyId}}
+  AND cr.id = {{Number(PosControlCashRegisterSelect.selectedOptionValue || 0)}}
+LIMIT 1;

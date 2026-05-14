@@ -1,0 +1,11 @@
+SELECT
+    cr.id AS cashRegisterId,
+    cr.code AS cashRegisterCode,
+    cr.name AS cashRegisterName,
+    CONCAT(cr.code, ' - ', cr.name) AS label,
+    CAST(cr.id AS CHAR) AS value
+FROM cash_registers cr
+WHERE cr.company_id = {{appsmith.store.companyId}}
+  AND cr.is_active = 1
+ORDER BY
+    cr.code;

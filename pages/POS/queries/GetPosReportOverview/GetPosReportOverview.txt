@@ -1,0 +1,27 @@
+SELECT
+    COUNT(d.id) AS receiptCount,
+    COALESCE(SUM(d.total_amount), 0) AS totalSales,
+    COALESCE(SUM(d.tax_amount), 0) AS totalTax,
+    COALESCE(SUM(d.discount_amount), 0) AS totalDiscount,
+    COALESCE(AVG(d.total_amount), 0) AS averageReceipt,
+
+    COALESCE(SUM(CASE WHEN d.payment_method = 'CASH' THEN d.total_amount ELSE 0 END), 0) AS cashTotal,
+    COALESCE(SUM(CASE WHEN d.payment_method = 'CARD' THEN d.total_amount ELSE 0 END), 0) AS cardTotal,
+    COALESCE(SUM(CASE WHEN d.payment_method = 'BANK' THEN d.total_amount ELSE 0 END), 0) AS bankTotal,
+    COALESCE(SUM(CASE WHEN d.payment_method = 'OTHER' THEN d.total_amount ELSE 0 END), 0) AS otherTotal,
+    COALESCE(SUM(CASE WHEN d.payment_method = 'MIXED' THEN d.total_amount ELSE 0 END), 0) AS mixedTotal,
+
+    MIN(d.created_at) AS firstReceiptAt,
+    MAX(d.created_at) AS lastReceiptAt
+
+FROM documents d
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'POS_SALE'
+  AND d.status IN ('POSTED', 'APPROVED')
+  AND d.document_date >= {{moment(PosReportDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(PosReportDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND (
+      {{Number(appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(appsmith.store.warehouseId || 0)}}
+  );

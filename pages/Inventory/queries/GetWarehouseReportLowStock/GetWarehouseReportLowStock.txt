@@ -1,0 +1,42 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    u.code AS unitCode,
+    COALESCE(SUM(bal.quantity_balance), 0) AS currentStock,
+    COALESCE(MAX(wlp.minimum_quantity), 0) AS minimumStock,
+    COALESCE(MAX(wlp.reorder_quantity), 0) AS reorderQuantity,
+    w.code AS warehouseCode,
+    w.name AS warehouseName
+FROM v_inventory_balance bal
+JOIN products p
+  ON p.id = bal.product_id
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+LEFT JOIN warehouses w
+  ON w.id = bal.warehouse_id
+LEFT JOIN warehouse_location_products wlp
+  ON wlp.company_id = bal.company_id
+ AND wlp.warehouse_id = bal.warehouse_id
+ AND wlp.product_id = bal.product_id
+ AND wlp.is_active = 1
+WHERE bal.company_id = {{appsmith.store.companyId}}
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR bal.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    p.barcode,
+    u.code,
+    w.code,
+    w.name
+HAVING
+    minimumStock > 0
+    AND currentStock <= minimumStock
+ORDER BY
+    currentStock ASC,
+    p.name ASC
+LIMIT 20;

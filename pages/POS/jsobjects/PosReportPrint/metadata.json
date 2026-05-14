@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_bf145134-b85d-4436-b360-1848ee25e526",
+  "id": "POS_PosReportPrint",
+  "unpublishedCollection": {
+    "name": "PosReportPrint",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

@@ -1,0 +1,64 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    u.code AS unitCode,
+
+    di.batch_number AS batchNumber,
+    di.serial_number AS serialNumber,
+    di.expiry_date AS expiryDate,
+    DATEDIFF(di.expiry_date, CURDATE()) AS daysToExpiry,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type IN ('PURCHASE_RECEIPT', 'STOCK_IN', 'OPENING_STOCK') THEN di.quantity
+        WHEN d.document_type IN ('STOCK_OUT', 'DELIVERY_NOTE', 'PURCHASE_RETURN') THEN -di.quantity
+        ELSE 0
+      END
+    ), 0) AS batchStock
+
+FROM document_items di
+
+JOIN documents d
+  ON d.id = di.document_id
+
+JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN warehouses w
+  ON w.id = COALESCE(di.warehouse_id, d.warehouse_id)
+
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND COALESCE(di.expiry_date, '') <> ''
+  AND di.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 60 DAY)
+  AND d.status IN ('POSTED', 'APPROVED')
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR COALESCE(di.warehouse_id, d.warehouse_id) = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    p.barcode,
+    u.code,
+    di.batch_number,
+    di.serial_number,
+    di.expiry_date,
+    w.code,
+    w.name
+
+HAVING batchStock > 0
+
+ORDER BY
+    di.expiry_date ASC,
+    p.name ASC
+
+LIMIT 20;

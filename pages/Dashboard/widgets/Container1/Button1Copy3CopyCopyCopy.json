@@ -22,7 +22,11 @@
       "key": "isVisible"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
@@ -35,6 +39,7 @@
   "mobileRightColumn": 22,
   "mobileTopRow": 23,
   "needsErrorInfo": false,
+  "onClick": "{{navigateTo('Inventory', {}, 'SAME_WINDOW');}}",
   "originalBottomRow": 30,
   "originalTopRow": 26,
   "parentColumnSpace": 14.234375,

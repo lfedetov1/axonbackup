@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_43ae8e44-ea4f-4b8f-a714-8c7d8eec0b4e",
+  "id": "POS_Auth",
+  "unpublishedCollection": {
+    "name": "Auth",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

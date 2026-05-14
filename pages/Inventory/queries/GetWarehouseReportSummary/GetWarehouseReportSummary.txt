@@ -1,0 +1,75 @@
+SELECT
+    COUNT(DISTINCT bal.product_id) AS productCount,
+    COALESCE(SUM(bal.quantity_balance), 0) AS totalQuantity,
+    COALESCE(SUM(bal.quantity_balance * COALESCE(pp.price, p.purchase_price, 0)), 0) AS totalValue,
+
+    SUM(CASE WHEN COALESCE(bal.quantity_balance, 0) <= 0 THEN 1 ELSE 0 END) AS outOfStockCount,
+
+    SUM(
+      CASE
+        WHEN COALESCE(wlp.minQuantity, 0) > 0
+         AND COALESCE(bal.quantity_balance, 0) > 0
+         AND COALESCE(bal.quantity_balance, 0) <= COALESCE(wlp.minQuantity, 0)
+        THEN 1 ELSE 0
+      END
+    ) AS lowStockCount,
+
+    (
+      SELECT COUNT(*)
+      FROM warehouse_tasks wt
+      WHERE wt.company_id = {{appsmith.store.companyId}}
+        AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+        AND (
+          {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+          OR wt.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+        )
+    ) AS openTaskCount,
+
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{appsmith.store.companyId}}
+        AND d.document_type = 'TRANSFER_REQUEST'
+        AND d.status IN ('DRAFT', 'REQUESTED', 'PICKED', 'SHIPPED')
+        AND (
+          {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+          OR d.source_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+          OR d.destination_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+        )
+    ) AS openTransferCount
+
+FROM v_inventory_balance bal
+JOIN products p
+  ON p.id = bal.product_id
+
+LEFT JOIN (
+    SELECT
+        product_id,
+        MAX(price) AS price
+    FROM product_prices
+    GROUP BY product_id
+) pp
+  ON pp.product_id = p.id
+
+LEFT JOIN (
+    SELECT
+        company_id,
+        warehouse_id,
+        product_id,
+        MAX(minimum_quantity) AS minQuantity
+    FROM warehouse_location_products
+    WHERE is_active = 1
+    GROUP BY
+        company_id,
+        warehouse_id,
+        product_id
+) wlp
+  ON wlp.company_id = bal.company_id
+ AND wlp.warehouse_id = bal.warehouse_id
+ AND wlp.product_id = bal.product_id
+
+WHERE bal.company_id = {{appsmith.store.companyId}}
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR bal.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  );

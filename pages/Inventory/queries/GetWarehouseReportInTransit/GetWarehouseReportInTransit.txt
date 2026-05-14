@@ -1,0 +1,37 @@
+SELECT
+    d.document_number AS transferNumber,
+    d.document_date AS transferDate,
+    d.status AS status,
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+    COUNT(di.id) AS lineCount,
+    COALESCE(SUM(di.quantity), 0) AS totalQuantity
+FROM documents d
+LEFT JOIN warehouses sw
+  ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw
+  ON dw.id = d.destination_warehouse_id
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'TRANSFER_REQUEST'
+  AND d.status = 'SHIPPED'
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR d.source_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+    OR d.destination_warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.status,
+    sw.code,
+    sw.name,
+    dw.code,
+    dw.name
+ORDER BY
+    d.document_date DESC
+LIMIT 20;

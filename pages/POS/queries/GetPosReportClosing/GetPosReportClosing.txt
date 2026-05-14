@@ -1,0 +1,37 @@
+SELECT
+    crc.id AS closingId,
+    crc.closing_date AS closingDate,
+    crc.opened_at AS openedAt,
+    crc.closed_at AS closedAt,
+    crc.opening_amount AS openingAmount,
+    crc.expected_cash_amount AS expectedCashAmount,
+    crc.counted_cash_amount AS countedCashAmount,
+    crc.difference_amount AS differenceAmount,
+    crc.cash_sales_amount AS cashSalesAmount,
+    crc.card_sales_amount AS cardSalesAmount,
+    crc.bank_sales_amount AS bankSalesAmount,
+    crc.other_sales_amount AS otherSalesAmount,
+    crc.cash_in_amount AS cashInAmount,
+    crc.cash_out_amount AS cashOutAmount,
+    crc.transaction_count AS transactionCount,
+    crc.status AS status,
+    crc.note AS note,
+    cr.code AS cashRegisterCode,
+    cr.name AS cashRegisterName,
+    closed_by.username AS closedBy
+FROM cash_register_closings crc
+JOIN cash_registers cr
+  ON cr.id = crc.cash_register_id
+LEFT JOIN users closed_by
+  ON closed_by.id = crc.closed_by_user_id
+WHERE crc.company_id = {{appsmith.store.companyId}}
+  AND crc.closing_date >= {{moment(PosReportDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND crc.closing_date <= {{moment(PosReportDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND (
+      {{Number(PosReportCashRegisterSelect.selectedOptionValue || 0)}} = 0
+      OR crc.cash_register_id = {{Number(PosReportCashRegisterSelect.selectedOptionValue || 0)}}
+  )
+ORDER BY
+    crc.closing_date DESC,
+    crc.closed_at DESC
+LIMIT 20;

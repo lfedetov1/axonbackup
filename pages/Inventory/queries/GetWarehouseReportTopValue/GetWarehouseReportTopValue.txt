@@ -1,0 +1,39 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    u.code AS unitCode,
+    COALESCE(SUM(bal.quantity_balance), 0) AS currentStock,
+    COALESCE(pp.price, p.purchase_price, 0) AS unitCost,
+    COALESCE(SUM(bal.quantity_balance), 0) * COALESCE(pp.price, p.purchase_price, 0) AS stockValue
+FROM v_inventory_balance bal
+JOIN products p
+  ON p.id = bal.product_id
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+LEFT JOIN (
+    SELECT
+        product_id,
+        MAX(price) AS price
+    FROM product_prices
+    GROUP BY product_id
+) pp
+  ON pp.product_id = p.id
+
+WHERE bal.company_id = {{appsmith.store.companyId}}
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR bal.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+GROUP BY
+    p.id,
+    p.code,
+    p.name,
+    p.barcode,
+    u.code,
+    pp.price,
+    p.purchase_price
+ORDER BY
+    stockValue DESC
+LIMIT 20;

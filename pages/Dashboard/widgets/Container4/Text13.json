@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 16,
+  "bottomRow": 12,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -30,8 +30,8 @@
   "mobileRightColumn": 17,
   "mobileTopRow": 8,
   "needsErrorInfo": false,
-  "originalBottomRow": 12,
-  "originalTopRow": 8,
+  "originalBottomRow": 16,
+  "originalTopRow": 11,
   "overflow": "NONE",
   "parentColumnSpace": 3.12890625,
   "parentId": "ua81m7iv1j",
@@ -43,7 +43,7 @@
   "text": "Today Revenue",
   "textAlign": "LEFT",
   "textColor": "#ffffff",
-  "topRow": 11,
+  "topRow": 8,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

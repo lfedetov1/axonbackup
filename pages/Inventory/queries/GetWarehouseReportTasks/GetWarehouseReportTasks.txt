@@ -1,0 +1,32 @@
+SELECT
+    wt.task_number AS taskNumber,
+    wt.task_type AS taskType,
+    wt.status AS status,
+    wt.priority AS priority,
+    wt.quantity AS quantity,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    d.document_number AS documentNumber,
+    wt.created_at AS createdAt,
+    wt.note AS note
+FROM warehouse_tasks wt
+LEFT JOIN warehouses w
+  ON w.id = wt.warehouse_id
+LEFT JOIN documents d
+  ON d.id = wt.document_id
+WHERE wt.company_id = {{appsmith.store.companyId}}
+  AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+  AND (
+    {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+    OR wt.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+  )
+ORDER BY
+    CASE wt.priority
+      WHEN 'URGENT' THEN 1
+      WHEN 'HIGH' THEN 2
+      WHEN 'NORMAL' THEN 3
+      WHEN 'LOW' THEN 4
+      ELSE 5
+    END,
+    wt.created_at ASC
+LIMIT 30;

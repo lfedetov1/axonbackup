@@ -1,0 +1,36 @@
+SELECT
+    c.id AS companyId,
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    CASE
+      WHEN {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      THEN 'ALL'
+      ELSE w.code
+    END AS warehouseCode,
+
+    CASE
+      WHEN {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+      THEN 'All Warehouses'
+      ELSE w.name
+    END AS warehouseName,
+
+    {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}} AS dateFrom,
+    {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}} AS dateTo,
+
+    DATE_FORMAT(NOW(), '%d.%m.%Y %H:%i:%s') AS printedAt,
+    {{appsmith.store.username || ""}} AS printedBy
+
+FROM companies c
+LEFT JOIN warehouses w
+  ON w.id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+
+WHERE c.id = {{appsmith.store.companyId}}
+LIMIT 1;

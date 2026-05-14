@@ -1,0 +1,18 @@
+SELECT
+    COALESCE(d.payment_method, 'UNKNOWN') AS paymentMethod,
+    COUNT(d.id) AS receiptCount,
+    COALESCE(SUM(d.total_amount), 0) AS totalAmount
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'POS_SALE'
+  AND d.status IN ('POSTED', 'APPROVED')
+  AND d.document_date >= {{moment(PosReportDateFrom.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND d.document_date <= {{moment(PosReportDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+  AND (
+      {{Number(appsmith.store.warehouseId || 0)}} = 0
+      OR d.warehouse_id = {{Number(appsmith.store.warehouseId || 0)}}
+  )
+GROUP BY
+    COALESCE(d.payment_method, 'UNKNOWN')
+ORDER BY
+    totalAmount DESC;

@@ -1,0 +1,44 @@
+SELECT
+    x.productCode,
+    x.productName,
+    x.barcode,
+    x.unitCode,
+    x.currentStock,
+    x.lastMovementDate,
+    COALESCE(DATEDIFF(CURDATE(), x.lastMovementDate), 9999) AS daysWithoutMovement
+FROM (
+    SELECT
+        p.id AS productId,
+        p.code AS productCode,
+        p.name AS productName,
+        p.barcode AS barcode,
+        u.code AS unitCode,
+        COALESCE(SUM(bal.quantity_balance), 0) AS currentStock,
+        MAX(sm.movement_date) AS lastMovementDate
+    FROM v_inventory_balance bal
+    JOIN products p
+      ON p.id = bal.product_id
+    LEFT JOIN units_of_measure u
+      ON u.id = p.unit_id
+    LEFT JOIN stock_movements sm
+      ON sm.company_id = bal.company_id
+     AND sm.warehouse_id = bal.warehouse_id
+     AND sm.product_id = bal.product_id
+    WHERE bal.company_id = {{appsmith.store.companyId}}
+      AND COALESCE(bal.quantity_balance, 0) > 0
+      AND (
+        {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
+        OR bal.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      )
+    GROUP BY
+        p.id,
+        p.code,
+        p.name,
+        p.barcode,
+        u.code
+) x
+WHERE COALESCE(DATEDIFF(CURDATE(), x.lastMovementDate), 9999) >= 60
+ORDER BY
+    daysWithoutMovement DESC,
+    x.currentStock DESC
+LIMIT 20;
