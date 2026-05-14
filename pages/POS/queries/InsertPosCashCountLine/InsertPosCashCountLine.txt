@@ -1,0 +1,22 @@
+INSERT INTO cash_count_lines (
+    company_id,
+    cash_register_id,
+    cash_transaction_id,
+    closing_id,
+    count_type,
+    denomination_value,
+    quantity,
+    amount,
+    created_by_user_id
+)
+VALUES (
+    {{appsmith.store.companyId}},
+    {{PosControlCashRegisterSelect.selectedOptionValue}},
+    {{this.params.cashTransactionId || null}},
+    {{this.params.closingId || null}},
+    {{this.params.countType}},
+    {{this.params.denominationValue}},
+    {{this.params.quantity}},
+    {{this.params.amount}},
+    {{appsmith.store.userId}}
+);

@@ -1,0 +1,77 @@
+{
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": "1",
+  "bottomRow": 76,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "defaultModel": "{{\n{\n  title: \"Opening Cash\",\n  currency: \"EUR\",\n  lines: appsmith.store.posOpenCashLines || [],\n  total: appsmith.store.posOpenCashTotal || 0\n}\n}}\n",
+  "dynamicBindingPathList": [
+    {
+      "key": "theme"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "defaultModel"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "onCashCountChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onResetClick"
+    },
+    {
+      "key": "onCashCountChange"
+    }
+  ],
+  "events": [
+    "onResetClick",
+    "onCashCountChange"
+  ],
+  "isCanvas": false,
+  "isLoading": false,
+  "isSearchWildcard": true,
+  "isVisible": true,
+  "key": "u9or1ewj74",
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "mobileBottomRow": 30,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 23,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "onCashCountChange": "{{\n  storeValue(\"posOpenCashLines\", PosOpenCashCounterCustom.model.lines)\n    .then(() => storeValue(\"posOpenCashTotal\", PosOpenCashCounterCustom.model.total))\n}}\n",
+  "onResetClick": "{{showAlert('Successfully reset!!', '');}}",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "dp5m4mj6ut",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "rightColumn": 64,
+  "srcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: #ffffff;\n  color: #111827;\n}\n\n.cash-counter {\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  padding: 14px;\n  background: #ffffff;\n}\n\n.header {\n  display: flex;\n  justify-content: space-between;\n  gap: 14px;\n  align-items: flex-start;\n  padding-bottom: 12px;\n  border-bottom: 1px solid #e5e7eb;\n}\n\n.eyebrow {\n  color: #6b7280;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n\nh1 {\n  margin: 2px 0 0;\n  font-size: 20px;\n  line-height: 1.15;\n}\n\n.total-box {\n  min-width: 150px;\n  padding: 10px 12px;\n  background: #111827;\n  color: white;\n  text-align: right;\n  border-radius: 8px;\n}\n\n.total-box span {\n  display: block;\n  font-size: 10px;\n  color: #d1d5db;\n  text-transform: uppercase;\n  margin-bottom: 3px;\n}\n\n.total-box strong {\n  font-size: 20px;\n}\n\n.denomination-grid {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin-top: 12px;\n}\n\n.tile {\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  padding: 10px;\n  background: #f9fafb;\n}\n\n.tile.banknote {\n  background: linear-gradient(135deg, #f0fdf4, #ffffff);\n  border-color: #86efac;\n}\n\n.tile.coin {\n  background: linear-gradient(135deg, #fffbeb, #ffffff);\n  border-color: #fcd34d;\n}\n\n.denomination {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n}\n\n.value {\n  font-size: 18px;\n  font-weight: 900;\n}\n\n.kind {\n  color: #6b7280;\n  font-size: 10px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n\n.controls {\n  display: grid;\n  grid-template-columns: 34px 1fr 34px;\n  gap: 6px;\n  margin-top: 10px;\n}\n\n.controls button {\n  height: 32px;\n  border: 0;\n  border-radius: 6px;\n  background: #111827;\n  color: white;\n  font-size: 18px;\n  font-weight: 900;\n  cursor: pointer;\n}\n\n.controls input {\n  width: 100%;\n  height: 32px;\n  box-sizing: border-box;\n  border: 1px solid #d1d5db;\n  border-radius: 6px;\n  text-align: center;\n  font-weight: 800;\n}\n\n.line-total {\n  margin-top: 8px;\n  text-align: right;\n  font-size: 12px;\n  color: #374151;\n}\n\n.line-total b {\n  color: #111827;\n}\n\n.footer {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 12px;\n}\n\n.secondary {\n  height: 36px;\n  padding: 0 14px;\n  border: 1px solid #d1d5db;\n  border-radius: 7px;\n  background: white;\n  font-weight: 800;\n  cursor: pointer;\n}\n\n@media (max-width: 520px) {\n  .denomination-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .header {\n    flex-direction: column;\n  }\n  .total-box {\n    width: 100%;\n    box-sizing: border-box;\n  }\n}",
+    "html": "<div class=\"cash-counter\">\n  <div class=\"header\">\n    <div>\n      <div class=\"eyebrow\">POS Register</div>\n      <h1 id=\"title\">Opening Cash</h1>\n    </div>\n    <div class=\"total-box\">\n      <span>Total</span>\n      <strong id=\"grandTotal\">0.00 EUR</strong>\n    </div>\n  </div>\n\n  <div id=\"denominationGrid\" class=\"denomination-grid\"></div>\n\n  <div class=\"footer\">\n    <button id=\"clearBtn\" class=\"secondary\">Clear</button>\n  </div>\n</div>\n",
+    "js": "const DEFAULT_DENOMINATIONS = [500, 200, 100, 50, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01];\nlet state = {\n  lines: []\n};\nfunction money(value) {\n  return Number(value || 0).toFixed(2);\n}\nfunction normalizeLines(lines) {\n  const byValue = new Map((lines || []).map(row => [Number(row.denominationValue), Number(row.quantity || 0)]));\n  return DEFAULT_DENOMINATIONS.map(value => {\n    const quantity = byValue.get(Number(value)) || 0;\n    return {\n      denominationValue: value,\n      quantity,\n      amount: Number((value * quantity).toFixed(2))\n    };\n  });\n}\nfunction total(lines) {\n  return (lines || []).reduce((sum, row) => sum + Number(row.amount || 0), 0);\n}\nfunction publish() {\n  const totalAmount = total(state.lines);\n  appsmith.updateModel({\n    lines: state.lines,\n    total: totalAmount\n  });\n  appsmith.triggerEvent(\"onCashCountChange\");\n}\nfunction setQty(value, quantity) {\n  state.lines = state.lines.map(row => {\n    if (Number(row.denominationValue) !== Number(value)) return row;\n    const qty = Math.max(0, Number(quantity || 0));\n    return {\n      ...row,\n      quantity: qty,\n      amount: Number((Number(row.denominationValue) * qty).toFixed(2))\n    };\n  });\n  render();\n  publish();\n}\nfunction clearAll() {\n  state.lines = normalizeLines([]);\n  render();\n  publish();\n}\nfunction render() {\n  const model = appsmith.model || {};\n  const currency = model.currency || \"EUR\";\n  document.getElementById(\"title\").innerText = model.title || \"Opening Cash\";\n  document.getElementById(\"grandTotal\").innerText = `${money(total(state.lines))} ${currency}`;\n  document.getElementById(\"denominationGrid\").innerHTML = state.lines.map(row => {\n    const value = Number(row.denominationValue);\n    const isCoin = value < 5;\n    return `\n      <div class=\"tile ${isCoin ? \"coin\" : \"banknote\"}\">\n        <div class=\"denomination\">\n          <div class=\"value\">${money(value)}</div>\n          <div class=\"kind\">${isCoin ? \"Coin\" : \"Note\"}</div>\n        </div>\n\n        <div class=\"controls\">\n          <button data-action=\"minus\" data-value=\"${value}\">-</button>\n          <input data-value=\"${value}\" value=\"${row.quantity}\" inputmode=\"numeric\" />\n          <button data-action=\"plus\" data-value=\"${value}\">+</button>\n        </div>\n\n        <div class=\"line-total\">Line: <b>${money(row.amount)} ${currency}</b></div>\n      </div>\n    `;\n  }).join(\"\");\n  document.querySelectorAll(\"button[data-action]\").forEach(btn => {\n    btn.onclick = () => {\n      const value = Number(btn.dataset.value);\n      const current = state.lines.find(row => Number(row.denominationValue) === value);\n      const qty = Number(current?.quantity || 0);\n      setQty(value, btn.dataset.action === \"plus\" ? qty + 1 : qty - 1);\n    };\n  });\n  document.querySelectorAll(\"input[data-value]\").forEach(input => {\n    input.onchange = () => {\n      setQty(Number(input.dataset.value), Number(input.value || 0));\n    };\n  });\n  document.getElementById(\"clearBtn\").onclick = clearAll;\n}\nappsmith.onReady(() => {\n  state.lines = normalizeLines(appsmith.model?.lines || []);\n  render();\n});\nappsmith.onModelChange(model => {\n  state.lines = normalizeLines(model?.lines || []);\n  render();\n});"
+  },
+  "theme": "{{appsmith.theme}}",
+  "topRow": 8,
+  "type": "CUSTOM_WIDGET",
+  "uncompiledSrcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: #ffffff;\n  color: #111827;\n}\n\n.cash-counter {\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  padding: 14px;\n  background: #ffffff;\n}\n\n.header {\n  display: flex;\n  justify-content: space-between;\n  gap: 14px;\n  align-items: flex-start;\n  padding-bottom: 12px;\n  border-bottom: 1px solid #e5e7eb;\n}\n\n.eyebrow {\n  color: #6b7280;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n\nh1 {\n  margin: 2px 0 0;\n  font-size: 20px;\n  line-height: 1.15;\n}\n\n.total-box {\n  min-width: 150px;\n  padding: 10px 12px;\n  background: #111827;\n  color: white;\n  text-align: right;\n  border-radius: 8px;\n}\n\n.total-box span {\n  display: block;\n  font-size: 10px;\n  color: #d1d5db;\n  text-transform: uppercase;\n  margin-bottom: 3px;\n}\n\n.total-box strong {\n  font-size: 20px;\n}\n\n.denomination-grid {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin-top: 12px;\n}\n\n.tile {\n  border: 1px solid #d1d5db;\n  border-radius: 8px;\n  padding: 10px;\n  background: #f9fafb;\n}\n\n.tile.banknote {\n  background: linear-gradient(135deg, #f0fdf4, #ffffff);\n  border-color: #86efac;\n}\n\n.tile.coin {\n  background: linear-gradient(135deg, #fffbeb, #ffffff);\n  border-color: #fcd34d;\n}\n\n.denomination {\n  display: flex;\n  justify-content: space-between;\n  align-items: baseline;\n}\n\n.value {\n  font-size: 18px;\n  font-weight: 900;\n}\n\n.kind {\n  color: #6b7280;\n  font-size: 10px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n\n.controls {\n  display: grid;\n  grid-template-columns: 34px 1fr 34px;\n  gap: 6px;\n  margin-top: 10px;\n}\n\n.controls button {\n  height: 32px;\n  border: 0;\n  border-radius: 6px;\n  background: #111827;\n  color: white;\n  font-size: 18px;\n  font-weight: 900;\n  cursor: pointer;\n}\n\n.controls input {\n  width: 100%;\n  height: 32px;\n  box-sizing: border-box;\n  border: 1px solid #d1d5db;\n  border-radius: 6px;\n  text-align: center;\n  font-weight: 800;\n}\n\n.line-total {\n  margin-top: 8px;\n  text-align: right;\n  font-size: 12px;\n  color: #374151;\n}\n\n.line-total b {\n  color: #111827;\n}\n\n.footer {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 12px;\n}\n\n.secondary {\n  height: 36px;\n  padding: 0 14px;\n  border: 1px solid #d1d5db;\n  border-radius: 7px;\n  background: white;\n  font-weight: 800;\n  cursor: pointer;\n}\n\n@media (max-width: 520px) {\n  .denomination-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n\n  .header {\n    flex-direction: column;\n  }\n\n  .total-box {\n    width: 100%;\n    box-sizing: border-box;\n  }\n}\n",
+    "html": "<div class=\"cash-counter\">\n  <div class=\"header\">\n    <div>\n      <div class=\"eyebrow\">POS Register</div>\n      <h1 id=\"title\">Opening Cash</h1>\n    </div>\n    <div class=\"total-box\">\n      <span>Total</span>\n      <strong id=\"grandTotal\">0.00 EUR</strong>\n    </div>\n  </div>\n\n  <div id=\"denominationGrid\" class=\"denomination-grid\"></div>\n\n  <div class=\"footer\">\n    <button id=\"clearBtn\" class=\"secondary\">Clear</button>\n  </div>\n</div>\n",
+    "js": "const DEFAULT_DENOMINATIONS = [500, 200, 100, 50, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01];\n\nlet state = {\n  lines: []\n};\n\nfunction money(value) {\n  return Number(value || 0).toFixed(2);\n}\n\nfunction normalizeLines(lines) {\n  const byValue = new Map((lines || []).map(row => [\n    Number(row.denominationValue),\n    Number(row.quantity || 0)\n  ]));\n\n  return DEFAULT_DENOMINATIONS.map(value => {\n    const quantity = byValue.get(Number(value)) || 0;\n\n    return {\n      denominationValue: value,\n      quantity,\n      amount: Number((value * quantity).toFixed(2))\n    };\n  });\n}\n\nfunction total(lines) {\n  return (lines || []).reduce((sum, row) => sum + Number(row.amount || 0), 0);\n}\n\nfunction publish() {\n  const totalAmount = total(state.lines);\n\n  appsmith.updateModel({\n    lines: state.lines,\n    total: totalAmount\n  });\n\n  appsmith.triggerEvent(\"onCashCountChange\");\n}\n\nfunction setQty(value, quantity) {\n  state.lines = state.lines.map(row => {\n    if (Number(row.denominationValue) !== Number(value)) return row;\n\n    const qty = Math.max(0, Number(quantity || 0));\n\n    return {\n      ...row,\n      quantity: qty,\n      amount: Number((Number(row.denominationValue) * qty).toFixed(2))\n    };\n  });\n\n  render();\n  publish();\n}\n\nfunction clearAll() {\n  state.lines = normalizeLines([]);\n  render();\n  publish();\n}\n\nfunction render() {\n  const model = appsmith.model || {};\n  const currency = model.currency || \"EUR\";\n\n  document.getElementById(\"title\").innerText = model.title || \"Opening Cash\";\n  document.getElementById(\"grandTotal\").innerText = `${money(total(state.lines))} ${currency}`;\n\n  document.getElementById(\"denominationGrid\").innerHTML = state.lines.map(row => {\n    const value = Number(row.denominationValue);\n    const isCoin = value < 5;\n\n    return `\n      <div class=\"tile ${isCoin ? \"coin\" : \"banknote\"}\">\n        <div class=\"denomination\">\n          <div class=\"value\">${money(value)}</div>\n          <div class=\"kind\">${isCoin ? \"Coin\" : \"Note\"}</div>\n        </div>\n\n        <div class=\"controls\">\n          <button data-action=\"minus\" data-value=\"${value}\">-</button>\n          <input data-value=\"${value}\" value=\"${row.quantity}\" inputmode=\"numeric\" />\n          <button data-action=\"plus\" data-value=\"${value}\">+</button>\n        </div>\n\n        <div class=\"line-total\">Line: <b>${money(row.amount)} ${currency}</b></div>\n      </div>\n    `;\n  }).join(\"\");\n\n  document.querySelectorAll(\"button[data-action]\").forEach(btn => {\n    btn.onclick = () => {\n      const value = Number(btn.dataset.value);\n      const current = state.lines.find(row => Number(row.denominationValue) === value);\n      const qty = Number(current?.quantity || 0);\n\n      setQty(value, btn.dataset.action === \"plus\" ? qty + 1 : qty - 1);\n    };\n  });\n\n  document.querySelectorAll(\"input[data-value]\").forEach(input => {\n    input.onchange = () => {\n      setQty(Number(input.dataset.value), Number(input.value || 0));\n    };\n  });\n\n  document.getElementById(\"clearBtn\").onclick = clearAll;\n}\n\nappsmith.onReady(() => {\n  state.lines = normalizeLines(appsmith.model?.lines || []);\n  render();\n});\n\nappsmith.onModelChange((model) => {\n  state.lines = normalizeLines(model?.lines || []);\n  render();\n});\n"
+  },
+  "version": 1,
+  "widgetId": "xmqht8w1qg",
+  "widgetName": "Custom3"
+}

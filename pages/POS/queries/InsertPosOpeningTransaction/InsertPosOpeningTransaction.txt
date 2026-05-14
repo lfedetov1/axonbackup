@@ -1,0 +1,18 @@
+INSERT INTO cash_transactions (
+    cash_register_id,
+    transaction_date,
+    transaction_type,
+    amount,
+    reference_number,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{PosControlCashRegisterSelect.selectedOptionValue}},
+    {{moment().format("YYYY-MM-DD HH:mm:ss")}},
+    'OPENING',
+    {{Number(appsmith.store.posOpenCashTotal || 0)}},
+    CONCAT('OPEN-', DATE_FORMAT(NOW(), '%Y%m%d-%H%i%s')),
+    {{PosControlOpeningNoteInput.text || "Opening cash register"}},
+    {{appsmith.store.userId}}
+);

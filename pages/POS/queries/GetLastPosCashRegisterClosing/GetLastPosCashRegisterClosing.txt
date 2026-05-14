@@ -1,0 +1,13 @@
+SELECT
+    id AS closingId,
+    closing_date AS closingDate,
+    closed_at AS closedAt,
+    expected_cash_amount AS expectedCashAmount,
+    counted_cash_amount AS countedCashAmount,
+    difference_amount AS differenceAmount,
+    status AS status
+FROM cash_register_closings
+WHERE company_id = {{appsmith.store.companyId}}
+  AND cash_register_id = {{PosControlCashRegisterSelect.selectedOptionValue}}
+ORDER BY id DESC
+LIMIT 1;

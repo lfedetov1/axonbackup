@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 15,
+  "bottomRow": 9,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -24,7 +24,7 @@
   "isLoading": false,
   "isVisible": true,
   "key": "a6xqyttg6t",
-  "leftColumn": 14,
+  "leftColumn": 1,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
@@ -33,8 +33,8 @@
   "mobileRightColumn": 17,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "originalBottomRow": 6,
-  "originalTopRow": 1,
+  "originalBottomRow": 16,
+  "originalTopRow": 11,
   "overflow": "NONE",
   "parentColumnSpace": 10.4345703125,
   "parentId": "iifnnbnqo5",
@@ -43,10 +43,10 @@
   "responsiveBehavior": "fill",
   "rightColumn": 23,
   "shouldTruncate": false,
-  "text": "{{ CashCount.total().toFixed(2) }}\n\n",
+  "text": "{{ \"Expected: \" + Number(appsmith.store.posShiftStatus?.expectedCashAmount || 0).toFixed(2) + \" EUR\" }}\n",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 11,
+  "topRow": 5,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

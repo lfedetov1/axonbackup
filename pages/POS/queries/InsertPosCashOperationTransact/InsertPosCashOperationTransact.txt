@@ -1,0 +1,18 @@
+INSERT INTO cash_transactions (
+    cash_register_id,
+    transaction_date,
+    transaction_type,
+    amount,
+    reference_number,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{this.params.cashRegisterId}},
+    {{moment().format("YYYY-MM-DD HH:mm:ss")}},
+    {{this.params.transactionType}},
+    {{this.params.amount}},
+    {{this.params.referenceNumber}},
+    {{this.params.note || null}},
+    {{appsmith.store.userId}}
+);

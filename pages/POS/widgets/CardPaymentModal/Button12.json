@@ -36,7 +36,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{ POS1.payCard() }}",
+  "onClick": "{{\n  PosControl.ensureRegisterOpen().then((ok) => {\n    if (!ok) return;\n\n    return POS1.payCard();\n  })\n}}",
   "parentId": "uxq8kyuoxd",
   "placement": "CENTER",
   "recaptchaType": "V3",

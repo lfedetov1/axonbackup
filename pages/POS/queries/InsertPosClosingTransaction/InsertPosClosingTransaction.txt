@@ -1,0 +1,18 @@
+INSERT INTO cash_transactions (
+    cash_register_id,
+    transaction_date,
+    transaction_type,
+    amount,
+    reference_number,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{PosControlCashRegisterSelect.selectedOptionValue}},
+    {{moment().format("YYYY-MM-DD HH:mm:ss")}},
+    'CLOSING',
+    {{Number(appsmith.store.posCloseCashTotal || 0)}},
+    CONCAT('CLOSE-', DATE_FORMAT(NOW(), '%Y%m%d-%H%i%s')),
+    {{PosControlClosingNoteInput.text || "Closing cash register"}},
+    {{appsmith.store.userId}}
+);

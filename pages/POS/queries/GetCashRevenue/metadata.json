@@ -29,7 +29,7 @@
     ],
     "name": "GetCashRevenue",
     "pageId": "POS",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

@@ -11,7 +11,11 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "credit-card",
   "isDefaultClickDisabled": true,
@@ -26,6 +30,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onClick": "{{showModal(CardPaymentModal.name);}}",
   "parentColumnSpace": 5.077049255371094,
   "parentId": "aob96tglr2",
   "parentRowSpace": 10,

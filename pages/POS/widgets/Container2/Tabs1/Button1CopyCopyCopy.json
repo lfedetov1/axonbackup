@@ -35,7 +35,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "{{ POS1.payMixed() }}",
+  "onClick": "",
   "originalBottomRow": 56,
   "originalTopRow": 52,
   "parentColumnSpace": 5.077049255371094,

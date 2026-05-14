@@ -1,0 +1,24 @@
+INSERT INTO journal_entry_lines (
+    journal_entry_id,
+    line_no,
+    account_id,
+    account_code,
+    account_name,
+    debit,
+    credit,
+    note
+)
+SELECT
+    {{this.params.journalEntryId}},
+    {{this.params.lineNo}},
+    aa.id,
+    aa.account_code,
+    aa.account_name,
+    {{this.params.debit}},
+    {{this.params.credit}},
+    {{this.params.note || null}}
+FROM accounting_accounts aa
+WHERE aa.account_code = {{this.params.accountCode}}
+  AND aa.is_active = 1
+  AND aa.is_posting = 1
+LIMIT 1;

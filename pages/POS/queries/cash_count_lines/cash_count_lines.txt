@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS cash_count_lines (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    company_id BIGINT UNSIGNED NOT NULL,
+    cash_register_id BIGINT UNSIGNED NOT NULL,
+    cash_transaction_id BIGINT UNSIGNED NULL,
+    closing_id BIGINT UNSIGNED NULL,
+    count_type ENUM('OPENING', 'CLOSING', 'CASH_IN', 'CASH_OUT') NOT NULL,
+    denomination_value DECIMAL(18, 2) NOT NULL,
+    quantity INT NOT NULL DEFAULT 0,
+    amount DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    created_by_user_id BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_cash_count_lines_register_type (cash_register_id, count_type),
+    KEY idx_cash_count_lines_transaction (cash_transaction_id),
+    KEY idx_cash_count_lines_closing (closing_id),
+    CONSTRAINT fk_cash_count_lines_company
+      FOREIGN KEY (company_id) REFERENCES companies(id),
+    CONSTRAINT fk_cash_count_lines_register
+      FOREIGN KEY (cash_register_id) REFERENCES cash_registers(id),
+    CONSTRAINT fk_cash_count_lines_transaction
+      FOREIGN KEY (cash_transaction_id) REFERENCES cash_transactions(id),
+    CONSTRAINT fk_cash_count_lines_closing
+      FOREIGN KEY (closing_id) REFERENCES cash_register_closings(id),
+    CONSTRAINT fk_cash_count_lines_user
+      FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+);

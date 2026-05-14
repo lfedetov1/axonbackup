@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_173bd183-ebfc-4508-82ee-c884582e674f",
+  "id": "POS_PosCashCounter",
+  "unpublishedCollection": {
+    "name": "PosCashCounter",
+    "pageId": "POS",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

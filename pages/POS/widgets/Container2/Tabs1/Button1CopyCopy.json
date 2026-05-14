@@ -35,7 +35,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "{{ POS1.payOther() }}\n",
+  "onClick": "{{\n  PosControl.ensureRegisterOpen().then((ok) => {\n    if (!ok) return;\n\n    return POS1.payOther()();\n  })\n}}",
   "originalBottomRow": 58,
   "originalTopRow": 54,
   "parentColumnSpace": 5.077049255371094,

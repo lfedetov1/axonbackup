@@ -35,7 +35,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "{{ POS1.payCash() }}",
+  "onClick": "{{\n  PosControl.ensureRegisterOpen().then((ok) => {\n    if (!ok) return;\n\n    return POS1.payCash();\n  })\n}}\n\n",
   "parentColumnSpace": 5.077049255371094,
   "parentId": "aob96tglr2",
   "parentRowSpace": 10,
