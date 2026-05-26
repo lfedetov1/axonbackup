@@ -1,0 +1,32 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS `Line No`,
+
+    p.id AS productId,
+    p.code AS `Product Code`,
+    p.name AS `Product Name`,
+    p.barcode AS `Barcode`,
+    p.sku AS `SKU`,
+
+    di.description AS `Description`,
+    di.quantity AS `Quantity`,
+    u.code AS `Unit`,
+    di.unit_price AS `Unit Price`,
+    di.discount_amount AS `Discount`,
+    tr.rate AS `Tax Rate`,
+    di.tax_amount AS `Tax`,
+    di.line_total AS `Total`,
+
+    COALESCE(di.reserved_quantity, 0) AS `Reserved Qty`,
+    di.note AS `Note`
+FROM document_items di
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{
+  this.params.documentId ||
+  SalesOrderTable.selectedRow.documentId ||
+  0
+}}
+ORDER BY di.line_no;

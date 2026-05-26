@@ -1,0 +1,42 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Order Number`,
+    d.document_date AS `Order Date`,
+    d.due_date AS `Due Date`,
+    d.status AS `Status`,
+    d.sales_channel AS `Sales Channel`,
+    d.fulfillment_type AS `Fulfillment Type`,
+
+    bp.id AS customerId,
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    w.id AS warehouseId,
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    d.subtotal_amount AS `Subtotal`,
+    d.discount_amount AS `Discount`,
+    d.tax_amount AS `Tax`,
+    d.total_amount AS `Total`,
+    d.note AS `Note`,
+
+    u.username AS `Created By`,
+    d.created_at AS `Created At`
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'SALES_ORDER'
+  AND (
+      {{SalesOrderSearchInput.text || ""}} = ""
+      OR d.document_number LIKE CONCAT('%', {{SalesOrderSearchInput.text || ""}}, '%')
+      OR bp.name LIKE CONCAT('%', {{SalesOrderSearchInput.text || ""}}, '%')
+      OR bp.code LIKE CONCAT('%', {{SalesOrderSearchInput.text || ""}}, '%')
+  )
+  AND (
+      {{SalesOrderStatusSelect.selectedOptionValue || ""}} = ""
+      OR d.status = {{SalesOrderStatusSelect.selectedOptionValue || ""}}
+  )
+ORDER BY d.document_date DESC, d.id DESC;

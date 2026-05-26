@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 116,
+  "bottomRow": 82,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -102,7 +102,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -147,7 +147,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -192,7 +192,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -237,7 +237,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -282,7 +282,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -327,7 +327,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 720,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -372,7 +372,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -417,7 +417,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 920,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -462,7 +462,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -507,7 +507,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 640,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -552,7 +552,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 980,
+      "bottomRow": 960,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -594,6 +594,96 @@
       "version": 1,
       "widgetId": "g2r9ggfzi9",
       "widgetName": "Canvas15"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 710,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "3ubkjdjmcz",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 1020,
+      "minWidth": 450,
+      "mobileBottomRow": 1021,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 896.765625,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "2henuqvgi6",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 896.765625,
+      "tabId": "tabynsvxquaeh",
+      "tabName": "Sales Orders",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "hblwme9mj9",
+      "widgetName": "Canvas21"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 640,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "3ubkjdjmcz",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 770,
+      "minWidth": 450,
+      "mobileBottomRow": 771,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 896.765625,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "2henuqvgi6",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 896.765625,
+      "tabId": "tabv8tispq5nu",
+      "tabName": "New Sales Order",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "imc11dcn78",
+      "widgetName": "Canvas23"
     }
   ],
   "defaultTab": "Sales Analysis",
@@ -636,6 +726,9 @@
     },
     {
       "key": "tabsObj.tabvepsep4a8d.isVisible"
+    },
+    {
+      "key": "tabsObj.tabynsvxquaeh.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -675,6 +768,12 @@
     },
     {
       "key": "tabsObj.tab1u3190b2tv.isVisible"
+    },
+    {
+      "key": "tabsObj.tabv8tispq5nu.isVisible"
+    },
+    {
+      "key": "tabsObj.tabynsvxquaeh.isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -697,7 +796,7 @@
   "mobileTopRow": 21,
   "needsErrorInfo": false,
   "onTabSelected": "{{ appsmith.store.viewMode === \"add\" && JSAccess.has(\"sales.quotation.manage\") }}\n",
-  "originalBottomRow": 116,
+  "originalBottomRow": 82,
   "originalTopRow": 14,
   "parentColumnSpace": 14.234375,
   "parentId": "0",
@@ -736,7 +835,7 @@
     },
     "tab4cbweqbk6r": {
       "id": "tab4cbweqbk6r",
-      "index": 8,
+      "index": 9,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.activeTab === \"Invoices\" && appsmith.store.viewMode === \"add\" }}",
       "label": "New Invoice",
@@ -744,7 +843,7 @@
     },
     "tab5h0tzu6l5d": {
       "id": "tab5h0tzu6l5d",
-      "index": 7,
+      "index": 8,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.viewMode === \"list\" && JSAccess.has(\"sales.history.view\") }}\n",
       "label": "Sales History",
@@ -752,7 +851,7 @@
     },
     "tabkuv2nyha3i": {
       "id": "tabkuv2nyha3i",
-      "index": 6,
+      "index": 7,
       "isDuplicateLabel": false,
       "isVisible": false,
       "label": "Sales Returns",
@@ -760,7 +859,7 @@
     },
     "tabllpx4jgb1a": {
       "id": "tabllpx4jgb1a",
-      "index": 9,
+      "index": 10,
       "isDuplicateLabel": false,
       "isVisible": false,
       "label": "New Order",
@@ -768,7 +867,7 @@
     },
     "tabmsziw805az": {
       "id": "tabmsziw805az",
-      "index": 10,
+      "index": 11,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.activeTab === \"Quotations\" && appsmith.store.viewMode === \"add\" }}\n\n",
       "label": "New Quotations",
@@ -776,7 +875,7 @@
     },
     "tabo0t6aj9nup": {
       "id": "tabo0t6aj9nup",
-      "index": 12,
+      "index": 13,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.activeTab === \"Sales Returns\" && appsmith.store.viewMode === \"add\" }}",
       "label": "New Returns",
@@ -784,11 +883,18 @@
     },
     "taborhn6icvdx": {
       "id": "taborhn6icvdx",
-      "index": 11,
+      "index": 12,
       "isDuplicateLabel": false,
       "isVisible": "{{ appsmith.store.activeTab === \"POS Sales\" && appsmith.store.viewMode === \"add\" }}",
       "label": "New POS Sales",
       "widgetId": "4w78210tph"
+    },
+    "tabv8tispq5nu": {
+      "id": "tabv8tispq5nu",
+      "index": 14,
+      "isVisible": "true",
+      "label": "New Sales Order",
+      "widgetId": "imc11dcn78"
     },
     "tabvepsep4a8d": {
       "id": "tabvepsep4a8d",
@@ -805,6 +911,14 @@
       "isVisible": "{{ appsmith.store.viewMode === \"list\" && JSAccess.has(\"sales.pos.manage\") }}\n",
       "label": "POS Sales",
       "widgetId": "wggcg1i8av"
+    },
+    "tabynsvxquaeh": {
+      "id": "tabynsvxquaeh",
+      "index": 6,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ appsmith.store.viewMode === \"list\" && JSAccess.has(\"web\") }}\n",
+      "label": "Sales Orders",
+      "widgetId": "hblwme9mj9"
     },
     "tabzlt39lwymo": {
       "id": "tabzlt39lwymo",

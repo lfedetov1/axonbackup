@@ -3,30 +3,36 @@
   "animateLoading": true,
   "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 62,
+  "bottomRow": 32,
   "boxShadow": "none",
-  "defaultText": "{{ \"€ \" + Number(GetSalesDashboardKpis.data[0]?.Sales || 0).toFixed(2) }}\n",
+  "defaultText": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
     },
     {
       "key": "borderRadius"
-    },
-    {
-      "key": "defaultText"
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "weok3jqy5g",
-  "label": "Sales",
+  "key": "j3tb10jmdt",
+  "label": "Bracode : ",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
@@ -36,24 +42,23 @@
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 61,
+  "mobileBottomRow": 32,
   "mobileLeftColumn": 1,
   "mobileRightColumn": 21,
-  "mobileTopRow": 54,
+  "mobileTopRow": 25,
   "needsErrorInfo": false,
-  "originalBottomRow": 62,
-  "originalTopRow": 55,
-  "parentColumnSpace": 13.40625,
-  "parentId": "g2r9ggfzi9",
+  "onTextChanged": "{{ SalesOrderForm.scanBarcodeDebounced(SalesOrderBarcodeInput.text) }}",
+  "parentColumnSpace": 16.69873046875,
+  "parentId": "imc11dcn78",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 15,
+  "rightColumn": 21,
   "showStepArrows": false,
-  "topRow": 55,
+  "topRow": 25,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "wjpkwblcmk",
-  "widgetName": "Input1"
+  "widgetId": "dtagf3kla8",
+  "widgetName": "SalesOrderBarcodeInput"
 }

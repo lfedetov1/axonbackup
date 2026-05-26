@@ -1,0 +1,62 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 5,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  appsmith.store.activeTab === \"Sales Orders\" &&\n  [\"add\", \"edit\"].includes(appsmith.store.viewMode) &&\n  (\n    JSAccess.has(\"sales.salesorders.manage\") ||\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\") ||\n    (appsmith.store.roleCodes || []).includes(\"OWNER\")\n  )\n}}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "jqsyvstdu5",
+  "leftColumn": 56,
+  "minWidth": 120,
+  "mobileBottomRow": 28,
+  "mobileLeftColumn": 2,
+  "mobileRightColumn": 18,
+  "mobileTopRow": 24,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  storeValue(\"activeTab\", \"Sales Orders\")\n    .then(() => storeValue(\"viewMode\", \"add\"))\n    .then(() => SalesOrderForm.startNew())\n}}",
+  "originalBottomRow": 63,
+  "originalTopRow": 59,
+  "parentColumnSpace": 14.234375,
+  "parentId": "hblwme9mj9",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Add",
+  "topRow": 1,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "aca4ydpghi",
+  "widgetName": "Button3Copy5Copy"
+}
