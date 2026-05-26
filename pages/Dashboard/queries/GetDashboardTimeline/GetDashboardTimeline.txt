@@ -1,0 +1,96 @@
+SELECT *
+FROM (
+    SELECT
+        d.created_at AS eventTime,
+        'POS' AS eventGroup,
+        'POS Receipt' AS eventTitle,
+        d.document_number AS referenceNumber,
+        CONCAT('Total ', FORMAT(COALESCE(d.total_amount, 0), 2), ' ', COALESCE(d.currency_code, 'EUR')) AS eventDetail,
+        'POS' AS targetPage,
+        'POS_REPORT' AS targetAction,
+        d.id AS documentId
+    FROM documents d
+    WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+      AND d.document_type = 'POS_SALE'
+      AND DATE(d.created_at) = CURDATE()
+
+    UNION ALL
+
+    SELECT
+        d.created_at,
+        'Sales',
+        'Sales Order',
+        d.document_number,
+        CONCAT('Status ', d.status, ' / ', FORMAT(COALESCE(d.total_amount, 0), 2), ' ', COALESCE(d.currency_code, 'EUR')),
+        'Sales',
+        'SALES_ORDERS',
+        d.id
+    FROM documents d
+    WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+      AND d.document_type = 'SALES_ORDER'
+      AND DATE(d.created_at) = CURDATE()
+
+    UNION ALL
+
+    SELECT
+        d.created_at,
+        'Inventory',
+        CASE
+          WHEN d.document_type = 'TRANSFER_REQUEST' THEN 'Transfer Request'
+          WHEN d.document_type = 'SUPPLIER_RETURN' THEN 'Supplier Return'
+          WHEN d.document_type = 'INVENTORY_COUNT' THEN 'Inventory Count'
+          ELSE d.document_type
+        END,
+        d.document_number,
+        CONCAT('Status ', d.status),
+        'Inventory',
+        CASE
+          WHEN d.document_type = 'TRANSFER_REQUEST' THEN 'TRANSFERS'
+          WHEN d.document_type = 'INVENTORY_COUNT' THEN 'WAREHOUSE_TASKS'
+          ELSE 'WAREHOUSE_TASKS'
+        END,
+        d.id
+    FROM documents d
+    WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+      AND d.document_type IN ('TRANSFER_REQUEST', 'SUPPLIER_RETURN', 'INVENTORY_COUNT')
+      AND DATE(d.created_at) = CURDATE()
+
+    UNION ALL
+
+    SELECT
+        wt.created_at,
+        'Warehouse',
+        CONCAT('Task ', wt.task_type),
+        wt.task_number,
+        CONCAT('Status ', wt.status, ' / Qty ', FORMAT(COALESCE(wt.quantity, 0), 2)),
+        'Inventory',
+        'WAREHOUSE_TASKS',
+        wt.document_id
+    FROM warehouse_tasks wt
+    WHERE wt.company_id = {{Number(appsmith.store.companyId || 0)}}
+      AND DATE(wt.created_at) = CURDATE()
+
+    UNION ALL
+
+    SELECT
+        ct.transaction_date,
+        'Cash',
+        CASE
+          WHEN ct.transaction_type = 'IN' THEN 'Cash In'
+          WHEN ct.transaction_type = 'OUT' THEN 'Cash Out'
+          WHEN ct.transaction_type = 'TRANSFER_OUT' THEN 'Bank Deposit'
+          WHEN ct.transaction_type = 'TRANSFER_IN' THEN 'Bank Withdrawal'
+          ELSE ct.transaction_type
+        END,
+        ct.reference_number,
+        CONCAT('Amount ', FORMAT(COALESCE(ct.amount, 0), 2), ' ', COALESCE(cr.currency_code, 'EUR')),
+        'POS',
+        'CASH_CONTROL',
+        ct.id
+    FROM cash_transactions ct
+    JOIN cash_registers cr ON cr.id = ct.cash_register_id
+    WHERE cr.company_id = {{Number(appsmith.store.companyId || 0)}}
+      AND DATE(ct.transaction_date) = CURDATE()
+) timeline
+ORDER BY eventTime DESC
+LIMIT 40;

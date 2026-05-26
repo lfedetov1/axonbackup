@@ -1,0 +1,101 @@
+SELECT *
+FROM (
+    SELECT
+      'FISCAL_DOCS' AS actionCode,
+      'danger' AS severity,
+      'Fiscal documents need review' AS title,
+      CONCAT(x.cnt, ' document(s) are not fiscalized correctly') AS detail,
+      x.cnt AS countValue
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+        AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+        AND d.status <> 'CANCELLED'
+        AND COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'LOW_STOCK',
+      'warning',
+      'Low stock risk',
+      CONCAT(x.cnt, ' product(s) are at or below minimum stock'),
+      x.cnt
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM (
+        SELECT
+            wlp.product_id,
+            COALESCE(SUM(wlp.quantity), 0) AS stockQty,
+            MAX(COALESCE(wlp.minimum_quantity, 0)) AS minimumQty
+        FROM warehouse_location_products wlp
+        JOIN warehouse_locations wl ON wl.id = wlp.warehouse_location_id
+        JOIN warehouses w ON w.id = wl.warehouse_id
+        WHERE w.company_id = {{Number(appsmith.store.companyId || 0)}}
+        GROUP BY wlp.product_id
+        HAVING minimumQty > 0 AND stockQty <= minimumQty
+      ) s
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'WAREHOUSE_TASKS',
+      'info',
+      'Warehouse tasks waiting',
+      CONCAT(x.cnt, ' task(s) need warehouse action'),
+      x.cnt
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM warehouse_tasks wt
+      WHERE wt.company_id = {{Number(appsmith.store.companyId || 0)}}
+        AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'SALES_ORDERS',
+      'warning',
+      'Late sales orders',
+      CONCAT(x.cnt, ' sales order(s) are past due'),
+      x.cnt
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+        AND d.document_type = 'SALES_ORDER'
+        AND d.status NOT IN ('INVOICED', 'CANCELLED')
+        AND COALESCE(d.due_date, d.document_date) < CURDATE()
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'TRANSFERS',
+      'info',
+      'Transfers in progress',
+      CONCAT(x.cnt, ' transfer request(s) are still open'),
+      x.cnt
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+        AND d.document_type = 'TRANSFER_REQUEST'
+        AND d.status NOT IN ('RECEIVED', 'POSTED', 'CANCELLED')
+    ) x
+    WHERE x.cnt > 0
+) a
+ORDER BY
+  CASE a.severity
+    WHEN 'danger' THEN 1
+    WHEN 'warning' THEN 2
+    ELSE 3
+  END,
+  a.countValue DESC;

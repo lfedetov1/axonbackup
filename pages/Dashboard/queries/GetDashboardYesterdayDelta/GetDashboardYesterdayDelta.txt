@@ -1,0 +1,69 @@
+SELECT
+    COALESCE(today.salesTotal, 0) AS todaySales,
+    COALESCE(yesterday.salesTotal, 0) AS yesterdaySales,
+    COALESCE(today.salesTotal, 0) - COALESCE(yesterday.salesTotal, 0) AS salesDelta,
+
+    COALESCE(today.documentCount, 0) AS todayDocuments,
+    COALESCE(yesterday.documentCount, 0) AS yesterdayDocuments,
+    COALESCE(today.documentCount, 0) - COALESCE(yesterday.documentCount, 0) AS documentDelta,
+
+    COALESCE(today.taskCount, 0) AS todayTasks,
+    COALESCE(yesterday.taskCount, 0) AS yesterdayTasks,
+    COALESCE(today.taskCount, 0) - COALESCE(yesterday.taskCount, 0) AS taskDelta
+
+FROM
+(
+  SELECT
+      SUM(d.total_amount) AS salesTotal,
+      COUNT(*) AS documentCount,
+      0 AS taskCount
+  FROM documents d
+  WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+    AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+    AND d.status <> 'CANCELLED'
+    AND DATE(d.document_date) = CURDATE()
+) today_sales
+
+JOIN
+(
+  SELECT COUNT(*) AS taskCount
+  FROM warehouse_tasks wt
+  WHERE wt.company_id = {{Number(appsmith.store.companyId || 0)}}
+    AND DATE(wt.created_at) = CURDATE()
+) today_tasks
+
+JOIN
+(
+  SELECT
+      today_sales.salesTotal,
+      today_sales.documentCount,
+      today_tasks.taskCount
+) today
+
+JOIN
+(
+  SELECT
+      COALESCE(SUM(d.total_amount), 0) AS salesTotal,
+      COUNT(*) AS documentCount
+  FROM documents d
+  WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+    AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+    AND d.status <> 'CANCELLED'
+    AND DATE(d.document_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+) yesterday_sales
+
+JOIN
+(
+  SELECT COUNT(*) AS taskCount
+  FROM warehouse_tasks wt
+  WHERE wt.company_id = {{Number(appsmith.store.companyId || 0)}}
+    AND DATE(wt.created_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+) yesterday_tasks
+
+JOIN
+(
+  SELECT
+      yesterday_sales.salesTotal,
+      yesterday_sales.documentCount,
+      yesterday_tasks.taskCount
+) yesterday;

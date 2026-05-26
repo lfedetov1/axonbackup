@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0f809698-257f-4fdc-8c1d-8c542d61d446",
+  "id": "Dashboard_DashboardWarehouseHeatmap",
+  "unpublishedCollection": {
+    "name": "DashboardWarehouseHeatmap",
+    "pageId": "Dashboard",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

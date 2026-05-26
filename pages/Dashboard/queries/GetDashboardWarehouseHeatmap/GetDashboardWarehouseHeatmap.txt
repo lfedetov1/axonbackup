@@ -1,0 +1,113 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COALESCE(stock.stockQuantity, 0) AS stockQuantity,
+    COALESCE(stock.stockValue, 0) AS stockValue,
+    COALESCE(low.lowStockItems, 0) AS lowStockItems,
+    COALESCE(tasks.openTasks, 0) AS openTasks,
+    COALESCE(transfers.incomingTransfers, 0) AS incomingTransfers,
+    COALESCE(transfers.outgoingTransfers, 0) AS outgoingTransfers,
+    COALESCE(pos.todaySales, 0) AS todaySales,
+
+    CASE
+      WHEN COALESCE(low.lowStockItems, 0) > 10 OR COALESCE(tasks.openTasks, 0) > 10 THEN 'danger'
+      WHEN COALESCE(low.lowStockItems, 0) > 0 OR COALESCE(tasks.openTasks, 0) > 0 THEN 'warning'
+      ELSE 'good'
+    END AS healthStatus
+
+FROM warehouses w
+
+LEFT JOIN (
+    SELECT
+        wl.warehouse_id,
+        SUM(COALESCE(wlp.quantity, 0)) AS stockQuantity,
+        SUM(COALESCE(wlp.quantity, 0) * COALESCE(wlp.average_cost, 0)) AS stockValue
+    FROM warehouse_location_products wlp
+    JOIN warehouse_locations wl ON wl.id = wlp.warehouse_location_id
+    GROUP BY wl.warehouse_id
+) stock ON stock.warehouse_id = w.id
+
+LEFT JOIN (
+    SELECT
+        s.warehouse_id,
+        COUNT(*) AS lowStockItems
+    FROM (
+        SELECT
+            wl.warehouse_id,
+            wlp.product_id,
+            SUM(COALESCE(wlp.quantity, 0)) AS qty,
+            MAX(COALESCE(wlp.minimum_quantity, 0)) AS minQty
+        FROM warehouse_location_products wlp
+        JOIN warehouse_locations wl ON wl.id = wlp.warehouse_location_id
+        GROUP BY wl.warehouse_id, wlp.product_id
+        HAVING minQty > 0 AND qty <= minQty
+    ) s
+    GROUP BY s.warehouse_id
+) low ON low.warehouse_id = w.id
+
+LEFT JOIN (
+    SELECT
+        wt.warehouse_id,
+        COUNT(*) AS openTasks
+    FROM warehouse_tasks wt
+    WHERE wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+    GROUP BY wt.warehouse_id
+) tasks ON tasks.warehouse_id = w.id
+
+LEFT JOIN (
+    SELECT
+        x.warehouseId,
+        SUM(x.incomingTransfers) AS incomingTransfers,
+        SUM(x.outgoingTransfers) AS outgoingTransfers
+    FROM (
+        SELECT
+            d.destination_warehouse_id AS warehouseId,
+            COUNT(*) AS incomingTransfers,
+            0 AS outgoingTransfers
+        FROM documents d
+        WHERE d.document_type = 'TRANSFER_REQUEST'
+          AND d.status NOT IN ('RECEIVED', 'POSTED', 'CANCELLED')
+          AND d.destination_warehouse_id > 0
+        GROUP BY d.destination_warehouse_id
+
+        UNION ALL
+
+        SELECT
+            d.source_warehouse_id AS warehouseId,
+            0 AS incomingTransfers,
+            COUNT(*) AS outgoingTransfers
+        FROM documents d
+        WHERE d.document_type = 'TRANSFER_REQUEST'
+          AND d.status NOT IN ('RECEIVED', 'POSTED', 'CANCELLED')
+          AND d.source_warehouse_id > 0
+        GROUP BY d.source_warehouse_id
+    ) x
+    GROUP BY x.warehouseId
+) transfers ON transfers.warehouseId = w.id
+
+LEFT JOIN (
+    SELECT
+        d.warehouse_id,
+        SUM(COALESCE(d.total_amount, 0)) AS todaySales
+    FROM documents d
+    WHERE d.document_type = 'POS_SALE'
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) = CURDATE()
+    GROUP BY d.warehouse_id
+) pos ON pos.warehouse_id = w.id
+
+WHERE w.company_id = {{Number(appsmith.store.companyId || 0)}}
+  AND (
+    {{Number(appsmith.store.warehouseId || 0)}} = 0
+    OR w.id = {{Number(appsmith.store.warehouseId || 0)}}
+  )
+
+ORDER BY
+    CASE healthStatus
+      WHEN 'danger' THEN 1
+      WHEN 'warning' THEN 2
+      ELSE 3
+    END,
+    w.code;

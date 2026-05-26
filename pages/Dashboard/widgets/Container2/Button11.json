@@ -3,35 +3,28 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 4,
   "boxShadow": "none",
-  "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
+  "buttonColor": "#ffffff",
   "buttonVariant": "TERTIARY",
   "disabledWhenInvalid": false,
   "dynamicBindingPathList": [
-    {
-      "key": "buttonColor"
-    },
     {
       "key": "borderRadius"
     }
   ],
   "dynamicTriggerPathList": [],
-  "iconAlign": "left",
-  "iconName": "notifications",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
   "isVisible": true,
-  "key": "97fwhq2htc",
-  "leftColumn": 51,
+  "key": "6qleefoou2",
+  "leftColumn": 7,
   "minWidth": 120,
-  "mobileBottomRow": 45,
+  "mobileBottomRow": 4,
   "mobileLeftColumn": 7,
   "mobileRightColumn": 23,
-  "mobileTopRow": 41,
+  "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "originalBottomRow": 17,
-  "originalTopRow": 13,
-  "parentColumnSpace": 30.5625,
+  "parentColumnSpace": 14.80859375,
   "parentId": "ce1ixsrnih",
   "parentRowSpace": 10,
   "placement": "CENTER",
@@ -39,11 +32,11 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 53,
-  "text": "",
+  "rightColumn": 23,
+  "text": "Pulse / Command Center",
   "topRow": 0,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "zbosk64nr6",
-  "widgetName": "Button5"
+  "widgetId": "ft7jn67gp0",
+  "widgetName": "Button11"
 }

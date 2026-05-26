@@ -1,0 +1,89 @@
+SELECT
+    GREATEST(
+      0,
+      LEAST(
+        100,
+        100
+        - (m.fiscalIssues * 12)
+        - (m.lowStockItems * 4)
+        - (m.openTasks * 2)
+        - (m.lateSalesOrders * 5)
+      )
+    ) AS healthScore,
+
+    m.todaySales,
+    m.todayDocuments,
+    m.fiscalIssues,
+    m.lowStockItems,
+    m.openTasks,
+    m.lateSalesOrders
+
+FROM (
+    SELECT
+      COALESCE((
+        SELECT SUM(d.total_amount)
+        FROM documents d
+        WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+          AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+          AND d.status <> 'CANCELLED'
+          AND DATE(d.document_date) = CURDATE()
+      ), 0) AS todaySales,
+
+      COALESCE((
+        SELECT COUNT(*)
+        FROM documents d
+        WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+          AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+          AND d.status <> 'CANCELLED'
+          AND DATE(d.document_date) = CURDATE()
+      ), 0) AS todayDocuments,
+
+      COALESCE((
+        SELECT COUNT(*)
+        FROM documents d
+        WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+          AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+          AND d.status <> 'CANCELLED'
+          AND COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+      ), 0) AS fiscalIssues,
+
+      COALESCE((
+        SELECT COUNT(*)
+        FROM (
+          SELECT
+              wlp.product_id,
+              COALESCE(SUM(wlp.quantity), 0) AS stockQty,
+              MAX(COALESCE(wlp.minimum_quantity, 0)) AS minimumQty
+          FROM warehouse_location_products wlp
+          JOIN warehouse_locations wl ON wl.id = wlp.warehouse_location_id
+          JOIN warehouses w ON w.id = wl.warehouse_id
+          WHERE w.company_id = {{Number(appsmith.store.companyId || 0)}}
+            AND (
+              {{Number(appsmith.store.warehouseId || 0)}} = 0
+              OR w.id = {{Number(appsmith.store.warehouseId || 0)}}
+            )
+          GROUP BY wlp.product_id
+          HAVING minimumQty > 0 AND stockQty <= minimumQty
+        ) low_stock
+      ), 0) AS lowStockItems,
+
+      COALESCE((
+        SELECT COUNT(*)
+        FROM warehouse_tasks wt
+        WHERE wt.company_id = {{Number(appsmith.store.companyId || 0)}}
+          AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+          AND (
+            {{Number(appsmith.store.warehouseId || 0)}} = 0
+            OR wt.warehouse_id = {{Number(appsmith.store.warehouseId || 0)}}
+          )
+      ), 0) AS openTasks,
+
+      COALESCE((
+        SELECT COUNT(*)
+        FROM documents d
+        WHERE d.company_id = {{Number(appsmith.store.companyId || 0)}}
+          AND d.document_type = 'SALES_ORDER'
+          AND d.status NOT IN ('INVOICED', 'CANCELLED')
+          AND COALESCE(d.due_date, d.document_date) < CURDATE()
+      ), 0) AS lateSalesOrders
+) m;
