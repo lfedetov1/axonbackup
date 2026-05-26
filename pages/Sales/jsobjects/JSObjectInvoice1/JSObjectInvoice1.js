@@ -91,7 +91,12 @@ export default {
     invoiceId =
       savedRows?.[0]?.id ||
       GetSavedSalesInvoiceByNumber.data?.[0]?.id;
+		
+				const fiscalPrepared = await SalesFiscalization.prepare(invoiceId);
 
+if (!fiscalPrepared) {
+  return;
+}
     return invoiceId;
   },
 

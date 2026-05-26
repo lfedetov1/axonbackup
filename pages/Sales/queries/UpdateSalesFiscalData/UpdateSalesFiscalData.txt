@@ -1,0 +1,12 @@
+UPDATE documents
+SET
+    fiscal_number = {{this.params.fiscalNumber}},
+    fiscal_status = {{this.params.fiscalStatus || "NOT_FISCALIZED"}},
+    fiscal_jir = {{this.params.jir || null}},
+    fiscal_zki = {{this.params.zki || null}},
+    fiscal_qr_url = {{this.params.fiscalQrUrl || null}},
+    fiscal_verification_url = {{this.params.fiscalVerificationUrl || null}},
+    fiscalized_at = {{this.params.fiscalizedAt || null}},
+    fiscal_error = {{this.params.fiscalError || null}}
+WHERE id = {{this.params.documentId}}
+  AND document_type IN ('SALES_INVOICE', 'CREDIT_NOTE');

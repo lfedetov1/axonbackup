@@ -496,6 +496,33 @@ export default {
 
     return null;
   },
+	async prepareFiscalData(invoiceId) {
+  const fiscalRows = await GetNextPOSFiscalNumber.run();
+  const fiscalNumber =
+    fiscalRows?.[0]?.nextFiscalNumber ||
+    GetNextPOSFiscalNumber.data?.[0]?.nextFiscalNumber;
+
+  if (!fiscalNumber) {
+    showAlert("Fiscal number could not be generated.", "error");
+    return false;
+  }
+
+  await UpdatePOSFiscalData.run({
+    documentId: invoiceId,
+    fiscalNumber,
+    fiscalStatus: "NOT_FISCALIZED",
+    jir: null,
+    zki: null,
+    fiscalQrUrl: null,
+    fiscalVerificationUrl: null,
+    fiscalizedAt: null,
+    fiscalError: "Fiscalization service is not connected yet"
+  });
+
+  await storeValue("posFiscalNumber", fiscalNumber);
+
+  return true;
+},
 
   async preparePrintData() {
     if (typeof GetPOSInvoicePrintHeader === "undefined") {
@@ -713,6 +740,11 @@ confirmCashPayment() {
       if (typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
       }
+			const fiscalPrepared = await this.prepareFiscalData(invoiceId);
+
+if (!fiscalPrepared) {
+  return;
+}
 
       await this.openPrintModal();
 

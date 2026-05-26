@@ -1,0 +1,18 @@
+SELECT
+    CONCAT(
+      COALESCE(MAX(CAST(SUBSTRING_INDEX(d.fiscal_number, '-', 1) AS UNSIGNED)), 0) + 1,
+      '-',
+      cr.fiscal_business_space_code,
+      '-',
+      cr.fiscal_device_code
+    ) AS nextFiscalNumber
+FROM cash_registers cr
+LEFT JOIN documents d
+  ON d.company_id = cr.company_id
+ AND d.document_type = 'POS_SALE'
+ AND YEAR(d.document_date) = YEAR(CURDATE())
+ AND d.fiscal_number LIKE CONCAT('%-', cr.fiscal_business_space_code, '-', cr.fiscal_device_code)
+WHERE cr.id = {{ CashRegisterSelect.text || appsmith.store.currentCashRegisterId || 0 }}
+GROUP BY
+    cr.fiscal_business_space_code,
+    cr.fiscal_device_code;

@@ -1,0 +1,18 @@
+SELECT
+    CONCAT(
+      COALESCE(
+        MAX(
+          CAST(SUBSTRING_INDEX(d.fiscal_number, '/', 1) AS UNSIGNED)
+        ),
+        0
+      ) + 1,
+      '/',
+      {{this.params.businessSpaceCode}},
+      '/',
+      {{this.params.deviceCode}}
+    ) AS nextFiscalNumber
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND YEAR(d.document_date) = YEAR(CURDATE())
+  AND d.fiscal_number LIKE CONCAT('%/', {{this.params.businessSpaceCode}}, '/', {{this.params.deviceCode}});
