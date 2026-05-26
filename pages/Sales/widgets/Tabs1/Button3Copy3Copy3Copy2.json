@@ -34,7 +34,7 @@
   "isLoading": false,
   "isVisible": "{{ appsmith.store.viewMode === \"add\" }}",
   "key": "jqsyvstdu5",
-  "leftColumn": 51,
+  "leftColumn": 50,
   "minWidth": 120,
   "mobileBottomRow": 28,
   "mobileLeftColumn": 2,
