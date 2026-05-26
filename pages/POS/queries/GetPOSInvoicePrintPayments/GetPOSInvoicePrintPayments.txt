@@ -1,0 +1,13 @@
+SELECT
+    ppl.payment_method_code AS paymentMethodCode,
+    COALESCE(pm.name, ppl.payment_method_code) AS paymentMethodName,
+    ppl.method_group AS methodGroup,
+    ppl.amount,
+    ppl.received_amount AS receivedAmount,
+    ppl.change_amount AS changeAmount,
+    ppl.reference_number AS referenceNumber,
+    ppl.card_type AS cardType
+FROM pos_payment_lines ppl
+LEFT JOIN payment_methods pm ON pm.id = ppl.payment_method_id
+WHERE ppl.document_id = {{appsmith.store.currentInvoiceId || 0}}
+ORDER BY ppl.id;

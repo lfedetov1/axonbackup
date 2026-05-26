@@ -1,0 +1,49 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+
+    di.id AS documentItemId,
+    di.product_id AS productId,
+
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    di.quantity AS quantity,
+    COALESCE(returned.returnedQuantity, 0) AS alreadyReturnedQuantity,
+    GREATEST(di.quantity - COALESCE(returned.returnedQuantity, 0), 0) AS availableReturnQuantity,
+
+    di.unit_price AS unitPrice,
+    di.line_total AS lineTotal
+
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+
+LEFT JOIN (
+    SELECT
+        ri.return_source_item_id AS sourceItemId,
+        SUM(ABS(ri.quantity)) AS returnedQuantity
+    FROM document_items ri
+    JOIN documents rd ON rd.id = ri.document_id
+    WHERE rd.document_type IN ('POS_SALE', 'SALES_RETURN', 'CREDIT_NOTE')
+      AND ri.quantity < 0
+    GROUP BY ri.return_source_item_id
+) returned ON returned.sourceItemId = di.id
+
+WHERE d.document_type = 'POS_SALE'
+  AND d.status <> 'CANCELLED'
+  AND (
+      d.document_number = {{this.params.lookup}}
+      OR d.fiscal_number = {{this.params.lookup}}
+      OR d.jir = {{this.params.lookup}}
+      OR d.zki = {{this.params.lookup}}
+      OR p.barcode = {{this.params.lookup}}
+  )
+  AND (
+      {{Number(this.params.productId || 0)}} = 0
+      OR di.product_id = {{Number(this.params.productId || 0)}}
+  )
+
+ORDER BY d.document_date DESC, d.id DESC, di.line_no;

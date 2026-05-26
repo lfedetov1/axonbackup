@@ -15,13 +15,33 @@ export default {
     }));
   },
 
-  async open() {
+  cashRegisterId() {
+    return (
+      PosControlCashRegisterSelect.selectedOptionValue ||
+      appsmith.store.currentCashRegisterId ||
+      null
+    );
+  },
+
+  cashRegisterLabel() {
+    return (
+      PosControlCashRegisterSelect.selectedOptionLabel ||
+      PosControlCashRegisterSelect.selectedOptionValue ||
+      ""
+    );
+  },
+
+  async open(type = "IN") {
     await ListPosCashRegisters.run();
 
     await storeValue("posCashOperationLines", this.defaultLines());
     await storeValue("posCashOperationTotal", 0);
-    await storeValue("posCashOperationType", "TRANSFER_OUT");
+    await storeValue("posCashOperationType", type);
     await storeValue("posCashOperationNote", "");
+
+    if (typeof PosControlCashInOutTypeSelect !== "undefined") {
+      PosControlCashInOutTypeSelect.setSelectedOption(type);
+    }
 
     showModal(PosCashOperationModal.name);
   },
@@ -106,10 +126,7 @@ export default {
       });
     }
 
-    return {
-      entryNumber,
-      lines
-    };
+    return { entryNumber, lines };
   },
 
   async save() {
@@ -118,12 +135,26 @@ export default {
       return;
     }
 
-    const model = PosCashOperationModal.model || {};
-    const type = model.operationType || "TRANSFER_OUT";
-    const cashRegisterId = model.selectedCashRegisterId;
-    const cashRegisterLabel = model.selectedCashRegisterLabel || "";
-    const amount = Number(model.total || 0);
-    const note = model.note || "";
+    const model = PosCashOperationCustom.model || {};
+    const type =
+      PosControlCashInOutTypeSelect.selectedOptionValue ||
+      appsmith.store.posCashOperationType ||
+      model.operationType ||
+      "IN";
+
+    const cashRegisterId = this.cashRegisterId();
+    const cashRegisterLabel = this.cashRegisterLabel();
+
+    const amount = Number(
+      appsmith.store.posCashOperationTotal ||
+      model.total ||
+      0
+    );
+
+    const note =
+      PosControlCashIONoteInput.text ||
+      appsmith.store.posCashOperationNote ||
+      "";
 
     if (!cashRegisterId) {
       showAlert("Select cash register first.", "warning");
@@ -157,7 +188,9 @@ export default {
       return;
     }
 
-    const lines = (model.lines || []).filter(row => Number(row.quantity || 0) > 0);
+    const lines = (appsmith.store.posCashOperationLines || model.lines || [])
+      .filter(row => Number(row.quantity || 0) > 0);
+
     const countType = this.getCountType(type);
 
     for (const row of lines) {
@@ -196,6 +229,10 @@ export default {
     await storeValue("posCashOperationLines", this.defaultLines());
     await storeValue("posCashOperationTotal", 0);
     await storeValue("posCashOperationNote", "");
+
+    if (typeof PosControlCashIONoteInput !== "undefined") {
+      PosControlCashIONoteInput.setValue("");
+    }
 
     if (typeof GetPosShiftStatus !== "undefined") await GetPosShiftStatus.run();
     if (typeof GetPosReportOverview !== "undefined") await GetPosReportOverview.run();

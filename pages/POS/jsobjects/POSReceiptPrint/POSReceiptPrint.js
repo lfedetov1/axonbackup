@@ -13,10 +13,12 @@ export default {
       const headerRows = await GetPOSInvoicePrintHeader.run();
       const itemRows = await GetPOSInvoicePrintItems.run();
       const taxRows = await GetPOSInvoicePrintTaxSummary.run();
+      const paymentRows = await GetPOSInvoicePrintPayments.run();
 
       const header = headerRows?.[0] || GetPOSInvoicePrintHeader.data?.[0];
       const items = itemRows || GetPOSInvoicePrintItems.data || [];
       const taxes = taxRows || GetPOSInvoicePrintTaxSummary.data || [];
+      const payments = paymentRows || GetPOSInvoicePrintPayments.data || [];
 
       if (!header) {
         showAlert("POS receipt print data was not found.", "error");

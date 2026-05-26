@@ -50,7 +50,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 13,
   "serverSideFiltering": false,
-  "sourceData": "[\n  { \"label\": \"POS Overview\", \"value\": \"POS_OVERVIEW\" },\n  { \"label\": \"X Report\", \"value\": \"X_REPORT\" },\n  { \"label\": \"Z Report\", \"value\": \"Z_REPORT\" },\n  { \"label\": \"Cash Transactions\", \"value\": \"CASH_TRANSACTIONS\" },\n  { \"label\": \"Payments\", \"value\": \"PAYMENTS\" },\n  { \"label\": \"Closing\", \"value\": \"CLOSING\" }\n]\n",
+  "sourceData": "[\n  { \"label\": \"POS Overview\", \"value\": \"POS_OVERVIEW\" },\n  { \"label\": \"X Report\", \"value\": \"X_REPORT\" },\n  { \"label\": \"Z Report\", \"value\": \"Z_REPORT\" },\n  { \"label\": \"Cash Transactions\", \"value\": \"CASH_TRANSACTIONS\" },\n  { \"label\": \"Payments\", \"value\": \"PAYMENTS\" },\n  { \"label\": \"Closing\", \"value\": \"CLOSING\" },\n  { \"label\": \"Uplatnica / Cash In\", \"value\": \"CASH_IN_SLIP\" },\n  { \"label\": \"Isplatnica / Cash Out\", \"value\": \"CASH_OUT_SLIP\" },\n  { \"label\": \"Polog na banku\", \"value\": \"BANK_DEPOSIT_SLIP\" },\n  { \"label\": \"Podizanje s banke\", \"value\": \"BANK_WITHDRAWAL_SLIP\" }\n]",
   "topRow": 6,
   "type": "SELECT_WIDGET",
   "version": 1,

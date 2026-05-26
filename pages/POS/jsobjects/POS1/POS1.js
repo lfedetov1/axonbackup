@@ -55,6 +55,24 @@ export default {
   },
 
   async deductStockForInvoiceItem(invoiceId, invoiceItemId, row, warehouseId) {
+    const quantity = Number(row.quantity || 0);
+
+    if (quantity < 0) {
+      if (typeof InsertInvoiceReturnStockMovement !== "undefined") {
+        await InsertInvoiceReturnStockMovement.run({
+          invoiceId,
+          invoiceItemId,
+          warehouseId,
+          row: {
+            ...row,
+            quantity: Math.abs(quantity)
+          }
+        });
+      }
+
+      return;
+    }
+
     const normItems = await GetActiveNormItemsForPosLine.run({
       productId: row.productId
     });
@@ -110,6 +128,134 @@ export default {
     await storeValue("invoiceItems", []);
   },
 
+  isReturnRow(row) {
+    return Number(row.quantity || 0) < 0;
+  },
+
+  hasUnlinkedReturns(rows = this.getRows()) {
+    return rows.some(row =>
+      this.isReturnRow(row) &&
+      String(row.returnApproved || "0") !== "1"
+    );
+  },
+
+  async openReturnModalForRow(rowIndex, row) {
+    await storeValue("posReturnRowIndex", rowIndex);
+    await storeValue("posReturnProductId", row.productId || null);
+    await storeValue("posReturnProductCode", row.productCode || "");
+    await storeValue("posReturnBarcode", row.barcode || "");
+    await storeValue("posReturnRequestedQuantity", Math.abs(Number(row.quantity || 0)));
+    await storeValue("posReturnSourceDocumentNumber", "");
+    await storeValue("posReturnSourceDocumentId", null);
+    await storeValue("posReturnSourceItemId", null);
+    await storeValue("posReturnReferenceItems", []);
+
+    if (typeof POSReturnReceiptLookupInput !== "undefined") {
+      POSReturnReceiptLookupInput.setValue("");
+    }
+
+    showAlert("Select original receipt for this return item.", "warning");
+    showModal("POSReturnReferenceModal");
+  },
+	
+	async applyReturnReference(sourceRow = {}) {
+  const rowIndex = Number(appsmith.store.posReturnRowIndex);
+
+  if (rowIndex < 0 || Number.isNaN(rowIndex)) {
+    showAlert("Return row was not found.", "error");
+    return;
+  }
+
+  const rows = this.getRows();
+  const row = rows[rowIndex];
+
+  if (!row) {
+    showAlert("Return row was not found.", "error");
+    return;
+  }
+
+  const sourceDate =
+    sourceRow.documentDate ||
+    sourceRow.DocumentDate ||
+    sourceRow.document_date ||
+    sourceRow.invoiceDate ||
+    null;
+
+  if (sourceDate) {
+    const daysFromPurchase = moment().diff(moment(sourceDate), "days");
+
+    if (daysFromPurchase > 30) {
+      showAlert("Return/exchange is not allowed after 30 days from purchase.", "error");
+      return;
+    }
+  }
+
+  const sourceProductId =
+    sourceRow.productId ||
+    sourceRow.ProductID ||
+    sourceRow.product_id ||
+    null;
+
+  if (
+    sourceProductId &&
+    row.productId &&
+    Number(sourceProductId) !== Number(row.productId)
+  ) {
+    showAlert("Selected receipt item does not match return product.", "error");
+    return;
+  }
+
+  const requestedQty = Math.abs(Number(row.quantity || 0));
+  const availableReturnQty = Number(
+    sourceRow.availableReturnQuantity ??
+    sourceRow.remainingQuantity ??
+    sourceRow.AvailableReturnQuantity ??
+    sourceRow.RemainingQuantity ??
+    Math.abs(Number(sourceRow.quantity || sourceRow.Quantity || 0))
+  );
+
+  if (availableReturnQty > 0 && requestedQty > availableReturnQty) {
+    showAlert("Return quantity is greater than available quantity from original receipt.", "error");
+    return;
+  }
+
+  rows[rowIndex] = this.recalculateRow({
+    ...row,
+    returnSourceDocumentId:
+      sourceRow.documentId ||
+      sourceRow.DocumentID ||
+      sourceRow.document_id ||
+      sourceRow.invoiceId ||
+      null,
+    returnSourceDocumentNumber:
+      sourceRow.documentNumber ||
+      sourceRow.Number ||
+      sourceRow.document_number ||
+      sourceRow.invoiceNumber ||
+      "",
+    returnSourceItemId:
+      sourceRow.documentItemId ||
+      sourceRow.itemId ||
+      sourceRow.id ||
+      null,
+    returnSourceQuantity: availableReturnQty,
+    returnApproved: "1",
+    stockError: ""
+  });
+
+  await storeValue("invoiceItems", rows);
+  await storeValue("posReturnSourceDocumentId", rows[rowIndex].returnSourceDocumentId);
+  await storeValue("posReturnSourceDocumentNumber", rows[rowIndex].returnSourceDocumentNumber);
+  await storeValue("posReturnSourceItemId", rows[rowIndex].returnSourceItemId);
+
+  closeModal("POSReturnReferenceModal");
+  showAlert("Return reference was linked.", "success");
+},
+
+  cancelReturnModal() {
+    closeModal("POSReturnReferenceModal");
+  },
+
   async scanBarcode() {
     const lookup = String(BarcodeInput.text || "").trim();
 
@@ -155,6 +301,7 @@ export default {
         rows[existingIndex] = this.recalculateRow({
           ...rows[existingIndex],
           quantity: String(nextQuantity),
+          returnApproved: Number(nextQuantity) < 0 ? rows[existingIndex].returnApproved || "0" : "0",
           stockError: ""
         });
       } else {
@@ -183,6 +330,10 @@ export default {
             quantity: "1",
             unitPrice: String(product.unitPrice || "0"),
             discountPercent: "0",
+            returnApproved: "0",
+            returnSourceDocumentId: null,
+            returnSourceDocumentNumber: "",
+            returnSourceItemId: null,
             stockError: ""
           })
         );
@@ -212,6 +363,27 @@ export default {
     if (fieldName === "quantity") {
       const quantity = Number(rows[rowIndex].quantity || 0);
       const availableStock = this.getAvailableStock(rows[rowIndex]);
+
+      if (quantity < 0) {
+        rows[rowIndex] = this.recalculateRow({
+          ...rows[rowIndex],
+          stockError: "",
+          returnApproved: rows[rowIndex].returnApproved || "0"
+        });
+
+        await storeValue("invoiceItems", rows);
+        await this.openReturnModalForRow(rowIndex, rows[rowIndex]);
+        return;
+      }
+
+      rows[rowIndex] = {
+        ...rows[rowIndex],
+        returnSourceDocumentId: null,
+        returnSourceDocumentNumber: "",
+        returnSourceItemId: null,
+        returnSourceQuantity: null,
+        returnApproved: "0"
+      };
 
       if (this.isStockTracked(rows[rowIndex]) && quantity > availableStock) {
         rows[rowIndex].stockError = "Not enough stock";
@@ -367,9 +539,62 @@ export default {
       invoice_no.setValue(String(nextNumber));
     }
   },
+	async updateCashReceived(value) {
+  const received = Number(value || 0);
+  const due = Number(appsmith.store.posCashTotalDue || 0);
+  const change = received - due;
+
+  await storeValue("posCashReceived", received);
+  await storeValue("posCashChange", change > 0 ? change : 0);
+},
+
+confirmCashPayment() {
+  const due = Number(appsmith.store.posCashTotalDue || 0);
+  const received = Number(appsmith.store.posCashReceived || 0);
+
+  if (received < due) {
+    showAlert("Received amount is lower than total amount.", "warning");
+    return;
+  }
+
+  closeModal(CashPaymentModal.name);
+  return this.savePayment("CASH", null);
+},
+	
+	async insertPaymentLines(invoiceId) {
+  const lines = appsmith.store.posPaymentLines || [];
+  const totalChange = Number(appsmith.store.posPaymentChange || 0);
+
+  if (!lines.length) {
+    return;
+  }
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const isLast = i === lines.length - 1;
+
+    await InsertPOSPaymentLine.run({
+      documentId: invoiceId,
+      paymentMethodId: lines[i].paymentMethodId || null,
+      paymentMethodCode: lines[i].code || "OTHER",
+      methodGroup: lines[i].methodGroup || "OTHER",
+      amount: Number(lines[i].amount || 0),
+      receivedAmount: Number(lines[i].amount || 0),
+      changeAmount: isLast ? totalChange : 0,
+      referenceNumber: lines[i].referenceNumber || null,
+      cardType: lines[i].cardType || null,
+      note: lines[i].name || null
+    });
+  }
+},
 
   async savePayment(paymentMethod, cardType = null) {
     const rows = this.getRows();
+
+    if (this.hasUnlinkedReturns(rows)) {
+      showAlert("Every negative quantity must be linked to original receipt.", "warning");
+      showModal("POSReturnReferenceModal");
+      return;
+    }
 
     if (!rows.length) {
       showAlert("Add at least one item before payment.", "warning");
@@ -414,6 +639,7 @@ export default {
       }
 
       await storeValue("currentInvoiceId", invoiceId);
+			await this.insertPaymentLines(invoiceId);
 
       for (let i = 0; i < recalculatedRows.length; i += 1) {
         const lineNo = i + 1;
@@ -445,45 +671,44 @@ export default {
         );
       }
 
-     try {
-  if (typeof AuditLog !== "undefined" && AuditLog.insert) {
-    await AuditLog.insert({
-      entity_name: "documents",
-      entity_id: invoiceId,
-      action_type: "INSERT",
-      new_values: {
-        source: "POS",
-        document_type: "POS_SALE",
-        payment_method: paymentMethod,
-        card_type: cardType,
-        subtotal_amount: totals.subtotal,
-        tax_amount: totals.tax,
-        discount_amount: totals.discount,
-        total_amount: totals.total,
-        item_count: recalculatedRows.length,
-        warehouse_id: warehouseId
-      }
-    });
+      try {
+        if (typeof AuditLog !== "undefined" && AuditLog.insert) {
+          await AuditLog.insert({
+            entity_name: "documents",
+            entity_id: invoiceId,
+            action_type: "INSERT",
+            new_values: {
+              source: "POS",
+              document_type: "POS_SALE",
+              payment_method: paymentMethod,
+              card_type: cardType,
+              subtotal_amount: totals.subtotal,
+              tax_amount: totals.tax,
+              discount_amount: totals.discount,
+              total_amount: totals.total,
+              item_count: recalculatedRows.length,
+              warehouse_id: warehouseId
+            }
+          });
 
-    await AuditLog.insert({
-      entity_name: "documents",
-      entity_id: invoiceId,
-      action_type: "POST",
-      new_values: {
-        source: "POS",
-        document_type: "POS_SALE",
-        posting_status: "POSTED",
-        payment_method: paymentMethod,
-        total_amount: totals.total,
-        warehouse_id: warehouseId,
-        note: "POS payment completed and stock movement created"
+          await AuditLog.insert({
+            entity_name: "documents",
+            entity_id: invoiceId,
+            action_type: "POST",
+            new_values: {
+              source: "POS",
+              document_type: "POS_SALE",
+              posting_status: "POSTED",
+              payment_method: paymentMethod,
+              total_amount: totals.total,
+              warehouse_id: warehouseId,
+              note: "POS payment completed and stock movement created"
+            }
+          });
+        }
+      } catch (auditError) {
+        console.log("Audit log skipped:", auditError);
       }
-    });
-  }
-} catch (auditError) {
-  console.log("Audit log skipped:", auditError);
-}
-
 
       if (typeof InsertAuditLog !== "undefined") {
         await InsertAuditLog.run();
@@ -501,9 +726,32 @@ export default {
     }
   },
 
-  payCash() {
-    return this.savePayment("CASH", null);
-  },
+async payCash() {
+  const rows = this.getRows();
+
+  if (!rows.length) {
+    showAlert("Add at least one item before payment.", "warning");
+    return;
+  }
+
+  if (this.hasUnlinkedReturns(rows)) {
+    showAlert("Every negative quantity must be linked to original receipt.", "warning");
+    showModal("POSReturnReferenceModal");
+    return;
+  }
+
+  const totals = this.getTotals(rows);
+
+  await storeValue("posCashTotalDue", totals.total);
+  await storeValue("posCashReceived", "");
+  await storeValue("posCashChange", 0);
+
+  if (typeof CashReceivedInput !== "undefined") {
+    CashReceivedInput.setValue("");
+  }
+
+  showModal(CashPaymentModal.name);
+},
 
   payCard() {
     const cardType = CardTypeSelect.selectedOptionValue || null;
@@ -524,10 +772,69 @@ export default {
   payMixed() {
     return this.savePayment("MIXED", null);
   },
+	
+	async openPaymentModal() {
+  const rows = this.getRows();
+
+  if (!rows.length) {
+    showAlert("Add at least one item before payment.", "warning");
+    return;
+  }
+
+  if (this.hasUnlinkedReturns(rows)) {
+    showAlert("Every negative quantity must be linked to original receipt.", "warning");
+    showModal("POSReturnReferenceModal");
+    return;
+  }
+
+  const totals = this.getTotals(rows);
+
+  await ListPOSPaymentMethods.run();
+  await storeValue("posPaymentTotalDue", totals.total);
+  await storeValue("posPaymentLines", []);
+  await storeValue("posPaymentPaid", 0);
+  await storeValue("posPaymentRemaining", totals.total);
+  await storeValue("posPaymentChange", 0);
+
+  showModal(POSPaymentModal.name);
+},
+
+confirmPOSPayment() {
+  const totalDue = Number(appsmith.store.posPaymentTotalDue || 0);
+  const paid = Number(appsmith.store.posPaymentPaid || 0);
+  const lines = appsmith.store.posPaymentLines || [];
+
+  if (!lines.length) {
+    showAlert("Add at least one payment.", "warning");
+    return;
+  }
+
+  if (paid < totalDue) {
+    showAlert("Payment amount is lower than total.", "warning");
+    return;
+  }
+
+  const hasCash = lines.some(row => row.isCash);
+  const hasCard = lines.some(row => row.methodGroup === "CARD");
+  const paymentMethod = lines.length > 1 ? "MIXED" : (hasCash ? "CASH" : hasCard ? "CARD" : "OTHER");
+
+  closeModal(POSPaymentModal.name);
+  return this.savePayment(paymentMethod, null);
+},
 
   async clearPOS() {
     await storeValue("invoiceItems", []);
     await storeValue("currentInvoiceId", null);
+
+    await storeValue("posReturnRowIndex", null);
+    await storeValue("posReturnProductId", null);
+    await storeValue("posReturnProductCode", "");
+    await storeValue("posReturnBarcode", "");
+    await storeValue("posReturnRequestedQuantity", 0);
+    await storeValue("posReturnSourceDocumentNumber", "");
+    await storeValue("posReturnSourceDocumentId", null);
+    await storeValue("posReturnSourceItemId", null);
+    await storeValue("posReturnReferenceItems", []);
 
     if (typeof BarcodeInput !== "undefined") {
       BarcodeInput.setValue("");

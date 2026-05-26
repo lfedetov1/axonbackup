@@ -12,7 +12,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "floppy-disk",
   "isDefaultClickDisabled": true,
@@ -27,6 +36,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
+  "onClick": "{{ PosCashOperation.save() }}",
   "originalBottomRow": 26,
   "originalTopRow": 22,
   "parentId": "h9zhn8qa04",

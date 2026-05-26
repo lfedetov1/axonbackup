@@ -17,9 +17,16 @@
   "dynamicPropertyPathList": [
     {
       "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
   "isDisabled": false,
   "isFilterable": true,
   "isLoading": false,
@@ -40,6 +47,7 @@
   "mobileRightColumn": 20,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
+  "onOptionChange": "{{\n  storeValue(\"posCashOperationType\", PosControlCashInOutTypeSelect.selectedOptionValue)\n    .then(() => storeValue(\"posCashOperationLines\", PosCashOperation.defaultLines()))\n    .then(() => storeValue(\"posCashOperationTotal\", 0))\n}}",
   "optionLabel": "label",
   "optionValue": "value",
   "parentColumnSpace": 15.582568359375,

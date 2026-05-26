@@ -3,7 +3,7 @@
   "animateLoading": true,
   "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 8,
+  "bottomRow": 19,
   "boxShadow": "none",
   "defaultText": "",
   "dynamicBindingPathList": [
@@ -15,40 +15,51 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "jhlpsf2ave",
-  "label": "Note :",
+  "key": "tx83vgr70q",
+  "label": "Recepit :",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 34,
+  "leftColumn": 1,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 8,
-  "mobileLeftColumn": 21,
-  "mobileRightColumn": 41,
-  "mobileTopRow": 1,
+  "mobileBottomRow": 19,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 12,
   "needsErrorInfo": false,
-  "parentColumnSpace": 15.582568359375,
-  "parentId": "h9zhn8qa04",
+  "onTextChanged": "{{ POSReturnReference.searchDebounced(POSReturnReceiptLookupInput.text) }}",
+  "parentColumnSpace": 11.375,
+  "parentId": "20zjza4doh",
   "parentRowSpace": 10,
+  "placeholderText": "Scan receipt QR/barcode or enter receipt number",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 46,
+  "rightColumn": 36,
   "showStepArrows": false,
-  "topRow": 1,
+  "topRow": 12,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "14id6gmzet",
-  "widgetName": "PosControlNoteInput"
+  "widgetId": "g2rkggtiqo",
+  "widgetName": "POSReturnReceiptLookupInput"
 }
