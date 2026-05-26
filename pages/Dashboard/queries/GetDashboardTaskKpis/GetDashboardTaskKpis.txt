@@ -1,0 +1,5 @@
+SELECT
+    COUNT(*) AS openTasks
+FROM warehouse_tasks
+WHERE company_id = {{appsmith.store.companyId}}
+  AND status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP');

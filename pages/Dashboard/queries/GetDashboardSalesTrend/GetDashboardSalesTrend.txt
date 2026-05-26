@@ -1,0 +1,11 @@
+SELECT
+    DATE(d.document_date) AS salesDate,
+    COALESCE(SUM(d.total_amount), 0) AS totalSales,
+    COUNT(*) AS documentCount
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+  AND d.document_date >= DATE_SUB(CURDATE(), INTERVAL 14 DAY)
+  AND d.status <> 'CANCELLED'
+GROUP BY DATE(d.document_date)
+ORDER BY DATE(d.document_date);

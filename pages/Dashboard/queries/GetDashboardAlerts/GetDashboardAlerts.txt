@@ -1,0 +1,89 @@
+SELECT
+    'LOW_STOCK' AS alertType,
+    'Inventory' AS moduleName,
+    p.id AS entityId,
+    p.code AS entityCode,
+    CONCAT('Low stock: ', p.code, ' - ', p.name) AS title,
+    CONCAT('Current: ', COALESCE(stock.currentStock, 0), ' / Minimum: ', COALESCE(wlp.minimum_quantity, 0)) AS message,
+    'HIGH' AS severity,
+    NOW() AS createdAt
+FROM warehouse_location_products wlp
+JOIN products p ON p.id = wlp.product_id
+LEFT JOIN (
+    SELECT
+        product_id,
+        warehouse_id,
+        SUM(
+            CASE
+              WHEN movement_type IN ('IN', 'TRANSFER_IN') THEN quantity
+              WHEN movement_type IN ('OUT', 'TRANSFER_OUT') THEN -quantity
+              WHEN movement_type = 'ADJUSTMENT' THEN quantity
+              ELSE 0
+            END
+        ) AS currentStock
+    FROM stock_movements
+    GROUP BY product_id, warehouse_id
+) stock
+  ON stock.product_id = wlp.product_id
+ AND stock.warehouse_id = wlp.warehouse_id
+WHERE COALESCE(stock.currentStock, 0) <= COALESCE(wlp.minimum_quantity, 0)
+
+UNION ALL
+
+SELECT
+    'FISCAL_ERROR' AS alertType,
+    'Sales' AS moduleName,
+    d.id AS entityId,
+    d.document_number AS entityCode,
+    CONCAT('Fiscal error: ', d.document_number) AS title,
+    COALESCE(d.fiscal_error, 'Fiscalization status is ERROR') AS message,
+    'CRITICAL' AS severity,
+    d.updated_at AS createdAt
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.fiscal_status = 'ERROR'
+
+UNION ALL
+
+SELECT
+    'OVERDUE_INVOICE' AS alertType,
+    'Finance' AS moduleName,
+    d.id AS entityId,
+    d.document_number AS entityCode,
+    CONCAT('Overdue invoice: ', d.document_number) AS title,
+    CONCAT('Open amount: ', FORMAT(d.total_amount - d.paid_amount, 2), ' ', d.currency_code) AS message,
+    'MEDIUM' AS severity,
+    d.due_date AS createdAt
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'SALES_INVOICE'
+  AND d.status <> 'CANCELLED'
+  AND d.due_date < CURDATE()
+  AND COALESCE(d.paid_amount, 0) < COALESCE(d.total_amount, 0)
+
+UNION ALL
+
+SELECT
+    'STUCK_TASK' AS alertType,
+    'WMS' AS moduleName,
+    wt.id AS entityId,
+    wt.task_number AS entityCode,
+    CONCAT('Open task: ', wt.task_number) AS title,
+    CONCAT(wt.task_type, ' / ', wt.status) AS message,
+    'MEDIUM' AS severity,
+    wt.created_at AS createdAt
+FROM warehouse_tasks wt
+WHERE wt.company_id = {{appsmith.store.companyId}}
+  AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+  AND wt.created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
+
+ORDER BY
+    CASE severity
+      WHEN 'CRITICAL' THEN 1
+      WHEN 'HIGH' THEN 2
+      WHEN 'MEDIUM' THEN 3
+      ELSE 4
+    END,
+    createdAt DESC
+LIMIT 30;

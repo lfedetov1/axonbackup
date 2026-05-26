@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 48,
+  "bottomRow": 53,
   "boxShadow": "none",
   "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
   "buttonVariant": "TERTIARY",
@@ -47,7 +47,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "text": "Reports",
-  "topRow": 44,
+  "topRow": 49,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "520ldekzvh",

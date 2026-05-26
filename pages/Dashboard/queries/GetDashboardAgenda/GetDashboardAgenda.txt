@@ -1,0 +1,66 @@
+SELECT
+    'SALES_ORDER' AS eventType,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    COALESCE(d.due_date, d.document_date) AS eventDate,
+    d.status,
+    CONCAT('Sales order ', d.document_number) AS title,
+    COALESCE(bp.name, '') AS subtitle
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'SALES_ORDER'
+  AND d.status NOT IN ('INVOICED', 'CANCELLED')
+  AND COALESCE(d.due_date, d.document_date) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY)
+
+UNION ALL
+
+SELECT
+    'DELIVERY_NOTE' AS eventType,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS eventDate,
+    d.status,
+    CONCAT('Delivery ', d.document_number) AS title,
+    COALESCE(bp.name, '') AS subtitle
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND d.status NOT IN ('POSTED', 'CANCELLED')
+  AND d.document_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY)
+
+UNION ALL
+
+SELECT
+    'WAREHOUSE_TASK' AS eventType,
+    wt.id AS documentId,
+    wt.task_number AS documentNumber,
+    DATE(wt.created_at) AS eventDate,
+    wt.status,
+    wt.task_type AS title,
+    COALESCE(wt.note, '') AS subtitle
+FROM warehouse_tasks wt
+WHERE wt.company_id = {{appsmith.store.companyId}}
+  AND wt.status IN ('OPEN', 'IN_PROGRESS', 'READY_FOR_NEXT_STEP')
+  AND DATE(wt.created_at) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY)
+
+UNION ALL
+
+SELECT
+    'OVERDUE_INVOICE' AS eventType,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.due_date AS eventDate,
+    d.status,
+    CONCAT('Overdue invoice ', d.document_number) AS title,
+    COALESCE(bp.name, '') AS subtitle
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'SALES_INVOICE'
+  AND d.status <> 'CANCELLED'
+  AND d.due_date < CURDATE()
+  AND COALESCE(d.paid_amount, 0) < COALESCE(d.total_amount, 0)
+
+ORDER BY eventDate, eventType, documentNumber;

@@ -46,7 +46,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 23,
   "shouldTruncate": false,
-  "text": "{{ \"🏢 \" + (appsmith.store.companyName || \"No company\") }}",
+  "text": "{{ (appsmith.store.companyName || \"No company\") }}",
   "textAlign": "LEFT",
   "textColor": "{{appsmith.theme.colors.backgroundColor}}",
   "topRow": 0,

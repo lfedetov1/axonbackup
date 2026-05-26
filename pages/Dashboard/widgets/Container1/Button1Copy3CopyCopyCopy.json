@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 32,
+  "bottomRow": 37,
   "boxShadow": "none",
   "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
   "buttonVariant": "TERTIARY",
@@ -52,7 +52,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "text": "Inventory",
-  "topRow": 28,
+  "topRow": 33,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "y520p4wrxe",

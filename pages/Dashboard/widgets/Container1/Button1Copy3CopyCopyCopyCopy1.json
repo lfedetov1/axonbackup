@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 40,
+  "bottomRow": 45,
   "boxShadow": "none",
   "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
   "buttonVariant": "TERTIARY",
@@ -48,7 +48,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "text": "HR",
-  "topRow": 36,
+  "topRow": 41,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "axggunlbau",

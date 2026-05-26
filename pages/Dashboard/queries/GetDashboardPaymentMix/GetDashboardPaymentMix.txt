@@ -1,0 +1,11 @@
+SELECT
+    COALESCE(ppl.payment_method_code, d.payment_method, 'UNKNOWN') AS paymentMethod,
+    COALESCE(SUM(COALESCE(ppl.amount, d.total_amount)), 0) AS totalAmount
+FROM documents d
+LEFT JOIN pos_payment_lines ppl ON ppl.document_id = d.id
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type = 'POS_SALE'
+  AND DATE(d.document_date) = CURDATE()
+  AND d.status <> 'CANCELLED'
+GROUP BY COALESCE(ppl.payment_method_code, d.payment_method, 'UNKNOWN')
+ORDER BY totalAmount DESC;

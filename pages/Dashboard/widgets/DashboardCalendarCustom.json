@@ -1,0 +1,67 @@
+{
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": "1",
+  "bottomRow": 44,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "defaultModel": "{{\n{\n  events: GetDashboardAgenda.data || []\n}\n}}",
+  "dynamicBindingPathList": [
+    {
+      "key": "theme"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "defaultModel"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicTriggerPathList": [
+    {
+      "key": "onResetClick"
+    }
+  ],
+  "events": [
+    "onResetClick"
+  ],
+  "isCanvas": false,
+  "isLoading": false,
+  "isSearchWildcard": true,
+  "isVisible": true,
+  "key": "tfljphjkhl",
+  "leftColumn": 42,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "mobileBottomRow": 37,
+  "mobileLeftColumn": 42,
+  "mobileRightColumn": 64,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "onResetClick": "{{showAlert('Successfully reset!!', '');}}",
+  "parentColumnSpace": 17.28125,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "rightColumn": 64,
+  "srcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: transparent;\n  color: #111827;\n}\n\n.agenda {\n  padding: 0 22px 22px;\n  box-sizing: border-box;\n}\n\n.head {\n  display: flex;\n  justify-content: space-between;\n  gap: 14px;\n  align-items: flex-start;\n  margin-bottom: 12px;\n}\n\n.head span {\n  color: #667085;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n\nh2 {\n  margin: 3px 0 4px;\n  font-size: 20px;\n}\n\np {\n  margin: 0;\n  color: #667085;\n  font-size: 13px;\n}\n\n.count {\n  border: 1px solid #d0d5dd;\n  border-radius: 999px;\n  padding: 8px 12px;\n  background: #fff;\n  font-size: 12px;\n  font-weight: 900;\n}\n\n.days {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  gap: 10px;\n}\n\n.day {\n  min-height: 180px;\n  border: 1px solid #d0d5dd;\n  border-radius: 8px;\n  background: #fff;\n  padding: 10px;\n}\n\n.day.today {\n  border-color: #111827;\n}\n\n.day-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 8px;\n}\n\n.day-head strong {\n  font-size: 13px;\n}\n\n.day-head span {\n  color: #667085;\n  font-size: 11px;\n}\n\n.event {\n  border: 1px solid #eaecf0;\n  border-radius: 7px;\n  padding: 8px;\n  margin-bottom: 7px;\n  background: #f9fafb;\n}\n\n.event b {\n  display: block;\n  font-size: 12px;\n}\n\n.event span {\n  display: block;\n  margin-top: 3px;\n  color: #667085;\n  font-size: 11px;\n}\n\n.tag {\n  display: inline-block;\n  margin-top: 6px;\n  font-size: 10px;\n  border: 1px solid #d0d5dd;\n  border-radius: 999px;\n  padding: 3px 6px;\n  background: #fff;\n}\n\n.empty {\n  color: #98a2b3;\n  font-size: 12px;\n  padding-top: 12px;\n}\n\n@media (max-width: 1200px) {\n  .days {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 700px) {\n  .days {\n    grid-template-columns: 1fr;\n  }\n  .head {\n    display: block;\n  }\n  .count {\n    display: inline-block;\n    margin-top: 10px;\n  }\n}",
+    "html": "<div class=\"agenda\">\n  <div class=\"head\">\n    <div>\n      <span>Calendar</span>\n      <h2>Upcoming Work</h2>\n      <p>Next tasks, orders, deliveries and overdue documents.</p>\n    </div>\n    <div id=\"count\" class=\"count\">0 events</div>\n  </div>\n\n  <div id=\"days\" class=\"days\"></div>\n</div>",
+    "js": "function dateKey(date) {\n  return new Date(date).toISOString().slice(0, 10);\n}\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setDate(d.getDate() + days);\n  return d;\n}\nfunction fmtDay(date) {\n  return new Date(date).toLocaleDateString(\"en-GB\", {\n    weekday: \"short\",\n    day: \"2-digit\",\n    month: \"short\"\n  });\n}\nfunction render(model = {}) {\n  const events = model.events || [];\n  const today = new Date();\n  const days = Array.from({\n    length: 7\n  }, (_, index) => addDays(today, index));\n  document.getElementById(\"count\").innerText = `${events.length} event${events.length === 1 ? \"\" : \"s\"}`;\n  document.getElementById(\"days\").innerHTML = days.map(day => {\n    const key = dateKey(day);\n    const dayEvents = events.filter(event => dateKey(event.eventDate) === key);\n    return `\n      <div class=\"day ${indexToday(day) ? \"today\" : \"\"}\">\n        <div class=\"day-head\">\n          <strong>${fmtDay(day)}</strong>\n          <span>${dayEvents.length}</span>\n        </div>\n        ${dayEvents.length ? dayEvents.map(event => `\n              <div class=\"event\">\n                <b>${event.title || event.documentNumber}</b>\n                <span>${event.subtitle || event.documentNumber || \"\"}</span>\n                <div class=\"tag\">${event.eventType} / ${event.status}</div>\n              </div>\n            `).join(\"\") : `<div class=\"empty\">No events</div>`}\n      </div>\n    `;\n  }).join(\"\");\n}\nfunction indexToday(day) {\n  return dateKey(day) === dateKey(new Date());\n}\nappsmith.onReady(() => {\n  render(appsmith.model || {});\n});\nappsmith.onModelChange(model => {\n  render(model || {});\n});"
+  },
+  "theme": "{{appsmith.theme}}",
+  "topRow": 7,
+  "type": "CUSTOM_WIDGET",
+  "uncompiledSrcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: transparent;\n  color: #111827;\n}\n\n.agenda {\n  padding: 0 22px 22px;\n  box-sizing: border-box;\n}\n\n.head {\n  display: flex;\n  justify-content: space-between;\n  gap: 14px;\n  align-items: flex-start;\n  margin-bottom: 12px;\n}\n\n.head span {\n  color: #667085;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n\nh2 {\n  margin: 3px 0 4px;\n  font-size: 20px;\n}\n\np {\n  margin: 0;\n  color: #667085;\n  font-size: 13px;\n}\n\n.count {\n  border: 1px solid #d0d5dd;\n  border-radius: 999px;\n  padding: 8px 12px;\n  background: #fff;\n  font-size: 12px;\n  font-weight: 900;\n}\n\n.days {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  gap: 10px;\n}\n\n.day {\n  min-height: 180px;\n  border: 1px solid #d0d5dd;\n  border-radius: 8px;\n  background: #fff;\n  padding: 10px;\n}\n\n.day.today {\n  border-color: #111827;\n}\n\n.day-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 8px;\n}\n\n.day-head strong {\n  font-size: 13px;\n}\n\n.day-head span {\n  color: #667085;\n  font-size: 11px;\n}\n\n.event {\n  border: 1px solid #eaecf0;\n  border-radius: 7px;\n  padding: 8px;\n  margin-bottom: 7px;\n  background: #f9fafb;\n}\n\n.event b {\n  display: block;\n  font-size: 12px;\n}\n\n.event span {\n  display: block;\n  margin-top: 3px;\n  color: #667085;\n  font-size: 11px;\n}\n\n.tag {\n  display: inline-block;\n  margin-top: 6px;\n  font-size: 10px;\n  border: 1px solid #d0d5dd;\n  border-radius: 999px;\n  padding: 3px 6px;\n  background: #fff;\n}\n\n.empty {\n  color: #98a2b3;\n  font-size: 12px;\n  padding-top: 12px;\n}\n\n@media (max-width: 1200px) {\n  .days {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n\n@media (max-width: 700px) {\n  .days {\n    grid-template-columns: 1fr;\n  }\n\n  .head {\n    display: block;\n  }\n\n  .count {\n    display: inline-block;\n    margin-top: 10px;\n  }\n}",
+    "html": "<div class=\"agenda\">\n  <div class=\"head\">\n    <div>\n      <span>Calendar</span>\n      <h2>Upcoming Work</h2>\n      <p>Next tasks, orders, deliveries and overdue documents.</p>\n    </div>\n    <div id=\"count\" class=\"count\">0 events</div>\n  </div>\n\n  <div id=\"days\" class=\"days\"></div>\n</div>",
+    "js": "function dateKey(date) {\n  return new Date(date).toISOString().slice(0, 10);\n}\n\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setDate(d.getDate() + days);\n  return d;\n}\n\nfunction fmtDay(date) {\n  return new Date(date).toLocaleDateString(\"en-GB\", {\n    weekday: \"short\",\n    day: \"2-digit\",\n    month: \"short\"\n  });\n}\n\nfunction render(model = {}) {\n  const events = model.events || [];\n  const today = new Date();\n  const days = Array.from({ length: 7 }, (_, index) => addDays(today, index));\n\n  document.getElementById(\"count\").innerText = `${events.length} event${events.length === 1 ? \"\" : \"s\"}`;\n\n  document.getElementById(\"days\").innerHTML = days.map(day => {\n    const key = dateKey(day);\n    const dayEvents = events.filter(event => dateKey(event.eventDate) === key);\n\n    return `\n      <div class=\"day ${indexToday(day) ? \"today\" : \"\"}\">\n        <div class=\"day-head\">\n          <strong>${fmtDay(day)}</strong>\n          <span>${dayEvents.length}</span>\n        </div>\n        ${\n          dayEvents.length\n            ? dayEvents.map(event => `\n              <div class=\"event\">\n                <b>${event.title || event.documentNumber}</b>\n                <span>${event.subtitle || event.documentNumber || \"\"}</span>\n                <div class=\"tag\">${event.eventType} / ${event.status}</div>\n              </div>\n            `).join(\"\")\n            : `<div class=\"empty\">No events</div>`\n        }\n      </div>\n    `;\n  }).join(\"\");\n}\n\nfunction indexToday(day) {\n  return dateKey(day) === dateKey(new Date());\n}\n\nappsmith.onReady(() => {\n  render(appsmith.model || {});\n});\n\nappsmith.onModelChange((model) => {\n  render(model || {});\n});"
+  },
+  "version": 1,
+  "widgetId": "bidengtiz1",
+  "widgetName": "DashboardCalendarCustom"
+}

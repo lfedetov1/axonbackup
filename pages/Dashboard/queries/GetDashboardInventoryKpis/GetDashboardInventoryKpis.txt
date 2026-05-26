@@ -1,0 +1,28 @@
+SELECT
+    COUNT(*) AS lowStockCount
+FROM (
+    SELECT
+        wlp.product_id,
+        wlp.warehouse_id,
+        COALESCE(wlp.minimum_quantity, 0) AS minimumQuantity,
+        COALESCE(stock.currentStock, 0) AS currentStock
+    FROM warehouse_location_products wlp
+    LEFT JOIN (
+        SELECT
+            product_id,
+            warehouse_id,
+            SUM(
+                CASE
+                  WHEN movement_type IN ('IN', 'TRANSFER_IN') THEN quantity
+                  WHEN movement_type IN ('OUT', 'TRANSFER_OUT') THEN -quantity
+                  WHEN movement_type = 'ADJUSTMENT' THEN quantity
+                  ELSE 0
+                END
+            ) AS currentStock
+        FROM stock_movements
+        GROUP BY product_id, warehouse_id
+    ) stock
+      ON stock.product_id = wlp.product_id
+     AND stock.warehouse_id = wlp.warehouse_id
+    WHERE COALESCE(stock.currentStock, 0) <= COALESCE(wlp.minimum_quantity, 0)
+) x;

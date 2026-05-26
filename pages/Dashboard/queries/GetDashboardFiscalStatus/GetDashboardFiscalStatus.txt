@@ -1,0 +1,8 @@
+SELECT
+    COALESCE(d.fiscal_status, 'NOT_FISCALIZED') AS fiscalStatus,
+    COUNT(*) AS countDocs
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.document_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+GROUP BY COALESCE(d.fiscal_status, 'NOT_FISCALIZED');

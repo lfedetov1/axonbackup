@@ -1,0 +1,6 @@
+SELECT
+    COALESCE(SUM(CASE WHEN d.document_type IN ('POS_SALE', 'SALES_INVOICE') AND DATE(d.document_date) = CURDATE() THEN d.total_amount ELSE 0 END), 0) AS salesToday,
+    COUNT(CASE WHEN d.document_type = 'SALES_ORDER' AND d.status NOT IN ('INVOICED', 'CANCELLED') THEN 1 END) AS openOrders,
+    COUNT(CASE WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE') AND d.fiscal_status = 'ERROR' THEN 1 END) AS fiscalErrors
+FROM documents d
+WHERE d.company_id = {{appsmith.store.companyId}};

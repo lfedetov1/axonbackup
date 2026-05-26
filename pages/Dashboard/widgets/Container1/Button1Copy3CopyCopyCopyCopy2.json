@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 44,
+  "bottomRow": 49,
   "boxShadow": "none",
   "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
   "buttonVariant": "TERTIARY",
@@ -47,7 +47,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "text": "Accounting",
-  "topRow": 40,
+  "topRow": 45,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "blf3hn8kl2",

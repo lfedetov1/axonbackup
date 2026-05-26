@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 8,
+  "bottomRow": 13,
   "boxShadow": "none",
   "buttonColor": "{{appsmith.theme.colors.backgroundColor}}",
   "buttonVariant": "TERTIARY",
@@ -47,7 +47,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "text": "Administration",
-  "topRow": 4,
+  "topRow": 9,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "57lfmbqeqg",
