@@ -1,0 +1,3 @@
+UPDATE document_items
+SET reserved_quantity = 0
+WHERE document_id = {{this.params.documentId}};

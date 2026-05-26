@@ -1,0 +1,77 @@
+{
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": "1",
+  "bottomRow": 66,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "defaultModel": "{{\n{\n  appName: \"Axon\",\n  supportEmail: \"axonsystemerp@gmail.com\",\n  supportPhone: \"+385 97 7067 133\",\n  adminEmail: \"axonsystemerp@gmail.com\"\n}\n}}",
+  "dynamicBindingPathList": [
+    {
+      "key": "theme"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "defaultModel"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "onLoginHelpAction"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onResetClick"
+    },
+    {
+      "key": "onLoginHelpAction"
+    }
+  ],
+  "events": [
+    "onResetClick",
+    "onLoginHelpAction"
+  ],
+  "isCanvas": false,
+  "isLoading": false,
+  "isSearchWildcard": true,
+  "isVisible": true,
+  "key": "tfljphjkhl",
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "mobileBottomRow": 38,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 23,
+  "mobileTopRow": 8,
+  "needsErrorInfo": false,
+  "onLoginHelpAction": "{{ LoginHelp.handleAction() }}",
+  "onResetClick": "{{showAlert('Successfully reset!!', '');}}",
+  "parentColumnSpace": 6.9375,
+  "parentId": "cp2ewthcb9",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "rightColumn": 64,
+  "srcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  color: #111827;\n  background: transparent;\n}\n\n.login-help {\n  padding: 22px;\n  box-sizing: border-box;\n  background: #fff;\n}\n\n.header {\n  display: flex;\n  gap: 14px;\n  align-items: flex-start;\n  margin-bottom: 20px;\n}\n\n.logo {\n  width: 46px;\n  height: 46px;\n  border-radius: 12px;\n  background: #111827;\n  color: white;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: 900;\n}\n\n.eyebrow {\n  color: #2563eb;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n\nh1 {\n  margin: 3px 0 4px;\n  font-size: 24px;\n}\n\np {\n  margin: 0;\n  color: #667085;\n  font-size: 13px;\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n\n.card {\n  border: 1px solid #d0d5dd;\n  border-radius: 9px;\n  background: #f9fafb;\n  padding: 14px;\n  text-align: left;\n  cursor: pointer;\n}\n\n.card:hover {\n  border-color: #2563eb;\n  background: #eff6ff;\n}\n\n.card strong {\n  display: block;\n  font-size: 15px;\n}\n\n.card span {\n  display: block;\n  margin-top: 5px;\n  color: #667085;\n  font-size: 12px;\n  line-height: 1.4;\n}\n\n.contact {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n  margin-top: 18px;\n}\n\n.contact div {\n  border: 1px solid #d0d5dd;\n  border-radius: 9px;\n  padding: 12px;\n}\n\n.contact span {\n  display: block;\n  color: #667085;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 800;\n}\n\n.contact strong {\n  display: block;\n  margin-top: 4px;\n  font-size: 13px;\n}\n\n@media (max-width: 680px) {\n  .cards,\n  .contact {\n    grid-template-columns: 1fr;\n  }\n}",
+    "html": "<div class=\"login-help\">\n  <div class=\"header\">\n    <div class=\"logo\">AX</div>\n    <div>\n      <div class=\"eyebrow\">Login Help</div>\n      <h1>Need help signing in?</h1>\n      <p>Choose the option that best matches your issue.</p>\n    </div>\n  </div>\n\n  <div class=\"cards\">\n    <button class=\"card\" data-action=\"RESET_PASSWORD\">\n      <strong>Reset password</strong>\n      <span>Forgot your password or need a new one.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"CONTACT_SUPPORT\">\n      <strong>Login problem</strong>\n      <span>Report that login is not working.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"CONTACT_ADMIN\">\n      <strong>Contact administrator</strong>\n      <span>Ask your company admin for account help.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"REQUEST_ACCESS\">\n      <strong>Request access</strong>\n      <span>You have an account but need access.</span>\n    </button>\n  </div>\n\n  <div class=\"contact\">\n    <div>\n      <span>Support</span>\n      <strong id=\"supportEmail\"></strong>\n    </div>\n    <div>\n      <span>Phone</span>\n      <strong id=\"supportPhone\"></strong>\n    </div>\n  </div>\n</div>",
+    "js": "function render(model = {}) {\n  document.getElementById(\"supportEmail\").innerText = model.supportEmail || \"-\";\n  document.getElementById(\"supportPhone\").innerText = model.supportPhone || \"-\";\n  document.querySelectorAll(\".card\").forEach(card => {\n    card.onclick = () => {\n      appsmith.updateModel({\n        selectedAction: card.dataset.action\n      });\n      appsmith.triggerEvent(\"onLoginHelpAction\");\n    };\n  });\n}\nappsmith.onReady(() => {\n  render(appsmith.model || {});\n});\nappsmith.onModelChange(model => {\n  render(model || {});\n});"
+  },
+  "theme": "{{appsmith.theme}}",
+  "topRow": 4,
+  "type": "CUSTOM_WIDGET",
+  "uncompiledSrcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  color: #111827;\n  background: transparent;\n}\n\n.login-help {\n  padding: 22px;\n  box-sizing: border-box;\n  background: #fff;\n}\n\n.header {\n  display: flex;\n  gap: 14px;\n  align-items: flex-start;\n  margin-bottom: 20px;\n}\n\n.logo {\n  width: 46px;\n  height: 46px;\n  border-radius: 12px;\n  background: #111827;\n  color: white;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: 900;\n}\n\n.eyebrow {\n  color: #2563eb;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n\nh1 {\n  margin: 3px 0 4px;\n  font-size: 24px;\n}\n\np {\n  margin: 0;\n  color: #667085;\n  font-size: 13px;\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n\n.card {\n  border: 1px solid #d0d5dd;\n  border-radius: 9px;\n  background: #f9fafb;\n  padding: 14px;\n  text-align: left;\n  cursor: pointer;\n}\n\n.card:hover {\n  border-color: #2563eb;\n  background: #eff6ff;\n}\n\n.card strong {\n  display: block;\n  font-size: 15px;\n}\n\n.card span {\n  display: block;\n  margin-top: 5px;\n  color: #667085;\n  font-size: 12px;\n  line-height: 1.4;\n}\n\n.contact {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n  margin-top: 18px;\n}\n\n.contact div {\n  border: 1px solid #d0d5dd;\n  border-radius: 9px;\n  padding: 12px;\n}\n\n.contact span {\n  display: block;\n  color: #667085;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 800;\n}\n\n.contact strong {\n  display: block;\n  margin-top: 4px;\n  font-size: 13px;\n}\n\n@media (max-width: 680px) {\n  .cards,\n  .contact {\n    grid-template-columns: 1fr;\n  }\n}",
+    "html": "<div class=\"login-help\">\n  <div class=\"header\">\n    <div class=\"logo\">AX</div>\n    <div>\n      <div class=\"eyebrow\">Login Help</div>\n      <h1>Need help signing in?</h1>\n      <p>Choose the option that best matches your issue.</p>\n    </div>\n  </div>\n\n  <div class=\"cards\">\n    <button class=\"card\" data-action=\"RESET_PASSWORD\">\n      <strong>Reset password</strong>\n      <span>Forgot your password or need a new one.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"CONTACT_SUPPORT\">\n      <strong>Login problem</strong>\n      <span>Report that login is not working.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"CONTACT_ADMIN\">\n      <strong>Contact administrator</strong>\n      <span>Ask your company admin for account help.</span>\n    </button>\n\n    <button class=\"card\" data-action=\"REQUEST_ACCESS\">\n      <strong>Request access</strong>\n      <span>You have an account but need access.</span>\n    </button>\n  </div>\n\n  <div class=\"contact\">\n    <div>\n      <span>Support</span>\n      <strong id=\"supportEmail\"></strong>\n    </div>\n    <div>\n      <span>Phone</span>\n      <strong id=\"supportPhone\"></strong>\n    </div>\n  </div>\n</div>",
+    "js": "function render(model = {}) {\n  document.getElementById(\"supportEmail\").innerText = model.supportEmail || \"-\";\n  document.getElementById(\"supportPhone\").innerText = model.supportPhone || \"-\";\n\n  document.querySelectorAll(\".card\").forEach(card => {\n    card.onclick = () => {\n      appsmith.updateModel({\n        selectedAction: card.dataset.action\n      });\n\n      appsmith.triggerEvent(\"onLoginHelpAction\");\n    };\n  });\n}\n\nappsmith.onReady(() => {\n  render(appsmith.model || {});\n});\n\nappsmith.onModelChange((model) => {\n  render(model || {});\n});"
+  },
+  "version": 1,
+  "widgetId": "kchursdxl9",
+  "widgetName": "LoginHelpCustom"
+}

@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_3aa372e2-65a7-4c74-979b-f71bab0eaaa7",
-  "id": "Sales_Query2",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_bfa0f291-df59-485b-914a-39387893f67f",
+  "id": "Sales_GetSalesOrderIdByNumber",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "SELECT id AS documentId\nFROM documents\nWHERE company_id = {{appsmith.store.companyId}}\n  AND document_type = 'SALES_ORDER'\n  AND document_number = {{SalesOrderNumberInput.text}}\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,12 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query2",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetSalesOrderIdByNumber",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

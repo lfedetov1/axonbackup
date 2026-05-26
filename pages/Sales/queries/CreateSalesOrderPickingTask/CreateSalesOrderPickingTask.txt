@@ -1,0 +1,34 @@
+INSERT INTO warehouse_tasks (
+    company_id,
+    warehouse_id,
+    document_id,
+    task_number,
+    task_type,
+    status,
+    priority,
+    quantity,
+    note,
+    created_by_user_id
+)
+SELECT
+    d.company_id,
+    d.warehouse_id,
+    d.id,
+    CONCAT('PICK-', d.document_number),
+    'PICKING',
+    'OPEN',
+    'NORMAL',
+    COALESCE(SUM(di.quantity), 0),
+    CONCAT('Picking for sales order ', d.document_number),
+    {{appsmith.store.userId}}
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+WHERE d.id = {{this.params.documentId}}
+  AND d.document_type = 'SALES_ORDER'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM warehouse_tasks wt
+      WHERE wt.document_id = d.id
+        AND wt.task_type = 'PICKING'
+  )
+GROUP BY d.id;

@@ -1,0 +1,47 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+    d.status,
+    d.sales_channel AS salesChannel,
+    d.fulfillment_type AS fulfillmentType,
+    d.currency_code AS currencyCode,
+    d.subtotal_amount AS subtotalAmount,
+    d.discount_amount AS discountAmount,
+    d.tax_amount AS taxAmount,
+    d.total_amount AS totalAmount,
+    d.note,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    bp.code AS customerCode,
+    bp.name AS customerName,
+    bp.legal_name AS customerLegalName,
+    bp.tax_number AS customerTaxNumber,
+    bp.email AS customerEmail,
+    bp.phone AS customerPhone,
+    bp.address_line1 AS customerAddress,
+    bp.city_name AS customerCity,
+    bp.postal_code AS customerPostalCode,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    u.username AS createdBy
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+WHERE d.id = {{this.params.documentId || SalesOrderTable.selectedRow.documentId || appsmith.store.currentSalesOrderId || 0}}
+  AND d.document_type = 'SALES_ORDER'
+LIMIT 1;

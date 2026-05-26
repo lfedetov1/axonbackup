@@ -1,49 +1,55 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 50,
+  "bottomRow": 81,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
     },
     {
+      "key": "fontFamily"
+    },
+    {
       "key": "borderRadius"
+    },
+    {
+      "key": "text"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
   "dynamicTriggerPathList": [],
-  "fontFamily": "Ubuntu",
-  "fontSize": "0.875rem",
+  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+  "fontSize": "1rem",
   "fontStyle": "BOLD",
   "isLoading": false,
   "isVisible": true,
-  "key": "f84laq7wqu",
-  "leftColumn": 29,
+  "key": "07ef8azpcs",
+  "leftColumn": 1,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 51,
-  "mobileLeftColumn": 6,
-  "mobileRightColumn": 22,
-  "mobileTopRow": 47,
+  "mobileBottomRow": 67,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 17,
+  "mobileTopRow": 63,
   "needsErrorInfo": false,
-  "originalBottomRow": 45,
-  "originalTopRow": 41,
+  "originalBottomRow": 72,
+  "originalTopRow": 68,
   "overflow": "NONE",
-  "parentColumnSpace": 14.234375,
-  "parentId": "0",
+  "parentColumnSpace": 16.69873046875,
+  "parentId": "imc11dcn78",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 52,
+  "rightColumn": 17,
   "shouldTruncate": false,
-  "text": "Need help? Visit our Customer Service Portal",
+  "text": "{{ \"Subtotal: \" + Number(SalesOrderForm.totals().subtotal || 0).toFixed(2) }}",
   "textAlign": "LEFT",
-  "textColor": "#1e3a8a",
-  "topRow": 45,
+  "textColor": "#231F20",
+  "topRow": 77,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
-  "widgetId": "60jlure5pk",
-  "widgetName": "Text3"
+  "widgetId": "5lmq3i3ozd",
+  "widgetName": "Text76Copy"
 }

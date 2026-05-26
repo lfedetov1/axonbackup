@@ -1,0 +1,10 @@
+SELECT
+    COALESCE(tr.rate, 0) AS taxRate,
+    SUM(COALESCE(di.line_subtotal, 0) - COALESCE(di.discount_amount, 0)) AS taxableAmount,
+    SUM(COALESCE(di.tax_amount, 0)) AS taxAmount,
+    SUM(COALESCE(di.line_total, 0)) AS totalAmount
+FROM document_items di
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{this.params.documentId || SalesOrderTable.selectedRow.documentId || appsmith.store.currentSalesOrderId || 0}}
+GROUP BY COALESCE(tr.rate, 0)
+ORDER BY COALESCE(tr.rate, 0);

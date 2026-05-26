@@ -1,0 +1,4 @@
+UPDATE documents
+SET status = 'ALLOCATED'
+WHERE id = {{this.params.documentId}}
+  AND document_type = 'SALES_ORDER';

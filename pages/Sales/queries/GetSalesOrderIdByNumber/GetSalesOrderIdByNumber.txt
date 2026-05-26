@@ -1,0 +1,6 @@
+SELECT id AS documentId
+FROM documents
+WHERE company_id = {{appsmith.store.companyId}}
+  AND document_type = 'SALES_ORDER'
+  AND document_number = {{SalesOrderNumberInput.text}}
+LIMIT 1;

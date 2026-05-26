@@ -1,0 +1,15 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+    d.status,
+    d.partner_id AS customerId,
+    d.warehouse_id AS warehouseId,
+    d.sales_channel AS salesChannel,
+    d.fulfillment_type AS fulfillmentType,
+    d.note
+FROM documents d
+WHERE d.id = {{this.params.documentId}}
+  AND d.document_type = 'SALES_ORDER'
+LIMIT 1;

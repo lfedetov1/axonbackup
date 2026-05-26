@@ -1,0 +1,5 @@
+UPDATE document_items di
+JOIN documents d ON d.id = di.document_id
+SET di.reserved_quantity = di.quantity
+WHERE di.document_id = {{this.params.documentId}}
+  AND d.document_type = 'SALES_ORDER';

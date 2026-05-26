@@ -1,0 +1,16 @@
+UPDATE documents
+SET
+    warehouse_id = {{SalesOrderWarehouseSelect.selectedOptionValue || null}},
+    partner_id = {{SalesOrderCustomerSelect.selectedOptionValue || null}},
+    document_date = {{moment(SalesOrderDateInput.selectedDate || moment()).format("YYYY-MM-DD")}},
+    due_date = {{SalesOrderDueDateInput.selectedDate ? moment(SalesOrderDueDateInput.selectedDate).format("YYYY-MM-DD") : null}},
+    sales_channel = {{SalesOrderSalesChannelSelect.selectedOptionValue || "IN_STORE"}},
+    fulfillment_type = {{SalesOrderFulfillmentTypeSelec.selectedOptionValue || "PICKUP_IN_STORE"}},
+    note = {{SalesOrderNoteInput.text || null}},
+    subtotal_amount = {{this.params.totals.subtotal}},
+    tax_amount = {{this.params.totals.tax}},
+    discount_amount = {{this.params.totals.discount}},
+    total_amount = {{this.params.totals.total}},
+    status = {{this.params.status || "DRAFT"}}
+WHERE id = {{this.params.documentId}}
+  AND document_type = 'SALES_ORDER';

@@ -1,0 +1,28 @@
+SELECT
+    di.line_no AS lineNo,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode,
+    p.sku,
+
+    di.description,
+    di.quantity,
+    COALESCE(di.reserved_quantity, 0) AS reservedQuantity,
+
+    u.code AS unitCode,
+
+    di.unit_price AS unitPrice,
+    di.discount_amount AS discountAmount,
+    di.line_subtotal AS lineSubtotal,
+
+    tr.rate AS taxRate,
+    di.tax_amount AS taxAmount,
+    di.line_total AS lineTotal,
+
+    di.note
+FROM document_items di
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{this.params.documentId || SalesOrderTable.selectedRow.documentId || appsmith.store.currentSalesOrderId || 0}}
+ORDER BY di.line_no;
