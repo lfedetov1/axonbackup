@@ -41,7 +41,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 24,
   "needsErrorInfo": false,
-  "onClick": "{{ SalesOrderForm.cancel() }}",
+  "onClick": "{{ SalesOrderForm.cancelForm() }}",
   "originalBottomRow": 68,
   "originalTopRow": 64,
   "parentColumnSpace": 14.234375,

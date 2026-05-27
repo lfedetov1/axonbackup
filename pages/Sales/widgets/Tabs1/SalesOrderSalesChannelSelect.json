@@ -4,7 +4,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 24,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultOptionValue": "STORE",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -40,8 +40,8 @@
   "mobileRightColumn": 42,
   "mobileTopRow": 17,
   "needsErrorInfo": false,
-  "optionLabel": "name",
-  "optionValue": "code",
+  "optionLabel": "label",
+  "optionValue": "value",
   "parentColumnSpace": 16.69873046875,
   "parentId": "imc11dcn78",
   "parentRowSpace": 10,
@@ -50,7 +50,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 36,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "sourceData": "[\n  { \"label\": \"Store / Trgovina\", \"value\": \"STORE\" },\n  { \"label\": \"POS\", \"value\": \"POS\" },\n  { \"label\": \"Webshop\", \"value\": \"WEB\" },\n  { \"label\": \"Phone / Telefon\", \"value\": \"PHONE\" },\n  { \"label\": \"Email\", \"value\": \"EMAIL\" },\n  { \"label\": \"B2B\", \"value\": \"B2B\" }\n]",
   "topRow": 17,
   "type": "SELECT_WIDGET",
   "version": 1,

@@ -279,6 +279,51 @@
       "version": 1,
       "widgetId": "qoyzimzeuc",
       "widgetName": "Canvas13"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 300,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "jvcdd0plk9",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1099.546875,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "umwvjsf7t0",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1099.546875,
+      "tabId": "tab4jh5nroio6",
+      "tabName": "Margin",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "92h3cxco7t",
+      "widgetName": "Canvas24"
     }
   ],
   "defaultTab": "Aveability",
@@ -361,6 +406,13 @@
       "label": "Pricing",
       "positioning": "vertical",
       "widgetId": "88u12wfho0"
+    },
+    "tab4jh5nroio6": {
+      "id": "tab4jh5nroio6",
+      "index": 6,
+      "isVisible": true,
+      "label": "Margin",
+      "widgetId": "92h3cxco7t"
     },
     "tab87yo4wvndr": {
       "id": "tab87yo4wvndr",

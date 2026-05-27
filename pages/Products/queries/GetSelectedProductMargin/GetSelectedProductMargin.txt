@@ -1,0 +1,57 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    pc.name AS categoryName,
+
+    p.purchase_price AS purchasePrice,
+    p.sale_price AS salePrice,
+
+    p.sale_price - p.purchase_price AS marginAmount,
+
+    CASE
+      WHEN p.sale_price > 0
+      THEN ROUND(((p.sale_price - p.purchase_price) / p.sale_price) * 100, 2)
+      ELSE 0
+    END AS marginPercent,
+
+    CASE
+      WHEN p.purchase_price > 0
+      THEN ROUND(((p.sale_price - p.purchase_price) / p.purchase_price) * 100, 2)
+      ELSE 0
+    END AS markupPercent,
+
+    CASE
+      WHEN p.sale_price <= 0 THEN 'NO_PRICE'
+      WHEN p.purchase_price <= 0 THEN 'NO_COST'
+      WHEN ((p.sale_price - p.purchase_price) / p.sale_price) * 100 < 10 THEN 'LOW_MARGIN'
+      WHEN ((p.sale_price - p.purchase_price) / p.sale_price) * 100 < 20 THEN 'WATCH'
+      ELSE 'HEALTHY'
+    END AS marginStatus,
+
+    COALESCE(stock.stockQuantity, 0) AS stockQuantity,
+
+    COALESCE(stock.stockQuantity, 0) * p.purchase_price AS stockCostValue,
+    COALESCE(stock.stockQuantity, 0) * p.sale_price AS stockSaleValue,
+    COALESCE(stock.stockQuantity, 0) * (p.sale_price - p.purchase_price) AS potentialMarginValue
+
+FROM products p
+
+LEFT JOIN product_categories pc
+  ON pc.id = p.category_id
+
+LEFT JOIN (
+    SELECT
+        sm.product_id,
+        SUM(COALESCE(sm.quantity, 0)) AS stockQuantity
+    FROM stock_movements sm
+    GROUP BY sm.product_id
+) stock
+  ON stock.product_id = p.id
+
+WHERE p.id = {{ Number(appsmith.store.selectedProductId || 0) }}
+
+LIMIT 1;

@@ -6,6 +6,31 @@ export default {
   documentId() {
     return appsmith.store.currentSalesOrderId || null;
   },
+	warehouseId() {
+  return Number(
+    SalesOrderWarehouseSelect.selectedOptionValue ||
+    appsmith.store.warehouseId ||
+    appsmith.store.warehouseId1 ||
+    0
+  );
+},
+
+normalizeProduct(product = {}, lookup = "") {
+  return {
+    productId: product.productId || product.id || product.ID,
+    productCode: product.productCode || product.code || product.ProductCode || "",
+    productName: product.productName || product.name || product.ProductName || "",
+    barcode: product.barcode || product.Barcode || lookup,
+    sku: product.sku || product.SKU || "",
+    unitId: product.unitId || product.unit_id || product.UnitID || null,
+    unitCode: product.unitCode || product.unit || product.Unit || "",
+    taxRateId: product.taxRateId || product.tax_rate_id || product.TaxRateID || null,
+    taxRate: Number(product.taxRate || product.tax_rate || product.TaxRate || product.rate || 0),
+    unitPrice: Number(product.unitPrice || product.price || product.salesPrice || 0),
+    availableStock: Number(product.availableStock || product.stockQuantity || 0),
+    trackStock: String(product.trackStock || product.track_stock || "0")
+  };
+},
 
   isEditMode() {
     return !!this.documentId();
@@ -115,6 +140,18 @@ export default {
       }
     ]);
   },
+	
+	async refreshLists() {
+  if (typeof ListSalesOrders !== "undefined") {
+    await ListSalesOrders.run();
+  }
+
+  if (typeof ListSalesOrderItems !== "undefined") {
+    await ListSalesOrderItems.run({
+      documentId: SalesOrderTable.selectedRow?.documentId || 0
+    });
+  }
+},
 
   async removeSelectedRow() {
     const index =
@@ -134,109 +171,174 @@ export default {
     await this.setRows(SalesOrderItemsEditTable.tableData || this.rows());
   },
 
-  async resolveProduct(rowIndex, lookupValue, increment = false) {
-    const lookup = String(lookupValue || "").trim();
+  async resolveProduct(rowOrIndex = null, lookupValue = "", increment = true) {
+  const lookup = String(lookupValue || "").trim();
 
-    if (!lookup) return;
+  if (!lookup) return;
 
-    if (!SalesOrderWarehouseSelect.selectedOptionValue) {
-      showAlert("Select warehouse first.", "warning");
+  const warehouseId = this.warehouseId();
+
+  if (!warehouseId) {
+    showAlert("Select warehouse first.", "warning");
+    return;
+  }
+
+  try {
+    const result = await FindSalesOrderProduct.run({
+      lookup,
+      warehouseId
+    });
+
+    const rawProduct =
+      result?.[0] ||
+      result?.data?.[0] ||
+      FindSalesOrderProduct.data?.[0];
+
+    if (!rawProduct) {
+      showAlert("Product was not found.", "warning");
+      console.log("FindSalesOrderProduct data:", FindSalesOrderProduct.data);
       return;
     }
 
-    const result = await FindSalesOrderProduct.run({
-      lookup,
-      warehouseId: SalesOrderWarehouseSelect.selectedOptionValue
-    });
+    const product = this.normalizeProduct(rawProduct, lookup);
 
-    const product =
-      result?.[0] ||
-      FindSalesOrderProduct.data?.[0];
-
-    if (!product) {
-      showAlert("Product was not found.", "warning");
+    if (!product.productId) {
+      showAlert("Product was found, but productId is missing.", "error");
+      console.log("Product result:", rawProduct);
       return;
     }
 
     const rows = [...this.rows()];
-    const productId = product.productId || product.id;
-
     const existingIndex = rows.findIndex(row =>
-      Number(row.productId || 0) === Number(productId || 0)
+      String(row.productId || "") === String(product.productId)
     );
 
     if (existingIndex >= 0 && increment) {
+      const nextQty = Number(rows[existingIndex].quantity || 0) + 1;
+
       rows[existingIndex] = this.recalcRow({
         ...rows[existingIndex],
-        quantity: Number(rows[existingIndex].quantity || 0) + 1
+        quantity: nextQty
       });
 
       await this.setRows(rows);
       return;
     }
 
-    const targetIndex = rowIndex >= 0 && rowIndex < rows.length
-      ? rowIndex
-      : rows.length;
-
-    const nextRow = this.recalcRow({
-      ...(rows[targetIndex] || {}),
-      itemLookup: lookup,
-      productId,
-      productCode: product.productCode || "",
-      productName: product.productName || "",
-      barcode: product.barcode || "",
-      sku: product.sku || "",
-      description: product.productName || "",
-      productType: product.productType || "",
-      trackStock: String(product.trackStock || "0"),
-      availableStock: Number(product.availableStock || 0),
-      unitId: product.unitId || null,
-      unitCode: product.unitCode || "",
-      taxRateId: product.taxRateId || null,
-      taxRate: Number(product.taxRate || 0),
-      quantity: rows[targetIndex]?.quantity || 1,
-      unitPrice: Number(product.unitPrice || 0),
-      discountPercent: rows[targetIndex]?.discountPercent || 0,
-      reservedQuantity: 0,
-      note: rows[targetIndex]?.note || ""
-    });
-
-    if (targetIndex === rows.length) {
-      rows.push(nextRow);
-    } else {
-      rows[targetIndex] = nextRow;
-    }
+    rows.push(this.recalcRow({
+      lineNo: rows.length + 1,
+      barcode: product.barcode,
+      productId: product.productId,
+      productCode: product.productCode,
+      productName: product.productName,
+      sku: product.sku,
+      description: product.productName,
+      unitId: product.unitId,
+      unitCode: product.unitCode,
+      taxRateId: product.taxRateId,
+      taxRate: product.taxRate,
+      quantity: 1,
+      unitPrice: product.unitPrice,
+      discountPercent: 0,
+      discountAmount: 0,
+      lineSubtotal: 0,
+      taxAmount: 0,
+      lineTotal: 0,
+      availableStock: product.availableStock,
+      trackStock: product.trackStock,
+      note: ""
+    }));
 
     await this.setRows(rows);
-  },
+  } catch (error) {
+    showAlert("Error while loading product: " + error.message, "error");
+    console.log(error);
+  }
+},
+	
+	async cancelDocument(row = null) {
+  const selected = row || SalesOrderTable.triggeredRow || SalesOrderTable.selectedRow || {};
+  const documentId =
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    selected["Document ID"] ||
+    selected["Order ID"];
 
-  async scanBarcode(value) {
-    const lookup = String(value || "").trim();
+  if (!documentId) {
+    showAlert("Select sales order first.", "warning");
+    return;
+  }
 
-    if (!lookup) return;
+  const status = String(selected.Status || selected.status || "").toUpperCase();
 
-    await this.resolveProduct(this.rows().length, lookup, true);
+  if (["INVOICED", "POSTED", "CANCELLED"].includes(status)) {
+    showAlert("This sales order cannot be cancelled.", "warning");
+    return;
+  }
 
-    if (typeof SalesOrderBarcodeInput !== "undefined") {
-      SalesOrderBarcodeInput.setValue("");
+  try {
+    if (typeof ClearSalesOrderReservation !== "undefined") {
+      await ClearSalesOrderReservation.run({ documentId });
     }
-  },
 
-  async scanBarcodeDebounced(value) {
-    const lookup = String(value || "").trim();
+    await CancelSalesOrder.run({ documentId });
 
-    if (!lookup || lookup.length < 3) return;
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: documentId,
+        actionType: "CANCEL",
+        newValues: {
+          source: "Sales Order",
+          status: "CANCELLED"
+        }
+      });
+    }
 
-    await storeValue("salesOrderScanLastValue", lookup);
+    if (typeof ListSalesOrders !== "undefined") {
+      await ListSalesOrders.run();
+    }
 
-    setTimeout(() => {
-      if (appsmith.store.salesOrderScanLastValue === lookup) {
-        this.scanBarcode(lookup);
-      }
-    }, 350);
-  },
+    if (typeof ListSalesOrderItems !== "undefined") {
+      await ListSalesOrderItems.run({
+        documentId
+      });
+    }
 
+    showAlert("Sales order was cancelled.", "success");
+  } catch (error) {
+    showAlert("Error while cancelling sales order: " + error.message, "error");
+    console.log(error);
+  }
+},
+
+async scanBarcode(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup) return;
+
+  await this.resolveProduct(null, lookup, true);
+
+  if (typeof SalesOrderBarcodeInput !== "undefined") {
+    SalesOrderBarcodeInput.setValue("");
+  }
+},
+
+async scanBarcodeDebounced(value) {
+  const lookup = String(value || "").trim();
+
+  if (!lookup || lookup.length < 3) return;
+
+  await storeValue("salesOrderScanLastValue", lookup);
+
+  setTimeout(() => {
+    if (appsmith.store.salesOrderScanLastValue === lookup) {
+      this.scanBarcode(lookup);
+    }
+  }, 350);
+},
+	
   validate() {
     if (!SalesOrderNumberInput.text.trim()) {
       showAlert("Order number is required.", "warning");
@@ -330,8 +432,8 @@ export default {
         });
       }
 
-      if (typeof AuditLog !== "undefined") {
-        await AuditLog.insert({
+      if (typeof AuditLog1 !== "undefined") {
+        await AuditLog1.insert({
           entityName: "documents",
           entityId: documentId,
           actionType: this.isEditMode() ? "UPDATE" : "INSERT",
@@ -362,13 +464,31 @@ export default {
     }
   },
 
-  async saveDraft() {
-    const documentId = await this.save("DRAFT");
+ async saveDraft() {
+  const wasEditMode = this.isEditMode();
 
-    if (!documentId) return;
+  const documentId = await this.save("DRAFT");
 
-    showAlert("Sales order was saved as draft.", "success");
-  },
+  if (!documentId) return;
+
+  await this.refreshLists();
+
+  showAlert(
+    wasEditMode ? "Sales order was updated." : "Sales order was saved as draft.",
+    "success"
+  );
+
+  await storeValue("viewMode", "list");
+  await storeValue("activeTab", "Sales Orders");
+  await storeValue("salesOrderItems", []);
+  await storeValue("currentSalesOrderId", null);
+  await storeValue("salesOrderEditMode", false);
+  await storeValue("salesOrderBeforeEdit", null);
+
+  if (typeof ListSalesOrders !== "undefined") {
+    await ListSalesOrders.run();
+  }
+},
 
   async loadForEdit(row = null) {
     const selected = row || SalesOrderTable.triggeredRow || SalesOrderTable.selectedRow || {};
@@ -533,6 +653,31 @@ export default {
 
     showAlert(`Invoice ${invoiceNumber} was created.`, "success");
   },
+		async cancelForm() {
+  await storeValue("currentSalesOrderId", null);
+  await storeValue("salesOrderEditMode", false);
+  await storeValue("salesOrderBeforeEdit", null);
+  await storeValue("salesOrderItems", []);
+  await storeValue("salesOrderSourceDocumentId", null);
+
+  if (typeof SalesOrderNumberInput !== "undefined") SalesOrderNumberInput.setValue("");
+  if (typeof SalesOrderDateInput !== "undefined") SalesOrderDateInput.setValue(moment().format("YYYY-MM-DD"));
+  if (typeof SalesOrderDueDateInput !== "undefined") SalesOrderDueDateInput.setValue("");
+  if (typeof SalesOrderNoteInput !== "undefined") SalesOrderNoteInput.setValue("");
+  if (typeof SalesOrderBarcodeInput !== "undefined") SalesOrderBarcodeInput.setValue("");
+
+  if (typeof SalesOrderCustomerSelect !== "undefined") SalesOrderCustomerSelect.setSelectedOption("");
+  if (typeof SalesOrderWarehouseSelect !== "undefined") SalesOrderWarehouseSelect.setSelectedOption("");
+  if (typeof SalesOrderFulfillmentTypeSelect !== "undefined") SalesOrderFulfillmentTypeSelec.setSelectedOption("");
+  if (typeof SalesOrderSalesChannelSelect !== "undefined") SalesOrderSalesChannelSelect.setSelectedOption("");
+
+  await storeValue("viewMode", "list");
+  await storeValue("activeTab", "Sales Orders");
+
+  if (typeof ListSalesOrders !== "undefined") {
+    await ListSalesOrders.run();
+  }
+},
 
   async backToList() {
     await storeValue("currentSalesOrderId", null);

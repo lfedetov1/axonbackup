@@ -8,14 +8,16 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "rowIndex"
+          "name": "rowOrIndex",
+          "value": "{{null}}"
         },
         {
-          "name": "lookupValue"
+          "name": "lookupValue",
+          "value": ""
         },
         {
           "name": "increment",
-          "value": "{{false}}"
+          "value": "{{true}}"
         }
       ],
       "paginationType": "NONE",

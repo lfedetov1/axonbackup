@@ -1,0 +1,124 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 8,
+  "boxShadow": "none",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "menuItems.menuItem1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem1.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem1.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.isDisabled"
+    },
+    {
+      "key": "menuItems.menuItemwcwtmz5ba8.onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItemwcwtmz5ba8.onClick"
+    }
+  ],
+  "isCompact": false,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "ti7cnnke6m",
+  "label": "Action",
+  "leftColumn": 56,
+  "menuColor": "#dcfce7",
+  "menuItems": {
+    "menuItem1": {
+      "id": "menuItem1",
+      "index": 0,
+      "isDisabled": "{{\n  String(SalesOrderTable.selectedRow?.Status || SalesOrderTable.selectedRow?.status || \"\").toUpperCase() !== \"DRAFT\"\n}}",
+      "isVisible": "true",
+      "label": "Confirm",
+      "onClick": "{{ SalesOrderForm.confirm(SalesOrderTable.selectedRow) }}",
+      "widgetId": ""
+    },
+    "menuItem2": {
+      "id": "menuItem2",
+      "index": 1,
+      "isDisabled": "{{\n  ![\"CONFIRMED\", \"APPROVED\"].includes(String(SalesOrderTable.selectedRow?.Status || SalesOrderTable.selectedRow?.status || \"\").toUpperCase())\n}}",
+      "isVisible": true,
+      "label": "Allocate / Check Stock",
+      "onClick": "{{ SalesOrderForm.allocate(SalesOrderTable.selectedRow) }}",
+      "widgetId": ""
+    },
+    "menuItem3": {
+      "id": "menuItem3",
+      "index": 2,
+      "isDisabled": "{{\n  ![\"ALLOCATED\", \"PICKED\", \"PACKED\", \"READY_FOR_PICKUP\"].includes(String(SalesOrderTable.selectedRow?.Status || SalesOrderTable.selectedRow?.status || \"\").toUpperCase())\n}}",
+      "isVisible": true,
+      "label": "Create Invoice",
+      "onClick": "{{ SalesOrderForm.createInvoice(SalesOrderTable.selectedRow) }}",
+      "widgetId": ""
+    },
+    "menuItemwcwtmz5ba8": {
+      "id": "menuItemwcwtmz5ba8",
+      "index": 3,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Refresh",
+      "onClick": "{{ ListSalesOrders.run() }}",
+      "widgetId": "eywheyb5iz"
+    }
+  },
+  "menuItemsSource": "STATIC",
+  "menuVariant": "PRIMARY",
+  "mobileBottomRow": 4,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 16.69873046875,
+  "parentId": "hblwme9mj9",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "renderMode": "CANVAS",
+  "rightColumn": 63,
+  "topRow": 4,
+  "type": "MENU_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "jp77txxk5e",
+  "widgetName": "MenuButton1"
+}
