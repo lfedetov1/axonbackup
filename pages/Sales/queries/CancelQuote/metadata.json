@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "UPDATE documents\nSET\n    status = 'CANCELLED',\n    updated_at = NOW()\nWHERE id = {{ Number(this.params.documentId || 0) }}\n  AND document_type = 'QUOTE'\n  AND status NOT IN ('CONVERTED', 'CANCELLED');",
+      "body": "UPDATE documents\nSET\n    status = 'CANCELLED',\n    updated_at = NOW()\nWHERE id = {{ Number(this.params.quoteId || this.params.documentId || appsmith.store.currentQuoteId || 0) }}\n  AND company_id = {{ Number(appsmith.store.companyId || 0) }}\n  AND document_type = 'QUOTE'\n  AND status NOT IN ('CANCELLED', 'CONVERTED');",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

@@ -1,20 +1,12 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_593ae7c5-d324-4522-963a-34843770883a",
-  "id": "Sales_AppLoader.run",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7e767ded-8c62-45c5-b0e9-fb470e24e719",
+  "id": "Sales_AppLoader.quoteRow",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
       "jsArguments": [
-        {
-          "name": "message",
-          "value": "Processing..."
-        },
-        {
-          "name": "action",
-          "value": ""
-        },
         {
           "name": "payload",
           "value": "{{{}}}"
@@ -35,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "AppLoader.run",
-    "name": "run",
+    "fullyQualifiedName": "AppLoader.quoteRow",
+    "name": "quoteRow",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

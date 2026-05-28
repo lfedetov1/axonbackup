@@ -1,25 +1,91 @@
 export default {
-  async show(title = "Processing", message = "Please wait...") {
-    await storeValue("globalLoadingTitle", title);
-    await storeValue("globalLoadingMessage", message);
-    showModal(GlobalLoadingModal.name);
+  async setLoaderText(message = "Processing...") {
+    await storeValue("globalLoaderMessage", message || "Processing...");
   },
 
-  async hide() {
-    closeModal(GlobalLoadingModal.name);
-    await storeValue("globalLoadingTitle", "");
-    await storeValue("globalLoadingMessage", "");
+  quoteRow(payload = {}) {
+    return (
+      payload ||
+      QuotesTable.triggeredRow ||
+      QuotesTable.selectedRow ||
+      {}
+    );
   },
 
-  async run(title, message, task) {
+  quotePayload(payload = {}) {
+    const row = this.quoteRow(payload);
+
+    return {
+      quoteId:
+        row.quoteId ||
+        row.documentId ||
+        row.ID ||
+        row.id ||
+        row["Document ID"],
+      documentId:
+        row.documentId ||
+        row.quoteId ||
+        row.ID ||
+        row.id ||
+        row["Document ID"],
+      quoteNumber:
+        row.quoteNumber ||
+        row["Quote Number"] ||
+        row.documentNumber ||
+        row["Document Number"]
+    };
+  },
+
+  async run(message = "Processing...", action = "", payload = {}) {
+    const actionText = String(action || "");
+
+    if (actionText.includes("QuoteForm.convertToInvoice")) {
+      action = "quote.convert";
+      payload = this.quotePayload(payload);
+    }
+
+    if (actionText.includes("QuoteForm.loadForEdit")) {
+      action = "quote.edit";
+      payload = this.quotePayload(payload);
+    }
+
+    if (actionText.includes("QuoteForm.print")) {
+      action = "quote.print";
+      payload = this.quotePayload(payload);
+    }
+
     try {
-      await this.show(title, message);
-      const result = await task();
-      await this.hide();
-      return result;
+      await this.setLoaderText(message);
+      showModal(GlobalLoadingModal.name);
+
+      if (action === "quote.edit") {
+        return await QuoteForm.loadForEdit(this.quotePayload(payload));
+      }
+
+      if (action === "quote.print") {
+        return await QuoteForm.print(this.quotePayload(payload));
+      }
+
+      if (action === "quote.convert") {
+        return await QuoteForm.convertToInvoice(this.quotePayload(payload));
+      }
+
+      if (action === "quote.cancel") {
+        return await QuoteForm.cancelQuote(this.quotePayload(payload));
+      }
+
+      if (action === "quote.save") {
+        return await QuoteForm.saveDraft();
+      }
+
+      showAlert("Unknown loader action: " + actionText, "error");
+      console.log("Unknown AppLoader action:", { message, action, payload });
     } catch (error) {
-      await this.hide();
-      throw error;
+      showAlert(error.message || "Action failed.", "error");
+      console.log(error);
+    } finally {
+      closeModal(GlobalLoadingModal.name);
+      await storeValue("globalLoaderMessage", "");
     }
   }
 };

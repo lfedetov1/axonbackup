@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    d.id AS invoiceId,\n    d.document_number AS invoiceNumber\nFROM documents d\nWHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}\n  AND d.document_type = 'SALES_INVOICE'\n  AND d.document_number = {{ this.params.invoiceNumber }}\nLIMIT 1;",
+      "body": "SELECT\n    d.id AS invoiceId,\n    d.id AS documentId,\n    d.document_number AS invoiceNumber,\n    d.document_number AS documentNumber\nFROM documents d\nWHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}\n  AND d.document_type = 'SALES_INVOICE'\n  AND (\n      d.document_number = {{ this.params.invoiceNumber || \"\" }}\n      OR d.source_document_id = {{ Number(this.params.quoteId || this.params.documentId || 0) }}\n  )\nORDER BY d.id DESC\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

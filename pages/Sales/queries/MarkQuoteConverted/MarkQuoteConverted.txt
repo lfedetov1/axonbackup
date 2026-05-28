@@ -2,7 +2,14 @@ UPDATE documents
 SET
     status = 'CONVERTED',
     posting_status = 'READY',
+    note = CONCAT(
+      COALESCE(note, ''),
+      CASE WHEN COALESCE(note, '') <> '' THEN '\n' ELSE '' END,
+      'Converted to invoice ',
+      {{ this.params.invoiceNumber || "" }}
+    ),
     updated_at = NOW()
-WHERE id = {{ Number(this.params.quoteId || 0) }}
+WHERE id = {{ Number(this.params.quoteId || this.params.documentId || appsmith.store.currentQuoteId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND document_type = 'QUOTE'
-  AND status NOT IN ('CANCELLED', 'CONVERTED');
+  AND status <> 'CANCELLED';

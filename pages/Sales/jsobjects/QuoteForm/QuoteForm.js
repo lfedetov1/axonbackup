@@ -496,6 +496,49 @@ export default {
       closeModal(QuoteFormModal.name);
     }
   },
+	
+	async cancelQuote(row = null) {
+  const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
+
+  const quoteId =
+    selected.quoteId ||
+    selected.documentId ||
+    selected.ID ||
+    selected.id ||
+    selected["Document ID"] ||
+    appsmith.store.currentQuoteId ||
+    null;
+
+  if (!quoteId) {
+    showAlert("Select quote first.", "warning");
+    return;
+  }
+
+  try {
+    await CancelQuote.run({ quoteId });
+
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog.insert({
+        entityName: "documents",
+        entityId: quoteId,
+        actionType: "CANCEL",
+        newValues: {
+          source: "Quote",
+          status: "CANCELLED"
+        }
+      });
+    }
+
+    if (typeof ListQuotes !== "undefined") {
+      await ListQuotes.run();
+    }
+
+    showAlert("Quote was cancelled.", "success");
+  } catch (error) {
+    showAlert("Error while cancelling quote: " + error.message, "error");
+    console.log(error);
+  }
+},
 
   async loadForEdit(row = null) {
     const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
@@ -589,74 +632,90 @@ export default {
   },
 
   async convertToInvoice(row = null) {
-    const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
-    const quoteId = selected.documentId || selected.id || selected.ID || selected["Document ID"];
-    const status = selected.Status || selected.status || "";
+  const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
 
-    if (!quoteId) {
-      showAlert("Select quote first.", "warning");
+  const quoteId =
+    selected.quoteId ||
+    selected.documentId ||
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    selected["Document ID"];
+
+  const status = selected.Status || selected.status || "";
+
+  if (!quoteId) {
+    showAlert("Select quote first.", "warning");
+    return;
+  }
+
+  if (["CANCELLED", "CONVERTED"].includes(status)) {
+    showAlert("This quote cannot be converted.", "warning");
+    return;
+  }
+
+  try {
+    const numberRows = await GetNextInvoiceNumberFromQuote.run();
+    const nextNumber =
+      numberRows?.[0]?.nextInvoiceNumber ||
+      GetNextInvoiceNumberFromQuote.data?.[0]?.nextInvoiceNumber;
+
+    if (!nextNumber) {
+      showAlert("Invoice number could not be generated.", "error");
       return;
     }
 
-    if (["CANCELLED", "CONVERTED"].includes(status)) {
-      showAlert("This quote cannot be converted.", "warning");
+    await InsertInvoiceFromQuote.run({
+      quoteId,
+      documentId: quoteId,
+      invoiceNumber: nextNumber
+    });
+
+    const invoiceRows = await GetInvoiceIdByNumberFromQuote.run({
+      quoteId,
+      documentId: quoteId,
+      invoiceNumber: nextNumber
+    });
+
+    const invoice = invoiceRows?.[0] || GetInvoiceIdByNumberFromQuote.data?.[0];
+
+    if (!invoice?.invoiceId) {
+      showAlert("Invoice was created, but ID was not found.", "error");
       return;
     }
 
-    try {
-      const numberRows = await GetNextInvoiceNumberFromQuote.run();
-      const nextNumber =
-        numberRows?.[0]?.nextInvoiceNumber ||
-        GetNextInvoiceNumberFromQuote.data?.[0]?.nextInvoiceNumber;
+    await InsertInvoiceItemsFromQuote.run({
+      quoteId,
+      documentId: quoteId,
+      invoiceId: invoice.invoiceId
+    });
 
-      if (!nextNumber) {
-        showAlert("Invoice number could not be generated.", "error");
-        return;
-      }
+    await MarkQuoteConverted.run({
+      quoteId,
+      documentId: quoteId,
+      invoiceNumber: invoice.invoiceNumber || nextNumber
+    });
 
-      await InsertInvoiceFromQuote.run({
-        quoteId,
-        invoiceNumber: nextNumber
-      });
+    await this.audit("CONVERT", quoteId, {
+      document_type: "QUOTE",
+      status: "CONVERTED",
+      invoice_id: invoice.invoiceId,
+      invoice_number: invoice.invoiceNumber || nextNumber
+    });
 
-      const invoiceRows = await GetInvoiceIdByNumberFromQuote.run({
-        invoiceNumber: nextNumber
-      });
-
-      const invoice = invoiceRows?.[0] || GetInvoiceIdByNumberFromQuote.data?.[0];
-
-      if (!invoice?.invoiceId) {
-        showAlert("Invoice was created, but ID was not found.", "error");
-        return;
-      }
-
-      await InsertInvoiceItemsFromQuote.run({
-        quoteId,
-        invoiceId: invoice.invoiceId
-      });
-
-      await MarkQuoteConverted.run({ quoteId });
-
-      await this.audit("CONVERT", quoteId, {
-        document_type: "QUOTE",
-        status: "CONVERTED",
-        invoice_id: invoice.invoiceId,
-        invoice_number: invoice.invoiceNumber || nextNumber
-      });
-
-      if (typeof ListQuotes !== "undefined") {
-        await ListQuotes.run();
-      }
-
-      await storeValue("currentInvoiceId", invoice.invoiceId);
-      await storeValue("currentInvoiceNumber", invoice.invoiceNumber || nextNumber);
-
-      showAlert(`Quote converted to invoice ${nextNumber}.`, "success");
-    } catch (error) {
-      showAlert("Error while converting quote: " + error.message, "error");
-      console.log(error);
+    if (typeof ListQuotes !== "undefined") {
+      await ListQuotes.run();
     }
-  },
+
+    await storeValue("currentInvoiceId", invoice.invoiceId);
+    await storeValue("currentInvoiceNumber", invoice.invoiceNumber || nextNumber);
+
+    showAlert(`Quote converted to invoice ${invoice.invoiceNumber || nextNumber}.`, "success");
+  } catch (error) {
+    showAlert("Error while converting quote: " + error.message, "error");
+    console.log(error);
+  }
+},
 
   async print(row = null) {
     const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};

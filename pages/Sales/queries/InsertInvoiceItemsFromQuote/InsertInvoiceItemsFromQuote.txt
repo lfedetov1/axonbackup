@@ -26,7 +26,7 @@ SELECT
     qi.tax_amount,
     qi.line_subtotal,
     qi.line_total,
-    CONCAT('From quote item ', qi.id)
+    qi.note
 FROM document_items qi
-WHERE qi.document_id = {{ Number(this.params.quoteId || 0) }}
+WHERE qi.document_id = {{ Number(this.params.quoteId || this.params.documentId || 0) }}
 ORDER BY qi.line_no;

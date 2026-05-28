@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "UPDATE documents\nSET\n    status = 'CONVERTED',\n    posting_status = 'READY',\n    updated_at = NOW()\nWHERE id = {{ Number(this.params.quoteId || 0) }}\n  AND document_type = 'QUOTE'\n  AND status NOT IN ('CANCELLED', 'CONVERTED');",
+      "body": "UPDATE documents\nSET\n    status = 'CONVERTED',\n    posting_status = 'READY',\n    note = CONCAT(\n      COALESCE(note, ''),\n      CASE WHEN COALESCE(note, '') <> '' THEN '\\n' ELSE '' END,\n      'Converted to invoice ',\n      {{ this.params.invoiceNumber || \"\" }}\n    ),\n    updated_at = NOW()\nWHERE id = {{ Number(this.params.quoteId || this.params.documentId || appsmith.store.currentQuoteId || 0) }}\n  AND company_id = {{ Number(appsmith.store.companyId || 0) }}\n  AND document_type = 'QUOTE'\n  AND status <> 'CANCELLED';",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

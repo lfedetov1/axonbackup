@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_65ba13ed-dbf9-442b-9d1a-2d69637f7984",
-  "id": "Sales_AppLoader.show",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_fa95fde1-b2fb-4055-b144-5440c34c66e6",
+  "id": "Sales_AppLoader.setLoaderText",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -8,12 +8,8 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "title",
-          "value": "Processing"
-        },
-        {
           "name": "message",
-          "value": "Please wait..."
+          "value": "Processing..."
         }
       ],
       "paginationType": "NONE",
@@ -31,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "AppLoader.show",
-    "name": "show",
+    "fullyQualifiedName": "AppLoader.setLoaderText",
+    "name": "setLoaderText",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

@@ -1,6 +1,9 @@
 SELECT
     d.id AS quoteId,
+    d.id AS documentId,
     d.document_number AS quoteNumber,
+    d.document_number AS documentNumber,
+
     d.document_date AS quoteDate,
     d.valid_until AS validUntil,
     d.due_date AS dueDate,
@@ -24,7 +27,19 @@ SELECT
     d.note AS note
 
 FROM documents d
-WHERE d.id = {{ Number(this.params.quoteId || appsmith.store.currentQuoteId || 0) }}
+
+WHERE d.id = {{
+  Number(
+    this.params.quoteId ||
+    this.params.documentId ||
+    appsmith.store.currentQuoteId ||
+    QuotesTable.selectedRow.documentId ||
+    QuotesTable.selectedRow.ID ||
+    QuotesTable.selectedRow.id ||
+    0
+  )
+}}
   AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND d.document_type = 'QUOTE'
+
 LIMIT 1;

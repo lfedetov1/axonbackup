@@ -2,6 +2,7 @@ UPDATE documents
 SET
     status = 'CANCELLED',
     updated_at = NOW()
-WHERE id = {{ Number(this.params.documentId || 0) }}
+WHERE id = {{ Number(this.params.quoteId || this.params.documentId || appsmith.store.currentQuoteId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND document_type = 'QUOTE'
-  AND status NOT IN ('CONVERTED', 'CANCELLED');
+  AND status NOT IN ('CANCELLED', 'CONVERTED');

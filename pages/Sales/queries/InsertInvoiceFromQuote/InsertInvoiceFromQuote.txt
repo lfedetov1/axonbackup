@@ -44,7 +44,15 @@ SELECT
     CONCAT('Created from quote ', q.document_number),
     {{ Number(appsmith.store.userId || q.created_by_user_id || 0) || null }}
 FROM documents q
-WHERE q.id = {{ Number(this.params.quoteId || 0) }}
+WHERE q.id = {{ Number(this.params.quoteId || this.params.documentId || 0) }}
   AND q.company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND q.document_type = 'QUOTE'
-  AND q.status NOT IN ('CANCELLED', 'CONVERTED');
+  AND q.status NOT IN ('CANCELLED', 'CONVERTED')
+  AND NOT EXISTS (
+      SELECT 1
+      FROM documents inv
+      WHERE inv.company_id = q.company_id
+        AND inv.document_type = 'SALES_INVOICE'
+        AND inv.source_document_id = q.id
+        AND inv.status <> 'CANCELLED'
+  );
