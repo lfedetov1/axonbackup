@@ -1,0 +1,9 @@
+UPDATE documents so
+JOIN documents dn ON dn.source_document_id = so.id
+SET
+    so.status = 'SHIPPED',
+    so.updated_at = NOW()
+WHERE dn.id = {{ Number(this.params.deliveryNoteId || 0) }}
+  AND dn.document_type = 'DELIVERY_NOTE'
+  AND so.document_type = 'SALES_ORDER'
+  AND so.status NOT IN ('CANCELLED', 'INVOICED');

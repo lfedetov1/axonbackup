@@ -1,0 +1,9 @@
+SELECT
+    c.id AS value,
+    CONCAT(c.code, ' - ', c.name) AS label,
+    c.code AS carrierCode,
+    c.name AS carrierName
+FROM carriers c
+WHERE c.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND COALESCE(c.is_active, 1) = 1
+ORDER BY c.code;

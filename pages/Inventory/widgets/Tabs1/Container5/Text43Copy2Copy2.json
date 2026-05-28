@@ -1,0 +1,55 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 34,
+  "dynamicBindingPathList": [
+    {
+      "key": "truncateButtonColor"
+    },
+    {
+      "key": "fontFamily"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "text"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+  "fontSize": "1rem",
+  "fontStyle": "BOLD",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "fx9jgmjshj",
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 17,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "originalBottomRow": 18,
+  "originalTopRow": 14,
+  "overflow": "NONE",
+  "parentColumnSpace": 16.1259765625,
+  "parentId": "lumyckgcp1",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 64,
+  "shouldTruncate": false,
+  "text": "{{ \"To: \" + [\n  appsmith.store.packageReceivingHeader?.destinationWarehouseCode,\n  appsmith.store.packageReceivingHeader?.destinationWarehouseName\n].filter(Boolean).join(\" - \") }}",
+  "textAlign": "LEFT",
+  "textColor": "#231F20",
+  "topRow": 30,
+  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "type": "TEXT_WIDGET",
+  "version": 1,
+  "widgetId": "lxwouc6uwg",
+  "widgetName": "Text43Copy2Copy2"
+}

@@ -1,0 +1,19 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.product_id AS productId,
+    di.quantity AS quantity,
+    di.unit_id AS unitId,
+    di.unit_price AS unitCost,
+    di.line_total AS totalCost,
+
+    p.code AS productCode,
+    p.name AS productName,
+    COALESCE(p.track_stock, 1) AS trackStock
+
+FROM document_items di
+JOIN products p ON p.id = di.product_id
+
+WHERE di.document_id = {{ Number(this.params.documentId || 0) }}
+
+ORDER BY di.line_no;

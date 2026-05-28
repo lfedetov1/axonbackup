@@ -1,0 +1,15 @@
+UPDATE document_packages dp
+LEFT JOIN (
+    SELECT
+        package_id,
+        COUNT(*) AS itemCount,
+        COALESCE(SUM(quantity), 0) AS totalQuantity
+    FROM document_package_items
+    WHERE package_id = {{ Number(this.params.packageId || 0) }}
+    GROUP BY package_id
+) x ON x.package_id = dp.id
+SET
+    dp.item_count = COALESCE(x.itemCount, 0),
+    dp.total_quantity = COALESCE(x.totalQuantity, 0),
+    dp.updated_at = NOW()
+WHERE dp.id = {{ Number(this.params.packageId || 0) }};

@@ -43,7 +43,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 17,
   "shouldTruncate": false,
-  "text": "{{ \"Subtotal: \" + Number(QuoteForm.totals().subtotal || 0).toFixed(2) }}",
+  "text": "{{ \"Subtotal: \" + Number(SalesOrderForm.totals().subtotal || 0).toFixed(2) }}",
   "textAlign": "LEFT",
   "textColor": "#231F20",
   "topRow": 6,

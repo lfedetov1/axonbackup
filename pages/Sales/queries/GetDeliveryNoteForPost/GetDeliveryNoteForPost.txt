@@ -1,0 +1,15 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.company_id AS companyId,
+    d.warehouse_id AS warehouseId,
+    d.status AS status,
+    d.posting_status AS postingStatus,
+    d.source_document_id AS sourceDocumentId,
+    d.created_by_user_id AS createdByUserId
+FROM documents d
+WHERE d.id = {{ Number(this.params.documentId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+LIMIT 1;

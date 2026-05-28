@@ -1,0 +1,38 @@
+SELECT
+    dp.id AS packageId,
+    dp.package_number AS packageNumber,
+    dp.package_barcode AS packageBarcode,
+    dp.package_type AS packageType,
+    dp.package_status AS packageStatus,
+    dp.document_id AS documentId,
+    dp.source_document_id AS sourceDocumentId,
+    dp.warehouse_id AS warehouseId,
+    dp.source_warehouse_id AS sourceWarehouseId,
+    dp.destination_warehouse_id AS destinationWarehouseId,
+    dp.partner_id AS partnerId,
+    dp.item_count AS itemCount,
+    dp.total_quantity AS totalQuantity,
+
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    COALESCE(bp.legal_name, bp.name) AS partnerName
+
+FROM document_packages dp
+LEFT JOIN documents d ON d.id = dp.document_id
+LEFT JOIN warehouses sw ON sw.id = dp.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = dp.destination_warehouse_id
+LEFT JOIN business_partners bp ON bp.id = dp.partner_id
+
+WHERE dp.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND (
+      dp.package_barcode = {{ this.params.lookup || "" }}
+      OR dp.package_number = {{ this.params.lookup || "" }}
+  )
+
+LIMIT 1;

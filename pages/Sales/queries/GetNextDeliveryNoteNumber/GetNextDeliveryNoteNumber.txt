@@ -1,0 +1,18 @@
+SELECT
+  CONCAT(
+    'DN-',
+    DATE_FORMAT(CURDATE(), '%Y%m'),
+    '-',
+    LPAD(
+      COALESCE(
+        MAX(CAST(SUBSTRING_INDEX(d.document_number, '-', -1) AS UNSIGNED)),
+        0
+      ) + 1,
+      5,
+      '0'
+    )
+  ) AS nextDeliveryNoteNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND d.document_number LIKE CONCAT('DN-', DATE_FORMAT(CURDATE(), '%Y%m'), '-%');

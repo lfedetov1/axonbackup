@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_1e88ab2a-324b-49e6-a0b5-72aa90d05448",
+  "id": "Sales_DeliveryNoteFlow",
+  "unpublishedCollection": {
+    "name": "DeliveryNoteFlow",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

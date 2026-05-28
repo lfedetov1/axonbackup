@@ -1,0 +1,26 @@
+SELECT
+    dp.id AS packageId,
+    dp.package_number AS `Package Number`,
+    dp.package_barcode AS `Package Barcode`,
+    dp.package_type AS `Package Type`,
+    dp.package_status AS `Status`,
+
+    dp.gross_weight AS `Gross Weight`,
+    dp.net_weight AS `Net Weight`,
+    dp.length_cm AS `Length cm`,
+    dp.width_cm AS `Width cm`,
+    dp.height_cm AS `Height cm`,
+
+    dp.item_count AS `Items`,
+    dp.total_quantity AS `Quantity`,
+
+    dp.note AS `Note`,
+    dp.created_at AS `Created At`
+
+FROM document_packages dp
+
+WHERE dp.document_id = {{
+  Number(appsmith.store.selectedDeliveryNoteId || 0)
+}}
+
+ORDER BY dp.id;

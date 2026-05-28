@@ -41,7 +41,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 17,
   "shouldTruncate": false,
-  "text": "{{ \"Total: \" + Number(QuoteForm.totals().total || 0).toFixed(2) }}",
+  "text": "{{ \"Total: \" + Number(SalesOrderForm.totals().total || 0).toFixed(2) }}",
   "textAlign": "LEFT",
   "textColor": "#ef4444",
   "topRow": 16,

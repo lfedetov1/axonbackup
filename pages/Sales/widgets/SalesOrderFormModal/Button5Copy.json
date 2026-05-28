@@ -36,7 +36,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{ AppLoader.run(\"Saving quote\", \"Saving quote document and items...\", () => QuoteForm.saveDraft()) }}",
+  "onClick": "{{\n  AppLoader.run(\n    \"Saving sales order\",\n    \"Saving sales order document and items...\",\n    () => SalesOrderForm.saveDraft()\n  )\n}}",
   "originalBottomRow": 146,
   "originalTopRow": 142,
   "parentId": "k0op775fm5",

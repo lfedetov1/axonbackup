@@ -1,0 +1,13 @@
+INSERT INTO delivery_manifest_packages (
+    manifest_id,
+    package_id,
+    line_no,
+    scan_status
+)
+SELECT
+    {{ Number(this.params.manifestId || 0) }},
+    {{ Number(this.params.packageId || 0) }},
+    COALESCE(MAX(dmp.line_no), 0) + 1,
+    'PLANNED'
+FROM delivery_manifest_packages dmp
+WHERE dmp.manifest_id = {{ Number(this.params.manifestId || 0) }};

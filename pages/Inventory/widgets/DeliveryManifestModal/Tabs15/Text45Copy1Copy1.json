@@ -1,0 +1,53 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 24,
+  "dynamicBindingPathList": [
+    {
+      "key": "truncateButtonColor"
+    },
+    {
+      "key": "fontFamily"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "text"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+  "fontSize": "1rem",
+  "fontStyle": "BOLD",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "fx9jgmjshj",
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 4,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 17,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "overflow": "NONE",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "onempu1x5t",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 25,
+  "shouldTruncate": false,
+  "text": "{{\n  \"Received: \" +\n  (appsmith.store.deliveryManifestPackages || []).filter(row =>\n    (row.Status || row.status || \"\") === \"RECEIVED\"\n  ).length\n}}",
+  "textAlign": "LEFT",
+  "textColor": "#93c5fd",
+  "topRow": 20,
+  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "type": "TEXT_WIDGET",
+  "version": 1,
+  "widgetId": "rx7tvf5aqm",
+  "widgetName": "Text45Copy1Copy1"
+}

@@ -1,0 +1,48 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    partner_id,
+    warehouse_id,
+    currency_code,
+    exchange_rate,
+    subtotal_amount,
+    discount_amount,
+    tax_amount,
+    total_amount,
+    paid_amount,
+    status,
+    posting_status,
+    sales_channel,
+    fulfillment_type,
+    source_document_id,
+    note,
+    created_by_user_id
+)
+SELECT
+    so.company_id,
+    'DELIVERY_NOTE',
+    {{ this.params.deliveryNoteNumber }},
+    CURDATE(),
+    so.partner_id,
+    so.warehouse_id,
+    so.currency_code,
+    so.exchange_rate,
+    so.subtotal_amount,
+    so.discount_amount,
+    so.tax_amount,
+    so.total_amount,
+    0,
+    'DRAFT',
+    'NOT_POSTED',
+    so.sales_channel,
+    so.fulfillment_type,
+    so.id,
+    CONCAT('Created from sales order ', so.document_number),
+    COALESCE(NULLIF({{ Number(appsmith.store.userId || 0) }}, 0), so.created_by_user_id)
+FROM documents so
+WHERE so.id = {{ Number(this.params.salesOrderId || 0) }}
+  AND so.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND so.document_type = 'SALES_ORDER'
+  AND so.status IN ('CONFIRMED', 'PACKED');

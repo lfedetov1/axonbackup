@@ -1,0 +1,8 @@
+SELECT
+    dp.id AS packageId,
+    dp.package_number AS packageNumber,
+    dp.package_barcode AS packageBarcode
+FROM document_packages dp
+WHERE dp.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND dp.package_number = {{ this.params.packageNumber }}
+LIMIT 1;

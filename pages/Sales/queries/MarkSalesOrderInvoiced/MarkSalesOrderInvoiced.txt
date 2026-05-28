@@ -1,0 +1,8 @@
+UPDATE documents
+SET
+    status = 'INVOICED',
+    posting_status = 'READY',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.salesOrderId || 0) }}
+  AND document_type = 'SALES_ORDER'
+  AND status NOT IN ('CANCELLED', 'INVOICED');

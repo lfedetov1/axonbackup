@@ -1,0 +1,41 @@
+INSERT INTO document_packages (
+    company_id,
+    document_id,
+    source_document_id,
+    package_number,
+    package_barcode,
+    package_type,
+    package_status,
+    warehouse_id,
+    partner_id,
+    item_count,
+    total_quantity,
+    note,
+    created_by_user_id
+)
+SELECT
+    d.company_id,
+    d.id,
+    d.source_document_id,
+    {{ this.params.packageNumber }},
+    {{ this.params.packageBarcode }},
+    {{ this.params.packageType || "BOX" }},
+    'PACKED',
+    d.warehouse_id,
+    d.partner_id,
+    COUNT(di.id),
+    COALESCE(SUM(di.quantity), 0),
+    CONCAT('Package created from delivery note ', d.document_number),
+    {{ Number(appsmith.store.userId || 0) }}
+FROM documents d
+LEFT JOIN document_items di ON di.document_id = d.id
+WHERE d.id = {{ Number(this.params.deliveryNoteId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+GROUP BY
+    d.company_id,
+    d.id,
+    d.source_document_id,
+    d.warehouse_id,
+    d.partner_id,
+    d.document_number;

@@ -1,0 +1,7 @@
+UPDATE document_packages
+SET
+    package_status = 'RECEIVED',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.packageId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND package_status NOT IN ('RECEIVED', 'CANCELLED');

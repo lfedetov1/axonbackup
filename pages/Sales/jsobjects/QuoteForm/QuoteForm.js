@@ -19,6 +19,32 @@ export default {
     );
   },
 
+  firstResultRow(result, queryObject) {
+    if (Array.isArray(result) && result.length) return result[0];
+    if (Array.isArray(result?.data) && result.data.length) return result.data[0];
+    if (Array.isArray(queryObject?.data) && queryObject.data.length) return queryObject.data[0];
+    return null;
+  },
+
+  async audit(actionType, entityId, newValues = {}, oldValues = null) {
+    try {
+      if (typeof AuditLog !== "undefined" && AuditLog.insert) {
+        await AuditLog.insert({
+          entityName: "documents",
+          entityId,
+          actionType,
+          oldValues,
+          newValues: {
+            source: "Quote",
+            ...newValues
+          }
+        });
+      }
+    } catch (error) {
+      console.log("Audit log skipped:", error);
+    }
+  },
+
   recalcRow(row = {}) {
     const quantity = Number(row.quantity || 0);
     const unitPrice = Number(row.unitPrice || 0);
@@ -86,8 +112,8 @@ export default {
       unitId: pick(["unitId", "UnitID", "Unit ID", "unit_id"], null),
       unitCode: pick(["unitCode", "UnitCode", "Unit Code", "unit", "Unit"], ""),
 
-      taxRateId: pick(["taxRateId", "TaxRateID", "Tax Rate ID", "tax_rate_id"], null),
-      taxRate: Number(pick(["taxRate", "TaxRate", "Tax Rate", "rate", "Rate"], 0)),
+      taxRateId: pick(["taxRateId", "taxrateid", "TaxRateID", "Tax Rate ID", "tax_rate_id"], null),
+      taxRate: Number(pick(["taxRate", "taxrate", "TaxRate", "Tax Rate", "rate", "Rate", "VAT", "vat"], 0)),
 
       unitPrice: Number(pick(["unitPrice", "UnitPrice", "Unit Price", "salesPrice", "Sales Price", "price", "Price"], 0)),
       availableStock: Number(pick(["availableStock", "AvailableStock", "Available Stock"], 0)),
@@ -98,6 +124,7 @@ export default {
   async startNew() {
     await storeValue("currentQuoteId", null);
     await storeValue("quoteItems", []);
+    await storeValue("quoteFormVisible", true);
 
     await GetNextQuoteNumber.run();
 
@@ -115,72 +142,86 @@ export default {
       QuoteBarcodeInput.setValue("");
     }
 
-    showModal(QuoteFormModal.name);
+    if (typeof QuoteFormModal !== "undefined") {
+      showModal(QuoteFormModal.name);
+    }
   },
 
   async resolveProduct(lookupValue, increment = true) {
     const lookup = String(lookupValue || "").trim();
 
-    if (!lookup) return;
-
-    const result = await FindSalesProduct.run({
-      lookup,
-      warehouseId: this.warehouseId()
-    });
-
-    const raw = result?.[0] || FindSalesProduct.data?.[0];
-
-    if (!raw) {
-      showAlert("Product was not found.", "warning");
+    if (!lookup) {
+      showAlert("Barcode / product code is empty.", "warning");
       return;
     }
 
-    const product = this.normalizeProduct(raw, lookup);
-    const rows = [...this.rows()];
-
-    const existingIndex = rows.findIndex(row =>
-      String(row.productId || "") === String(product.productId || "")
-    );
-
-    if (existingIndex >= 0 && increment) {
-      rows[existingIndex] = this.recalcRow({
-        ...rows[existingIndex],
-        quantity: Number(rows[existingIndex].quantity || 0) + 1,
-        taxRateId: product.taxRateId,
-        taxRate: product.taxRate,
-        unitPrice: Number(rows[existingIndex].unitPrice || product.unitPrice || 0)
+    try {
+      const result = await FindSalesProduct.run({
+        lookup,
+        warehouseId: this.warehouseId()
       });
 
+      const raw = this.firstResultRow(result, FindSalesProduct);
+
+      if (!raw) {
+        showAlert(`Product was not found: ${lookup}`, "warning");
+        return;
+      }
+
+      const product = this.normalizeProduct(raw, lookup);
+
+      if (!product.productId) {
+        showAlert("Product was found, but productId is missing.", "error");
+        return;
+      }
+
+      const rows = [...this.rows()];
+      const existingIndex = rows.findIndex(row =>
+        String(row.productId || "") === String(product.productId || "")
+      );
+
+      if (existingIndex >= 0 && increment) {
+        rows[existingIndex] = this.recalcRow({
+          ...rows[existingIndex],
+          quantity: Number(rows[existingIndex].quantity || 0) + 1,
+          taxRateId: product.taxRateId,
+          taxRate: product.taxRate,
+          unitPrice: Number(rows[existingIndex].unitPrice || product.unitPrice || 0)
+        });
+
+        await this.setRows(rows);
+        return;
+      }
+
+      rows.push(this.recalcRow({
+        lineNo: rows.length + 1,
+        barcode: product.barcode,
+        productId: product.productId,
+        productCode: product.productCode,
+        productName: product.productName,
+        sku: product.sku,
+        description: product.productName,
+        unitId: product.unitId,
+        unitCode: product.unitCode,
+        taxRateId: product.taxRateId,
+        taxRate: product.taxRate,
+        quantity: 1,
+        unitPrice: product.unitPrice,
+        discountPercent: 0,
+        availableStock: product.availableStock,
+        trackStock: product.trackStock,
+        note: ""
+      }));
+
       await this.setRows(rows);
-      return;
+    } catch (error) {
+      showAlert("Error while loading product: " + error.message, "error");
+      console.log(error);
     }
-
-    rows.push(this.recalcRow({
-      lineNo: rows.length + 1,
-      barcode: product.barcode,
-      productId: product.productId,
-      productCode: product.productCode,
-      productName: product.productName,
-      sku: product.sku,
-      description: product.productName,
-      unitId: product.unitId,
-      unitCode: product.unitCode,
-      taxRateId: product.taxRateId,
-      taxRate: product.taxRate,
-      quantity: 1,
-      unitPrice: product.unitPrice,
-      discountPercent: 0,
-      availableStock: product.availableStock,
-      trackStock: product.trackStock,
-      note: ""
-    }));
-
-    await this.setRows(rows);
   },
 
   async resolveProductIntoRow(rowIndex, lookupValue) {
     const lookup = String(lookupValue || "").trim();
-
     if (!lookup) return;
 
     const result = await FindSalesProduct.run({
@@ -188,7 +229,7 @@ export default {
       warehouseId: this.warehouseId()
     });
 
-    const raw = result?.[0] || FindSalesProduct.data?.[0];
+    const raw = this.firstResultRow(result, FindSalesProduct);
 
     if (!raw) {
       showAlert("Product was not found.", "warning");
@@ -249,7 +290,12 @@ export default {
   },
 
   async scanBarcode(value) {
-    const lookup = String(value || "").trim();
+    const lookup = String(
+      value ||
+      QuoteBarcodeInput.text ||
+      QuoteBarcodeInput.value ||
+      ""
+    ).trim();
 
     if (!lookup) return;
 
@@ -262,7 +308,6 @@ export default {
 
   async scanBarcodeDebounced(value) {
     const lookup = String(value || "").trim();
-
     if (!lookup || lookup.length < 3) return;
 
     await storeValue("quoteScanLastValue", lookup);
@@ -362,12 +407,13 @@ export default {
 
     if (!this.validate()) return;
 
+    const wasEditMode = this.isEditMode();
     const rows = this.recalc(this.rows());
     const totals = this.totals();
     let documentId = this.documentId();
 
     try {
-      if (this.isEditMode()) {
+      if (wasEditMode) {
         await UpdateQuoteDocument.run({
           documentId,
           subtotalAmount: totals.subtotal,
@@ -418,8 +464,19 @@ export default {
         });
       }
 
+      await this.audit(wasEditMode ? "UPDATE" : "INSERT", documentId, {
+        document_type: "QUOTE",
+        document_number: QuoteNumberInput.text,
+        status: QuoteStatusInput.text || "DRAFT",
+        customer_id: QuoteCustomerSelect.selectedOptionValue,
+        warehouse_id: QuoteWarehouseSelect.selectedOptionValue,
+        sales_channel: QuoteSalesChannelSelect.selectedOptionValue,
+        total_amount: totals.total,
+        item_count: rows.length
+      });
+
       await this.afterSave();
-      showAlert("Quote was saved.", "success");
+      showAlert(wasEditMode ? "Quote was updated." : "Quote was saved.", "success");
     } catch (error) {
       showAlert("Error while saving quote: " + error.message, "error");
       console.log(error);
@@ -429,12 +486,15 @@ export default {
   async afterSave() {
     await storeValue("currentQuoteId", null);
     await storeValue("quoteItems", []);
+    await storeValue("quoteFormVisible", false);
 
     if (typeof ListQuotes !== "undefined") {
       await ListQuotes.run();
     }
 
-    closeModal(QuoteFormModal.name);
+    if (typeof QuoteFormModal !== "undefined") {
+      closeModal(QuoteFormModal.name);
+    }
   },
 
   async loadForEdit(row = null) {
@@ -467,6 +527,7 @@ export default {
     const items = itemRows || GetQuoteItemsForEdit.data || [];
 
     await storeValue("currentQuoteId", header.documentId || documentId);
+    await storeValue("quoteFormVisible", true);
 
     QuoteNumberInput.setValue(header.documentNumber || "");
     QuoteStatusInput.setValue(header.status || "DRAFT");
@@ -499,16 +560,14 @@ export default {
       note: row.note || ""
     })));
 
-    showModal(QuoteFormModal.name);
+    if (typeof QuoteFormModal !== "undefined") {
+      showModal(QuoteFormModal.name);
+    }
   },
 
   async cancelDocument(row = null) {
     const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
-    const documentId =
-      selected.documentId ||
-      selected.id ||
-      selected.ID ||
-      selected["Document ID"];
+    const documentId = selected.documentId || selected.id || selected.ID || selected["Document ID"];
 
     if (!documentId) {
       showAlert("Select quote first.", "warning");
@@ -517,86 +576,112 @@ export default {
 
     await CancelQuote.run({ documentId });
 
+    await this.audit("CANCEL", documentId, {
+      document_type: "QUOTE",
+      status: "CANCELLED"
+    });
+
     if (typeof ListQuotes !== "undefined") {
       await ListQuotes.run();
     }
 
     showAlert("Quote was cancelled.", "success");
   },
-	async convertToInvoice(row = null) {
-  const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
-  const quoteId =
-    selected.documentId ||
-    selected.id ||
-    selected.ID ||
-    selected["Document ID"];
 
-  const status = selected.Status || selected.status || "";
+  async convertToInvoice(row = null) {
+    const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
+    const quoteId = selected.documentId || selected.id || selected.ID || selected["Document ID"];
+    const status = selected.Status || selected.status || "";
 
-  if (!quoteId) {
-    showAlert("Select quote first.", "warning");
-    return;
-  }
-
-  if (["CANCELLED", "CONVERTED"].includes(status)) {
-    showAlert("This quote cannot be converted.", "warning");
-    return;
-  }
-
-  try {
-    const numberRows = await GetNextInvoiceNumberFromQuote.run();
-    const nextNumber =
-      numberRows?.[0]?.nextInvoiceNumber ||
-      GetNextInvoiceNumberFromQuote.data?.[0]?.nextInvoiceNumber;
-
-    if (!nextNumber) {
-      showAlert("Invoice number could not be generated.", "error");
+    if (!quoteId) {
+      showAlert("Select quote first.", "warning");
       return;
     }
 
-    await InsertInvoiceFromQuote.run({
-      quoteId,
-      invoiceNumber: nextNumber
-    });
-
-    const invoiceRows = await GetInvoiceIdByNumberFromQuote.run({
-      invoiceNumber: nextNumber
-    });
-
-    const invoice =
-      invoiceRows?.[0] ||
-      GetInvoiceIdByNumberFromQuote.data?.[0];
-
-    if (!invoice?.invoiceId) {
-      showAlert("Invoice was created, but ID was not found.", "error");
+    if (["CANCELLED", "CONVERTED"].includes(status)) {
+      showAlert("This quote cannot be converted.", "warning");
       return;
     }
 
-    await InsertInvoiceItemsFromQuote.run({
-      quoteId,
-      invoiceId: invoice.invoiceId
-    });
+    try {
+      const numberRows = await GetNextInvoiceNumberFromQuote.run();
+      const nextNumber =
+        numberRows?.[0]?.nextInvoiceNumber ||
+        GetNextInvoiceNumberFromQuote.data?.[0]?.nextInvoiceNumber;
 
-    await MarkQuoteConverted.run({ quoteId });
+      if (!nextNumber) {
+        showAlert("Invoice number could not be generated.", "error");
+        return;
+      }
 
-    if (typeof ListQuotes !== "undefined") {
-      await ListQuotes.run();
+      await InsertInvoiceFromQuote.run({
+        quoteId,
+        invoiceNumber: nextNumber
+      });
+
+      const invoiceRows = await GetInvoiceIdByNumberFromQuote.run({
+        invoiceNumber: nextNumber
+      });
+
+      const invoice = invoiceRows?.[0] || GetInvoiceIdByNumberFromQuote.data?.[0];
+
+      if (!invoice?.invoiceId) {
+        showAlert("Invoice was created, but ID was not found.", "error");
+        return;
+      }
+
+      await InsertInvoiceItemsFromQuote.run({
+        quoteId,
+        invoiceId: invoice.invoiceId
+      });
+
+      await MarkQuoteConverted.run({ quoteId });
+
+      await this.audit("CONVERT", quoteId, {
+        document_type: "QUOTE",
+        status: "CONVERTED",
+        invoice_id: invoice.invoiceId,
+        invoice_number: invoice.invoiceNumber || nextNumber
+      });
+
+      if (typeof ListQuotes !== "undefined") {
+        await ListQuotes.run();
+      }
+
+      await storeValue("currentInvoiceId", invoice.invoiceId);
+      await storeValue("currentInvoiceNumber", invoice.invoiceNumber || nextNumber);
+
+      showAlert(`Quote converted to invoice ${nextNumber}.`, "success");
+    } catch (error) {
+      showAlert("Error while converting quote: " + error.message, "error");
+      console.log(error);
+    }
+  },
+
+  async print(row = null) {
+    const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
+    const documentId = selected.documentId || selected.id || selected.ID || selected["Document ID"];
+
+    if (!documentId) {
+      showAlert("Select quote first.", "warning");
+      return;
     }
 
-    await storeValue("currentInvoiceId", invoice.invoiceId);
-    await storeValue("currentInvoiceNumber", invoice.invoiceNumber || nextNumber);
+    await storeValue("selectedQuotePrintId", documentId);
+    await GetQuotePrintHeader.run();
+    await GetQuotePrintItems.run();
+    await GetQuotePrintTaxSummary.run();
 
-    showAlert(`Quote converted to invoice ${nextNumber}.`, "success");
-  } catch (error) {
-    showAlert("Error while converting quote: " + error.message, "error");
-    console.log(error);
-  }
-},
+    showModal(QuotePrintModal.name);
+  },
 
   async cancel() {
     await storeValue("currentQuoteId", null);
     await storeValue("quoteItems", []);
+    await storeValue("quoteFormVisible", false);
 
-    closeModal(QuoteFormModal.name);
+    if (typeof QuoteFormModal !== "undefined") {
+      closeModal(QuoteFormModal.name);
+    }
   }
 };

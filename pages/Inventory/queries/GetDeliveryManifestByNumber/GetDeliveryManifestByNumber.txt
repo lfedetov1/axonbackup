@@ -1,0 +1,7 @@
+SELECT
+    id AS manifestId,
+    manifest_number AS manifestNumber
+FROM delivery_manifests
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND manifest_number = {{ this.params.manifestNumber }}
+LIMIT 1;

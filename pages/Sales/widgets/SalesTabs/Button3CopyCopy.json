@@ -35,7 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{ QuoteForm.startNew() }}",
+  "onClick": "{{ SalesOrderForm.startNew() }}",
   "parentColumnSpace": 16.96875,
   "parentId": "z3i1en1phy",
   "parentRowSpace": 10,

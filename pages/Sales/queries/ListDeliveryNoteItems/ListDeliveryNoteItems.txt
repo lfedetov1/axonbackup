@@ -1,0 +1,23 @@
+SELECT
+    di.id AS documentItemId,
+    di.line_no AS `Line`,
+    p.code AS `Product Code`,
+    p.name AS `Product`,
+    p.barcode AS `Barcode`,
+    di.description AS `Description`,
+    di.quantity AS `Quantity`,
+    u.code AS `Unit`,
+    di.note AS `Note`
+
+FROM document_items di
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+
+WHERE di.document_id = {{
+  DeliveryNotesTable.selectedRow.documentId ||
+  DeliveryNotesTable.selectedRow.id ||
+  DeliveryNotesTable.selectedRow.ID ||
+  0
+}}
+
+ORDER BY di.line_no;

@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 7,
+  "boxShadow": "none",
+  "buttonColor": "#93c5fd",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "gh4fuf37g1",
+  "leftColumn": 30,
+  "minWidth": 120,
+  "mobileBottomRow": 7,
+  "mobileLeftColumn": 38,
+  "mobileRightColumn": 54,
+  "mobileTopRow": 3,
+  "needsErrorInfo": false,
+  "onClick": "{{\nDeliveryManifestFlow.scanPackage(DeliveryManifestBarcodeInput.text, \"PLAN\")\n  )\n}}",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "69fgznmlhf",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 41,
+  "text": "Add to Manifest",
+  "topRow": 3,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "94vl7rnenv",
+  "widgetName": "Button54Copy1"
+}

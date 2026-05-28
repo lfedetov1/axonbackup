@@ -1,0 +1,56 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#dbeafe",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "th-list",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "3dctatnuu9",
+  "leftColumn": 54,
+  "minWidth": 120,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 48,
+  "mobileRightColumn": 64,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AppLoader.run(\n    \"Opening delivery manifest\",\n    \"Preparing delivery manifest...\",\n    () => DeliveryManifestFlow.startNew()\n  )\n}}\n",
+  "originalBottomRow": 52,
+  "originalTopRow": 48,
+  "parentColumnSpace": 16.65625,
+  "parentId": "qyrpigb8j9",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 62,
+  "text": "New Manifest",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "i2tijdx7lm",
+  "widgetName": "Button40Copy1"
+}

@@ -43,7 +43,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 17,
   "shouldTruncate": false,
-  "text": "{{ \"Qty: \" + Number(QuoteForm.totals().quantity || 0).toFixed(3) }}",
+  "text": "{{ \"Qty: \" + Number(SalesOrderForm.totals().quantity || 0).toFixed(3) }}",
   "textAlign": "LEFT",
   "textColor": "#231F20",
   "topRow": 1,

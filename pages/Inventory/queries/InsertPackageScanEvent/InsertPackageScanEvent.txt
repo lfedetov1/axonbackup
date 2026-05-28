@@ -1,0 +1,20 @@
+INSERT INTO package_scan_events (
+    company_id,
+    package_id,
+    manifest_id,
+    scan_type,
+    scan_result,
+    warehouse_id,
+    scanned_by_user_id,
+    note
+)
+VALUES (
+    {{ Number(appsmith.store.companyId || 0) }},
+    {{ Number(this.params.packageId || 0) }},
+    {{ this.params.manifestId || null }},
+    {{ this.params.scanType }},
+    {{ this.params.scanResult || "OK" }},
+    {{ Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }},
+    {{ Number(appsmith.store.userId || 0) }},
+    {{ this.params.note || null }}
+);

@@ -1,0 +1,52 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+    d.currency_code AS currencyCode,
+    d.note AS documentNote,
+    d.subtotal_amount AS subtotalAmount,
+    d.discount_amount AS discountAmount,
+    d.tax_amount AS taxAmount,
+    d.total_amount AS totalAmount,
+    d.status AS status,
+    d.posting_status AS postingStatus,
+    d.sales_channel AS salesChannel,
+    d.fulfillment_type AS fulfillmentType,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    w.name AS warehouseName,
+    w.code AS warehouseCode,
+
+    bp.code AS partnerCode,
+    COALESCE(bp.legal_name, bp.name) AS partnerName,
+    bp.tax_number AS partnerTaxNumber,
+    bp.registration_number AS partnerRegistrationNumber,
+    bp.email AS partnerEmail,
+    bp.phone AS partnerPhone,
+    bp.address_line1 AS partnerAddress,
+    bp.city_name AS partnerCity,
+    bp.postal_code AS partnerPostalCode,
+
+    u.username AS createdBy
+
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+WHERE d.id = {{ Number(appsmith.store.selectedSalesOrderPrintId || 0) }}
+  AND d.document_type = 'SALES_ORDER'
+
+LIMIT 1;

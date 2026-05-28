@@ -1,0 +1,14 @@
+SELECT
+    dpi.id AS packageItemId,
+    dpi.line_no AS lineNo,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    dpi.quantity AS quantity,
+    u.code AS unitCode,
+    dpi.note AS note
+FROM document_package_items dpi
+LEFT JOIN products p ON p.id = dpi.product_id
+LEFT JOIN units_of_measure u ON u.id = dpi.unit_id
+WHERE dpi.package_id = {{ Number(this.params.packageId || appsmith.store.packageReceivingPackageId || 0) }}
+ORDER BY dpi.line_no;

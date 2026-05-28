@@ -1,0 +1,26 @@
+SELECT
+    dmp.id AS manifestPackageId,
+    dmp.package_id AS packageId,
+    dmp.line_no AS `Line`,
+    dmp.scan_status AS `Status`,
+    dmp.loaded_at AS `Loaded At`,
+    dmp.received_at AS `Received At`,
+    dmp.missing_at AS `Missing At`,
+    dmp.damaged_at AS `Damaged At`,
+
+    dp.package_number AS `Package Number`,
+    dp.package_barcode AS `Package Barcode`,
+    dp.package_type AS `Package Type`,
+    dp.total_quantity AS `Quantity`,
+
+    d.document_number AS `Delivery Number`,
+    COALESCE(bp.legal_name, bp.name) AS `Customer`
+
+FROM delivery_manifest_packages dmp
+JOIN document_packages dp ON dp.id = dmp.package_id
+LEFT JOIN documents d ON d.id = dp.document_id
+LEFT JOIN business_partners bp ON bp.id = dp.partner_id
+
+WHERE dmp.manifest_id = {{ Number(appsmith.store.currentDeliveryManifestId || 0) }}
+
+ORDER BY dmp.line_no;

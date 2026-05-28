@@ -1,0 +1,55 @@
+SELECT
+    dm.id AS manifestId,
+    dm.manifest_number AS `Manifest Number`,
+    dm.manifest_date AS `Manifest Date`,
+    dm.status AS `Status`,
+    dm.route_name AS `Route`,
+    dm.carrier AS `Carrier`,
+    dm.driver_name AS `Driver`,
+    dm.vehicle_plate AS `Vehicle`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    COUNT(dmp.id) AS `Packages`,
+    SUM(CASE WHEN dmp.scan_status = 'PLANNED' THEN 1 ELSE 0 END) AS `Planned`,
+    SUM(CASE WHEN dmp.scan_status = 'LOADED' THEN 1 ELSE 0 END) AS `Loaded`,
+    SUM(CASE WHEN dmp.scan_status = 'RECEIVED' THEN 1 ELSE 0 END) AS `Received`,
+    SUM(CASE WHEN dmp.scan_status = 'MISSING' THEN 1 ELSE 0 END) AS `Missing`,
+    SUM(CASE WHEN dmp.scan_status = 'DAMAGED' THEN 1 ELSE 0 END) AS `Damaged`,
+
+    u.username AS `Created By`,
+    dm.created_at AS `Created At`
+
+FROM delivery_manifests dm
+LEFT JOIN warehouses w ON w.id = dm.warehouse_id
+LEFT JOIN users u ON u.id = dm.created_by_user_id
+LEFT JOIN delivery_manifest_packages dmp ON dmp.manifest_id = dm.id
+
+WHERE dm.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND (
+      {{ DeliveryManifestSearchInput.text || "" }} = ""
+      OR dm.manifest_number LIKE CONCAT('%', {{ DeliveryManifestSearchInput.text || "" }}, '%')
+      OR dm.route_name LIKE CONCAT('%', {{ DeliveryManifestSearchInput.text || "" }}, '%')
+      OR dm.carrier LIKE CONCAT('%', {{ DeliveryManifestSearchInput.text || "" }}, '%')
+      OR dm.driver_name LIKE CONCAT('%', {{ DeliveryManifestSearchInput.text || "" }}, '%')
+      OR dm.vehicle_plate LIKE CONCAT('%', {{ DeliveryManifestSearchInput.text || "" }}, '%')
+  )
+  AND dm.manifest_date >= {{ DeliveryManifestDateFrom.selectedDate ? moment(DeliveryManifestDateFrom.selectedDate).format("YYYY-MM-DD") : moment().startOf("month").format("YYYY-MM-DD") }}
+  AND dm.manifest_date <= {{ DeliveryManifestDateTo.selectedDate ? moment(DeliveryManifestDateTo.selectedDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD") }}
+
+GROUP BY
+    dm.id,
+    dm.manifest_number,
+    dm.manifest_date,
+    dm.status,
+    dm.route_name,
+    dm.carrier,
+    dm.driver_name,
+    dm.vehicle_plate,
+    w.code,
+    w.name,
+    u.username,
+    dm.created_at
+
+ORDER BY dm.manifest_date DESC, dm.id DESC;

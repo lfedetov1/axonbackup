@@ -33,7 +33,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{ QuoteForm.cancel() }}",
+  "onClick": "{{ SalesOrderForm.cancel() }}",
   "parentId": "k0op775fm5",
   "renderMode": "CANVAS",
   "responsiveBehavior": "hug",

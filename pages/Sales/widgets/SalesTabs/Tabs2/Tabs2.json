@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 69,
+  "bottomRow": 112,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -53,6 +53,96 @@
       "version": 1,
       "widgetId": "6soywaetgi",
       "widgetName": "Canvas20"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 730,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "nohvutp9es",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1086,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "4aux33wfwe",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1086,
+      "tabId": "tabuwctdyze7a",
+      "tabName": "Packages",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "j676dbr56f",
+      "widgetName": "Canvas22"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 730,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "nohvutp9es",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 330,
+      "minWidth": 450,
+      "mobileBottomRow": 331,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1086,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "4aux33wfwe",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1086,
+      "tabId": "tabwf8cb6r1fv",
+      "tabName": "Delivery Notes",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "lwhmegpfhy",
+      "widgetName": "Canvas23"
     }
   ],
   "defaultTab": "Items",
@@ -83,7 +173,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 35,
   "needsErrorInfo": false,
-  "originalBottomRow": 69,
+  "originalBottomRow": 112,
   "originalTopRow": 35,
   "parentColumnSpace": 16.96875,
   "parentId": "z3i1en1phy",
@@ -101,6 +191,20 @@
       "label": "Items",
       "positioning": "vertical",
       "widgetId": "6soywaetgi"
+    },
+    "tabuwctdyze7a": {
+      "id": "tabuwctdyze7a",
+      "index": 1,
+      "isVisible": true,
+      "label": "Packages",
+      "widgetId": "j676dbr56f"
+    },
+    "tabwf8cb6r1fv": {
+      "id": "tabwf8cb6r1fv",
+      "index": 2,
+      "isVisible": true,
+      "label": "Delivery Notes",
+      "widgetId": "lwhmegpfhy"
     }
   },
   "topRow": 35,

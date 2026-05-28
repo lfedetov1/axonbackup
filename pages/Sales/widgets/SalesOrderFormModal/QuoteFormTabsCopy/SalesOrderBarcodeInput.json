@@ -47,7 +47,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onTextChanged": "{{ QuoteForm.scanBarcode(QuoteBarcodeInput.text) }}",
+  "onTextChanged": "{{ SalesOrderForm.scanBarcode(SalesOrderBarcodeInput.text) }}",
   "parentColumnSpace": 15.582568359375,
   "parentId": "9iuxcz28dp",
   "parentRowSpace": 10,

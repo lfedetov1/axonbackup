@@ -1,0 +1,6 @@
+UPDATE delivery_manifest_packages
+SET
+    scan_status = 'MISSING',
+    missing_at = NOW()
+WHERE manifest_id = {{ Number(this.params.manifestId || 0) }}
+  AND package_id = {{ Number(this.params.packageId || 0) }};

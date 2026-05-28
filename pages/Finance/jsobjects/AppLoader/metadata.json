@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0dcc2671-7a37-4c3f-8501-db1f1666db67",
+  "id": "Finance_AppLoader",
+  "unpublishedCollection": {
+    "name": "AppLoader",
+    "pageId": "Finance",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

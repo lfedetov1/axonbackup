@@ -1,0 +1,51 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+    d.sales_channel AS salesChannel,
+    d.fulfillment_type AS fulfillmentType,
+
+    dp.id AS packageId,
+    dp.package_number AS packageNumber,
+    dp.package_type AS packageType,
+    dp.weight AS packageWeight,
+    dp.length AS packageLength,
+    dp.width AS packageWidth,
+    dp.height AS packageHeight,
+    dp.status AS packageStatus,
+    dp.tracking_number AS trackingNumber,
+    dp.carrier AS carrier,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    w.address_line1 AS warehouseAddress,
+    w.city AS warehouseCity,
+    w.postal_code AS warehousePostalCode,
+
+    bp.code AS customerCode,
+    COALESCE(bp.legal_name, bp.name) AS customerName,
+    bp.tax_number AS customerTaxNumber,
+    bp.email AS customerEmail,
+    bp.phone AS customerPhone,
+    bp.address_line1 AS customerAddress,
+    bp.city_name AS customerCity,
+    bp.postal_code AS customerPostalCode
+
+FROM document_packages dp
+JOIN documents d ON d.id = dp.document_id
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+
+WHERE dp.id = {{ Number(appsmith.store.selectedSalesOrderPackageId || 0) }}
+LIMIT 1;

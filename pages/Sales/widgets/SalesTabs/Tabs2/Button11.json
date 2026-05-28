@@ -1,0 +1,60 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "box",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{ !DeliveryNotesTable.selectedRow }}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "dbl58z2hmt",
+  "leftColumn": 51,
+  "minWidth": 120,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 41,
+  "mobileRightColumn": 57,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AppLoader.run(\n    \"Creating package\",\n    \"Packing selected delivery note...\",\n    () => PackageFlow.createPackageFromSelectedDeliveryNote()\n  )\n}}",
+  "parentColumnSpace": 16.65625,
+  "parentId": "j676dbr56f",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Cretae box",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "90okjq5vbg",
+  "widgetName": "Button11"
+}

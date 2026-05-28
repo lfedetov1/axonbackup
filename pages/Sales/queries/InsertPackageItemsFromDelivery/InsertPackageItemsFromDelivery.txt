@@ -1,0 +1,22 @@
+INSERT INTO document_package_items (
+    package_id,
+    document_id,
+    document_item_id,
+    product_id,
+    line_no,
+    quantity,
+    unit_id,
+    note
+)
+SELECT
+    {{ Number(this.params.packageId || 0) }},
+    di.document_id,
+    di.id,
+    di.product_id,
+    di.line_no,
+    di.quantity,
+    di.unit_id,
+    CONCAT('Packed from delivery note item ', di.id)
+FROM document_items di
+WHERE di.document_id = {{ Number(this.params.deliveryNoteId || 0) }}
+ORDER BY di.line_no;

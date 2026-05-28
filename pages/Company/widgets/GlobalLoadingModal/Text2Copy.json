@@ -1,0 +1,51 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 10,
+  "dynamicBindingPathList": [
+    {
+      "key": "truncateButtonColor"
+    },
+    {
+      "key": "fontFamily"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "text"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [],
+  "fontFamily": "{{appsmith.theme.fontFamily.appFont}}",
+  "fontSize": "1.25rem",
+  "fontStyle": "BOLD",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "aba49i5rfq",
+  "leftColumn": 18,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 41,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "overflow": "NONE",
+  "parentId": "mt0heaiopx",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 58,
+  "shouldTruncate": false,
+  "text": "{{ appsmith.store.globalLoadingMessage || \"Please wait...\" }}",
+  "textAlign": "LEFT",
+  "textColor": "#231F20",
+  "topRow": 6,
+  "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "type": "TEXT_WIDGET",
+  "version": 1,
+  "widgetId": "ucsrwyevmg",
+  "widgetName": "Text2Copy"
+}

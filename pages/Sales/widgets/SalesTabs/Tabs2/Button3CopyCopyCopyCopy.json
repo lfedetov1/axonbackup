@@ -1,0 +1,60 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "cloud-upload",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  !DeliveryNotesTable.selectedRow ||\n  (DeliveryNotesTable.selectedRow.Status || DeliveryNotesTable.selectedRow.status || \"\") === \"SHIPPED\" ||\n  (DeliveryNotesTable.selectedRow.Posting || DeliveryNotesTable.selectedRow.postingStatus || \"\") === \"POSTED\"\n}}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "v4s1iuqsxd",
+  "leftColumn": 53,
+  "minWidth": 120,
+  "mobileBottomRow": 4,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AppLoader.run(\n    \"Posting delivery note\",\n    \"Updating stock and shipping selected delivery note...\",\n    () => DeliveryNoteFlow.postSelected()\n  )\n}}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "lwhmegpfhy",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 64,
+  "text": "Post Delivery Note",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "ry8849524b",
+  "widgetName": "Button3CopyCopyCopyCopy"
+}

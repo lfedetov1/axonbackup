@@ -1,0 +1,17 @@
+SELECT
+  CONCAT(
+    'MAN-',
+    DATE_FORMAT(CURDATE(), '%Y%m%d'),
+    '-',
+    LPAD(
+      COALESCE(
+        MAX(CAST(SUBSTRING_INDEX(manifest_number, '-', -1) AS UNSIGNED)),
+        0
+      ) + 1,
+      4,
+      '0'
+    )
+  ) AS nextManifestNumber
+FROM delivery_manifests
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND manifest_number LIKE CONCAT('MAN-', DATE_FORMAT(CURDATE(), '%Y%m%d'), '-%');

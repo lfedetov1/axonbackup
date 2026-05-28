@@ -1,0 +1,18 @@
+UPDATE documents
+SET
+   document_date = {{ moment(SalesOrderDateInput.selectedDate || moment()).format("YYYY-MM-DD") }},
+    due_date = {{ SalesOrderDueDateInput.selectedDate ? moment(SalesOrderDueDateInput.selectedDate).format("YYYY-MM-DD") : null }},
+    partner_id = {{ Number(SalesOrderCustomerSelect.selectedOptionValue || 0) }},
+    warehouse_id = {{ Number(SalesOrderWarehouseSelect.selectedOptionValue || 0) }},
+    subtotal_amount = {{ Number(this.params.subtotalAmount || 0) }},
+    discount_amount = {{ Number(this.params.discountAmount || 0) }},
+    tax_amount = {{ Number(this.params.taxAmount || 0) }},
+    total_amount = {{ Number(this.params.totalAmount || 0) }},
+    sales_channel = {{ SalesOrderChannelSelect.selectedOptionValue || "STORE" }},
+    fulfillment_type = {{ SalesOrderFulfillmentSelect.selectedOptionValue || "PICKUP" }},
+    note = {{ SalesOrderNoteInput.text || null }},
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.documentId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'SALES_ORDER'
+  AND status = 'DRAFT';

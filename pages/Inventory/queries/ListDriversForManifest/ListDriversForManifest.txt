@@ -1,0 +1,10 @@
+SELECT
+    d.id AS value,
+    CONCAT(d.code, ' - ', d.name) AS label,
+    d.code AS driverCode,
+    d.name AS driverName,
+    d.phone AS phone
+FROM delivery_drivers d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND COALESCE(d.is_active, 1) = 1
+ORDER BY d.code;

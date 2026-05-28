@@ -1,0 +1,26 @@
+INSERT INTO delivery_manifests (
+    company_id,
+    manifest_number,
+    manifest_date,
+    warehouse_id,
+    route_name,
+    carrier,
+    driver_name,
+    vehicle_plate,
+    status,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{ Number(appsmith.store.companyId || 0) }},
+    {{ this.params.manifestNumber }},
+    {{ moment(this.params.manifestDate || moment()).format("YYYY-MM-DD") }},
+    {{ Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }},
+    {{ this.params.routeName || null }},
+    {{ this.params.carrier || null }},
+    {{ this.params.driverName || null }},
+    {{ this.params.vehiclePlate || null }},
+    'DRAFT',
+    {{ this.params.note || null }},
+    {{ Number(appsmith.store.userId || 0) }}
+);

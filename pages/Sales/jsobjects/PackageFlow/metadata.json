@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_3d29ae06-cea2-438a-aad1-f81d689d2943",
+  "id": "Sales_PackageFlow",
+  "unpublishedCollection": {
+    "name": "PackageFlow",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

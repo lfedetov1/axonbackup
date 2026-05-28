@@ -1,0 +1,8 @@
+UPDATE documents
+SET
+    status = 'DELIVERY_CREATED',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.salesOrderId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'SALES_ORDER'
+  AND status IN ('CONFIRMED', 'PACKED');

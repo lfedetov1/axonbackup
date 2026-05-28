@@ -1,0 +1,60 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "truck",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  !SalesOrdersTable.selectedRow ||\n  ![\"CONFIRMED\", \"PACKED\"].includes(SalesOrdersTable.selectedRow.Status || SalesOrdersTable.selectedRow.status || \"\")\n}}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "v4s1iuqsxd",
+  "leftColumn": 42,
+  "minWidth": 120,
+  "mobileBottomRow": 4,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AppLoader.run(\n    \"Creating delivery note\",\n    \"Preparing delivery document from selected sales order...\",\n    () => SalesOrderDelivery.createFromSelectedSalesOrder()\n  )\n}}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "lwhmegpfhy",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 53,
+  "text": "Create Delivery Note",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "495bsx16bt",
+  "widgetName": "Button3CopyCopyCopy"
+}

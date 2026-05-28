@@ -1,0 +1,32 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    quantity,
+    unit_id,
+    unit_price,
+    discount_amount,
+    tax_rate_id,
+    tax_amount,
+    line_subtotal,
+    line_total,
+    note
+)
+SELECT
+    {{ Number(this.params.invoiceId || 0) }},
+    soi.line_no,
+    soi.product_id,
+    soi.description,
+    soi.quantity,
+    soi.unit_id,
+    soi.unit_price,
+    soi.discount_amount,
+    soi.tax_rate_id,
+    soi.tax_amount,
+    soi.line_subtotal,
+    soi.line_total,
+    CONCAT('From sales order item ', soi.id)
+FROM document_items soi
+WHERE soi.document_id = {{ Number(this.params.salesOrderId || 0) }}
+ORDER BY soi.line_no;

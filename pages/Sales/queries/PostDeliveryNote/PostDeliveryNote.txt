@@ -1,0 +1,9 @@
+UPDATE documents
+SET
+    status = 'SHIPPED',
+    posting_status = 'POSTED',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.documentId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'DELIVERY_NOTE'
+  AND posting_status <> 'POSTED';

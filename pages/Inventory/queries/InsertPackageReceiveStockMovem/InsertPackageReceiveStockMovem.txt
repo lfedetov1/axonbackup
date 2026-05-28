@@ -1,0 +1,34 @@
+INSERT INTO stock_movements (
+    company_id,
+    warehouse_id,
+    product_id,
+    movement_date,
+    movement_type,
+    source_document_id,
+    source_document_item_id,
+    quantity,
+    unit_cost,
+    total_cost,
+    note,
+    created_by_user_id
+)
+SELECT
+    dp.company_id,
+    COALESCE(dp.destination_warehouse_id, {{ Number(this.params.receivingWarehouseId || 0) }}),
+    dpi.product_id,
+    CURDATE(),
+    'IN',
+    dp.document_id,
+    dpi.document_item_id,
+    ABS(dpi.quantity),
+    COALESCE(di.unit_price, 0),
+    ABS(dpi.quantity) * COALESCE(di.unit_price, 0),
+    CONCAT('Package received ', dp.package_number),
+    {{ Number(appsmith.store.userId || 0) }}
+FROM document_package_items dpi
+JOIN document_packages dp ON dp.id = dpi.package_id
+LEFT JOIN document_items di ON di.id = dpi.document_item_id
+JOIN products p ON p.id = dpi.product_id
+WHERE dpi.package_id = {{ Number(this.params.packageId || 0) }}
+  AND COALESCE(p.track_stock, 1) = 1
+  AND COALESCE(dp.destination_warehouse_id, {{ Number(this.params.receivingWarehouseId || 0) }}) > 0;
