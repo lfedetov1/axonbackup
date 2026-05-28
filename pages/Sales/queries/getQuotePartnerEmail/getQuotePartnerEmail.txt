@@ -1,4 +1,0 @@
-SELECT email
-FROM business_partners
-WHERE code = {{ appsmith.store.selectedQuotePartnerId }}
-LIMIT 1;

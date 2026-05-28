@@ -1,4 +1,0 @@
-UPDATE documents
-SET status = 'TRANSFER_NEEDED'
-WHERE id = {{this.params.documentId}}
-  AND document_type = 'SALES_ORDER';

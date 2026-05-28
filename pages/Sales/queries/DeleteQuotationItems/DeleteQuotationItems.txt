@@ -1,2 +1,0 @@
-DELETE FROM document_items
-WHERE document_id = {{this.params.quotationId}};

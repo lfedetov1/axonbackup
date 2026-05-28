@@ -1,4 +1,0 @@
-UPDATE documents
-SET status = 'PICKING'
-WHERE id = {{this.params.documentId}}
-  AND document_type = 'SALES_ORDER';

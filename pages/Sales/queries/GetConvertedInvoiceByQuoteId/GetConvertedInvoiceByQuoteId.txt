@@ -1,9 +1,0 @@
-SELECT
-    id,
-    id AS invoiceId,
-    document_number
-FROM documents
-WHERE document_type = 'SALES_INVOICE'
-  AND source_document_id = {{ this.params.quotationId }}
-ORDER BY id DESC
-LIMIT 1;

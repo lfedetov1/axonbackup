@@ -1,5 +1,0 @@
-UPDATE documents
-SET status = 'CANCELLED'
-WHERE id = {{this.params.documentId}}
-  AND document_type = 'SALES_ORDER'
-  AND status NOT IN ('INVOICED', 'CANCELLED');

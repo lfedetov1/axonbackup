@@ -1,5 +1,0 @@
-UPDATE documents
-SET status = 'CONFIRMED'
-WHERE id = {{this.params.documentId}}
-  AND document_type = 'SALES_ORDER'
-  AND status = 'DRAFT';
