@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n    COALESCE(SUM(di.line_subtotal), 0) AS taxableAmount,\n    COALESCE(SUM(di.tax_amount), 0) AS taxAmount,\n    COALESCE(SUM(di.line_total), 0) AS totalAmount\n\nFROM document_items di\nLEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id\n\nWHERE di.document_id = {{ Number(appsmith.store.selectedQuotePrintId || 0) }}\n\nGROUP BY COALESCE(tr.rate, 0)\n\nORDER BY COALESCE(tr.rate, 0);",
+      "body": "SELECT\n    COALESCE(tr.rate, 0) AS taxRate,\n\n    SUM(\n      COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)\n      - COALESCE(di.discount_amount, 0)\n    ) AS taxableAmount,\n\n    SUM(COALESCE(di.tax_amount, 0)) AS taxAmount,\n\n    SUM(\n      COALESCE(\n        di.line_total,\n        (\n          COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)\n          - COALESCE(di.discount_amount, 0)\n          + COALESCE(di.tax_amount, 0)\n        )\n      )\n    ) AS totalAmount\n\nFROM document_items di\n\nLEFT JOIN tax_rates tr\n  ON tr.id = di.tax_rate_id\n\nWHERE di.document_id = {{\n  Number(\n    this.params.quoteId ||\n    appsmith.store.currentQuoteId ||\n    QuotesTable.selectedRow.documentId ||\n    QuotesTable.selectedRow.ID ||\n    QuotesTable.selectedRow.id ||\n    0\n  )\n}}\n\nGROUP BY COALESCE(tr.rate, 0)\n\nORDER BY COALESCE(tr.rate, 0);",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

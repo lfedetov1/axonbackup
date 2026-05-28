@@ -239,13 +239,112 @@ export default {
     }
 
     if (typeof ListDeliveryManifestPackagesOverview !== "undefined") {
-      await ListDeliveryManifestPackagesOverview.run();
+      await ListDeliveryManifestPackagesOv.run();
     }
 
     if (typeof ListDeliveryManifests !== "undefined") {
       await ListDeliveryManifests.run();
     }
   },
+	async loadForEdit(row = null) {
+  const selected = row || DeliveryManifestsTable.triggeredRow || DeliveryManifestsTable.selectedRow || {};
+  const manifestId =
+    selected.manifestId ||
+    selected.id ||
+    selected.ID ||
+    selected["Manifest ID"];
+
+  if (!manifestId) {
+    showAlert("Select manifest first.", "warning");
+    return;
+  }
+
+  const headerRows = await GetDeliveryManifestForEdit.run({ manifestId });
+  const header = headerRows?.[0] || GetDeliveryManifestForEdit.data?.[0];
+
+  if (!header) {
+    showAlert("Manifest was not found.", "error");
+    return;
+  }
+
+  if (header.status !== "DRAFT") {
+    showAlert("Only draft manifest can be edited.", "warning");
+    return;
+  }
+
+  const packageRows = await GetDeliveryManifestPackagesFor.run({ manifestId });
+  const packages = packageRows || GetDeliveryManifestPackagesFor.data || [];
+
+  await storeValue("currentDeliveryManifestId", header.manifestId);
+  await storeValue("currentDeliveryManifestNumber", header.manifestNumber);
+  await storeValue("deliveryManifestPackages", packages);
+
+  DeliveryManifestNumberInput.setValue(header.manifestNumber || "");
+  DeliveryManifestDateInput.setValue(header.manifestDate || "");
+  DeliveryManifestRouteInput.setValue(header.routeName || "");
+  DeliveryManifestVehicleInput.setValue(header.vehiclePlate || "");
+  DeliveryManifestNoteInput.setValue(header.note || "");
+
+  if (typeof ListCarriersForManifest !== "undefined") await ListCarriersForManifest.run();
+  if (typeof ListDriversForManifest !== "undefined") await ListDriversForManifest.run();
+
+  const carrier = (ListCarriersForManifest.data || []).find(row => row.label === header.carrier);
+  const driver = (ListDriversForManifest.data || []).find(row => row.label === header.driverName);
+
+  DeliveryManifestCarrierSelect.setSelectedOption(carrier ? String(carrier.value) : "");
+  DeliveryManifestDriverSelect.setSelectedOption(driver ? String(driver.value) : "");
+
+  showModal(DeliveryManifestModal.name);
+},
+
+async saveHeader() {
+  const manifestId = this.currentManifestId();
+
+  if (!manifestId) {
+    return this.saveHeaderIfNeeded();
+  }
+
+  await UpdateDeliveryManifestHeader.run({ manifestId });
+
+  await this.audit("UPDATE", manifestId, {
+    manifest_number: DeliveryManifestNumberInput.text,
+    carrier: DeliveryManifestCarrierSelect.selectedOptionLabel || "",
+    driver: DeliveryManifestDriverSelect.selectedOptionLabel || "",
+    vehicle_plate: DeliveryManifestVehicleInput.text || "",
+    status: "DRAFT"
+  });
+
+  await this.refreshPackages();
+  showAlert("Manifest header was updated.", "success");
+
+  return manifestId;
+},
+
+async voidManifest(row = null) {
+  const selected = row || DeliveryManifestsTable.triggeredRow || DeliveryManifestsTable.selectedRow || {};
+  const manifestId =
+    selected.manifestId ||
+    selected.id ||
+    selected.ID ||
+    selected["Manifest ID"];
+
+  if (!manifestId) {
+    showAlert("Select manifest first.", "warning");
+    return;
+  }
+
+  await VoidDeliveryManifest.run({ manifestId });
+  await VoidDeliveryManifestPackages.run({ manifestId });
+
+  await this.audit("CANCEL", manifestId, {
+    status: "CANCELLED"
+  });
+
+  if (typeof ListDeliveryManifests !== "undefined") await ListDeliveryManifests.run();
+  if (typeof ListDeliveryManifestPackagesOverview !== "undefined") await ListDeliveryManifestPackagesOv.run();
+
+  showAlert("Manifest was cancelled.", "success");
+},
 
   async close() {
     await storeValue("currentDeliveryManifestId", null);

@@ -1,0 +1,41 @@
+SELECT
+    COALESCE(tr.rate, 0) AS `Tax Rate`,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0) - COALESCE(di.discount_amount, 0))
+        ELSE COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0) - COALESCE(di.discount_amount, 0)
+      END
+    ) AS `Taxable Amount`,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0))
+        ELSE COALESCE(di.tax_amount, 0)
+      END
+    ) AS `Tax Amount`,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+        ELSE COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+      END
+    ) AS `Total Amount`
+
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+
+WHERE d.id = {{
+  Number(
+    this.params.documentId ||
+    InvoicesTable.selectedRow.documentId ||
+    0
+  )
+}}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+GROUP BY COALESCE(tr.rate, 0)
+ORDER BY COALESCE(tr.rate, 0);

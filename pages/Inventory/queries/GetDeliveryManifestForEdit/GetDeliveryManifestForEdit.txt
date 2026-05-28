@@ -1,0 +1,14 @@
+SELECT
+    dm.id AS manifestId,
+    dm.manifest_number AS manifestNumber,
+    dm.manifest_date AS manifestDate,
+    dm.status AS status,
+    dm.route_name AS routeName,
+    dm.carrier AS carrier,
+    dm.driver_name AS driverName,
+    dm.vehicle_plate AS vehiclePlate,
+    dm.note AS note
+FROM delivery_manifests dm
+WHERE dm.id = {{ Number(this.params.manifestId || 0) }}
+  AND dm.company_id = {{ Number(appsmith.store.companyId || 0) }}
+LIMIT 1;

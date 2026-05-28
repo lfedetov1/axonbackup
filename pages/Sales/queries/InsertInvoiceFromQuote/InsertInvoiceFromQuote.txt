@@ -6,6 +6,7 @@ INSERT INTO documents (
     due_date,
     partner_id,
     warehouse_id,
+    payment_method,
     currency_code,
     exchange_rate,
     subtotal_amount,
@@ -15,6 +16,7 @@ INSERT INTO documents (
     paid_amount,
     status,
     posting_status,
+    sales_channel,
     source_document_id,
     note,
     created_by_user_id
@@ -27,6 +29,7 @@ SELECT
     q.due_date,
     q.partner_id,
     q.warehouse_id,
+    q.payment_method,
     q.currency_code,
     q.exchange_rate,
     q.subtotal_amount,
@@ -36,10 +39,12 @@ SELECT
     0,
     'DRAFT',
     'NOT_POSTED',
+    q.sales_channel,
     q.id,
     CONCAT('Created from quote ', q.document_number),
-    COALESCE(NULLIF({{ Number(appsmith.store.userId || 0) }}, 0), q.created_by_user_id)
+    {{ Number(appsmith.store.userId || q.created_by_user_id || 0) || null }}
 FROM documents q
 WHERE q.id = {{ Number(this.params.quoteId || 0) }}
+  AND q.company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND q.document_type = 'QUOTE'
   AND q.status NOT IN ('CANCELLED', 'CONVERTED');

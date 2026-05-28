@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_3728b52d-be67-427b-a335-2404a30a60bc",
+  "id": "Inventory_DeliveryManifestPrint",
+  "unpublishedCollection": {
+    "name": "DeliveryManifestPrint",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

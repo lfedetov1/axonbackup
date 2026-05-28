@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_612bc4de-66b8-4d55-ac9f-7dcc5e554aea",
+  "id": "Sales_GetInvoiceOverviewAnalytics",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n    base.periodKey,\n    base.periodLabel,\n\n    COUNT(*) AS documentCount,\n\n    SUM(CASE WHEN base.documentType = 'SALES_INVOICE' THEN 1 ELSE 0 END) AS invoiceCount,\n    SUM(CASE WHEN base.documentType = 'CREDIT_NOTE' THEN 1 ELSE 0 END) AS creditNoteCount,\n\n    SUM(base.subtotalAmount) AS subtotalAmount,\n    SUM(base.discountAmount) AS discountAmount,\n    SUM(base.taxAmount) AS taxAmount,\n    SUM(base.totalAmount) AS totalAmount,\n    SUM(base.paidAmount) AS paidAmount,\n    SUM(base.openAmount) AS openAmount,\n\n    AVG(CASE WHEN base.documentType = 'SALES_INVOICE' THEN base.totalAmount ELSE NULL END) AS averageInvoiceValue,\n\n    SUM(CASE WHEN base.status = 'DRAFT' THEN 1 ELSE 0 END) AS draftCount,\n    SUM(CASE WHEN base.status = 'POSTED' THEN 1 ELSE 0 END) AS postedCount,\n    SUM(CASE WHEN base.status = 'CANCELLED' THEN 1 ELSE 0 END) AS cancelledCount\n\nFROM (\n    SELECT\n        d.id,\n        d.document_type AS documentType,\n        d.status,\n\n        CASE\n          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || \"DAY\" }} = 'WEEK'\n            THEN DATE_FORMAT(d.document_date, '%x-W%v')\n          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || \"DAY\" }} = 'MONTH'\n            THEN DATE_FORMAT(d.document_date, '%Y-%m')\n          ELSE DATE_FORMAT(d.document_date, '%Y-%m-%d')\n        END AS periodKey,\n\n        CASE\n          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || \"DAY\" }} = 'WEEK'\n            THEN CONCAT('Week ', DATE_FORMAT(d.document_date, '%v'), ' / ', DATE_FORMAT(d.document_date, '%x'))\n          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || \"DAY\" }} = 'MONTH'\n            THEN DATE_FORMAT(d.document_date, '%M %Y')\n          ELSE DATE_FORMAT(d.document_date, '%d.%m.%Y')\n        END AS periodLabel,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.subtotal_amount, 0))\n          ELSE COALESCE(d.subtotal_amount, 0)\n        END AS subtotalAmount,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.discount_amount, 0))\n          ELSE COALESCE(d.discount_amount, 0)\n        END AS discountAmount,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.tax_amount, 0))\n          ELSE COALESCE(d.tax_amount, 0)\n        END AS taxAmount,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))\n          ELSE COALESCE(d.total_amount, 0)\n        END AS totalAmount,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.paid_amount, 0))\n          ELSE COALESCE(d.paid_amount, 0)\n        END AS paidAmount,\n\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE'\n          THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))\n          ELSE COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)\n        END AS openAmount\n\n    FROM documents d\n    LEFT JOIN business_partners bp ON bp.id = d.partner_id\n\n    WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}\n      AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')\n\n      AND (\n          {{ InvoiceSearchInput.text || \"\" }} = \"\"\n          OR d.document_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || \"\" }}, '%')\n          OR d.fiscal_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || \"\" }}, '%')\n          OR bp.name LIKE CONCAT('%', {{ InvoiceSearchInput.text || \"\" }}, '%')\n          OR bp.code LIKE CONCAT('%', {{ InvoiceSearchInput.text || \"\" }}, '%')\n      )\n\n      AND (\n          {{ InvoiceTypeSelect.selectedOptionValue || \"ALL\" }} = \"ALL\"\n          OR d.document_type = {{ InvoiceTypeSelect.selectedOptionValue || \"ALL\" }}\n      )\n\n      AND (\n          {{ InvoiceStatusSelect.selectedOptionValue || \"ALL\" }} = \"ALL\"\n          OR d.status = {{ InvoiceStatusSelect.selectedOptionValue || \"ALL\" }}\n      )\n\n      AND (\n          {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }} = 0\n          OR d.partner_id = {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }}\n      )\n\n      AND (\n          {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0\n          OR d.warehouse_id = {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}\n      )\n\n      AND d.document_date >= {{ moment(InvoiceDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n      AND d.document_date <= {{ moment(InvoiceDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n) base\n\nGROUP BY\n    base.periodKey,\n    base.periodLabel\n\nORDER BY\n    base.periodKey;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetInvoiceOverviewAnalytics",
+    "pageId": "Sales",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

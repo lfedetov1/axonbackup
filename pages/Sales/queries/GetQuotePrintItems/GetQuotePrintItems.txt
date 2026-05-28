@@ -1,33 +1,62 @@
 SELECT
     di.id AS documentItemId,
+    di.document_id AS documentId,
     di.line_no AS lineNo,
 
     p.id AS productId,
     p.code AS productCode,
     p.name AS productName,
     p.barcode AS barcode,
+    p.sku AS sku,
 
-    di.description AS description,
-    di.quantity AS quantity,
+    COALESCE(di.description, p.name) AS description,
 
     u.code AS unitCode,
+    u.name AS unitName,
 
-    di.unit_price AS unitPrice,
-    di.discount_amount AS discountAmount,
+    COALESCE(di.quantity, 0) AS quantity,
+    COALESCE(di.unit_price, 0) AS unitPrice,
+    COALESCE(di.discount_amount, 0) AS discountAmount,
 
-    tr.rate AS taxRate,
+    COALESCE(tr.rate, 0) AS taxRate,
+    COALESCE(di.tax_amount, 0) AS taxAmount,
 
-    di.tax_amount AS taxAmount,
-    di.line_subtotal AS lineSubtotal,
-    di.line_total AS lineTotal,
+    (
+      COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)
+      - COALESCE(di.discount_amount, 0)
+    ) AS lineSubtotal,
+
+    COALESCE(
+      di.line_total,
+      (
+        COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)
+        - COALESCE(di.discount_amount, 0)
+        + COALESCE(di.tax_amount, 0)
+      )
+    ) AS lineTotal,
 
     di.note AS note
 
 FROM document_items di
-LEFT JOIN products p ON p.id = di.product_id
-LEFT JOIN units_of_measure u ON u.id = di.unit_id
-LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
 
-WHERE di.document_id = {{ Number(appsmith.store.selectedQuotePrintId || 0) }}
+LEFT JOIN products p
+  ON p.id = di.product_id
+
+LEFT JOIN units_of_measure u
+  ON u.id = di.unit_id
+
+LEFT JOIN tax_rates tr
+  ON tr.id = di.tax_rate_id
+
+WHERE di.document_id = {{
+  Number(
+    this.params.quoteId ||
+    appsmith.store.currentQuoteId ||
+    QuotesTable.selectedRow.documentId ||
+    QuotesTable.selectedRow.ID ||
+    QuotesTable.selectedRow.id ||
+    0
+  )
+}}
 
 ORDER BY di.line_no;

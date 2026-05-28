@@ -1,0 +1,119 @@
+SELECT
+    base.periodKey,
+    base.periodLabel,
+
+    COUNT(*) AS documentCount,
+
+    SUM(CASE WHEN base.documentType = 'SALES_INVOICE' THEN 1 ELSE 0 END) AS invoiceCount,
+    SUM(CASE WHEN base.documentType = 'CREDIT_NOTE' THEN 1 ELSE 0 END) AS creditNoteCount,
+
+    SUM(base.subtotalAmount) AS subtotalAmount,
+    SUM(base.discountAmount) AS discountAmount,
+    SUM(base.taxAmount) AS taxAmount,
+    SUM(base.totalAmount) AS totalAmount,
+    SUM(base.paidAmount) AS paidAmount,
+    SUM(base.openAmount) AS openAmount,
+
+    AVG(CASE WHEN base.documentType = 'SALES_INVOICE' THEN base.totalAmount ELSE NULL END) AS averageInvoiceValue,
+
+    SUM(CASE WHEN base.status = 'DRAFT' THEN 1 ELSE 0 END) AS draftCount,
+    SUM(CASE WHEN base.status = 'POSTED' THEN 1 ELSE 0 END) AS postedCount,
+    SUM(CASE WHEN base.status = 'CANCELLED' THEN 1 ELSE 0 END) AS cancelledCount
+
+FROM (
+    SELECT
+        d.id,
+        d.document_type AS documentType,
+        d.status,
+
+        CASE
+          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || "DAY" }} = 'WEEK'
+            THEN DATE_FORMAT(d.document_date, '%x-W%v')
+          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || "DAY" }} = 'MONTH'
+            THEN DATE_FORMAT(d.document_date, '%Y-%m')
+          ELSE DATE_FORMAT(d.document_date, '%Y-%m-%d')
+        END AS periodKey,
+
+        CASE
+          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || "DAY" }} = 'WEEK'
+            THEN CONCAT('Week ', DATE_FORMAT(d.document_date, '%v'), ' / ', DATE_FORMAT(d.document_date, '%x'))
+          WHEN {{ InvoiceOverviewPeriodSelect.selectedOptionValue || "DAY" }} = 'MONTH'
+            THEN DATE_FORMAT(d.document_date, '%M %Y')
+          ELSE DATE_FORMAT(d.document_date, '%d.%m.%Y')
+        END AS periodLabel,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.subtotal_amount, 0))
+          ELSE COALESCE(d.subtotal_amount, 0)
+        END AS subtotalAmount,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.discount_amount, 0))
+          ELSE COALESCE(d.discount_amount, 0)
+        END AS discountAmount,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.tax_amount, 0))
+          ELSE COALESCE(d.tax_amount, 0)
+        END AS taxAmount,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END AS totalAmount,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.paid_amount, 0))
+          ELSE COALESCE(d.paid_amount, 0)
+        END AS paidAmount,
+
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE'
+          THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
+          ELSE COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
+        END AS openAmount
+
+    FROM documents d
+    LEFT JOIN business_partners bp ON bp.id = d.partner_id
+
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+      AND (
+          {{ InvoiceSearchInput.text || "" }} = ""
+          OR d.document_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+          OR d.fiscal_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+          OR bp.name LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+          OR bp.code LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      )
+
+      AND (
+          {{ InvoiceTypeSelect.selectedOptionValue || "ALL" }} = "ALL"
+          OR d.document_type = {{ InvoiceTypeSelect.selectedOptionValue || "ALL" }}
+      )
+
+      AND (
+          {{ InvoiceStatusSelect.selectedOptionValue || "ALL" }} = "ALL"
+          OR d.status = {{ InvoiceStatusSelect.selectedOptionValue || "ALL" }}
+      )
+
+      AND (
+          {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }} = 0
+          OR d.partner_id = {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }}
+      )
+
+      AND (
+          {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+          OR d.warehouse_id = {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+      )
+
+      AND d.document_date >= {{ moment(InvoiceDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+      AND d.document_date <= {{ moment(InvoiceDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+) base
+
+GROUP BY
+    base.periodKey,
+    base.periodLabel
+
+ORDER BY
+    base.periodKey;

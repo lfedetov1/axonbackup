@@ -45,6 +45,8 @@
   "needsErrorInfo": false,
   "optionLabel": "label",
   "optionValue": "value",
+  "originalBottomRow": 124,
+  "originalTopRow": 117,
   "parentColumnSpace": 13.34375,
   "parentId": "qes94bm038",
   "parentRowSpace": 10,

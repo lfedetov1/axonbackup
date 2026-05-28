@@ -1,0 +1,29 @@
+SELECT
+    dmp.line_no AS lineNo,
+    dmp.scan_status AS scanStatus,
+    dmp.loaded_at AS loadedAt,
+    dmp.received_at AS receivedAt,
+    dmp.missing_at AS missingAt,
+    dmp.damaged_at AS damagedAt,
+
+    dp.package_number AS packageNumber,
+    dp.package_barcode AS packageBarcode,
+    dp.package_type AS packageType,
+    dp.total_quantity AS totalQuantity,
+    dp.item_count AS itemCount,
+    dp.gross_weight AS grossWeight,
+
+    d.document_number AS deliveryNumber,
+    COALESCE(bp.legal_name, bp.name) AS customerName,
+    bp.address_line1 AS customerAddress,
+    bp.city_name AS customerCity,
+    bp.postal_code AS customerPostalCode
+
+FROM delivery_manifest_packages dmp
+JOIN document_packages dp ON dp.id = dmp.package_id
+LEFT JOIN documents d ON d.id = dp.document_id
+LEFT JOIN business_partners bp ON bp.id = dp.partner_id
+
+WHERE dmp.manifest_id = {{ Number(appsmith.store.selectedDeliveryManifestPrintId || 0) }}
+
+ORDER BY dmp.line_no;

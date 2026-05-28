@@ -1,15 +1,21 @@
 UPDATE documents
 SET
-    document_date = {{ moment(QuoteDateInput.selectedDate || QuoteDateInput.text || moment()).format("YYYY-MM-DD") }},
-    valid_until = {{ moment(QuoteValidUntilInput.selectedDate || QuoteValidUntilInput.text || moment().add(14, "days")).format("YYYY-MM-DD") }},
-    partner_id = {{ QuoteCustomerSelect.selectedOptionValue || null }},
-    warehouse_id = {{ QuoteWarehouseSelect.selectedOptionValue || null }},
-    sales_channel = {{ QuoteSalesChannelSelect.selectedOptionValue || "STORE" }},
-    subtotal_amount = {{ Number(this.params.subtotalAmount || 0) }},
-    discount_amount = {{ Number(this.params.discountAmount || 0) }},
-    tax_amount = {{ Number(this.params.taxAmount || 0) }},
-    total_amount = {{ Number(this.params.totalAmount || 0) }},
+    document_date = {{ moment(QuoteDateInput.selectedDate || moment()).format("YYYY-MM-DD") }},
+    valid_until = {{ QuoteValidUntilInput.selectedDate ? moment(QuoteValidUntilInput.selectedDate).format("YYYY-MM-DD") : null }},
+    due_date = {{ QuoteValidUntilInput.selectedDate ? moment(QuoteValidUntilInput.selectedDate).format("YYYY-MM-DD") : null }},
+    partner_id = {{ Number(QuoteCustomerSelect.selectedOptionValue || 0) || null }},
+    warehouse_id = {{ Number(QuoteWarehouseSelect.selectedOptionValue || 0) || null }},
+    payment_method = {{ QuotePaymentMethodSelect.selectedOptionValue || "BANK_TRANSFER" }},
+    currency_code = {{ QuoteCurrencySelect.selectedOptionValue || "EUR" }},
+    exchange_rate = {{ Number(QuoteExchangeRateInput.text || 1) }},
+    sales_channel = {{ QuoteSalesChannelSelect.selectedOptionValue || "DIRECT" }},
+    subtotal_amount = {{ Number(this.params.totals?.subtotal || 0) }},
+    discount_amount = {{ Number(this.params.totals?.discount || 0) }},
+    tax_amount = {{ Number(this.params.totals?.tax || 0) }},
+    total_amount = {{ Number(this.params.totals?.total || 0) }},
     note = {{ QuoteNoteInput.text || null }},
     updated_at = NOW()
-WHERE id = {{ Number(this.params.documentId || 0) }}
-  AND document_type = 'QUOTE';
+WHERE id = {{ Number(this.params.quoteId || appsmith.store.currentQuoteId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'QUOTE'
+  AND status = 'DRAFT';

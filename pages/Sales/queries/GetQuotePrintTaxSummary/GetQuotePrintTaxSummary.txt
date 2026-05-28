@@ -1,13 +1,39 @@
 SELECT
     COALESCE(tr.rate, 0) AS taxRate,
-    COALESCE(SUM(di.line_subtotal), 0) AS taxableAmount,
-    COALESCE(SUM(di.tax_amount), 0) AS taxAmount,
-    COALESCE(SUM(di.line_total), 0) AS totalAmount
+
+    SUM(
+      COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)
+      - COALESCE(di.discount_amount, 0)
+    ) AS taxableAmount,
+
+    SUM(COALESCE(di.tax_amount, 0)) AS taxAmount,
+
+    SUM(
+      COALESCE(
+        di.line_total,
+        (
+          COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0)
+          - COALESCE(di.discount_amount, 0)
+          + COALESCE(di.tax_amount, 0)
+        )
+      )
+    ) AS totalAmount
 
 FROM document_items di
-LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
 
-WHERE di.document_id = {{ Number(appsmith.store.selectedQuotePrintId || 0) }}
+LEFT JOIN tax_rates tr
+  ON tr.id = di.tax_rate_id
+
+WHERE di.document_id = {{
+  Number(
+    this.params.quoteId ||
+    appsmith.store.currentQuoteId ||
+    QuotesTable.selectedRow.documentId ||
+    QuotesTable.selectedRow.ID ||
+    QuotesTable.selectedRow.id ||
+    0
+  )
+}}
 
 GROUP BY COALESCE(tr.rate, 0)
 

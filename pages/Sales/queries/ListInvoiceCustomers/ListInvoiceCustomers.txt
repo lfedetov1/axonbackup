@@ -1,0 +1,14 @@
+SELECT
+    bp.id AS value,
+    CONCAT(
+      CASE
+        WHEN COALESCE(bp.code, '') <> ''
+        THEN CONCAT(bp.code, ' - ')
+        ELSE ''
+      END,
+      bp.name
+    ) AS label
+FROM business_partners bp
+WHERE bp.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND COALESCE(bp.is_active, 1) = 1
+ORDER BY bp.name;

@@ -1,0 +1,7 @@
+UPDATE delivery_manifest_packages
+SET
+    scan_status = 'CANCELLED',
+    note = CONCAT(COALESCE(note, ''), ' | Manifest cancelled'),
+    missing_at = NULL,
+    damaged_at = NULL
+WHERE manifest_id = {{ Number(this.params.manifestId || 0) }};

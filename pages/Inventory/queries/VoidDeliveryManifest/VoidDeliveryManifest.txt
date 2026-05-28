@@ -1,0 +1,7 @@
+UPDATE delivery_manifests
+SET
+    status = 'CANCELLED',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.manifestId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND status <> 'CANCELLED';

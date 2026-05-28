@@ -11,6 +11,9 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -50,7 +53,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 19,
   "serverSideFiltering": false,
-  "sourceData": "[\n  { \"label\": \"Store / Trgovina\", \"value\": \"STORE\" },\n  { \"label\": \"Web shop\", \"value\": \"WEB\" },\n  { \"label\": \"Phone / Telefon\", \"value\": \"PHONE\" },\n  { \"label\": \"Email\", \"value\": \"EMAIL\" },\n  { \"label\": \"B2B\", \"value\": \"B2B\" },\n  { \"label\": \"Other / Ostalo\", \"value\": \"OTHER\" }\n]",
+  "sourceData": "{{ (ListQuoteStaticLookups.data || []).filter(x => x.lookupType === \"SALES_CHANNEL\") }}",
   "topRow": 17,
   "type": "SELECT_WIDGET",
   "version": 1,

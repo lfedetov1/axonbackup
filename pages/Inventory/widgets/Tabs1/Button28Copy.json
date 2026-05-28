@@ -36,6 +36,8 @@
   "mobileTopRow": 118,
   "needsErrorInfo": false,
   "onClick": "{{ ReplenishmentPrint.open() }}\n",
+  "originalBottomRow": 123,
+  "originalTopRow": 119,
   "parentColumnSpace": 13.34375,
   "parentId": "qes94bm038",
   "parentRowSpace": 10,

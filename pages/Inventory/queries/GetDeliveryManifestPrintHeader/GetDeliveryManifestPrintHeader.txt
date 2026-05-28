@@ -1,0 +1,36 @@
+SELECT
+    dm.id AS manifestId,
+    dm.manifest_number AS manifestNumber,
+    dm.manifest_date AS manifestDate,
+    dm.status AS status,
+    dm.route_name AS routeName,
+    dm.carrier AS carrier,
+    dm.driver_name AS driverName,
+    dm.vehicle_plate AS vehiclePlate,
+    dm.note AS note,
+    dm.created_at AS createdAt,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    u.username AS createdBy
+
+FROM delivery_manifests dm
+JOIN companies c ON c.id = dm.company_id
+LEFT JOIN warehouses w ON w.id = dm.warehouse_id
+LEFT JOIN users u ON u.id = dm.created_by_user_id
+
+WHERE dm.id = {{ Number(appsmith.store.selectedDeliveryManifestPrintId || 0) }}
+  AND dm.company_id = {{ Number(appsmith.store.companyId || 0) }}
+
+LIMIT 1;

@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 125,
+  "bottomRow": 84,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 930,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -102,7 +102,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -147,7 +147,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -192,7 +192,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 860,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -237,7 +237,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -282,7 +282,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -327,7 +327,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -372,7 +372,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1140,
+      "bottomRow": 730,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -466,7 +466,7 @@
   "mobileTopRow": 14,
   "needsErrorInfo": false,
   "onTabSelected": "{{\n  storeValue(\n    \"salesTab\",\n    SalesTabs.selectedTab === \"Dashboard\" ? \"OVERVIEW\" :\n    SalesTabs.selectedTab === \"Quotes\" ? \"QUOTES\" :\n    SalesTabs.selectedTab === \"Sales Orders\" ? \"SALES_ORDERS\" :\n    SalesTabs.selectedTab === \"Delivery / Shipping\" ? \"DELIVERY_SHIPPING\" :\n    SalesTabs.selectedTab === \"Invoices\" ? \"INVOICES\" :\n    SalesTabs.selectedTab === \"Customers\" ? \"CUSTOMERS\" :\n    SalesTabs.selectedTab === \"Reports\" ? \"REPORT_CENTER\" :\n    SalesTabs.selectedTab\n  )\n  .then(() => storeValue(\"salesViewMode\", \"LIST\"))\n  .then(() => SalesNav.refreshForTab(appsmith.store.salesTab))\n}}",
-  "originalBottomRow": 125,
+  "originalBottomRow": 99,
   "originalTopRow": 7,
   "parentColumnSpace": 17.28125,
   "parentId": "0",
@@ -480,6 +480,7 @@
     "tab1": {
       "id": "tab1",
       "index": 0,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Dashboard",
       "positioning": "vertical",
@@ -488,6 +489,7 @@
     "tab2": {
       "id": "tab2",
       "index": 1,
+      "isDuplicateLabel": false,
       "isVisible": "{{\n  AppAccess.canViewTab(\"sales\", \"quotes\") &&\n  String(appsmith.store.salesQuoteMode || \"LIST\").toUpperCase() === \"LIST\"\n}}",
       "label": "Quotes",
       "positioning": "vertical",
@@ -496,6 +498,7 @@
     "taba1xf8fd346": {
       "id": "taba1xf8fd346",
       "index": 7,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Analytics",
       "widgetId": "061wgy65kz"
@@ -503,13 +506,15 @@
     "tabay5s2wva17": {
       "id": "tabay5s2wva17",
       "index": 5,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Credit Notes",
       "widgetId": "rcqxc1sox9"
     },
     "tabfgy0ho979p": {
       "id": "tabfgy0ho979p",
-      "index": 3,
+      "index": 4,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Delivery / Shipping",
       "widgetId": "lwvqkvhymm"
@@ -517,13 +522,15 @@
     "tabj4xi00sn2t": {
       "id": "tabj4xi00sn2t",
       "index": 6,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Customers",
       "widgetId": "grn54r8xja"
     },
     "tabjm0s5wuhct": {
       "id": "tabjm0s5wuhct",
-      "index": 4,
+      "index": 3,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Invoices",
       "widgetId": "0xmg2gzkdp"
@@ -531,6 +538,7 @@
     "tabsvnplzelux": {
       "id": "tabsvnplzelux",
       "index": 8,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.canViewTab(\"sales\", \"reports\") }}",
       "label": "Report Center",
       "widgetId": "wbnkcelrsh"
@@ -538,6 +546,7 @@
     "tabvhqw0yatwh": {
       "id": "tabvhqw0yatwh",
       "index": 2,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Sales Orders",
       "widgetId": "z3i1en1phy"

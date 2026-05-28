@@ -15,23 +15,14 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicPropertyPathList": [
-    {
-      "key": "onTextChanged"
-    }
-  ],
-  "dynamicTriggerPathList": [
-    {
-      "key": "onTextChanged"
-    }
-  ],
+  "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "mt9ccaf0xw",
+  "key": "fecycsy4qy",
   "label": "Barcode :",
   "labelAlignment": "left",
   "labelPosition": "Top",
@@ -47,7 +38,6 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onTextChanged": "{{ DeliveryManifestFlow.scanPackage(DeliveryManifestBarcodeInput.text, \"PLAN\") }}",
   "parentColumnSpace": 15.582568359375,
   "parentId": "69fgznmlhf",
   "parentRowSpace": 10,
@@ -59,6 +49,6 @@
   "topRow": 1,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "tf14171v4k",
+  "widgetId": "qb04iu41ap",
   "widgetName": "DeliveryManifestBarcodeInput"
 }

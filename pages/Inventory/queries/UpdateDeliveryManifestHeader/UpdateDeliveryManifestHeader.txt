@@ -1,0 +1,12 @@
+UPDATE delivery_manifests
+SET
+    manifest_date = {{ DeliveryManifestDateInput.selectedDate ? moment(DeliveryManifestDateInput.selectedDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD") }},
+    route_name = {{ DeliveryManifestRouteInput.text || null }},
+    carrier = {{ DeliveryManifestCarrierSelect.selectedOptionLabel || null }},
+    driver_name = {{ DeliveryManifestDriverSelect.selectedOptionLabel || null }},
+    vehicle_plate = {{ DeliveryManifestVehicleInput.text || null }},
+    note = {{ DeliveryManifestNoteInput.text || null }},
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.manifestId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND status = 'DRAFT';

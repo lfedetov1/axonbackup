@@ -1,0 +1,54 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS `Line No`,
+
+    p.code AS `Product Code`,
+    p.name AS `Product`,
+    p.barcode AS `Barcode`,
+
+    COALESCE(di.description, p.name) AS `Description`,
+    u.code AS `Unit`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+      ELSE COALESCE(di.quantity, 0)
+    END AS `Quantity`,
+
+    COALESCE(di.unit_price, 0) AS `Unit Price`,
+    COALESCE(di.discount_amount, 0) AS `Discount`,
+
+    COALESCE(tr.rate, 0) AS `Tax Rate`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0))
+      ELSE COALESCE(di.tax_amount, 0)
+    END AS `Tax Amount`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+      ELSE COALESCE(di.line_total, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+    END AS `Line Total`,
+
+    di.batch_number AS `Batch`,
+    di.serial_number AS `Serial`,
+    di.expiry_date AS `Expiry Date`,
+    di.note AS `Note`
+
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+
+WHERE d.id = {{
+  Number(
+    this.params.documentId ||
+    InvoicesTable.selectedRow.documentId ||
+    0
+  )
+}}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+ORDER BY di.line_no;

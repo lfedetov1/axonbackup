@@ -1,0 +1,58 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    COALESCE(d.fiscal_number, d.document_number) AS fiscalNumber,
+    d.document_type AS documentType,
+    d.document_date AS documentDate,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
+
+    d.status AS status,
+    d.posting_status AS postingStatus,
+    d.fiscal_status AS fiscalStatus,
+
+    d.payment_method AS paymentMethod,
+    d.currency_code AS currencyCode,
+
+    d.subtotal_amount AS subtotalAmount,
+    d.discount_amount AS discountAmount,
+    d.tax_amount AS taxAmount,
+    d.total_amount AS totalAmount,
+    d.paid_amount AS paidAmount,
+    COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) AS openAmount,
+
+    d.fiscal_jir AS jir,
+    d.fiscal_zki AS zki,
+    d.fiscal_qr_url AS fiscalVerificationUrl,
+    d.fiscalized_at AS fiscalizedAt,
+
+    bp.id AS partnerId,
+    bp.code AS partnerCode,
+    bp.name AS partnerName,
+    bp.tax_number AS partnerTaxNumber,
+    bp.email AS partnerEmail,
+    bp.phone AS partnerPhone,
+    bp.address_line1 AS partnerAddress,
+    bp.city_name AS partnerCity,
+    bp.postal_code AS partnerPostalCode,
+
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    u.username AS createdBy
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+WHERE d.id = {{
+  Number(
+    this.params.documentId ||
+    InvoicesTable.selectedRow.documentId ||
+    0
+  )
+}}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+LIMIT 1;
