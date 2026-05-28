@@ -49,9 +49,12 @@
     "Warehouse",
     "Created_By",
     "Created_At",
+    "customColumn2",
+    "customColumn3",
+    "customColumn5",
     "customColumn1"
   ],
-  "columnUpdatedAt": 1779965062628,
+  "columnUpdatedAt": 1779969490917,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -130,6 +133,33 @@
     },
     {
       "key": "primaryColumns.customColumn1.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn2.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn2.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn5.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn5.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -141,6 +171,24 @@
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn5.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -149,6 +197,15 @@
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn5.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -705,8 +762,125 @@
       "label": "Print",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{\n  AppLoader.run(\n    \"Loading quote print\",\n    \"Preparing quote print preview...\",\n    () => QuotePrint.open(currentRow)\n  )\n}}",
+      "onClick": "{{\n  storeValue(\n    \"selectedQuotePrintId\",\n    currentRow.documentId || currentRow.id || currentRow.ID\n  )\n    .then(() => GetQuotePrintHeader.run())\n    .then(() => GetQuotePrintItems.run())\n    .then(() => GetQuotePrintTaxSummary.run())\n    .then(() => showModal(QuotePrintModal.name))\n}}",
       "originalId": "customColumn1",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn2": {
+      "alias": "Edit",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "edit",
+      "id": "customColumn2",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow.Status !== \"DRAFT\" )) :  currentRow.Status !== \"DRAFT\"  })()}}",
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Edit",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ QuoteForm.loadForEdit(currentRow) }}",
+      "originalId": "customColumn2",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn3": {
+      "alias": "Void",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "ban-circle",
+      "id": "customColumn3",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( [\"CANCELLED\", \"CONVERTED\"].includes(currentRow.Status) )) :  [\"CANCELLED\", \"CONVERTED\"].includes(currentRow.Status)  })()}}",
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Void",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ QuoteForm.cancelDocument(currentRow) }}",
+      "originalId": "customColumn3",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn5": {
+      "alias": "Convert to invoice",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "dollar",
+      "id": "customColumn5",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( ![\"DRAFT\", \"SENT\", \"ACCEPTED\"].includes(currentRow.Status) )) :  ![\"DRAFT\", \"SENT\", \"ACCEPTED\"].includes(currentRow.Status)  })()}}",
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Convert to invoice",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ QuoteForm.convertToInvoice(currentRow) }}",
+      "originalId": "customColumn5",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

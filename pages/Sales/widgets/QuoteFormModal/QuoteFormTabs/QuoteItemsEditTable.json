@@ -46,8 +46,6 @@
     "quantity",
     "unitPrice",
     "discountPercent",
-    "availableStock",
-    "trackStock",
     "note",
     "discountAmount",
     "lineSubtotal",
@@ -56,7 +54,7 @@
     "customColumn1",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1779967664730,
+  "columnUpdatedAt": 1779970050641,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -122,12 +120,6 @@
       "key": "primaryColumns.discountPercent.computedValue"
     },
     {
-      "key": "primaryColumns.availableStock.computedValue"
-    },
-    {
-      "key": "primaryColumns.trackStock.computedValue"
-    },
-    {
       "key": "primaryColumns.note.computedValue"
     },
     {
@@ -179,6 +171,12 @@
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.quantity.onSubmit"
+    },
+    {
+      "key": "primaryColumns.discountPercent.onSubmit"
     }
   ],
   "dynamicTriggerPathList": [
@@ -187,6 +185,12 @@
     },
     {
       "key": "primaryColumns.customColumn1.onClick"
+    },
+    {
+      "key": "primaryColumns.quantity.onSubmit"
+    },
+    {
+      "key": "primaryColumns.discountPercent.onSubmit"
     }
   ],
   "enableClientSideSearch": true,
@@ -252,37 +256,6 @@
       "sticky": "right",
       "thousandSeparator": true,
       "validation": {},
-      "width": 150
-    },
-    "availableStock": {
-      "alias": "availableStock",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = QuoteItemsEditTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"availableStock\"])) : availableStock })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "horizontalAlignment": "LEFT",
-      "id": "availableStock",
-      "index": 14,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "Available Stock",
-      "notation": "standard",
-      "originalId": "availableStock",
-      "sticky": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
       "width": 150
     },
     "barcode": {
@@ -431,16 +404,17 @@
       "horizontalAlignment": "LEFT",
       "id": "discountPercent",
       "index": 13,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "Discount Percent",
       "notation": "standard",
+      "onSubmit": "{{ QuoteForm.updateRows() }}",
       "originalId": "discountPercent",
       "sticky": "",
       "textSize": "0.875rem",
@@ -679,16 +653,17 @@
       "horizontalAlignment": "LEFT",
       "id": "quantity",
       "index": 11,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "Quantity",
       "notation": "standard",
+      "onSubmit": "{{ QuoteForm.updateRows() }}",
       "originalId": "quantity",
       "sticky": "",
       "textSize": "0.875rem",
@@ -814,37 +789,6 @@
       "label": "taxRateId",
       "notation": "standard",
       "originalId": "taxRateId",
-      "sticky": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "trackStock": {
-      "alias": "trackStock",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "columnType": "text",
-      "computedValue": "{{(() => { const tableData = QuoteItemsEditTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"trackStock\"])) : trackStock })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "horizontalAlignment": "LEFT",
-      "id": "trackStock",
-      "index": 15,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "Track Stock",
-      "notation": "standard",
-      "originalId": "trackStock",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

@@ -523,6 +523,75 @@ export default {
 
     showAlert("Quote was cancelled.", "success");
   },
+	async convertToInvoice(row = null) {
+  const selected = row || QuotesTable.triggeredRow || QuotesTable.selectedRow || {};
+  const quoteId =
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    selected["Document ID"];
+
+  const status = selected.Status || selected.status || "";
+
+  if (!quoteId) {
+    showAlert("Select quote first.", "warning");
+    return;
+  }
+
+  if (["CANCELLED", "CONVERTED"].includes(status)) {
+    showAlert("This quote cannot be converted.", "warning");
+    return;
+  }
+
+  try {
+    const numberRows = await GetNextInvoiceNumberFromQuote.run();
+    const nextNumber =
+      numberRows?.[0]?.nextInvoiceNumber ||
+      GetNextInvoiceNumberFromQuote.data?.[0]?.nextInvoiceNumber;
+
+    if (!nextNumber) {
+      showAlert("Invoice number could not be generated.", "error");
+      return;
+    }
+
+    await InsertInvoiceFromQuote.run({
+      quoteId,
+      invoiceNumber: nextNumber
+    });
+
+    const invoiceRows = await GetInvoiceIdByNumberFromQuote.run({
+      invoiceNumber: nextNumber
+    });
+
+    const invoice =
+      invoiceRows?.[0] ||
+      GetInvoiceIdByNumberFromQuote.data?.[0];
+
+    if (!invoice?.invoiceId) {
+      showAlert("Invoice was created, but ID was not found.", "error");
+      return;
+    }
+
+    await InsertInvoiceItemsFromQuote.run({
+      quoteId,
+      invoiceId: invoice.invoiceId
+    });
+
+    await MarkQuoteConverted.run({ quoteId });
+
+    if (typeof ListQuotes !== "undefined") {
+      await ListQuotes.run();
+    }
+
+    await storeValue("currentInvoiceId", invoice.invoiceId);
+    await storeValue("currentInvoiceNumber", invoice.invoiceNumber || nextNumber);
+
+    showAlert(`Quote converted to invoice ${nextNumber}.`, "success");
+  } catch (error) {
+    showAlert("Error while converting quote: " + error.message, "error");
+    console.log(error);
+  }
+},
 
   async cancel() {
     await storeValue("currentQuoteId", null);

@@ -1,0 +1,18 @@
+SELECT
+  CONCAT(
+    'SO-',
+    DATE_FORMAT(CURDATE(), '%Y%m'),
+    '-',
+    LPAD(
+      COALESCE(
+        MAX(CAST(SUBSTRING_INDEX(d.document_number, '-', -1) AS UNSIGNED)),
+        0
+      ) + 1,
+      5,
+      '0'
+    )
+  ) AS nextSalesOrderNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'SALES_ORDER'
+  AND d.document_number LIKE CONCAT('SO-', DATE_FORMAT(CURDATE(), '%Y%m'), '-%');

@@ -1,0 +1,32 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    quantity,
+    unit_id,
+    unit_price,
+    discount_amount,
+    tax_rate_id,
+    tax_amount,
+    line_subtotal,
+    line_total,
+    note
+)
+SELECT
+    {{ Number(this.params.invoiceId || 0) }},
+    qi.line_no,
+    qi.product_id,
+    qi.description,
+    qi.quantity,
+    qi.unit_id,
+    qi.unit_price,
+    qi.discount_amount,
+    qi.tax_rate_id,
+    qi.tax_amount,
+    qi.line_subtotal,
+    qi.line_total,
+    CONCAT('From quote item ', qi.id)
+FROM document_items qi
+WHERE qi.document_id = {{ Number(this.params.quoteId || 0) }}
+ORDER BY qi.line_no;

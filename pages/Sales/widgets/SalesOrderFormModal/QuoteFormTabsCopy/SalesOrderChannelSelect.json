@@ -1,0 +1,59 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 24,
+  "boxShadow": "none",
+  "defaultOptionValue": "STORE",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "z9hnnwotw0",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Channel :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 20,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 24,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 17,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "1oj12bf3wq",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 38,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  { \"label\": \"Store / Trgovina\", \"value\": \"STORE\" },\n  { \"label\": \"Web shop\", \"value\": \"WEB\" },\n  { \"label\": \"Phone / Telefon\", \"value\": \"PHONE\" },\n  { \"label\": \"Email\", \"value\": \"EMAIL\" },\n  { \"label\": \"B2B\", \"value\": \"B2B\" },\n  { \"label\": \"Other / Ostalo\", \"value\": \"OTHER\" }\n]",
+  "topRow": 17,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "lpdb6lzetb",
+  "widgetName": "SalesOrderChannelSelect"
+}

@@ -1,0 +1,8 @@
+SELECT
+    d.id AS invoiceId,
+    d.document_number AS invoiceNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'SALES_INVOICE'
+  AND d.document_number = {{ this.params.invoiceNumber }}
+LIMIT 1;

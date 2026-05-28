@@ -1,0 +1,68 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Order Number`,
+    d.document_date AS `Order Date`,
+    d.due_date AS `Due Date`,
+    d.status AS `Status`,
+    d.posting_status AS `Posting`,
+
+    COALESCE(bp.legal_name, bp.name) AS `Customer`,
+    bp.code AS `Customer Code`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    d.sales_channel AS `Channel`,
+    d.fulfillment_type AS `Fulfillment`,
+
+    d.currency_code AS `Currency`,
+    d.total_amount AS `Total`,
+    d.tax_amount AS `Tax`,
+    d.discount_amount AS `Discount`,
+
+    COUNT(di.id) AS `Lines`,
+    COALESCE(SUM(di.quantity), 0) AS `Quantity`,
+
+    u.username AS `Created By`,
+    d.created_at AS `Created At`
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+LEFT JOIN document_items di ON di.document_id = d.id
+
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'SALES_ORDER'
+  AND (
+      {{ SalesOrderSearchInput.text || "" }} = ""
+      OR d.document_number LIKE CONCAT('%', {{ SalesOrderSearchInput.text || "" }}, '%')
+      OR bp.name LIKE CONCAT('%', {{ SalesOrderSearchInput.text || "" }}, '%')
+      OR bp.legal_name LIKE CONCAT('%', {{ SalesOrderSearchInput.text || "" }}, '%')
+      OR bp.code LIKE CONCAT('%', {{ SalesOrderSearchInput.text || "" }}, '%')
+  )
+  AND d.document_date >= {{ SalesOrderDateFrom.selectedDate || moment().startOf("month").format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ SalesOrderDateTo.selectedDate || moment().format("YYYY-MM-DD") }}
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.due_date,
+    d.status,
+    d.posting_status,
+    bp.legal_name,
+    bp.name,
+    bp.code,
+    w.code,
+    w.name,
+    d.sales_channel,
+    d.fulfillment_type,
+    d.currency_code,
+    d.total_amount,
+    d.tax_amount,
+    d.discount_amount,
+    u.username,
+    d.created_at
+
+ORDER BY d.document_date DESC, d.id DESC;
