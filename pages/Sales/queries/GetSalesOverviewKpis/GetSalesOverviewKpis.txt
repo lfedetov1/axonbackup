@@ -1,0 +1,40 @@
+SELECT
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        WHEN d.document_type IN ('POS_SALE', 'SALES_INVOICE') THEN COALESCE(d.total_amount, 0)
+        ELSE 0
+      END
+    ), 0) AS todaySales,
+
+    COALESCE(SUM(
+      CASE WHEN d.document_type = 'QUOTE'
+            AND d.status NOT IN ('CANCELLED', 'CONVERTED')
+           THEN 1 ELSE 0 END
+    ), 0) AS openQuotes,
+
+    COALESCE(SUM(
+      CASE WHEN d.document_type = 'SALES_ORDER'
+            AND d.status NOT IN ('CANCELLED', 'INVOICED')
+           THEN 1 ELSE 0 END
+    ), 0) AS openSalesOrders,
+
+    COALESCE(SUM(
+      CASE WHEN d.document_type = 'DELIVERY_NOTE'
+            AND d.status NOT IN ('CANCELLED', 'DELIVERED')
+           THEN 1 ELSE 0 END
+    ), 0) AS openDeliveries,
+
+    COALESCE(SUM(
+      CASE WHEN d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+            AND d.status <> 'CANCELLED'
+            AND COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+           THEN 1 ELSE 0 END
+    ), 0) AS fiscalIssues
+
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND (
+    DATE(d.document_date) = CURDATE()
+    OR d.document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  );

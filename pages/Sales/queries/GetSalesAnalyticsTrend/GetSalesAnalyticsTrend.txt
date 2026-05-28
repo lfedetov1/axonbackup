@@ -1,0 +1,15 @@
+SELECT
+    DATE(d.document_date) AS salesDate,
+    COUNT(*) AS documentCount,
+    COALESCE(SUM(CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+      ELSE COALESCE(d.total_amount, 0)
+    END), 0) AS salesAmount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND DATE(d.document_date) >= {{ appsmith.store.salesAnalyticsDateFrom || moment().format("YYYY-MM-DD") }}
+  AND DATE(d.document_date) <= {{ appsmith.store.salesAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+GROUP BY DATE(d.document_date)
+ORDER BY salesDate;

@@ -1,0 +1,32 @@
+SELECT *
+FROM (
+  SELECT
+    'Peak Hour' AS title,
+    CONCAT('Strongest sales hour is ', x.hourValue, ':00 with ', FORMAT(x.salesAmount, 2), ' EUR') AS detail,
+    'INFO' AS severity
+  FROM (
+    SELECT HOUR(d.created_at) AS hourValue, SUM(COALESCE(d.total_amount, 0)) AS salesAmount
+    FROM documents d
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesAnalyticsDateFrom || moment().format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY HOUR(d.created_at)
+    ORDER BY salesAmount DESC
+    LIMIT 1
+  ) x
+
+  UNION ALL
+
+  SELECT
+    'Fiscalization',
+    CONCAT(COUNT(*), ' document(s) need fiscal check'),
+    'WARNING'
+  FROM documents d
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+    AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+  HAVING COUNT(*) > 0
+) a;

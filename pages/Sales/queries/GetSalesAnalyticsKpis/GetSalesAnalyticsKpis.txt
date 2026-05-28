@@ -1,0 +1,28 @@
+SELECT
+    COALESCE(SUM(CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+      ELSE COALESCE(d.total_amount, 0)
+    END), 0) AS totalSales,
+
+    COUNT(*) AS documentCount,
+
+    COALESCE(AVG(CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+      ELSE COALESCE(d.total_amount, 0)
+    END), 0) AS averageDocument,
+
+    COALESCE(SUM(COALESCE(d.tax_amount, 0)), 0) AS taxAmount,
+    COALESCE(SUM(COALESCE(d.discount_amount, 0)), 0) AS discountAmount,
+
+    COALESCE(SUM(CASE WHEN d.document_type = 'CREDIT_NOTE' THEN 1 ELSE 0 END), 0) AS creditNotes,
+
+    COALESCE(SUM(CASE
+      WHEN COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+      THEN 1 ELSE 0 END), 0) AS fiscalIssues
+
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND DATE(d.document_date) >= {{ appsmith.store.salesAnalyticsDateFrom || moment().format("YYYY-MM-DD") }}
+  AND DATE(d.document_date) <= {{ appsmith.store.salesAnalyticsDateTo || moment().format("YYYY-MM-DD") }};

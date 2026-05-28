@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_6bdf4a4c-4180-459b-ad21-5b039aeb39dd",
+  "id": "Sales_SalesAnalytics",
+  "unpublishedCollection": {
+    "name": "SalesAnalytics",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

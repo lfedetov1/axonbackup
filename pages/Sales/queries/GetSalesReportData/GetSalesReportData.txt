@@ -1,0 +1,190 @@
+SELECT *
+FROM (
+    SELECT
+        'SALES_SUMMARY' AS reportType,
+        'Total Sales' AS groupLabel,
+        COUNT(*) AS countValue,
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END), 0) AS amountValue,
+        NULL AS quantityValue,
+        NULL AS extraValue
+    FROM documents d
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_SUMMARY'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+
+    UNION ALL
+
+    SELECT
+        'SALES_BY_HOUR',
+        CONCAT(LPAD(HOUR(d.created_at), 2, '0'), ':00'),
+        COUNT(*),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END), 0),
+        NULL,
+        NULL
+    FROM documents d
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_BY_HOUR'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY HOUR(d.created_at)
+
+    UNION ALL
+
+    SELECT
+        'SALES_BY_DAY',
+        DATE_FORMAT(d.document_date, '%d.%m.%Y'),
+        COUNT(*),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END), 0),
+        NULL,
+        NULL
+    FROM documents d
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_BY_DAY'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY DATE(d.document_date)
+
+    UNION ALL
+
+    SELECT
+        'SALES_BY_PRODUCT',
+        CONCAT(COALESCE(p.code, ''), ' ', COALESCE(p.name, di.description, 'Product')),
+        COUNT(DISTINCT d.id),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_total, 0))
+          ELSE COALESCE(di.line_total, 0)
+        END), 0),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+          ELSE COALESCE(di.quantity, 0)
+        END), 0),
+        NULL
+    FROM document_items di
+    JOIN documents d ON d.id = di.document_id
+    LEFT JOIN products p ON p.id = di.product_id
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_BY_PRODUCT'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY p.code, p.name, di.description
+
+    UNION ALL
+
+    SELECT
+        'SALES_BY_CUSTOMER',
+        COALESCE(bp.name, 'Walk-in Customer'),
+        COUNT(*),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END), 0),
+        NULL,
+        NULL
+    FROM documents d
+    LEFT JOIN business_partners bp ON bp.id = d.partner_id
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_BY_CUSTOMER'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY bp.name
+
+    UNION ALL
+
+    SELECT
+        'SALES_BY_WAREHOUSE',
+        COALESCE(w.name, 'No warehouse'),
+        COUNT(*),
+        COALESCE(SUM(CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END), 0),
+        NULL,
+        NULL
+    FROM documents d
+    LEFT JOIN warehouses w ON w.id = d.warehouse_id
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'SALES_BY_WAREHOUSE'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY w.name
+
+    UNION ALL
+
+    SELECT
+        'PAYMENT_MIX',
+        COALESCE(d.payment_method, 'UNKNOWN'),
+        COUNT(*),
+        COALESCE(SUM(COALESCE(d.total_amount, 0)), 0),
+        NULL,
+        NULL
+    FROM documents d
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'PAYMENT_MIX'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY COALESCE(d.payment_method, 'UNKNOWN')
+
+    UNION ALL
+
+    SELECT
+        'TAX_SUMMARY',
+        CONCAT(COALESCE(tr.rate, 0), '%'),
+        COUNT(DISTINCT d.id),
+        COALESCE(SUM(COALESCE(di.line_subtotal, 0)), 0),
+        COALESCE(SUM(COALESCE(di.tax_amount, 0)), 0),
+        COALESCE(SUM(COALESCE(di.line_total, 0)), 0)
+    FROM document_items di
+    JOIN documents d ON d.id = di.document_id
+    LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'TAX_SUMMARY'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY COALESCE(tr.rate, 0)
+
+    UNION ALL
+
+    SELECT
+        'FISCAL_STATUS',
+        COALESCE(d.fiscal_status, 'NOT_READY'),
+        COUNT(*),
+        COALESCE(SUM(COALESCE(d.total_amount, 0)), 0),
+        NULL,
+        NULL
+    FROM documents d
+    WHERE {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} = 'FISCAL_STATUS'
+      AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+      AND d.document_type IN ('POS_SALE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND DATE(d.document_date) >= {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND DATE(d.document_date) <= {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY COALESCE(d.fiscal_status, 'NOT_READY')
+) r
+WHERE r.reportType = {{ appsmith.store.salesReportType || "SALES_SUMMARY" }}
+ORDER BY amountValue DESC, countValue DESC;

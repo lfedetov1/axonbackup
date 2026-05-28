@@ -1,0 +1,29 @@
+SELECT 'Quotes' AS stage, COUNT(*) AS countValue, COALESCE(SUM(total_amount), 0) AS amountValue
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'QUOTE'
+  AND status NOT IN ('CANCELLED', 'CONVERTED')
+
+UNION ALL
+
+SELECT 'Sales Orders', COUNT(*), COALESCE(SUM(total_amount), 0)
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'SALES_ORDER'
+  AND status NOT IN ('CANCELLED', 'INVOICED')
+
+UNION ALL
+
+SELECT 'Delivery', COUNT(*), COALESCE(SUM(total_amount), 0)
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type = 'DELIVERY_NOTE'
+  AND status NOT IN ('CANCELLED', 'DELIVERED')
+
+UNION ALL
+
+SELECT 'Invoices', COUNT(*), COALESCE(SUM(total_amount), 0)
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND status <> 'CANCELLED';

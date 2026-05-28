@@ -1,0 +1,19 @@
+SELECT
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    {{ appsmith.store.salesReportType || "SALES_SUMMARY" }} AS reportType,
+    {{ appsmith.store.salesReportDateFrom || moment().startOf("month").format("YYYY-MM-DD") }} AS dateFrom,
+    {{ appsmith.store.salesReportDateTo || moment().format("YYYY-MM-DD") }} AS dateTo,
+    DATE_FORMAT(NOW(), '%d.%m.%Y %H:%i:%s') AS printedAt,
+    {{ appsmith.store.username || "" }} AS printedBy
+FROM companies c
+WHERE c.id = {{ Number(appsmith.store.companyId || 0) }}
+LIMIT 1;

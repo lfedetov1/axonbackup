@@ -1,0 +1,12 @@
+SELECT
+    COALESCE(d.payment_method, 'UNKNOWN') AS mixLabel,
+    COUNT(*) AS documentCount,
+    COALESCE(SUM(COALESCE(d.total_amount, 0)), 0) AS amountValue
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+  AND d.status <> 'CANCELLED'
+  AND DATE(d.document_date) >= {{ appsmith.store.salesAnalyticsDateFrom || moment().format("YYYY-MM-DD") }}
+  AND DATE(d.document_date) <= {{ appsmith.store.salesAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+GROUP BY COALESCE(d.payment_method, 'UNKNOWN')
+ORDER BY amountValue DESC;

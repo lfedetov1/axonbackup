@@ -1,0 +1,16 @@
+SELECT
+    p.code AS productCode,
+    p.name AS productName,
+    SUM(COALESCE(di.quantity, 0)) AS quantity,
+    SUM(COALESCE(di.line_total, 0)) AS salesAmount
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type IN ('POS_SALE', 'SALES_INVOICE')
+  AND d.status <> 'CANCELLED'
+  AND DATE(d.document_date) >= {{ appsmith.store.salesAnalyticsDateFrom || moment().format("YYYY-MM-DD") }}
+  AND DATE(d.document_date) <= {{ appsmith.store.salesAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+GROUP BY p.code, p.name
+ORDER BY salesAmount DESC
+LIMIT 8;

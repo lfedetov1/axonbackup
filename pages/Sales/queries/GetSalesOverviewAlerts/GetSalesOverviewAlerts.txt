@@ -1,0 +1,53 @@
+SELECT *
+FROM (
+    SELECT
+      'FISCAL' AS alertType,
+      'Fiscalization needed' AS title,
+      CONCAT(x.cnt, ' invoice/credit note document(s) need fiscal check') AS detail,
+      x.cnt AS countValue,
+      'INVOICES' AS targetTab
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+        AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+        AND d.status <> 'CANCELLED'
+        AND COALESCE(d.fiscal_status, '') NOT IN ('FISCALIZED', 'SUCCESS')
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'ORDERS' AS alertType,
+      'Open sales orders' AS title,
+      CONCAT(x.cnt, ' sales order(s) waiting for action') AS detail,
+      x.cnt AS countValue,
+      'SALES_ORDERS' AS targetTab
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+        AND d.document_type = 'SALES_ORDER'
+        AND d.status NOT IN ('CANCELLED', 'INVOICED')
+    ) x
+    WHERE x.cnt > 0
+
+    UNION ALL
+
+    SELECT
+      'SHIPPING' AS alertType,
+      'Delivery pending' AS title,
+      CONCAT(x.cnt, ' delivery note(s) not delivered') AS detail,
+      x.cnt AS countValue,
+      'DELIVERY_SHIPPING' AS targetTab
+    FROM (
+      SELECT COUNT(*) AS cnt
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.status NOT IN ('CANCELLED', 'DELIVERED')
+    ) x
+    WHERE x.cnt > 0
+) alerts
+ORDER BY countValue DESC;
