@@ -1,0 +1,7 @@
+UPDATE documents
+SET
+    status = 'CANCELLED',
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.documentId || 0) }}
+  AND document_type = 'QUOTE'
+  AND status NOT IN ('CONVERTED', 'CANCELLED');

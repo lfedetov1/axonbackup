@@ -1,0 +1,16 @@
+SELECT CONCAT(
+    'Q-',
+    DATE_FORMAT(CURDATE(), '%Y%m%d'),
+    '-',
+    LPAD(
+      COALESCE((
+        SELECT COUNT(*) + 1
+        FROM documents d
+        WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+          AND d.document_type = 'QUOTE'
+          AND DATE(d.created_at) = CURDATE()
+      ), 1),
+      4,
+      '0'
+    )
+) AS nextQuoteNumber;

@@ -1,46 +1,115 @@
 export default {
+  list(value) {
+    if (!value) return [];
+
+    if (Array.isArray(value)) {
+      return value
+        .map(x =>
+          typeof x === "string"
+            ? x
+            : x.code || x.name || x.roleCode || x.permissionCode || x.value || ""
+        )
+        .filter(Boolean);
+    }
+
+    if (typeof value === "string") {
+      return value.split(",").map(x => x.trim()).filter(Boolean);
+    }
+
+    if (typeof value === "object") {
+      return Object.values(value)
+        .map(x =>
+          typeof x === "string"
+            ? x
+            : x?.code || x?.name || x?.roleCode || x?.permissionCode || x?.value || ""
+        )
+        .filter(Boolean);
+    }
+
+    return [];
+  },
+
   roleCodes() {
-    return appsmith.store.roleCodes || [];
+    return this.list(appsmith.store.roleCodes).map(x => String(x).toUpperCase());
   },
 
   permissions() {
-    return appsmith.store.permissions || [];
+    return this.list(appsmith.store.permissions).map(x => String(x).toLowerCase());
   },
 
   isAdmin() {
-    return this.roleCodes().includes("ADMIN") || this.roleCodes().includes("OWNER");
+    const roles = this.roleCodes();
+
+    return (
+      roles.includes("ADMIN") ||
+      roles.includes("OWNER") ||
+      roles.includes("SUPERADMIN") ||
+      roles.includes("SUPER_ADMIN")
+    );
   },
 
   can(code) {
-    return this.isAdmin() || this.permissions().includes(code);
+    if (this.isAdmin()) return true;
+
+    return this.permissions().includes(String(code || "").toLowerCase());
   },
 
   canAny(codes = []) {
-    return this.isAdmin() || codes.some(code => this.permissions().includes(code));
+    if (this.isAdmin()) return true;
+
+    return codes.some(code => this.can(code));
   },
 
   canViewTab(module, tab) {
-    return this.can(`${module}.${tab}.view`);
+    const m = String(module || "").toLowerCase();
+    const t = String(tab || "").toLowerCase();
+
+    return this.canAny([
+      `${m}.${t}.view`,
+      `${m}.${t}.manage`,
+      `${m}.view`,
+      `${m}.manage`
+    ]);
   },
 
   canCreate(module, area) {
-    return this.can(`${module}.${area}.create`);
+    return this.canAny([
+      `${module}.${area}.create`,
+      `${module}.${area}.manage`,
+      `${module}.manage`
+    ]);
   },
 
   canEdit(module, area) {
-    return this.can(`${module}.${area}.edit`);
+    return this.canAny([
+      `${module}.${area}.edit`,
+      `${module}.${area}.manage`,
+      `${module}.manage`
+    ]);
   },
 
   canPost(module, area) {
-    return this.can(`${module}.${area}.post`);
+    return this.canAny([
+      `${module}.${area}.post`,
+      `${module}.${area}.manage`,
+      `${module}.manage`
+    ]);
   },
 
   canVoid(module, area) {
-    return this.can(`${module}.${area}.void`);
+    return this.canAny([
+      `${module}.${area}.void`,
+      `${module}.${area}.manage`,
+      `${module}.manage`
+    ]);
   },
 
   canPrint(module, area) {
-    return this.can(`${module}.${area}.print`);
+    return this.canAny([
+      `${module}.${area}.print`,
+      `${module}.${area}.manage`,
+      `${module}.manage`
+    ]);
   },
 
   canViewCost() {
@@ -58,5 +127,15 @@ export default {
       "sales.margin.view",
       "product.margin.view"
     ]);
+  },
+
+  debug() {
+    return {
+      roleCodes: appsmith.store.roleCodes,
+      permissions: appsmith.store.permissions,
+      normalizedRoles: this.roleCodes(),
+      normalizedPermissions: this.permissions(),
+      isAdmin: this.isAdmin()
+    };
   }
 };

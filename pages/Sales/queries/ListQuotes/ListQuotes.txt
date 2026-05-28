@@ -1,0 +1,41 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Quote Number`,
+    d.document_date AS `Quote Date`,
+    d.valid_until AS `Valid Until`,
+    d.status AS `Status`,
+
+    bp.code AS `Customer Code`,
+    COALESCE(bp.legal_name, bp.name) AS `Customer`,
+
+    d.currency_code AS `Currency`,
+    d.subtotal_amount AS `Subtotal`,
+    d.discount_amount AS `Discount`,
+    d.tax_amount AS `Tax`,
+    d.total_amount AS `Total`,
+
+    d.sales_channel AS `Channel`,
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    u.username AS `Created By`,
+    d.created_at AS `Created At`
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'QUOTE'
+  AND (
+      {{ QuoteSearchInput.text || "" }} = ""
+      OR d.document_number LIKE CONCAT('%', {{ QuoteSearchInput.text || "" }}, '%')
+      OR bp.name LIKE CONCAT('%', {{ QuoteSearchInput.text || "" }}, '%')
+      OR bp.legal_name LIKE CONCAT('%', {{ QuoteSearchInput.text || "" }}, '%')
+      OR bp.code LIKE CONCAT('%', {{ QuoteSearchInput.text || "" }}, '%')
+  )
+  AND DATE(d.document_date) >= {{ moment(QuoteDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND DATE(d.document_date) <= {{ moment(QuoteDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+ORDER BY d.document_date DESC, d.id DESC;

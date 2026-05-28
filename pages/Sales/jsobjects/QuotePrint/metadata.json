@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_d321c025-842d-4e56-a0f2-da93939cd2f8",
+  "id": "Sales_QuotePrint",
+  "unpublishedCollection": {
+    "name": "QuotePrint",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

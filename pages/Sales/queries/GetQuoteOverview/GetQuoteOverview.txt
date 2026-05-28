@@ -1,0 +1,45 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS quoteNumber,
+    d.document_date AS quoteDate,
+    d.valid_until AS validUntil,
+    d.status AS status,
+
+    COALESCE(bp.legal_name, bp.name) AS customerName,
+    bp.code AS customerCode,
+    bp.tax_number AS customerTaxNumber,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    d.currency_code AS currencyCode,
+    d.subtotal_amount AS subtotalAmount,
+    d.discount_amount AS discountAmount,
+    d.tax_amount AS taxAmount,
+    d.total_amount AS totalAmount,
+
+    COALESCE(items.itemCount, 0) AS itemCount,
+    COALESCE(items.totalQuantity, 0) AS totalQuantity,
+
+    d.note AS note,
+    u.username AS createdBy,
+    d.created_at AS createdAt
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+LEFT JOIN (
+    SELECT
+        di.document_id,
+        COUNT(*) AS itemCount,
+        SUM(COALESCE(di.quantity, 0)) AS totalQuantity
+    FROM document_items di
+    GROUP BY di.document_id
+) items ON items.document_id = d.id
+
+WHERE d.id = {{ Number(appsmith.store.selectedQuoteId || QuotesTable.selectedRow.documentId || 0) }}
+  AND d.document_type = 'QUOTE'
+
+LIMIT 1;

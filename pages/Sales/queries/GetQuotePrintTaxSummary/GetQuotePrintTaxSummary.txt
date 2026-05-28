@@ -1,0 +1,14 @@
+SELECT
+    COALESCE(tr.rate, 0) AS taxRate,
+    COALESCE(SUM(di.line_subtotal), 0) AS taxableAmount,
+    COALESCE(SUM(di.tax_amount), 0) AS taxAmount,
+    COALESCE(SUM(di.line_total), 0) AS totalAmount
+
+FROM document_items di
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+
+WHERE di.document_id = {{ Number(appsmith.store.selectedQuotePrintId || 0) }}
+
+GROUP BY COALESCE(tr.rate, 0)
+
+ORDER BY COALESCE(tr.rate, 0);

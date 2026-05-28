@@ -1,0 +1,30 @@
+INSERT INTO document_items (
+    document_id,
+    line_no,
+    product_id,
+    description,
+    quantity,
+    unit_id,
+    unit_price,
+    discount_amount,
+    tax_rate_id,
+    tax_amount,
+    line_subtotal,
+    line_total,
+    note
+)
+VALUES (
+    {{ Number(this.params.documentId || 0) }},
+    {{ Number(this.params.lineNo || 1) }},
+    {{ Number(this.params.productId || 0) }},
+    {{ this.params.description || null }},
+    {{ Number(this.params.quantity || 0) }},
+    {{ this.params.unitId || null }},
+    {{ Number(this.params.unitPrice || 0) }},
+    {{ Number(this.params.discountAmount || 0) }},
+    {{ this.params.taxRateId || null }},
+    {{ Number(this.params.taxAmount || 0) }},
+    {{ Number(this.params.lineSubtotal || 0) }},
+    {{ Number(this.params.lineTotal || 0) }},
+    {{ this.params.note || null }}
+);

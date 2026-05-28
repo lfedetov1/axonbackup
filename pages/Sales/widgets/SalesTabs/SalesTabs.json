@@ -428,7 +428,10 @@
       "key": "boxShadow"
     },
     {
-      "key": "isVisible"
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabsvnplzelux.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -437,7 +440,10 @@
       "key": "onTabSelected"
     },
     {
-      "key": "isVisible"
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabsvnplzelux.isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -448,7 +454,7 @@
   "flexVerticalAlignment": "stretch",
   "isCanvas": true,
   "isLoading": false,
-  "isVisible": "{{\n  appsmith.store.salesTab === \"SALES_ORDERS\" &&\n  AppAccess.canViewTab(\"sales\", \"salesorders\")\n}}",
+  "isVisible": true,
   "key": "4vq600hqwb",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,
@@ -459,7 +465,7 @@
   "mobileRightColumn": 25,
   "mobileTopRow": 14,
   "needsErrorInfo": false,
-  "onTabSelected": "{{\n  storeValue(\"salesTab\", SalesTabs.selectedTab)\n    .then(() => SalesNav.refreshOverview())\n}}",
+  "onTabSelected": "{{\n  storeValue(\n    \"salesTab\",\n    SalesTabs.selectedTab === \"Dashboard\" ? \"OVERVIEW\" :\n    SalesTabs.selectedTab === \"Quotes\" ? \"QUOTES\" :\n    SalesTabs.selectedTab === \"Sales Orders\" ? \"SALES_ORDERS\" :\n    SalesTabs.selectedTab === \"Delivery / Shipping\" ? \"DELIVERY_SHIPPING\" :\n    SalesTabs.selectedTab === \"Invoices\" ? \"INVOICES\" :\n    SalesTabs.selectedTab === \"Customers\" ? \"CUSTOMERS\" :\n    SalesTabs.selectedTab === \"Reports\" ? \"REPORT_CENTER\" :\n    SalesTabs.selectedTab\n  )\n  .then(() => storeValue(\"salesViewMode\", \"LIST\"))\n  .then(() => SalesNav.refreshForTab(appsmith.store.salesTab))\n}}",
   "originalBottomRow": 106,
   "originalTopRow": 7,
   "parentColumnSpace": 17.28125,
@@ -482,7 +488,7 @@
     "tab2": {
       "id": "tab2",
       "index": 1,
-      "isVisible": true,
+      "isVisible": "{{\n  AppAccess.canViewTab(\"sales\", \"quotes\") &&\n  String(appsmith.store.salesQuoteMode || \"LIST\").toUpperCase() === \"LIST\"\n}}",
       "label": "Quotes",
       "positioning": "vertical",
       "widgetId": "cexmv3ns6i"
@@ -525,7 +531,7 @@
     "tabsvnplzelux": {
       "id": "tabsvnplzelux",
       "index": 8,
-      "isVisible": true,
+      "isVisible": "{{ AppAccess.canViewTab(\"sales\", \"reports\") }}",
       "label": "Report Center",
       "widgetId": "wbnkcelrsh"
     },

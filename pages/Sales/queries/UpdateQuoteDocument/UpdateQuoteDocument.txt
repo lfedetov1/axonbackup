@@ -1,0 +1,15 @@
+UPDATE documents
+SET
+    document_date = {{ moment(QuoteDateInput.selectedDate || QuoteDateInput.text || moment()).format("YYYY-MM-DD") }},
+    valid_until = {{ moment(QuoteValidUntilInput.selectedDate || QuoteValidUntilInput.text || moment().add(14, "days")).format("YYYY-MM-DD") }},
+    partner_id = {{ QuoteCustomerSelect.selectedOptionValue || null }},
+    warehouse_id = {{ QuoteWarehouseSelect.selectedOptionValue || null }},
+    sales_channel = {{ QuoteSalesChannelSelect.selectedOptionValue || "STORE" }},
+    subtotal_amount = {{ Number(this.params.subtotalAmount || 0) }},
+    discount_amount = {{ Number(this.params.discountAmount || 0) }},
+    tax_amount = {{ Number(this.params.taxAmount || 0) }},
+    total_amount = {{ Number(this.params.totalAmount || 0) }},
+    note = {{ QuoteNoteInput.text || null }},
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.documentId || 0) }}
+  AND document_type = 'QUOTE';

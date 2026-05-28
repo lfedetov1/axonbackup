@@ -1,0 +1,9 @@
+SELECT
+    d.id AS quoteId,
+    d.document_number AS quoteNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'QUOTE'
+  AND d.document_number = {{ QuoteNumberInput.text || "" }}
+ORDER BY d.id DESC
+LIMIT 1;

@@ -18,12 +18,18 @@
     },
     {
       "key": "defaultModel"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "FIXED",
   "dynamicPropertyPathList": [
     {
       "key": "onPeriodChange"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -41,7 +47,7 @@
   "isCanvas": false,
   "isLoading": false,
   "isSearchWildcard": true,
-  "isVisible": true,
+  "isVisible": "{{\n  AppAccess.canViewTab(\"sales\", \"overview\") &&\n  ![\"ADD\", \"EDIT\", \"PRINT\"].includes(String(appsmith.store.salesViewMode || \"LIST\").toUpperCase())\n}}",
   "key": "7lpmy3reml",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

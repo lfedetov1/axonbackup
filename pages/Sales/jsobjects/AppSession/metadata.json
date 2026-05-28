@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_1a7a86f8-d8f5-473c-a167-7fe099d578c7",
+  "id": "Sales_AppSession",
+  "unpublishedCollection": {
+    "name": "AppSession",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

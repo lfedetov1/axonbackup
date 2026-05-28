@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_1add2d7f-197c-436d-bfad-67c8458a5536",
+  "id": "Sales_QuoteForm",
+  "unpublishedCollection": {
+    "name": "QuoteForm",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

@@ -1,0 +1,20 @@
+SELECT
+    u.id AS userId,
+    u.username AS username,
+    r.code AS roleCode,
+    p.code AS permissionCode
+FROM users u
+LEFT JOIN user_role_assignments ura
+  ON ura.user_id = u.id
+ AND ura.is_active = 1
+ AND (
+    ura.company_id = {{ Number(appsmith.store.companyId || 0) }}
+    OR COALESCE(ura.company_id, 0) = 0
+ )
+LEFT JOIN roles r
+  ON r.id = ura.role_id
+LEFT JOIN role_permissions rp
+  ON rp.role_id = r.id
+LEFT JOIN permissions p
+  ON p.id = rp.permission_id
+WHERE u.id = {{ Number(appsmith.store.userId || 0) }};
