@@ -1,0 +1,21 @@
+SELECT
+    dpi.id AS packageItemId,
+    dpi.line_no AS lineNo,
+    dpi.product_id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    dpi.description AS description,
+    dpi.quantity AS quantity,
+    u.code AS unitCode,
+    dpi.batch_number AS batchNumber,
+    dpi.serial_number AS serialNumber,
+    dpi.expiry_date AS expiryDate,
+    dpi.note AS note
+FROM document_package_items dpi
+LEFT JOIN products p
+  ON p.id = dpi.product_id
+LEFT JOIN units_of_measure u
+  ON u.id = dpi.unit_id
+WHERE dpi.package_id = {{ Number(appsmith.store.currentPackageLabelId || 0) }}
+ORDER BY dpi.line_no;

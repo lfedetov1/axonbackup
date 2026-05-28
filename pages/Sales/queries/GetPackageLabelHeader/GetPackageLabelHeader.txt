@@ -1,0 +1,68 @@
+SELECT
+    d.id AS documentId,
+    d.document_type AS documentType,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    d.status AS documentStatus,
+
+    dp.id AS packageId,
+    dp.package_number AS packageNumber,
+    dp.package_barcode AS packageBarcode,
+    dp.package_type AS packageType,
+    dp.package_status AS packageStatus,
+    dp.gross_weight AS grossWeight,
+    dp.net_weight AS netWeight,
+    dp.length_cm AS lengthCm,
+    dp.width_cm AS widthCm,
+    dp.height_cm AS heightCm,
+    dp.item_count AS itemCount,
+    dp.total_quantity AS totalQuantity,
+    dp.note AS packageNote,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    bp.code AS partnerCode,
+    bp.name AS partnerName,
+    bp.legal_name AS partnerLegalName,
+    bp.address_line1 AS partnerAddress,
+    bp.city_name AS partnerCity,
+    bp.postal_code AS partnerPostalCode,
+    bp.phone AS partnerPhone,
+    bp.email AS partnerEmail
+
+FROM document_packages dp
+
+JOIN documents d
+  ON d.id = dp.document_id
+
+JOIN companies c
+  ON c.id = dp.company_id
+
+LEFT JOIN warehouses w
+  ON w.id = dp.warehouse_id
+
+LEFT JOIN warehouses sw
+  ON sw.id = dp.source_warehouse_id
+
+LEFT JOIN warehouses dw
+  ON dw.id = dp.destination_warehouse_id
+
+LEFT JOIN business_partners bp
+  ON bp.id = dp.partner_id
+
+WHERE dp.id = {{ Number(appsmith.store.currentPackageLabelId || 0) }}
+
+LIMIT 1;

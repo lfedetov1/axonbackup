@@ -41,6 +41,9 @@
     },
     {
       "key": "menuItems.menuItemwcwtmz5ba8.onClick"
+    },
+    {
+      "key": "menuItems.menuItemxutj6jmjme.onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -55,6 +58,9 @@
     },
     {
       "key": "menuItems.menuItemwcwtmz5ba8.onClick"
+    },
+    {
+      "key": "menuItems.menuItemxutj6jmjme.onClick"
     }
   ],
   "isCompact": false,
@@ -101,6 +107,15 @@
       "label": "Refresh",
       "onClick": "{{ ListSalesOrders.run() }}",
       "widgetId": "eywheyb5iz"
+    },
+    "menuItemxutj6jmjme": {
+      "id": "menuItemxutj6jmjme",
+      "index": 4,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Create delivery note ",
+      "onClick": "{{\n  AppLoader.run(\n    \"Creating delivery note\",\n    \"Preparing delivery note and item lines...\",\n    () => SalesOrderForm.createDeliveryNote(SalesOrderTable.selectedRow)\n  )\n}}",
+      "widgetId": "h4cxx8hdpn"
     }
   },
   "menuItemsSource": "STATIC",

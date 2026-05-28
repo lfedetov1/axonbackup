@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_3a01071a-2c47-40a2-975b-608f636e11db",
-  "id": "Sales_Query1",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_004081d0-a477-4294-ab70-3d6120e24678",
+  "id": "Sales_MarkSalesOrderDeliveryCreated",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "UPDATE documents\nSET\n    status = CASE\n      WHEN status IN ('DRAFT', 'CONFIRMED', 'ALLOCATED', 'PICKED', 'PACKED')\n      THEN 'PACKING'\n      ELSE status\n    END,\n    updated_at = NOW()\nWHERE id = {{ Number(this.params.salesOrderId || 0) }}\n  AND document_type = 'SALES_ORDER';",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,12 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "MarkSalesOrderDeliveryCreated",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

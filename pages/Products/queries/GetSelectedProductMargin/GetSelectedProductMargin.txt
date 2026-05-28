@@ -5,8 +5,6 @@ SELECT
     p.barcode AS barcode,
     p.sku AS sku,
 
-    pc.name AS categoryName,
-
     p.purchase_price AS purchasePrice,
     p.sale_price AS salePrice,
 
@@ -40,9 +38,6 @@ SELECT
 
 FROM products p
 
-LEFT JOIN product_categories pc
-  ON pc.id = p.category_id
-
 LEFT JOIN (
     SELECT
         sm.product_id,
@@ -52,6 +47,16 @@ LEFT JOIN (
 ) stock
   ON stock.product_id = p.id
 
-WHERE p.id = {{ Number(appsmith.store.selectedProductId || 0) }}
+WHERE p.id = {{
+  Number(
+    ProductsTable.selectedRow.productId ||
+    ProductsTable.selectedRow.ProductID ||
+    ProductsTable.selectedRow["Product ID"] ||
+    ProductsTable.selectedRow["Product Id"] ||
+    ProductsTable.selectedRow.id ||
+    ProductsTable.selectedRow.ID ||
+    0
+  )
+}}
 
 LIMIT 1;

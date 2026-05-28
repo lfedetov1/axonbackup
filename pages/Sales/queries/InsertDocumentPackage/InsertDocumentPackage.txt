@@ -1,0 +1,54 @@
+INSERT INTO document_packages (
+    company_id,
+    document_id,
+    source_document_id,
+
+    package_number,
+    package_barcode,
+    package_type,
+    package_status,
+
+    warehouse_id,
+    source_warehouse_id,
+    destination_warehouse_id,
+    partner_id,
+
+    gross_weight,
+    net_weight,
+    length_cm,
+    width_cm,
+    height_cm,
+
+    item_count,
+    total_quantity,
+
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{ Number(this.params.companyId || 0) }},
+    {{ Number(this.params.deliveryNoteId || 0) }},
+    {{ Number(this.params.salesOrderId || 0) }},
+
+    {{ this.params.packageNumber || "" }},
+    {{ this.params.packageBarcode || "" }},
+    {{ this.params.packageType || "BOX" }},
+    'PACKED',
+
+    {{ this.params.warehouseId || null }},
+    {{ this.params.warehouseId || null }},
+    NULL,
+    {{ this.params.partnerId || null }},
+
+    {{ Number(this.params.grossWeight || 0) }},
+    {{ Number(this.params.netWeight || 0) }},
+    {{ Number(this.params.lengthCm || 0) }},
+    {{ Number(this.params.widthCm || 0) }},
+    {{ Number(this.params.heightCm || 0) }},
+
+    0,
+    0,
+
+    {{ this.params.note || null }},
+    {{ Number(this.params.createdByUserId || appsmith.store.userId || 0) }}
+);

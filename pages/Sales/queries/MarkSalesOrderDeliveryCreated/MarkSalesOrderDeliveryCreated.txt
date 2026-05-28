@@ -1,0 +1,10 @@
+UPDATE documents
+SET
+    status = CASE
+      WHEN status IN ('DRAFT', 'CONFIRMED', 'ALLOCATED', 'PICKED', 'PACKED')
+      THEN 'PACKING'
+      ELSE status
+    END,
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.salesOrderId || 0) }}
+  AND document_type = 'SALES_ORDER';

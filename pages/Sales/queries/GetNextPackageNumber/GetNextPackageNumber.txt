@@ -1,0 +1,15 @@
+SELECT CONCAT(
+    'PKG-',
+    DATE_FORMAT(CURDATE(), '%Y%m%d'),
+    '-',
+    LPAD(
+      COALESCE((
+        SELECT COUNT(*) + 1
+        FROM document_packages dp
+        WHERE dp.company_id = {{ Number(appsmith.store.companyId || 0) }}
+          AND DATE(dp.created_at) = CURDATE()
+      ), 1),
+      4,
+      '0'
+    )
+) AS nextPackageNumber;

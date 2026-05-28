@@ -1,0 +1,18 @@
+SELECT
+    dp.id AS packageId,
+    dp.document_id AS documentId,
+    dp.package_number AS packageNumber,
+    dp.package_barcode AS packageBarcode,
+    dp.package_type AS packageType,
+    dp.package_status AS packageStatus,
+    dp.gross_weight AS grossWeight,
+    dp.net_weight AS netWeight,
+    dp.item_count AS itemCount,
+    dp.total_quantity AS totalQuantity,
+    dp.created_at AS createdAt
+FROM document_packages dp
+JOIN documents d
+  ON d.id = dp.document_id
+WHERE d.source_document_id = {{ Number(appsmith.store.currentSalesOrderShippingId || SalesOrderTable.selectedRow.documentId || 0) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+ORDER BY dp.id DESC;

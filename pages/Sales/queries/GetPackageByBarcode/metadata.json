@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_3a01071a-2c47-40a2-975b-608f636e11db",
-  "id": "Sales_Query1",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_a6adae11-13d9-4792-abc9-9df505accf2d",
+  "id": "Sales_GetPackageByBarcode",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "SELECT\n    dp.id AS packageId,\n    dp.package_number AS packageNumber,\n    dp.package_barcode AS packageBarcode\nFROM document_packages dp\nWHERE dp.package_barcode = {{ this.params.packageBarcode || \"\" }}\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,12 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetPackageByBarcode",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

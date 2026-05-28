@@ -1,0 +1,52 @@
+INSERT INTO documents (
+    company_id,
+    document_type,
+    document_number,
+    document_date,
+    status,
+    posting_status,
+
+    partner_id,
+    warehouse_id,
+    source_document_id,
+
+    currency_code,
+    payment_method,
+    sales_channel,
+    fulfillment_type,
+
+    subtotal_amount,
+    discount_amount,
+    tax_amount,
+    total_amount,
+
+    note,
+    created_by_user_id,
+    created_at
+)
+VALUES (
+    {{ Number(this.params.companyId || 0) }},
+    'DELIVERY_NOTE',
+    {{ this.params.deliveryNoteNumber || "" }},
+    CURDATE(),
+    'DRAFT',
+    'NOT_POSTED',
+
+    {{ this.params.partnerId || null }},
+    {{ this.params.warehouseId || null }},
+    {{ Number(this.params.salesOrderId || 0) }},
+
+    {{ this.params.currencyCode || "EUR" }},
+    {{ this.params.paymentMethod || null }},
+    {{ this.params.salesChannel || null }},
+    {{ this.params.fulfillmentType || null }},
+
+    {{ Number(this.params.subtotalAmount || 0) }},
+    {{ Number(this.params.discountAmount || 0) }},
+    {{ Number(this.params.taxAmount || 0) }},
+    {{ Number(this.params.totalAmount || 0) }},
+
+    {{ this.params.note || null }},
+    {{ Number(this.params.createdByUserId || appsmith.store.userId || 0) }},
+    NOW()
+);

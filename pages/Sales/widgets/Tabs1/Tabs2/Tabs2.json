@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 71,
+  "bottomRow": 113,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 290,
+      "bottomRow": 710,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -53,6 +53,51 @@
       "version": 1,
       "widgetId": "rlijv9wvf5",
       "widgetName": "Canvas22"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 710,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "jvcdd0plk9",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 330,
+      "minWidth": 450,
+      "mobileBottomRow": 331,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1035.3212890625,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "eyhyvnbwbl",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1035.3212890625,
+      "tabId": "tabe73hdk6ala",
+      "tabName": "Shipping",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "3xqhr70kik",
+      "widgetName": "Canvas31"
     }
   ],
   "defaultTab": "Items",
@@ -83,7 +128,7 @@
   "mobileRightColumn": 25,
   "mobileTopRow": 38,
   "needsErrorInfo": false,
-  "originalBottomRow": 71,
+  "originalBottomRow": 113,
   "originalTopRow": 38,
   "parentColumnSpace": 16.69873046875,
   "parentId": "hblwme9mj9",
@@ -101,6 +146,13 @@
       "label": "Items",
       "positioning": "vertical",
       "widgetId": "rlijv9wvf5"
+    },
+    "tabe73hdk6ala": {
+      "id": "tabe73hdk6ala",
+      "index": 1,
+      "isVisible": true,
+      "label": "Shipping",
+      "widgetId": "3xqhr70kik"
     }
   },
   "topRow": 38,

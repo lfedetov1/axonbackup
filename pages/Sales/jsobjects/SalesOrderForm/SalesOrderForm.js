@@ -594,6 +594,70 @@ async scanBarcodeDebounced(value) {
     await storeValue("currentSalesOrderStatus", "PICKING");
     return true;
   },
+	
+	async addPackage(row = null) {
+  const selected = row || SalesOrderTable.selectedRow || {};
+  const salesOrderId =
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    appsmith.store.currentSalesOrderShippingId ||
+    0;
+
+  if (!salesOrderId) {
+    showAlert("Select sales order first.", "warning");
+    return;
+  }
+
+  await storeValue("currentSalesOrderShippingId", salesOrderId);
+
+  try {
+    const dnRows = await GetSelectedSalesOrderDeliveryN.run();
+    const dn = dnRows?.[0] || GetSelectedSalesOrderDeliveryN.data?.[0];
+
+    if (!dn?.deliveryNoteId) {
+      showAlert("Create delivery note first.", "warning");
+      return;
+    }
+
+    const noRows = await GetNextPackageNumber.run();
+    const packageNumber =
+      noRows?.[0]?.nextPackageNumber ||
+      GetNextPackageNumber.data?.[0]?.nextPackageNumber;
+
+    if (!packageNumber) {
+      showAlert("Package number could not be generated.", "error");
+      return;
+    }
+
+    const packageBarcode = `${packageNumber}-${dn.deliveryNoteId}`;
+
+    await InsertDocumentPackage.run({
+      companyId: dn.companyId,
+      deliveryNoteId: dn.deliveryNoteId,
+      salesOrderId: dn.salesOrderId,
+      packageNumber,
+      packageBarcode,
+      packageType: "BOX",
+      warehouseId: dn.warehouseId,
+      partnerId: dn.partnerId,
+      grossWeight: 0,
+      netWeight: 0,
+      lengthCm: 0,
+      widthCm: 0,
+      heightCm: 0,
+      note: `Package for ${dn.deliveryNoteNumber}`,
+      createdByUserId: appsmith.store.userId || dn.createdByUserId
+    });
+
+    await ListSalesOrderPackages.run();
+
+    showAlert(`Package ${packageNumber} was created.`, "success");
+  } catch (error) {
+    showAlert("Error while creating package: " + error.message, "error");
+    console.log(error);
+  }
+},
 
   async cancel() {
     const documentId = this.documentId();
@@ -676,6 +740,129 @@ async scanBarcodeDebounced(value) {
 
   if (typeof ListSalesOrders !== "undefined") {
     await ListSalesOrders.run();
+  }
+},
+	
+	async createDeliveryNote(row = null) {
+  const selected = row || SalesOrderTable.selectedRow || SalesOrderTable.triggeredRow || {};
+  const salesOrderId =
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    selected["Document ID"] ||
+    selected["Order ID"];
+
+  if (!salesOrderId) {
+    showAlert("Select sales order first.", "warning");
+    return;
+  }
+
+  const status = String(selected.Status || selected.status || "").toUpperCase();
+
+  if (["CANCELLED", "INVOICED"].includes(status)) {
+    showAlert("Cannot create delivery note for this sales order.", "warning");
+    return;
+  }
+
+  try {
+    const headerRows = await GetSalesOrderForDeliveryNote.run({ salesOrderId });
+    const header = headerRows?.[0] || GetSalesOrderForDeliveryNote.data?.[0];
+
+    if (!header) {
+      showAlert("Sales order was not found.", "error");
+      return;
+    }
+
+    const numberRows = await GetNextDeliveryNoteNumber.run();
+    const nextNumber =
+      numberRows?.[0]?.nextDeliveryNoteNumber ||
+      GetNextDeliveryNoteNumber.data?.[0]?.nextDeliveryNoteNumber;
+
+    if (!nextNumber) {
+  showAlert("Delivery note number could not be generated.", "error");
+  return;
+}
+
+  await InsertDeliveryNoteFromSalesOrd.run({
+  salesOrderId,
+  deliveryNoteNumber: nextNumber,
+  companyId: header.companyId,
+  partnerId: header.partnerId,
+  warehouseId: header.warehouseId,
+  currencyCode: header.currencyCode || "EUR",
+  paymentMethod: header.paymentMethod || null,
+  salesChannel: header.salesChannel || null,
+  fulfillmentType: header.fulfillmentType || null,
+  subtotalAmount: header.subtotalAmount || 0,
+  discountAmount: header.discountAmount || 0,
+  taxAmount: header.taxAmount || 0,
+  totalAmount: header.totalAmount || 0,
+  note: `Created from sales order ${header.salesOrderNumber || ""}`,
+  createdByUserId: appsmith.store.userId || header.createdByUserId || null
+});
+
+const deliveryRows = await GetDeliveryNoteByNumber.run({
+  deliveryNoteNumber: nextNumber
+});
+		
+    const delivery =
+      deliveryRows?.[0] ||
+      GetDeliveryNoteByNumber.data?.[0];
+
+    if (!delivery?.deliveryNoteId) {
+      showAlert("Delivery note was created, but ID was not found.", "error");
+      return;
+    }
+
+    const itemRows = await GetSalesOrderItemsForDeliveryN.run({ salesOrderId });
+    const items = itemRows || GetSalesOrderItemsForDeliveryN.data || [];
+
+    for (let i = 0; i < items.length; i += 1) {
+      await InsertDeliveryNoteItemFromSale.run({
+        deliveryNoteId: delivery.deliveryNoteId,
+        salesOrderItemId: items[i].salesOrderItemId,
+        lineNo: items[i].lineNo || i + 1,
+        productId: items[i].productId,
+        description: items[i].description,
+        quantity: items[i].quantity,
+        unitId: items[i].unitId,
+        unitPrice: items[i].unitPrice,
+        discountAmount: items[i].discountAmount,
+        taxRateId: items[i].taxRateId,
+        taxAmount: items[i].taxAmount,
+        lineSubtotal: items[i].lineSubtotal,
+        lineTotal: items[i].lineTotal,
+        warehouseLocationId: items[i].warehouseLocationId,
+        batchNumber: items[i].batchNumber,
+        serialNumber: items[i].serialNumber,
+        expiryDate: items[i].expiryDate,
+        note: items[i].note
+      });
+    }
+
+    await MarkSalesOrderDeliveryCreated.run({ salesOrderId });
+
+    if (typeof AuditLog !== "undefined") {
+      await AuditLog1.insert({
+        entityName: "documents",
+        entityId: delivery.deliveryNoteId,
+        actionType: "INSERT",
+        newValues: {
+          source: "Sales Order",
+          sales_order_id: salesOrderId,
+          delivery_note_number: delivery.deliveryNoteNumber
+        }
+      });
+    }
+
+    if (typeof ListSalesOrders !== "undefined") {
+      await ListSalesOrders.run();
+    }
+
+    showAlert(`Delivery note ${delivery.deliveryNoteNumber} was created.`, "success");
+  } catch (error) {
+    showAlert("Error while creating delivery note: " + error.message, "error");
+    console.log(error);
   }
 },
 

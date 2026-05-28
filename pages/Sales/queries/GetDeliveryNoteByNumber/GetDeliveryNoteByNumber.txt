@@ -1,0 +1,9 @@
+SELECT
+    d.id AS deliveryNoteId,
+    d.document_number AS deliveryNoteNumber,
+    d.status AS status
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND d.document_number = {{ this.params.deliveryNoteNumber || "" }}
+LIMIT 1;
