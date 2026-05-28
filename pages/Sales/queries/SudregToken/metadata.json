@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_f9ec0e65-6daa-47ee-b2af-992c36d690b1",
-  "id": "Partners_SudregToken",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_b05c6a24-9a03-44f1-8daf-1975bf7bb116",
+  "id": "Sales_SudregToken",
   "pluginId": "restapi-plugin",
   "pluginType": "API",
   "unpublishedAction": {
@@ -44,7 +44,7 @@
     },
     "dynamicBindingPathList": [],
     "name": "SudregToken",
-    "pageId": "Partners",
+    "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
