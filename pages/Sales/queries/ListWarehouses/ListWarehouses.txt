@@ -1,0 +1,68 @@
+SELECT
+    w.id AS warehouseId,
+    w.company_id AS companyId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    w.address_line1 AS addressLine1,
+    w.address_line2 AS addressLine2,
+    CONCAT_WS(', ', w.address_line1, w.address_line2) AS address,
+    w.city AS city,
+    w.postal_code AS postalCode,
+    w.country_code AS countryCode,
+    w.is_active AS isActive,
+    w.created_at AS createdAt,
+    w.updated_at AS updatedAt,
+
+    COALESCE(stock_summary.trackedProductCount, 0) AS trackedProductCount,
+    COALESCE(stock_summary.totalStockQuantity, 0) AS totalStockQuantity,
+    COALESCE(stock_summary.totalStockValue, 0) AS totalStockValue,
+    COALESCE(stock_summary.lowStockCount, 0) AS lowStockCount,
+    COALESCE(stock_summary.outOfStockCount, 0) AS outOfStockCount
+
+FROM warehouses w
+
+LEFT JOIN (
+    SELECT
+        x.company_id,
+        x.warehouse_id,
+        COUNT(DISTINCT x.product_id) AS trackedProductCount,
+        SUM(x.currentStock) AS totalStockQuantity,
+        SUM(x.stockValue) AS totalStockValue,
+        SUM(CASE WHEN x.minimum_stock > 0 AND x.currentStock < x.minimum_stock THEN 1 ELSE 0 END) AS lowStockCount,
+        SUM(CASE WHEN x.currentStock <= 0 THEN 1 ELSE 0 END) AS outOfStockCount
+    FROM (
+        SELECT
+            w2.company_id,
+            w2.id AS warehouse_id,
+            p.id AS product_id,
+            p.minimum_stock,
+            COALESCE(ib.quantity_balance, 0) AS currentStock,
+            COALESCE(ib.cost_balance, 0) AS stockValue
+        FROM warehouses w2
+        JOIN products p
+          ON p.company_id = w2.company_id
+         AND p.track_stock = 1
+         AND p.is_active = 1
+        LEFT JOIN v_inventory_balance ib
+          ON ib.company_id = w2.company_id
+         AND ib.warehouse_id = w2.id
+         AND ib.product_id = p.id
+        WHERE w2.company_id = {{appsmith.store.companyId}}
+    ) x
+    GROUP BY
+        x.company_id,
+        x.warehouse_id
+) stock_summary
+  ON stock_summary.company_id = w.company_id
+ AND stock_summary.warehouse_id = w.id
+
+WHERE w.company_id = {{appsmith.store.companyId}}
+  
+  AND (
+      {{!QuoteWarehouseSelect.selectedOptionValue}}
+      OR w.is_active = {{Number(QuoteWarehouseSelect.selectedOptionValue)}}
+  )
+
+ORDER BY
+    w.is_active DESC,
+    w.name ASC;
