@@ -231,7 +231,7 @@
   "mobileRightColumn": 35,
   "mobileTopRow": 3,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  ListSalesReturnItems.run({\n    documentId: SalesReturnsTable.selectedRow?.documentId || 0\n  })\n}}\n",
+  "onRowSelected": "{{\n  ListSalesReturnItems.run({\n    documentId: SalesReturnsTable.selectedRow?.documentId || 0\n  })\n    .then(() => SalesDocumentPreview.loadFromRow({\n      ...SalesReturnsTable.selectedRow,\n      documentId: SalesReturnsTable.selectedRow?.documentId || 0,\n      documentNumber:\n        SalesReturnsTable.selectedRow?.documentNumber ||\n        SalesReturnsTable.selectedRow?.[\"Return Number\"] ||\n        SalesReturnsTable.selectedRow?.[\"Document Number\"] ||\n        \"\",\n      documentType: \"SALES_RETURN\"\n    }))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "4ai564r9eh",
   "parentRowSpace": 10,

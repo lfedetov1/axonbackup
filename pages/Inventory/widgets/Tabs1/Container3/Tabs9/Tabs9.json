@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 67,
+  "bottomRow": 97,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 600,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 600,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -92,7 +92,7 @@
       "responsiveBehavior": "fill",
       "rightColumn": 1066,
       "tabId": "tabogrsg00i1g",
-      "tabName": "Perview document",
+      "tabName": "Perview",
       "topRow": 1,
       "type": "CANVAS_WIDGET",
       "version": 1,
@@ -136,7 +136,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 29,
   "needsErrorInfo": false,
-  "originalBottomRow": 67,
+  "originalBottomRow": 97,
   "originalTopRow": 33,
   "parentColumnSpace": 16.65625,
   "parentId": "4kk0vps55n",
@@ -159,7 +159,7 @@
       "id": "tabogrsg00i1g",
       "index": 1,
       "isVisible": true,
-      "label": "Perview document",
+      "label": "Perview",
       "widgetId": "nuwsv1rh5m"
     }
   },

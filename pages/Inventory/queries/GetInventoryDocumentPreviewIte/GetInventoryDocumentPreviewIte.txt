@@ -13,17 +13,18 @@ SELECT
     u.code AS unitCode,
 
     COALESCE(di.quantity, 0) AS quantity,
-    COALESCE(di.system_quantity, 0) AS systemQuantity,
-    COALESCE(di.counted_quantity, 0) AS countedQuantity,
 
-    COALESCE(di.counted_quantity, 0) - COALESCE(di.system_quantity, 0) AS varianceQuantity,
+    0 AS systemQuantity,
+    0 AS countedQuantity,
+    0 AS varianceQuantity,
 
     COALESCE(di.unit_price, 0) AS unitPrice,
     COALESCE(di.line_total, 0) AS lineTotal,
 
-    di.expiry_date AS expiryDate,
-    di.batch_number AS batchNumber,
-    di.note
+    NULL AS expiryDate,
+    NULL AS batchNumber,
+
+    di.note AS note
 
 FROM document_items di
 JOIN documents d ON d.id = di.document_id
@@ -35,15 +36,18 @@ WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store
   AND d.document_type IN (
       'OPENING_STOCK',
       'INVENTORY_COUNT',
+      'PURCHASE_RECEIPT',
+      'INBOUND_DELIVERY',
+      'STOCK_OUT',
+      'STOCK_ISSUE',
       'TRANSFER_REQUEST',
       'SUPPLIER_RETURN',
+      'GOODS_IN_TRANSIT',
       'DELIVERY_MANIFEST',
-		  'PURCHASE_RECEIPT',
-		  'INBOUND_DELIVERY',
-		  'STOCK_OUT',
-		  'DELIVERY_NOTE',
-      'GOODS_IN_TRANSIT'
-		  
+      'DISPATCH',
+      'OUTBOUND_DELIVERY',
+      'DELIVERY_DISPATCH',
+      'PACKAGE_RECEIVING'
   )
 
 ORDER BY di.line_no;

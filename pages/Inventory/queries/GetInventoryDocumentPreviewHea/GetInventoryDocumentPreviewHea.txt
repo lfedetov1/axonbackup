@@ -6,23 +6,24 @@ SELECT
     CASE
       WHEN d.document_type = 'OPENING_STOCK' THEN 'Opening Stock'
       WHEN d.document_type = 'INVENTORY_COUNT' THEN 'Inventory Count'
+      WHEN d.document_type = 'PURCHASE_RECEIPT' THEN 'Goods Receipt'
+      WHEN d.document_type = 'INBOUND_DELIVERY' THEN 'Inbound Delivery'
+      WHEN d.document_type IN ('STOCK_OUT', 'STOCK_ISSUE') THEN 'Stock Issue'
       WHEN d.document_type = 'TRANSFER_REQUEST' THEN 'Transfer Request'
       WHEN d.document_type = 'SUPPLIER_RETURN' THEN 'Supplier Return'
-      WHEN d.document_type = 'DELIVERY_MANIFEST' THEN 'Delivery Manifest'
       WHEN d.document_type = 'GOODS_IN_TRANSIT' THEN 'Goods In Transit'
-			WHEN d.document_type = 'PURCHASE_RECEIPT' THEN 'Goods Receipt'
-			WHEN d.document_type = 'DELIVERY_NOTE' THEN 'Delivery Note'
-			WHEN d.document_type = 'INBOUND_DELIVERY' THEN 'Inbound Delivery'
-			WHEN d.document_type = 'STOCK_OUT' THEN 'Stock Issue'
+      WHEN d.document_type = 'DELIVERY_MANIFEST' THEN 'Delivery Manifest'
+      WHEN d.document_type IN ('DISPATCH', 'OUTBOUND_DELIVERY', 'DELIVERY_DISPATCH') THEN 'Dispatch'
+      WHEN d.document_type = 'PACKAGE_RECEIVING' THEN 'Package Receiving'
       ELSE d.document_type
     END AS documentTitle,
 
     d.document_date AS documentDate,
     DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
 
-    d.status,
+    d.status AS status,
     d.posting_status AS postingStatus,
-    d.note,
+    d.note AS note,
 
     d.warehouse_id AS warehouseId,
     w.code AS warehouseCode,
@@ -39,9 +40,9 @@ SELECT
     bp.code AS partnerCode,
     bp.name AS partnerName,
 
-    COALESCE(SUM(di.quantity), 0) AS totalQuantity,
-    COALESCE(SUM(di.line_total), 0) AS totalAmount,
-    COUNT(di.id) AS itemCount,
+    COALESCE(ds.totalQuantity, 0) AS totalQuantity,
+    COALESCE(ds.totalAmount, 0) AS totalAmount,
+    COALESCE(ds.itemCount, 0) AS itemCount,
 
     c.name AS companyName,
     c.tax_number AS companyTaxNumber,
@@ -62,52 +63,33 @@ LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
 LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
 LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
-LEFT JOIN document_items di ON di.document_id = d.id
+
+LEFT JOIN (
+    SELECT
+        document_id,
+        SUM(COALESCE(quantity, 0)) AS totalQuantity,
+        SUM(COALESCE(line_total, 0)) AS totalAmount,
+        COUNT(id) AS itemCount
+    FROM document_items
+    GROUP BY document_id
+) ds ON ds.document_id = d.id
 
 WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.inventorySelectedDocumentId || 0) }}
   AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
   AND d.document_type IN (
       'OPENING_STOCK',
       'INVENTORY_COUNT',
+      'PURCHASE_RECEIPT',
+      'INBOUND_DELIVERY',
+      'STOCK_OUT',
+      'STOCK_ISSUE',
       'TRANSFER_REQUEST',
       'SUPPLIER_RETURN',
+      'GOODS_IN_TRANSIT',
       'DELIVERY_MANIFEST',
-		  'PURCHASE_RECEIPT',
-		  'INBOUND_DELIVERY',
-		  'STOCK_OUT',
-		  'DELIVERY_NOTE',
-      'GOODS_IN_TRANSIT'
+      'DISPATCH',
+      'OUTBOUND_DELIVERY',
+      'DELIVERY_DISPATCH',
+      'PACKAGE_RECEIVING'
   )
-
-GROUP BY
-    d.id,
-    d.document_number,
-    d.document_type,
-    d.document_date,
-    d.created_at,
-    d.status,
-    d.posting_status,
-    d.note,
-    d.warehouse_id,
-    w.code,
-    w.name,
-    d.source_warehouse_id,
-    sw.code,
-    sw.name,
-    d.destination_warehouse_id,
-    dw.code,
-    dw.name,
-    bp.code,
-    bp.name,
-    c.name,
-    c.tax_number,
-    c.registration_number,
-    c.email,
-    c.phone,
-    c.address_line1,
-    c.city,
-    c.postal_code,
-    c.logo_path,
-    u.username
-
 LIMIT 1;
