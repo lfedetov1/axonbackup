@@ -1,0 +1,107 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+
+    CASE
+      WHEN d.document_type = 'OPENING_STOCK' THEN 'Opening Stock'
+      WHEN d.document_type = 'INVENTORY_COUNT' THEN 'Inventory Count'
+      WHEN d.document_type = 'TRANSFER_REQUEST' THEN 'Transfer Request'
+      WHEN d.document_type = 'SUPPLIER_RETURN' THEN 'Supplier Return'
+      WHEN d.document_type = 'DELIVERY_MANIFEST' THEN 'Delivery Manifest'
+      WHEN d.document_type = 'GOODS_IN_TRANSIT' THEN 'Goods In Transit'
+			WHEN d.document_type = 'PURCHASE_RECEIPT' THEN 'Goods Receipt'
+      ELSE d.document_type
+    END AS documentTitle,
+
+    d.document_date AS documentDate,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS issueTime,
+
+    d.status,
+    d.posting_status AS postingStatus,
+    d.note,
+
+    d.warehouse_id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    d.source_warehouse_id AS sourceWarehouseId,
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+
+    d.destination_warehouse_id AS destinationWarehouseId,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    bp.code AS partnerCode,
+    bp.name AS partnerName,
+
+    COALESCE(SUM(di.quantity), 0) AS totalQuantity,
+    COALESCE(SUM(di.line_total), 0) AS totalAmount,
+    COUNT(di.id) AS itemCount,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.logo_path AS companyLogoPath,
+
+    u.username AS createdBy
+
+FROM documents d
+JOIN companies c ON c.id = d.company_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+LEFT JOIN document_items di ON di.document_id = d.id
+
+WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.inventorySelectedDocumentId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN (
+      'OPENING_STOCK',
+      'INVENTORY_COUNT',
+      'TRANSFER_REQUEST',
+      'SUPPLIER_RETURN',
+      'DELIVERY_MANIFEST',
+		  'PURCHASE_RECEIPT',
+      'GOODS_IN_TRANSIT'
+  )
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_type,
+    d.document_date,
+    d.created_at,
+    d.status,
+    d.posting_status,
+    d.note,
+    d.warehouse_id,
+    w.code,
+    w.name,
+    d.source_warehouse_id,
+    sw.code,
+    sw.name,
+    d.destination_warehouse_id,
+    dw.code,
+    dw.name,
+    bp.code,
+    bp.name,
+    c.name,
+    c.tax_number,
+    c.registration_number,
+    c.email,
+    c.phone,
+    c.address_line1,
+    c.city,
+    c.postal_code,
+    c.logo_path,
+    u.username
+
+LIMIT 1;

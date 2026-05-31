@@ -1,0 +1,25 @@
+SELECT
+    sm.id AS movementId,
+    sm.movement_date AS movementDate,
+    sm.movement_type AS movementType,
+
+    p.code AS productCode,
+    p.name AS productName,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COALESCE(sm.quantity, 0) AS quantity,
+    COALESCE(sm.unit_cost, 0) AS unitCost,
+    COALESCE(sm.total_cost, 0) AS totalCost,
+
+    sm.note,
+    sm.created_at AS createdAt
+
+FROM stock_movements sm
+LEFT JOIN products p ON p.id = sm.product_id
+LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+
+WHERE sm.document_id = {{ Number((this.params && this.params.documentId) || appsmith.store.inventorySelectedDocumentId || 0) }}
+
+ORDER BY sm.created_at DESC, sm.id DESC;

@@ -1,0 +1,46 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    COALESCE(di.description, p.name) AS description,
+
+    u.code AS unitCode,
+
+    COALESCE(di.quantity, 0) AS quantity,
+    COALESCE(di.system_quantity, 0) AS systemQuantity,
+    COALESCE(di.counted_quantity, 0) AS countedQuantity,
+
+    COALESCE(di.counted_quantity, 0) - COALESCE(di.system_quantity, 0) AS varianceQuantity,
+
+    COALESCE(di.unit_price, 0) AS unitPrice,
+    COALESCE(di.line_total, 0) AS lineTotal,
+
+    di.expiry_date AS expiryDate,
+    di.batch_number AS batchNumber,
+    di.note
+
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+
+WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.inventorySelectedDocumentId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN (
+      'OPENING_STOCK',
+      'INVENTORY_COUNT',
+      'TRANSFER_REQUEST',
+      'SUPPLIER_RETURN',
+      'DELIVERY_MANIFEST',
+		  'PURCHASE_RECEIPT',
+      'GOODS_IN_TRANSIT'
+		  
+  )
+
+ORDER BY di.line_no;

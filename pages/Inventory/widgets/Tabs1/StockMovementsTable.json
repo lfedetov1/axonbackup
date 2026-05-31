@@ -256,7 +256,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onRowSelected": "{{ StockMovementItemsQuery.run() }}\n",
+  "onRowSelected": "{{\n  storeValue(\n    \"inventorySelectedDocumentId\",\n    StockMovementsTable.selectedRow?.documentId || 0\n  )\n    .then(() => StockMovementItemsQuery.run())\n    .then(() => InventoryDocumentPreview.loadFromRow(StockMovementsTable.selectedRow || {}))\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "r5bz4tn5ev",
   "parentRowSpace": 10,
