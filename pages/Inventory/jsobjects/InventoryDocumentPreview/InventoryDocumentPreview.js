@@ -106,5 +106,122 @@ export default {
 
   hasPreview() {
     return !!appsmith.store.inventoryDocumentPreviewData?.header;
+  },
+	
+	async loadDeliveryManifestFromRow(row = null) {
+  const selected = row || DeliveryManifestsTable.selectedRow || {};
+
+  const manifestId =
+    selected.manifestId ||
+    selected.documentId ||
+    selected.id ||
+    selected.ID ||
+    0;
+
+  const manifestNumber =
+    selected.manifestNumber ||
+    selected.documentNumber ||
+    selected["Manifest Number"] ||
+    selected["Document Number"] ||
+    "";
+
+  if (!manifestId) {
+    await this.clear();
+    return;
   }
+
+  await storeValue("inventorySelectedDocumentId", manifestId);
+  await storeValue("inventorySelectedDocumentNumber", manifestNumber);
+  await storeValue("inventorySelectedDocumentType", "DELIVERY_MANIFEST");
+
+  const packages = ListDeliveryManifestPackagesOv.data || [];
+
+  await storeValue("inventoryDocumentPreviewData", {
+    header: {
+      documentId: manifestId,
+      documentNumber: manifestNumber,
+      documentType: "DELIVERY_MANIFEST",
+      documentTitle: "Delivery Manifest",
+
+      documentDate:
+        selected.documentDate ||
+        selected["Manifest Date"] ||
+        selected.manifestDate ||
+        selected.date ||
+        "",
+
+      issueTime:
+        selected.issueTime ||
+        selected["Issue Time"] ||
+        selected.createdAt ||
+        selected.created_at ||
+        "",
+
+      status:
+        selected.status ||
+        selected.Status ||
+        "",
+
+      postingStatus:
+        selected.postingStatus ||
+        selected["Posting Status"] ||
+        "",
+
+      warehouseCode:
+        selected.warehouseCode ||
+        selected["Warehouse Code"] ||
+        "",
+
+      warehouseName:
+        selected.warehouseName ||
+        selected.Warehouse ||
+        selected["Warehouse"] ||
+        "",
+
+      carrierName:
+        selected.carrierName ||
+        selected.Carrier ||
+        selected["Carrier"] ||
+        "",
+
+      driverName:
+        selected.driverName ||
+        selected.Driver ||
+        selected["Driver"] ||
+        "",
+
+      vehiclePlate:
+        selected.vehiclePlate ||
+        selected["Vehicle Plate"] ||
+        "",
+
+      totalQuantity:
+        selected.totalQuantity ||
+        selected["Total Quantity"] ||
+        0,
+
+      itemCount:
+        selected.itemCount ||
+        selected["Package Count"] ||
+        packages.length,
+
+      note:
+        selected.note ||
+        selected.Note ||
+        "",
+
+      companyName: appsmith.store.companyName || "Axon",
+      createdBy:
+        selected.createdBy ||
+        selected["Created By"] ||
+        appsmith.store.username ||
+        ""
+    },
+
+    items: [],
+    movements: [],
+    packages,
+    username: appsmith.store.username || ""
+  });
+}
 };

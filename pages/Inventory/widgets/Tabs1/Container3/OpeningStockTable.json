@@ -219,7 +219,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  ListOpeningStockItems.run({\n    documentId: OpeningStockTable.selectedRow.documentId\n  })\n}}\n",
+  "onRowSelected": "{{\n  ListOpeningStockItems.run({\n    documentId: OpeningStockTable.selectedRow?.documentId || 0\n  })\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...OpeningStockTable.selectedRow,\n      documentId: OpeningStockTable.selectedRow?.documentId || 0,\n      documentNumber:\n        OpeningStockTable.selectedRow?.documentNumber ||\n        OpeningStockTable.selectedRow?.[\"Document Number\"] ||\n        OpeningStockTable.selectedRow?.[\"Opening Stock Number\"] ||\n        \"\",\n      documentType: \"OPENING_STOCK\"\n    }))\n}}",
   "parentColumnSpace": 16.65625,
   "parentId": "4kk0vps55n",
   "parentRowSpace": 10,

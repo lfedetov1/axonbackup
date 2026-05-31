@@ -214,7 +214,7 @@
   "mobileRightColumn": 29,
   "mobileTopRow": 5,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  storeValue(\n    \"selectedDeliveryManifestId\",\n    DeliveryManifestsTable.selectedRow.manifestId ||\n    DeliveryManifestsTable.selectedRow.id ||\n    DeliveryManifestsTable.selectedRow.ID ||\n    0\n  )\n    .then(() => ListDeliveryManifestPackagesOv.run())\n}}",
+  "onRowSelected": "{{\n  storeValue(\n    \"selectedDeliveryManifestId\",\n    DeliveryManifestsTable.selectedRow?.manifestId ||\n    DeliveryManifestsTable.selectedRow?.documentId ||\n    DeliveryManifestsTable.selectedRow?.id ||\n    DeliveryManifestsTable.selectedRow?.ID ||\n    0\n  )\n    .then(() => ListDeliveryManifestPackagesOv.run())\n    .then(() => InventoryDocumentPreview.loadDeliveryManifestFromRow(\n      DeliveryManifestsTable.selectedRow || {}\n    ))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "qyrpigb8j9",
   "parentRowSpace": 10,
