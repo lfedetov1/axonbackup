@@ -1,0 +1,33 @@
+SELECT
+    COALESCE(tr.rate, 0) AS taxRate,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+        ELSE COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+      END
+    ) AS taxableAmount,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0))
+        ELSE COALESCE(di.tax_amount, 0)
+      END
+    ) AS taxAmount,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_total, 0))
+        ELSE COALESCE(di.line_total, 0)
+      END
+    ) AS totalAmount
+
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.salesSelectedDocumentId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE', 'CREDIT_NOTE')
+GROUP BY COALESCE(tr.rate, 0)
+ORDER BY COALESCE(tr.rate, 0);

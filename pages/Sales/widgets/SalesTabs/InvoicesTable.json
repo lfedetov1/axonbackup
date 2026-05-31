@@ -292,7 +292,7 @@
   "mobileRightColumn": 32,
   "mobileTopRow": 4,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  storeValue(\n    \"currentInvoiceId\",\n    InvoicesTable.selectedRow.documentId ||\n    InvoicesTable.selectedRow.ID ||\n    InvoicesTable.selectedRow.id ||\n    InvoicesTable.selectedRow[\"Document ID\"]\n  )\n    .then(() => GetInvoiceOverviewHeader.run({\n      documentId:\n        InvoicesTable.selectedRow.documentId ||\n        InvoicesTable.selectedRow.ID ||\n        InvoicesTable.selectedRow.id ||\n        InvoicesTable.selectedRow[\"Document ID\"]\n    }))\n    .then(() => GetInvoiceOverviewItems.run({\n      documentId:\n        InvoicesTable.selectedRow.documentId ||\n        InvoicesTable.selectedRow.ID ||\n        InvoicesTable.selectedRow.id ||\n        InvoicesTable.selectedRow[\"Document ID\"]\n    }))\n    .then(() => GetInvoiceOverviewTaxSummary.run({\n      documentId:\n        InvoicesTable.selectedRow.documentId ||\n        InvoicesTable.selectedRow.ID ||\n        InvoicesTable.selectedRow.id ||\n        InvoicesTable.selectedRow[\"Document ID\"]\n    }))\n}}",
+  "onRowSelected": "{{\n  (() => {\n    const row = InvoicesTable.selectedRow || {};\n    const documentId =\n      row.documentId ||\n      row.ID ||\n      row.id ||\n      row[\"Document ID\"] ||\n      0;\n\n    return storeValue(\"currentInvoiceId\", documentId)\n      .then(() => GetInvoiceOverviewHeader.run({ documentId }))\n      .then(() => GetInvoiceOverviewItems.run({ documentId }))\n      .then(() => GetInvoiceOverviewTaxSummary.run({ documentId }))\n      .then(() => SalesDocumentPreview.loadFromRow(row));\n  })()\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "0xmg2gzkdp",
   "parentRowSpace": 10,

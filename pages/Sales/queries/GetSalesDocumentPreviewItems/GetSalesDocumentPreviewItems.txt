@@ -1,0 +1,49 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    COALESCE(di.description, p.name) AS description,
+
+    u.code AS unitCode,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+      ELSE COALESCE(di.quantity, 0)
+    END AS quantity,
+
+    COALESCE(di.unit_price, 0) AS unitPrice,
+    COALESCE(di.discount_amount, 0) AS discountAmount,
+
+    COALESCE(tr.rate, 0) AS taxRate,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0))
+      ELSE COALESCE(di.line_subtotal, COALESCE(di.quantity, 0) * COALESCE(di.unit_price, 0), 0)
+    END AS lineSubtotal,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0))
+      ELSE COALESCE(di.tax_amount, 0)
+    END AS taxAmount,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_total, 0))
+      ELSE COALESCE(di.line_total, 0)
+    END AS lineTotal,
+
+    di.note
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.salesSelectedDocumentId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE', 'CREDIT_NOTE')
+ORDER BY di.line_no;

@@ -253,7 +253,7 @@
   "mobileRightColumn": 35,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  storeValue(\n    \"selectedQuoteId\",\n    QuotesTable.selectedRow.documentId ||\n    QuotesTable.selectedRow.id ||\n    QuotesTable.selectedRow.ID ||\n    0\n  )\n    .then(() => GetQuoteOverview.run())\n    .then(() => ListQuoteItems.run())\n}}",
+  "onRowSelected": "{{\n  storeValue(\n    \"selectedQuoteId\",\n    QuotesTable.selectedRow.documentId ||\n    QuotesTable.selectedRow.id ||\n    QuotesTable.selectedRow.ID ||\n    0\n  )\n    .then(() => GetQuoteOverview.run())\n    .then(() => ListQuoteItems.run())\n    .then(() => SalesDocumentPreview.loadFromRow(QuotesTable.selectedRow))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "cexmv3ns6i",
   "parentRowSpace": 10,

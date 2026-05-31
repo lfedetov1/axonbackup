@@ -279,7 +279,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 6,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  storeValue(\n    \"selectedSalesOrderId\",\n    SalesOrdersTable.selectedRow.documentId ||\n    SalesOrdersTable.selectedRow.id ||\n    SalesOrdersTable.selectedRow.ID ||\n    0\n  )\n    .then(() => ListSalesOrderItems.run())\n    .then(() => ListSalesOrderPackages.run())\n}}",
+  "onRowSelected": "{{\n  storeValue(\n    \"selectedSalesOrderId\",\n    SalesOrdersTable.selectedRow?.documentId ||\n    SalesOrdersTable.selectedRow?.id ||\n    SalesOrdersTable.selectedRow?.ID ||\n    0\n  )\n    .then(() => ListSalesOrderItems.run())\n    .then(() => ListSalesOrderPackages.run())\n    .then(() => SalesDocumentPreview.loadFromRow(SalesOrdersTable.selectedRow || {}))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "z3i1en1phy",
   "parentRowSpace": 10,
