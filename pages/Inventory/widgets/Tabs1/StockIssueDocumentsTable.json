@@ -215,7 +215,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  ListStockIssueItems.run({\n    issueId: StockIssueDocumentsTable.selectedRow?.[\"Issue ID\"] || 0\n  })\n    .then(() => ListPickItemsForStockIssue.run())\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...StockIssueDocumentsTable.selectedRow,\n      documentId: StockIssueDocumentsTable.selectedRow?.[\"Issue ID\"] || 0,\n      documentNumber:\n        StockIssueDocumentsTable.selectedRow?.[\"Issue Number\"] ||\n        StockIssueDocumentsTable.selectedRow?.documentNumber ||\n        \"\",\n      documentType: \"STOCK_OUT\"\n    }))\n}}",
+  "onRowSelected": "{{\n  (() => {\n    const row = StockIssueDocumentsTable.selectedRow || {};\n\n    const documentId =\n      row[\"Issue ID\"] ||\n      row.documentId ||\n      row.id ||\n      row.ID ||\n      row[\"Document ID\"] ||\n      0;\n\n    const documentNumber =\n      row[\"Issue Number\"] ||\n      row.documentNumber ||\n      row[\"Document Number\"] ||\n      \"\";\n\n    if (!documentId) {\n      return storeValue(\"inventoryDocumentPreviewData\", {});\n    }\n\n    return ListStockIssueItems.run({\n      issueId: documentId,\n      documentId\n    })\n      .then(() => ListPickItemsForStockIssue.run())\n      .then(() =>\n        InventoryDocumentPreview.loadFromRow({\n          ...row,\n          documentId,\n          documentNumber,\n          documentType: \"STOCK_OUT\",\n          printKind: \"STOCK_ISSUE\"\n        })\n      );\n  })()\n}}",
   "parentColumnSpace": 13.34375,
   "parentId": "5313dzcpfl",
   "parentRowSpace": 10,

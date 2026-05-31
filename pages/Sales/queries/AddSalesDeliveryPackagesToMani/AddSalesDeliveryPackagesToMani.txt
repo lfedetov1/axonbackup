@@ -1,0 +1,35 @@
+INSERT INTO delivery_manifest_packages (
+    manifest_id,
+    package_id,
+    package_number,
+    package_barcode,
+    package_status,
+    scanned_status,
+    loaded_quantity,
+    missing_quantity,
+    note,
+    created_at
+)
+SELECT
+    {{ Number(this.params.manifestId || 0) }} AS manifest_id,
+    dp.id AS package_id,
+    dp.package_number,
+    dp.package_barcode,
+    dp.package_status,
+    'PENDING' AS scanned_status,
+    COALESCE(dp.total_quantity, 0) AS loaded_quantity,
+    0 AS missing_quantity,
+    CONCAT('Added from sales delivery ', d.document_number) AS note,
+    NOW() AS created_at
+FROM document_packages dp
+JOIN documents d
+  ON d.id = dp.document_id
+WHERE d.id = {{ Number(this.params.documentId || appsmith.store.selectedSalesDeliveryNoteId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM delivery_manifest_packages dmp
+      WHERE dmp.manifest_id = {{ Number(this.params.manifestId || 0) }}
+        AND dmp.package_id = dp.id
+  );

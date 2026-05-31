@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 144,
+  "bottomRow": 123,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -102,7 +102,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -147,7 +147,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -192,7 +192,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -237,52 +237,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": false,
-      "containerStyle": "none",
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isLoading": false,
-      "isVisible": true,
-      "key": "313491rxin",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 190,
-      "minWidth": 450,
-      "mobileBottomRow": 191,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 1088.71875,
-      "mobileTopRow": 1,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "zu4bg2i4fk",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 1088.71875,
-      "tabId": "tabay5s2wva17",
-      "tabName": "Credit Notes",
-      "topRow": 1,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "rcqxc1sox9",
-      "widgetName": "Canvas7"
-    },
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -327,7 +282,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -372,7 +327,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 1330,
+      "bottomRow": 1120,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -466,7 +421,7 @@
   "mobileTopRow": 14,
   "needsErrorInfo": false,
   "onTabSelected": "{{\n  storeValue(\n    \"salesTab\",\n    SalesTabs.selectedTab === \"Dashboard\" ? \"OVERVIEW\" :\n    SalesTabs.selectedTab === \"Quotes\" ? \"QUOTES\" :\n    SalesTabs.selectedTab === \"Sales Orders\" ? \"SALES_ORDERS\" :\n    SalesTabs.selectedTab === \"Delivery / Shipping\" ? \"DELIVERY_SHIPPING\" :\n    SalesTabs.selectedTab === \"Invoices\" ? \"INVOICES\" :\n    SalesTabs.selectedTab === \"Customers\" ? \"CUSTOMERS\" :\n    SalesTabs.selectedTab === \"Reports\" ? \"REPORT_CENTER\" :\n    SalesTabs.selectedTab\n  )\n  .then(() => storeValue(\"salesViewMode\", \"LIST\"))\n  .then(() => SalesNav.refreshForTab(appsmith.store.salesTab))\n}}",
-  "originalBottomRow": 144,
+  "originalBottomRow": 106,
   "originalTopRow": 7,
   "parentColumnSpace": 17.28125,
   "parentId": "0",
@@ -497,19 +452,11 @@
     },
     "taba1xf8fd346": {
       "id": "taba1xf8fd346",
-      "index": 7,
+      "index": 6,
       "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Analytics",
       "widgetId": "061wgy65kz"
-    },
-    "tabay5s2wva17": {
-      "id": "tabay5s2wva17",
-      "index": 5,
-      "isDuplicateLabel": false,
-      "isVisible": true,
-      "label": "Credit Notes",
-      "widgetId": "rcqxc1sox9"
     },
     "tabfgy0ho979p": {
       "id": "tabfgy0ho979p",
@@ -521,7 +468,7 @@
     },
     "tabj4xi00sn2t": {
       "id": "tabj4xi00sn2t",
-      "index": 6,
+      "index": 5,
       "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Customers",
@@ -537,7 +484,7 @@
     },
     "tabsvnplzelux": {
       "id": "tabsvnplzelux",
-      "index": 8,
+      "index": 7,
       "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.canViewTab(\"sales\", \"reports\") }}",
       "label": "Report Center",

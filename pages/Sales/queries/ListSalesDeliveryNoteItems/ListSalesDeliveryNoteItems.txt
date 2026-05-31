@@ -1,0 +1,27 @@
+SELECT
+    di.id AS documentItemId,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    COALESCE(di.description, p.name) AS description,
+
+    u.code AS unitCode,
+
+    COALESCE(di.quantity, 0) AS quantity,
+    COALESCE(di.unit_price, 0) AS unitPrice,
+    COALESCE(di.line_total, 0) AS lineTotal,
+
+    di.note
+FROM document_items di
+JOIN documents d ON d.id = di.document_id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+WHERE di.document_id = {{ Number((this.params && this.params.documentId) || appsmith.store.selectedSalesDeliveryNoteId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+ORDER BY di.line_no;

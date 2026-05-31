@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_f2e56b8a-a8ca-4984-9509-62c46adfa237",
+  "id": "Sales_GetSalesDeliveryControlOvervie",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n    (\n      SELECT COUNT(*)\n      FROM documents d\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS totalDeliveries,\n\n    (\n      SELECT COUNT(*)\n      FROM documents d\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.status IN ('DRAFT', 'READY', 'PACKING')\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS openDeliveries,\n\n    (\n      SELECT COUNT(*)\n      FROM documents d\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.status = 'PACKED'\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS packedDeliveries,\n\n    (\n      SELECT COUNT(*)\n      FROM documents d\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.status = 'SHIPPED'\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS shippedDeliveries,\n\n    (\n      SELECT COUNT(DISTINCT dp.id)\n      FROM document_packages dp\n      JOIN documents d\n        ON d.id = dp.document_id\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS totalPackages,\n\n    (\n      SELECT COUNT(DISTINCT dp.id)\n      FROM document_packages dp\n      JOIN documents d\n        ON d.id = dp.document_id\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND COALESCE(dp.package_barcode, '') = ''\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n    ) AS packagesMissingBarcode,\n\n    (\n      SELECT COUNT(DISTINCT dp.id)\n      FROM document_packages dp\n      JOIN documents d\n        ON d.id = dp.document_id\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type = 'DELIVERY_NOTE'\n        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\n        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n        AND (\n            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0\n            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}\n        )\n        AND NOT EXISTS (\n            SELECT 1\n            FROM delivery_manifest_packages dmp\n            WHERE dmp.package_id = dp.id\n        )\n    ) AS packagesWithoutManifest;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetSalesDeliveryControlOvervie",
+    "pageId": "Sales",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

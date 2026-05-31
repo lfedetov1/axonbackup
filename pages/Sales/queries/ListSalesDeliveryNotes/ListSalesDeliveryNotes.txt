@@ -1,0 +1,92 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Delivery Note Number`,
+    d.document_date AS `Delivery Date`,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Issue Time`,
+
+    so.document_number AS `Sales Order Number`,
+
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+
+    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,
+    COUNT(DISTINCT di.id) AS `Item Count`,
+    COUNT(DISTINCT dp.id) AS `Package Count`,
+
+    d.note AS `Note`,
+    u.username AS `Created By`,
+
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.created_at AS createdAt,
+    d.updated_at AS updatedAt
+
+FROM documents d
+
+LEFT JOIN documents so
+  ON so.id = d.source_document_id
+
+LEFT JOIN document_items di
+  ON di.document_id = d.id
+
+LEFT JOIN document_packages dp
+  ON dp.document_id = d.id
+  OR dp.source_document_id = d.id
+
+LEFT JOIN business_partners bp
+  ON bp.id = d.partner_id
+
+LEFT JOIN warehouses w
+  ON w.id = d.warehouse_id
+
+LEFT JOIN users u
+  ON u.id = d.created_by_user_id
+
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+
+  AND (
+      {{ SalesDeliverySearchInput.text || "" }} = ""
+      OR d.document_number LIKE CONCAT('%', {{ SalesDeliverySearchInput.text || "" }}, '%')
+      OR so.document_number LIKE CONCAT('%', {{ SalesDeliverySearchInput.text || "" }}, '%')
+      OR bp.name LIKE CONCAT('%', {{ SalesDeliverySearchInput.text || "" }}, '%')
+      OR bp.code LIKE CONCAT('%', {{ SalesDeliverySearchInput.text || "" }}, '%')
+  )
+
+  AND (
+      {{ SalesDeliveryStatusSelect.selectedOptionValue || "ALL" }} = "ALL"
+      OR d.status = {{ SalesDeliveryStatusSelect.selectedOptionValue || "ALL" }}
+  )
+
+  AND (
+      {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+      OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+  )
+
+  AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+GROUP BY
+    d.id,
+    d.document_number,
+    d.document_date,
+    d.created_at,
+    so.document_number,
+    bp.code,
+    bp.name,
+    w.code,
+    w.name,
+    d.status,
+    d.posting_status,
+    d.note,
+    u.username,
+    d.document_type,
+    d.updated_at
+
+ORDER BY d.document_date DESC, d.id DESC;

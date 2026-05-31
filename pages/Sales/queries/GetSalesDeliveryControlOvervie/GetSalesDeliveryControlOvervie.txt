@@ -1,0 +1,106 @@
+SELECT
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS totalDeliveries,
+
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.status IN ('DRAFT', 'READY', 'PACKING')
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS openDeliveries,
+
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.status = 'PACKED'
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS packedDeliveries,
+
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.status = 'SHIPPED'
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS shippedDeliveries,
+
+    (
+      SELECT COUNT(DISTINCT dp.id)
+      FROM document_packages dp
+      JOIN documents d
+        ON d.id = dp.document_id
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS totalPackages,
+
+    (
+      SELECT COUNT(DISTINCT dp.id)
+      FROM document_packages dp
+      JOIN documents d
+        ON d.id = dp.document_id
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND COALESCE(dp.package_barcode, '') = ''
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+    ) AS packagesMissingBarcode,
+
+    (
+      SELECT COUNT(DISTINCT dp.id)
+      FROM document_packages dp
+      JOIN documents d
+        ON d.id = dp.document_id
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'DELIVERY_NOTE'
+        AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+        AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+        AND (
+            {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+            OR d.warehouse_id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+        )
+        AND NOT EXISTS (
+            SELECT 1
+            FROM delivery_manifest_packages dmp
+            WHERE dmp.package_id = dp.id
+        )
+    ) AS packagesWithoutManifest;

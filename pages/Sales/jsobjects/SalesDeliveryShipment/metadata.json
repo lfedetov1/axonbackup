@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_3a312ae6-c08c-48af-be48-94c49e60e4a9",
+  "id": "Sales_SalesDeliveryShipment",
+  "unpublishedCollection": {
+    "name": "SalesDeliveryShipment",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

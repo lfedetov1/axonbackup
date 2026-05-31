@@ -1,0 +1,54 @@
+SELECT
+    'NO_PACKAGE' AS alertType,
+    'HIGH' AS severity,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    CONCAT('Delivery note ', d.document_number, ' has no packages.') AS message
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND d.status NOT IN ('CANCELLED', 'SHIPPED', 'RECEIVED', 'POSTED')
+  AND d.document_date >= {{ moment(SalesDeliveryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(SalesDeliveryDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND NOT EXISTS (
+      SELECT 1
+      FROM document_packages dp
+      WHERE dp.document_id = d.id
+  )
+
+UNION ALL
+
+SELECT
+    'MISSING_BARCODE' AS alertType,
+    'MEDIUM' AS severity,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    CONCAT('Package without barcode on delivery note ', d.document_number, '.') AS message
+FROM document_packages dp
+JOIN documents d
+  ON d.id = dp.document_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND COALESCE(dp.package_barcode, '') = ''
+
+UNION ALL
+
+SELECT
+    'NOT_IN_MANIFEST' AS alertType,
+    'MEDIUM' AS severity,
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    CONCAT('Package ', dp.package_number, ' is not added to any manifest.') AS message
+FROM document_packages dp
+JOIN documents d
+  ON d.id = dp.document_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'DELIVERY_NOTE'
+  AND d.status IN ('PACKED', 'READY')
+  AND NOT EXISTS (
+      SELECT 1
+      FROM delivery_manifest_packages dmp
+      WHERE dmp.package_id = dp.id
+  )
+
+LIMIT 20;

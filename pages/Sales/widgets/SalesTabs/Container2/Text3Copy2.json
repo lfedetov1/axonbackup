@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 27,
+  "bottomRow": 24,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -46,7 +46,7 @@
   "text": "{{\n  \"Total: \" +\n  Number(GetQuoteOverview.data?.[0]?.totalAmount || 0).toFixed(2) +\n  \" \" +\n  (GetQuoteOverview.data?.[0]?.currencyCode || \"EUR\")\n}}",
   "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 23,
+  "topRow": 20,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,

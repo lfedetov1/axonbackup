@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_35c90b53-1214-48e9-9938-9106fc9ecaa4",
+  "id": "Sales_SalesDeliveryControl",
+  "unpublishedCollection": {
+    "name": "SalesDeliveryControl",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

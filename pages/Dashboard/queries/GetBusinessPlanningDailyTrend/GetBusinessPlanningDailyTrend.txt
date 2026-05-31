@@ -8,7 +8,7 @@ SELECT
     COALESCE(a.actualQuantity, 0) AS actualQuantity,
     COALESCE(w.plannedHours, 0) AS plannedHours,
     COALESCE(w.actualHours, 0) AS actualHours,
-    COALESCE(abs.lostHours, 0) AS lostHours,
+    COALESCE(absData.lostHours, 0) AS lostHours,
 
     COALESCE(a.actualAmount, 0) - COALESCE(t.targetAmount, 0) AS differenceAmount,
 
@@ -21,7 +21,7 @@ FROM (
     SELECT target_date AS dayDate
     FROM business_planning_sales_targets
     WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
-      AND target_date IS NOT NULL
+      AND COALESCE(target_date, '') <> ''
 
     UNION
 
@@ -79,6 +79,6 @@ LEFT JOIN (
     WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
       AND absence_status NOT IN ('CANCELLED')
     GROUP BY absence_date
-) abs ON abs.absence_date = x.dayDate
+) absData ON absData.absence_date = x.dayDate
 
 ORDER BY x.dayDate;
