@@ -1,0 +1,30 @@
+SELECT
+    CONCAT(
+      CASE
+        WHEN {{ this.params.documentType || InvoiceDocumentTypeSelect.selectedOptionValue || "SALES_INVOICE" }} = 'CREDIT_NOTE'
+        THEN 'CN-'
+        ELSE 'INV-'
+      END,
+      DATE_FORMAT(CURDATE(), '%Y%m'),
+      '-',
+      LPAD(
+        COALESCE(
+          MAX(CAST(SUBSTRING_INDEX(d.document_number, '-', -1) AS UNSIGNED)),
+          0
+        ) + 1,
+        5,
+        '0'
+      )
+    ) AS nextInvoiceNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = {{ this.params.documentType || InvoiceDocumentTypeSelect.selectedOptionValue || "SALES_INVOICE" }}
+  AND d.document_number LIKE CONCAT(
+      CASE
+        WHEN {{ this.params.documentType || InvoiceDocumentTypeSelect.selectedOptionValue || "SALES_INVOICE" }} = 'CREDIT_NOTE'
+        THEN 'CN-'
+        ELSE 'INV-'
+      END,
+      DATE_FORMAT(CURDATE(), '%Y%m'),
+      '-%'
+  );

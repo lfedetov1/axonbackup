@@ -1,0 +1,17 @@
+SELECT
+    id,
+    code AS value,
+    name AS label,
+    code,
+    name,
+    payment_group AS paymentGroup,
+    affects_cash_register AS affectsCashRegister,
+    requires_card_type AS requiresCardType,
+    requires_bank_account AS requiresBankAccount,
+    requires_reference AS requiresReference,
+    fiscal_payment_code AS fiscalPaymentCode,
+    default_due_days AS defaultDueDays
+FROM payment_methods
+WHERE COALESCE(company_id, {{ Number(appsmith.store.companyId || 1) }}) = {{ Number(appsmith.store.companyId || 1) }}
+  AND COALESCE(is_active, 1) = 1
+ORDER BY name;

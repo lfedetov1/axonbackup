@@ -1,0 +1,26 @@
+SELECT
+    di.id AS id,
+    di.document_id AS documentId,
+    di.line_no AS lineNo,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    COALESCE(di.description, p.name) AS description,
+    u.code AS unitName,
+
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(di.quantity) ELSE di.quantity END AS quantity,
+    di.unit_price AS unitPrice,
+    COALESCE(di.discount_amount, 0) AS discountAmount,
+    COALESCE(tr.rate, 0) AS taxRate,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.tax_amount, 0)) ELSE COALESCE(di.tax_amount, 0) END AS taxAmount,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_subtotal, 0)) ELSE COALESCE(di.line_subtotal, 0) END AS lineSubtotal,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_total, 0)) ELSE COALESCE(di.line_total, 0) END AS lineTotal
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+LEFT JOIN units_of_measure u ON u.id = di.unit_id
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store.currentInvoiceId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+ORDER BY di.line_no;

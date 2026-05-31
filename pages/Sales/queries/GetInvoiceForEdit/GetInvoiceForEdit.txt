@@ -1,0 +1,34 @@
+SELECT
+    d.id AS invoiceId,
+    d.id AS documentId,
+    d.document_number AS invoiceNumber,
+    d.document_number AS documentNumber,
+
+    d.document_type AS documentType,
+    d.document_date AS documentDate,
+    d.due_date AS dueDate,
+
+    d.partner_id AS customerId,
+    d.warehouse_id AS warehouseId,
+
+    d.payment_method AS paymentMethod,
+    d.currency_code AS currencyCode,
+    d.exchange_rate AS exchangeRate,
+    d.sales_channel AS salesChannel,
+
+    d.status AS status,
+    d.posting_status AS postingStatus,
+
+    d.subtotal_amount AS subtotalAmount,
+    d.discount_amount AS discountAmount,
+    d.tax_amount AS taxAmount,
+    d.total_amount AS totalAmount,
+    d.paid_amount AS paidAmount,
+
+    d.note AS note
+
+FROM documents d
+WHERE d.id = {{ Number(this.params.invoiceId || this.params.documentId || appsmith.store.currentInvoiceEditId || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+LIMIT 1;

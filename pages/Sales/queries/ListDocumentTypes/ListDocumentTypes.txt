@@ -1,0 +1,33 @@
+SELECT
+    id,
+    code AS value,
+    name AS label,
+    code,
+    name,
+    module_code AS moduleCode,
+    document_direction AS documentDirection,
+    affects_stock AS affectsStock,
+    stock_effect AS stockEffect,
+    stock_posting_stage AS stockPostingStage,
+    affects_customer_balance AS affectsCustomerBalance,
+    affects_supplier_balance AS affectsSupplierBalance,
+    requires_partner AS requiresPartner,
+    requires_warehouse AS requiresWarehouse,
+    requires_payment_method AS requiresPaymentMethod,
+    allows_fiscalization AS allowsFiscalization,
+    requires_fiscalization AS requiresFiscalization,
+    can_print AS canPrint,
+    can_email AS canEmail,
+    can_convert AS canConvert,
+    print_kind AS printKind,
+    number_prefix AS numberPrefix,
+    default_status AS defaultStatus,
+    default_posting_status AS defaultPostingStatus
+FROM document_type_settings
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND COALESCE(is_active, 1) = 1
+  AND (
+      {{ (this.params && this.params.moduleCode) || "" }} = ""
+      OR module_code = {{ (this.params && this.params.moduleCode) || "" }}
+  )
+ORDER BY module_code, name;

@@ -32,9 +32,9 @@
     }
   },
   "columnOrder": [
+    "Line_No",
     "documentItemId",
     "documentId",
-    "Line_No",
     "Product_Code",
     "Product",
     "Barcode",
@@ -51,7 +51,7 @@
     "Expiry_Date",
     "Note"
   ],
-  "columnUpdatedAt": 1779989353028,
+  "columnUpdatedAt": 1780222704636,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -336,7 +336,7 @@
       "isEditable": false,
       "isSaveVisible": true,
       "isVisible": true,
-      "label": "Line No",
+      "label": "#",
       "notation": "standard",
       "originalId": "Line No",
       "sticky": "",

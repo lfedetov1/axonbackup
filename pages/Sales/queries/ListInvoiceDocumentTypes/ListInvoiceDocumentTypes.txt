@@ -1,0 +1,18 @@
+SELECT
+    code AS value,
+    name AS label,
+    code,
+    name,
+    number_prefix AS numberPrefix,
+    print_kind AS printKind
+FROM document_type_settings
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND module_code = 'SALES'
+  AND code IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND COALESCE(is_active, 1) = 1
+ORDER BY
+  CASE code
+    WHEN 'SALES_INVOICE' THEN 1
+    WHEN 'CREDIT_NOTE' THEN 2
+    ELSE 99
+  END;

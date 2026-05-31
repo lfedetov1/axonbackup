@@ -1,0 +1,21 @@
+UPDATE documents
+SET
+    document_date = {{ moment(InvoiceDateInput.selectedDate || moment()).format("YYYY-MM-DD") }},
+    due_date = {{ InvoiceDueDateInput.selectedDate ? moment(InvoiceDueDateInput.selectedDate).format("YYYY-MM-DD") : null }},
+    partner_id = {{ Number(InvoiceCustomerSelectForm.selectedOptionValue || 0) || null }},
+    warehouse_id = {{ Number(InvoiceWarehouseSelectForm.selectedOptionValue || 0) || null }},
+    payment_method = {{ InvoicePaymentMethodSelect.selectedOptionValue || "BANK" }},
+    currency_code = {{ InvoiceCurrencySelect.selectedOptionValue || "EUR" }},
+    exchange_rate = {{ Number(InvoiceExchangeRateInput.text || 1) }},
+    sales_channel = {{ InvoiceSalesChannelSelect.selectedOptionValue || "BACKOFFICE" }},
+    subtotal_amount = {{ Number(this.params.totals?.subtotal || 0) }},
+    discount_amount = {{ Number(this.params.totals?.discount || 0) }},
+    tax_amount = {{ Number(this.params.totals?.tax || 0) }},
+    total_amount = {{ Number(this.params.totals?.total || 0) }},
+    note = {{ InvoiceNoteInput.text || null }},
+    updated_at = NOW()
+WHERE id = {{ Number(this.params.invoiceId || this.params.documentId || appsmith.store.currentInvoiceEditId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND status = 'DRAFT'
+  AND posting_status = 'NOT_POSTED';

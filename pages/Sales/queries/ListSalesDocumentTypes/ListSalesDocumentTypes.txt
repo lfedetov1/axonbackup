@@ -1,0 +1,24 @@
+SELECT
+    code AS value,
+    name AS label,
+    code,
+    name,
+    print_kind AS printKind,
+    number_prefix AS numberPrefix,
+    affects_stock AS affectsStock,
+    stock_effect AS stockEffect,
+    allows_fiscalization AS allowsFiscalization,
+    requires_fiscalization AS requiresFiscalization
+FROM document_type_settings
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND module_code = 'SALES'
+  AND COALESCE(is_active, 1) = 1
+ORDER BY
+  CASE code
+    WHEN 'QUOTE' THEN 1
+    WHEN 'SALES_ORDER' THEN 2
+    WHEN 'DELIVERY_NOTE' THEN 3
+    WHEN 'SALES_INVOICE' THEN 4
+    WHEN 'CREDIT_NOTE' THEN 5
+    ELSE 99
+  END;

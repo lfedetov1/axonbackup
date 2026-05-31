@@ -1,0 +1,8 @@
+SELECT
+    id AS creditNoteId,
+    document_number AS creditNoteNumber
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND document_type = 'CREDIT_NOTE'
+  AND document_number = {{ (this.params && this.params.creditNoteNumber) || "" }}
+LIMIT 1;

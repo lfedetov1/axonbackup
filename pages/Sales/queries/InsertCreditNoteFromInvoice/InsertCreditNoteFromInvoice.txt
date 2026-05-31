@@ -1,0 +1,32 @@
+INSERT INTO documents (
+    company_id, document_type, document_number, document_date, due_date,
+    partner_id, warehouse_id, currency_code, exchange_rate, payment_method,
+    subtotal_amount, discount_amount, tax_amount, total_amount, paid_amount,
+    status, posting_status, source_document_id, note, created_by_user_id
+)
+SELECT
+    inv.company_id,
+    'CREDIT_NOTE',
+    {{ (this.params && this.params.creditNoteNumber) || "" }},
+    CURDATE(),
+    CURDATE(),
+    inv.partner_id,
+    inv.warehouse_id,
+    inv.currency_code,
+    inv.exchange_rate,
+    inv.payment_method,
+    inv.subtotal_amount,
+    inv.discount_amount,
+    inv.tax_amount,
+    inv.total_amount,
+    0,
+    'DRAFT',
+    'NOT_POSTED',
+    inv.id,
+    CONCAT('Credit note for invoice ', inv.document_number),
+    COALESCE(NULLIF({{ Number(appsmith.store.userId || 0) }}, 0), inv.created_by_user_id)
+FROM documents inv
+WHERE inv.id = {{ Number((this.params && this.params.invoiceId) || 0) }}
+  AND inv.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND inv.document_type = 'SALES_INVOICE'
+  AND inv.status <> 'CANCELLED';

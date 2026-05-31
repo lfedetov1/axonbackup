@@ -1,0 +1,12 @@
+UPDATE documents
+SET
+    note = CONCAT(
+      COALESCE(note, ''),
+      CASE WHEN COALESCE(note, '') <> '' THEN '\n' ELSE '' END,
+      'Credit note created: ',
+      {{ (this.params && this.params.creditNoteNumber) || "" }}
+    ),
+    updated_at = NOW()
+WHERE id = {{ Number((this.params && this.params.invoiceId) || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND document_type = 'SALES_INVOICE';

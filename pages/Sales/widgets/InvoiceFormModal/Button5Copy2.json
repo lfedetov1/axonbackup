@@ -1,0 +1,55 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 163,
+  "boxShadow": "none",
+  "buttonColor": "#dcfce7",
+  "buttonStyle": "PRIMARY_BUTTON",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "floppy-disk",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "0d3pu4y068",
+  "leftColumn": 53,
+  "minWidth": 120,
+  "mobileBottomRow": 22,
+  "mobileLeftColumn": 47,
+  "mobileRightColumn": 63,
+  "mobileTopRow": 18,
+  "needsErrorInfo": false,
+  "onClick": "{{ AppLoader.run(\"Saving quote\", \"Saving quote document and items...\", () => QuoteForm.saveDraft()) }}",
+  "originalBottomRow": 163,
+  "originalTopRow": 159,
+  "parentId": "asx53h7jza",
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Save",
+  "topRow": 159,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "01g3m1lm6l",
+  "widgetName": "Button5Copy2"
+}

@@ -1,0 +1,29 @@
+SELECT
+    s.code AS documentType,
+    s.name AS documentTypeName,
+    s.number_prefix AS numberPrefix,
+    CONCAT(
+      s.number_prefix,
+      '-',
+      DATE_FORMAT(CURDATE(), '%Y'),
+      '-',
+      LPAD(
+        COALESCE(
+          MAX(CAST(SUBSTRING_INDEX(d.document_number, '-', -1) AS UNSIGNED)),
+          0
+        ) + 1,
+        6,
+        '0'
+      )
+    ) AS nextDocumentNumber
+FROM document_type_settings s
+LEFT JOIN documents d
+  ON d.company_id = s.company_id
+ AND d.document_type = s.code
+ AND d.document_number LIKE CONCAT(s.number_prefix, '-', DATE_FORMAT(CURDATE(), '%Y'), '-%')
+WHERE s.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND s.code = {{ (this.params && this.params.documentType) || "SALES_INVOICE" }}
+GROUP BY
+    s.code,
+    s.name,
+    s.number_prefix;

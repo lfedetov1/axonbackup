@@ -1,0 +1,70 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 15,
+  "boxShadow": "none",
+  "defaultOptionValue": "",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": "{{ !Auth.can(\"inventory.warehouse.view_all\") }}\n",
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "qe62ydywe8",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Warehouse :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 19,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 27,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 20,
+  "mobileTopRow": 20,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "originalBottomRow": 27,
+  "originalTopRow": 20,
+  "parentColumnSpace": 13.65625,
+  "parentId": "164b0slmpm",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 36,
+  "serverSideFiltering": false,
+  "sourceData": "{{ ListInvoiceFormWarehouses.data || [] }}",
+  "topRow": 8,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "t95jnumqcf",
+  "widgetName": "InvoiceWarehouseSelectForm"
+}

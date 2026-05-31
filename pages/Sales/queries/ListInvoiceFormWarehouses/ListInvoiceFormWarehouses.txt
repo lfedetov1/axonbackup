@@ -1,0 +1,11 @@
+SELECT
+    w.id AS value,
+    CONCAT(w.code, ' - ', w.name) AS label
+FROM warehouses w
+WHERE w.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND COALESCE(w.is_active, 1) = 1
+  AND (
+      {{ ((appsmith.store.roleCodes || []).includes("ADMIN") || (appsmith.store.roleCodes || []).includes("OWNER")) ? 1 : 0 }} = 1
+      OR w.id = {{ Number(appsmith.store.warehouseId || 0) }}
+  )
+ORDER BY w.code, w.name;

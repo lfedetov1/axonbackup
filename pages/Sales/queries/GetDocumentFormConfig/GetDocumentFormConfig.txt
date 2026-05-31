@@ -1,0 +1,99 @@
+SELECT
+    'DOCUMENT_TYPE' AS lookupType,
+    dts.name AS label,
+    dts.code AS value,
+    dts.module_code AS moduleCode,
+    dts.document_direction AS documentDirection,
+    dts.affects_stock AS affectsStock,
+    dts.stock_effect AS stockEffect,
+    dts.stock_posting_stage AS stockPostingStage,
+    dts.affects_customer_balance AS affectsCustomerBalance,
+    dts.affects_supplier_balance AS affectsSupplierBalance,
+    dts.requires_partner AS requiresPartner,
+    dts.requires_warehouse AS requiresWarehouse,
+    dts.requires_payment_method AS requiresPaymentMethod,
+    dts.fiscalization_allowed AS fiscalizationAllowed,
+    dts.fiscalization_required AS fiscalizationRequired,
+    dts.can_print AS canPrint,
+    dts.can_email AS canEmail,
+    dts.can_convert AS canConvert,
+    dts.print_kind AS printKind,
+    dts.default_status AS defaultStatus,
+    dts.default_posting_status AS defaultPostingStatus,
+    dts.number_prefix AS numberPrefix,
+    dts.default_currency_code AS defaultCurrencyCode,
+    dts.default_payment_method_code AS defaultPaymentMethodCode,
+    10 AS sortOrder
+FROM document_type_settings dts
+WHERE dts.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND dts.is_active = 1
+  AND (
+      {{ this.params.moduleCode || "" }} = ""
+      OR dts.module_code = {{ this.params.moduleCode || "" }}
+  )
+
+UNION ALL
+
+SELECT
+    'PAYMENT_METHOD' AS lookupType,
+    pm.name AS label,
+    pm.code AS value,
+    NULL AS moduleCode,
+    NULL AS documentDirection,
+    0 AS affectsStock,
+    NULL AS stockEffect,
+    NULL AS stockPostingStage,
+    0 AS affectsCustomerBalance,
+    0 AS affectsSupplierBalance,
+    0 AS requiresPartner,
+    0 AS requiresWarehouse,
+    0 AS requiresPaymentMethod,
+    0 AS fiscalizationAllowed,
+    0 AS fiscalizationRequired,
+    0 AS canPrint,
+    0 AS canEmail,
+    0 AS canConvert,
+    NULL AS printKind,
+    NULL AS defaultStatus,
+    NULL AS defaultPostingStatus,
+    NULL AS numberPrefix,
+    NULL AS defaultCurrencyCode,
+    NULL AS defaultPaymentMethodCode,
+    20 AS sortOrder
+FROM payment_methods pm
+WHERE pm.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND pm.is_active = 1
+
+UNION ALL
+
+SELECT
+    'CURRENCY' AS lookupType,
+    ccs.currency_code AS label,
+    ccs.currency_code AS value,
+    NULL AS moduleCode,
+    NULL AS documentDirection,
+    0 AS affectsStock,
+    NULL AS stockEffect,
+    NULL AS stockPostingStage,
+    0 AS affectsCustomerBalance,
+    0 AS affectsSupplierBalance,
+    0 AS requiresPartner,
+    0 AS requiresWarehouse,
+    0 AS requiresPaymentMethod,
+    0 AS fiscalizationAllowed,
+    0 AS fiscalizationRequired,
+    0 AS canPrint,
+    0 AS canEmail,
+    0 AS canConvert,
+    NULL AS printKind,
+    NULL AS defaultStatus,
+    NULL AS defaultPostingStatus,
+    NULL AS numberPrefix,
+    ccs.currency_code AS defaultCurrencyCode,
+    NULL AS defaultPaymentMethodCode,
+    30 AS sortOrder
+FROM company_currency_settings ccs
+WHERE ccs.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND ccs.is_active = 1
+
+ORDER BY lookupType, sortOrder, label;

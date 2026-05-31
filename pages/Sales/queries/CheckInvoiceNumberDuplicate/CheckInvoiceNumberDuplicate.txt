@@ -1,0 +1,9 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND d.document_type = {{ InvoiceDocumentTypeSelect.selectedOptionValue || "SALES_INVOICE" }}
+  AND d.document_number = {{ InvoiceNumberInput.text || "" }}
+  AND d.id <> {{ Number(appsmith.store.currentInvoiceEditId || 0) }}
+LIMIT 1;

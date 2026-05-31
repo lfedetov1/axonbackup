@@ -1,0 +1,62 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 24,
+  "boxShadow": "none",
+  "defaultOptionValue": "STORE",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "z9hnnwotw0",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Channel :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 24,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 17,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "164b0slmpm",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 19,
+  "serverSideFiltering": false,
+  "sourceData": "{{ (ListQuoteStaticLookups.data || []).filter(x => x.lookupType === \"SALES_CHANNEL\") }}",
+  "topRow": 17,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "9uubabez1q",
+  "widgetName": "InvoiceSalesChannelSelect"
+}

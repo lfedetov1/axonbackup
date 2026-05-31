@@ -1,0 +1,58 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+    p.sku AS sku,
+
+    p.unit_id AS unitId,
+    u.code AS unitCode,
+
+    p.tax_rate_id AS taxRateId,
+    COALESCE(tr.rate, 0) AS taxRate,
+
+    COALESCE(p.sale_price, 0) AS unitPrice,
+    COALESCE(p.track_stock, 1) AS trackStock,
+
+    COALESCE(stock.availableStock, 0) AS availableStock
+
+FROM products p
+
+LEFT JOIN units_of_measure u
+  ON u.id = p.unit_id
+
+LEFT JOIN tax_rates tr
+  ON tr.id = p.tax_rate_id
+
+LEFT JOIN (
+    SELECT
+        sm.product_id,
+        SUM(COALESCE(sm.quantity, 0)) AS availableStock
+    FROM stock_movements sm
+    WHERE (
+        {{ Number(this.params.warehouseId || InvoiceWarehouseSelectForm.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+        OR sm.warehouse_id = {{ Number(this.params.warehouseId || InvoiceWarehouseSelectForm.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+    )
+    GROUP BY sm.product_id
+) stock
+  ON stock.product_id = p.id
+
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 0) }}
+  AND COALESCE(p.is_active, 1) = 1
+  AND (
+      p.barcode = {{ this.params.lookup || "" }}
+      OR p.code = {{ this.params.lookup || "" }}
+      OR p.sku = {{ this.params.lookup || "" }}
+      OR p.name LIKE CONCAT('%', {{ this.params.lookup || "" }}, '%')
+  )
+
+ORDER BY
+    CASE
+      WHEN p.barcode = {{ this.params.lookup || "" }} THEN 1
+      WHEN p.code = {{ this.params.lookup || "" }} THEN 2
+      WHEN p.sku = {{ this.params.lookup || "" }} THEN 3
+      ELSE 4
+    END,
+    p.code
+
+LIMIT 1;

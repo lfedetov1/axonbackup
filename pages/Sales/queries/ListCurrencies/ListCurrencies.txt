@@ -1,0 +1,13 @@
+SELECT
+    id,
+    currency_code AS value,
+    CONCAT(currency_code, ' - ', currency_name) AS label,
+    currency_code AS currencyCode,
+    currency_name AS currencyName,
+    symbol,
+    exchange_rate AS exchangeRate,
+    is_base_currency AS isBaseCurrency
+FROM company_currency_settings
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND COALESCE(is_active, 1) = 1
+ORDER BY is_base_currency DESC, currency_code;
