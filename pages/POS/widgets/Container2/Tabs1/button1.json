@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 25,
+  "bottomRow": 17,
   "boxShadow": "none",
   "buttonColor": "#dcfce7",
   "buttonVariant": "PRIMARY",
@@ -9,14 +9,11 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
-    },
-    {
-      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
-      "key": "isVisible"
+      "key": "onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -25,11 +22,11 @@
     }
   ],
   "iconAlign": "left",
-  "iconName": "trash",
+  "iconName": "th-list",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": "{{JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.manage\"])}}",
+  "isVisible": true,
   "key": "i412cra3be",
   "leftColumn": 3,
   "minWidth": 120,
@@ -38,7 +35,7 @@
   "mobileRightColumn": 18,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onClick": "{{showModal(VoidModal.name);}}",
+  "onClick": "{{ POSReceipts.openReceiptsModal() }}",
   "parentColumnSpace": 5.077049255371094,
   "parentId": "c3lzb8z49k",
   "parentRowSpace": 10,
@@ -48,10 +45,10 @@
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
   "rightColumn": 62,
-  "text": "Void",
-  "topRow": 21,
+  "text": "Invoice perview",
+  "topRow": 13,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "tyl1yj6w96",
-  "widgetName": "Button1CopyCopy1"
+  "widgetId": "jefl7xx9dp",
+  "widgetName": "button1"
 }
