@@ -5,7 +5,7 @@
   "borderWidth": "1",
   "bottomRow": 79,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-  "defaultModel": "{{\n{\n  printType: appsmith.store.inventoryCountPrintType || \"COUNT_SHEET\",\n  header: GetInventoryCountPrintHeader.data?.[0] || {},\n  items: appsmith.store.inventoryCountPrintType === \"VARIANCE_REPORT\"\n    ? (GetInventoryCountVariancePrint.data || [])\n    : (GetInventoryCountPrintItems.data || []),\n  username: appsmith.store.username || \"\"\n}\n}}\n",
+  "defaultModel": "{{ appsmith.store.inventoryDocumentPreviewData || {} }}",
   "dynamicBindingPathList": [
     {
       "key": "theme"
