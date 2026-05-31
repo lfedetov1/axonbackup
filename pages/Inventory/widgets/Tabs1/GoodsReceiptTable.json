@@ -246,7 +246,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 1,
   "needsErrorInfo": false,
-  "onRowSelected": "{{ ListGoodsReceiptItems.run({ receiptId: GoodsReceiptTable.selectedRow[\"Receipt ID\"] }) }}\n",
+  "onRowSelected": "{{\n  ListGoodsReceiptItems.run({\n    receiptId: GoodsReceiptTable.selectedRow?.[\"Receipt ID\"] || 0\n  })\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...GoodsReceiptTable.selectedRow,\n      documentId: GoodsReceiptTable.selectedRow?.[\"Receipt ID\"] || 0,\n      documentNumber: GoodsReceiptTable.selectedRow?.[\"Receipt Number\"] || \"\",\n      documentType: \"PURCHASE_RECEIPT\"\n    }))\n}}",
   "parentColumnSpace": 13.34375,
   "parentId": "99fekk6jhv",
   "parentRowSpace": 10,

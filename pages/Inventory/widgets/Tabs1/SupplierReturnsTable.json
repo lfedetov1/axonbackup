@@ -233,7 +233,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 3,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  ListSupplierReturnItems.run({\n    documentId: SupplierReturnsTable.selectedRow?.documentId || 0\n  })\n}}\n",
+  "onRowSelected": "{{\n  ListSupplierReturnItems.run({\n    documentId: SupplierReturnsTable.selectedRow?.documentId || 0\n  })\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...SupplierReturnsTable.selectedRow,\n      documentId: SupplierReturnsTable.selectedRow?.documentId || 0,\n      documentNumber:\n        SupplierReturnsTable.selectedRow?.documentNumber ||\n        SupplierReturnsTable.selectedRow?.[\"Return Number\"] ||\n        SupplierReturnsTable.selectedRow?.[\"Document Number\"] ||\n        \"\",\n      documentType: \"SUPPLIER_RETURN\"\n    }))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "fnzi8tt2hu",
   "parentRowSpace": 10,

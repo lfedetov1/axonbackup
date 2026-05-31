@@ -261,7 +261,7 @@
   "mobileRightColumn": 30,
   "mobileTopRow": 5,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n  ListTransferRequestItems.run({\n    documentId: TransferRequestTable.selectedRow?.documentId || 0\n  })\n}}\n",
+  "onRowSelected": "{{\n  ListTransferRequestItems.run({\n    documentId: TransferRequestTable.selectedRow?.documentId || 0\n  })\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...TransferRequestTable.selectedRow,\n      documentId: TransferRequestTable.selectedRow?.documentId || 0,\n      documentNumber:\n        TransferRequestTable.selectedRow?.documentNumber ||\n        TransferRequestTable.selectedRow?.[\"Document Number\"] ||\n        TransferRequestTable.selectedRow?.[\"Transfer Number\"] ||\n        \"\",\n      documentType: \"TRANSFER_REQUEST\"\n    }))\n}}",
   "parentColumnSpace": 16.96875,
   "parentId": "yx0siqlosk",
   "parentRowSpace": 10,

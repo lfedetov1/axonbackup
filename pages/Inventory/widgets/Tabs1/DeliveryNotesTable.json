@@ -253,7 +253,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onRowSelected": "{{ ListDeliveryNoteItems.run() }}\n",
+  "onRowSelected": "{{\n  ListDeliveryNoteItems.run()\n    .then(() => SalesDocumentPreview.loadFromRow({\n      ...DeliveryNotesTable.selectedRow,\n      documentId:\n        DeliveryNotesTable.selectedRow?.documentId ||\n        DeliveryNotesTable.selectedRow?.[\"Delivery Note ID\"] ||\n        DeliveryNotesTable.selectedRow?.id ||\n        DeliveryNotesTable.selectedRow?.ID ||\n        DeliveryNotesTable.selectedRow?.[\"Document ID\"] ||\n        0,\n      documentNumber:\n        DeliveryNotesTable.selectedRow?.documentNumber ||\n        DeliveryNotesTable.selectedRow?.[\"Delivery Note Number\"] ||\n        DeliveryNotesTable.selectedRow?.[\"Document Number\"] ||\n        \"\",\n      documentType: \"DELIVERY_NOTE\"\n    }))\n}}\n",
   "parentColumnSpace": 13.34375,
   "parentId": "7buld5qsm0",
   "parentRowSpace": 10,

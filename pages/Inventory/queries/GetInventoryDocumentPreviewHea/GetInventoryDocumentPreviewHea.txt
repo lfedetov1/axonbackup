@@ -11,6 +11,9 @@ SELECT
       WHEN d.document_type = 'DELIVERY_MANIFEST' THEN 'Delivery Manifest'
       WHEN d.document_type = 'GOODS_IN_TRANSIT' THEN 'Goods In Transit'
 			WHEN d.document_type = 'PURCHASE_RECEIPT' THEN 'Goods Receipt'
+			WHEN d.document_type = 'DELIVERY_NOTE' THEN 'Delivery Note'
+			WHEN d.document_type = 'INBOUND_DELIVERY' THEN 'Inbound Delivery'
+			WHEN d.document_type = 'STOCK_OUT' THEN 'Stock Issue'
       ELSE d.document_type
     END AS documentTitle,
 
@@ -70,6 +73,9 @@ WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store
       'SUPPLIER_RETURN',
       'DELIVERY_MANIFEST',
 		  'PURCHASE_RECEIPT',
+		  'INBOUND_DELIVERY',
+		  'STOCK_OUT',
+		  'DELIVERY_NOTE',
       'GOODS_IN_TRANSIT'
   )
 

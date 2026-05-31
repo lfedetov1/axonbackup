@@ -39,6 +39,9 @@ WHERE d.id = {{ Number((this.params && this.params.documentId) || appsmith.store
       'SUPPLIER_RETURN',
       'DELIVERY_MANIFEST',
 		  'PURCHASE_RECEIPT',
+		  'INBOUND_DELIVERY',
+		  'STOCK_OUT',
+		  'DELIVERY_NOTE',
       'GOODS_IN_TRANSIT'
 		  
   )

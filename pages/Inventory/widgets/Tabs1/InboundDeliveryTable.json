@@ -247,7 +247,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onRowSelected": "{{ ListInboundDeliveryItems.run({ documentId: InboundDeliveryTable.selectedRow.documentId }) }}\n",
+  "onRowSelected": "{{\n  ListInboundDeliveryItems.run({\n    documentId: InboundDeliveryTable.selectedRow?.documentId || 0\n  })\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...InboundDeliveryTable.selectedRow,\n      documentId: InboundDeliveryTable.selectedRow?.documentId || 0,\n      documentNumber:\n        InboundDeliveryTable.selectedRow?.documentNumber ||\n        InboundDeliveryTable.selectedRow?.[\"Document Number\"] ||\n        \"\",\n      documentType: \"INBOUND_DELIVERY\"\n    }))\n}}",
   "parentColumnSpace": 13.34375,
   "parentId": "tvtqewmo08",
   "parentRowSpace": 10,

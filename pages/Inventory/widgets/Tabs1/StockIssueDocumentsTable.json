@@ -215,7 +215,7 @@
   "mobileRightColumn": 34,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onRowSelected": "{{ ListStockIssueItems.run({ issueId: StockIssueDocumentsTable.selectedRow[\"Issue ID\"] })\nListPickItemsForStockIssue.run();}}\n",
+  "onRowSelected": "{{\n  ListStockIssueItems.run({\n    issueId: StockIssueDocumentsTable.selectedRow?.[\"Issue ID\"] || 0\n  })\n    .then(() => ListPickItemsForStockIssue.run())\n    .then(() => InventoryDocumentPreview.loadFromRow({\n      ...StockIssueDocumentsTable.selectedRow,\n      documentId: StockIssueDocumentsTable.selectedRow?.[\"Issue ID\"] || 0,\n      documentNumber:\n        StockIssueDocumentsTable.selectedRow?.[\"Issue Number\"] ||\n        StockIssueDocumentsTable.selectedRow?.documentNumber ||\n        \"\",\n      documentType: \"STOCK_OUT\"\n    }))\n}}",
   "parentColumnSpace": 13.34375,
   "parentId": "5313dzcpfl",
   "parentRowSpace": 10,
