@@ -1,0 +1,16 @@
+UPDATE documents
+SET
+    status = 'POSTED',
+    posting_status = 'POSTED',
+    note = CONCAT(
+      COALESCE(note, ''),
+      CASE WHEN COALESCE(note, '') <> '' THEN '\n' ELSE '' END,
+      'Posted on ',
+      DATE_FORMAT(NOW(), '%d.%m.%Y %H:%i:%s')
+    ),
+    updated_at = NOW()
+WHERE id = {{ Number((this.params && this.params.documentId) || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND status = 'DRAFT'
+  AND posting_status <> 'POSTED';

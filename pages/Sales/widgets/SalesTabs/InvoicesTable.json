@@ -66,7 +66,7 @@
     "customColumn3",
     "customColumn4"
   ],
-  "columnUpdatedAt": 1780228582776,
+  "columnUpdatedAt": 1780234285079,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -196,6 +196,24 @@
     },
     {
       "key": "primaryColumns.customColumn5.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn3.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn3.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -216,6 +234,21 @@
     },
     {
       "key": "primaryColumns.customColumn5.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -233,6 +266,9 @@
     },
     {
       "key": "primaryColumns.customColumn5.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn3.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -1003,7 +1039,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -1042,7 +1078,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -1063,20 +1099,25 @@
       "alias": "Post",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{InvoicesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{InvoicesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
       "buttonStyle": "rgb(3, 179, 101)",
-      "columnType": "text",
+      "columnType": "iconButton",
       "computedValue": "",
       "currencyCode": "USD",
+      "customAlias": "",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
       "horizontalAlignment": "LEFT",
+      "iconName": "cloud-upload",
       "id": "customColumn3",
       "index": 10,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,
@@ -1084,6 +1125,7 @@
       "label": "Post",
       "labelColor": "#FFFFFF",
       "notation": "standard",
+      "onClick": "{{ AppLoader.run(\"Posting invoice...\", \"salesInvoice.post\", currentRow) }}",
       "originalId": "customColumn3",
       "sticky": "",
       "textSize": "0.875rem",
@@ -1153,7 +1195,7 @@
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": true,
-      "isDisabled": false,
+      "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"POSTED\"\n  || String(currentRow.documentType || currentRow[\"documentType\"] || \"\") === \"CREDIT_NOTE\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"POSTED\"\n  || String(currentRow.documentType || currentRow[\"documentType\"] || \"\") === \"CREDIT_NOTE\"\n })()}}",
       "isDiscardVisible": true,
       "isEditable": false,
       "isSaveVisible": true,

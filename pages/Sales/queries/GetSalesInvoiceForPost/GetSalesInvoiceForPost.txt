@@ -1,0 +1,13 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.status,
+    d.posting_status AS postingStatus,
+    d.fiscal_status AS fiscalStatus,
+    d.total_amount AS totalAmount
+FROM documents d
+WHERE d.id = {{ Number((this.params && this.params.documentId) || 0) }}
+  AND d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+LIMIT 1;

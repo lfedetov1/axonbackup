@@ -57,7 +57,7 @@
   "mobileTopRow": 1,
   "needsErrorInfo": false,
   "onDropdownOpen": "",
-  "onOptionChange": "{{storeValue(\"selectedPartner\", Getpartner.data[0]);}}",
+  "onOptionChange": "{{ SalesInvoiceForm.syncCustomer() }}",
   "optionLabel": "label",
   "optionValue": "value",
   "originalBottomRow": 85,
@@ -70,10 +70,10 @@
   "responsiveBehavior": "fill",
   "rightColumn": 55,
   "serverSideFiltering": false,
-  "sourceData": "{{ ListInvoiceFormCustomers.data || [] }}",
+  "sourceData": "{{ ListInvoiceCustomers.data || [] }}",
   "topRow": 8,
   "type": "SELECT_WIDGET",
   "version": 1,
   "widgetId": "f9waqq39x0",
-  "widgetName": "InvoiceCustomerSelectForm"
+  "widgetName": "InvoiceCustomerSelect1"
 }

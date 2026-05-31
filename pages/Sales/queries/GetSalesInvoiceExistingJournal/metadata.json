@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_a85cfef4-ec56-46ac-92c7-c2b19818bfb5",
-  "id": "Sales_ListInvoiceCustomers",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0095ac7c-070b-41be-9afe-a228bc5c552f",
+  "id": "Sales_GetSalesInvoiceExistingJournal",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  id AS value,\n  CONCAT(code, ' - ', name) AS label,\n  id AS partnerId,\n  code,\n  name\nFROM business_partners\nWHERE company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND COALESCE(is_active, 1) = 1\nORDER BY name;",
+      "body": "SELECT\n    id AS journalEntryId,\n    entry_number AS entryNumber\nFROM journal_entries\nWHERE company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND reference_number = {{ this.params.documentNumber || \"\" }}\n  AND document_type = 'SALES_INVOICE'\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -27,9 +27,9 @@
         "key": "body"
       }
     ],
-    "name": "ListInvoiceCustomers",
+    "name": "GetSalesInvoiceExistingJournal",
     "pageId": "Sales",
-    "runBehaviour": "ON_PAGE_LOAD",
-    "userSetOnLoad": true
+    "runBehaviour": "MANUAL",
+    "userSetOnLoad": false
   }
 }

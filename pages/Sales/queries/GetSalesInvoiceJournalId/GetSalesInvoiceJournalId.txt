@@ -1,0 +1,7 @@
+SELECT
+    id AS journalEntryId,
+    entry_number AS entryNumber
+FROM journal_entries
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND entry_number = {{ this.params.entryNumber }}
+LIMIT 1;

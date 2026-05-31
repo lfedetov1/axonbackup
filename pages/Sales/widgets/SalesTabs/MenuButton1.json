@@ -1,0 +1,94 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItem3.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem1.onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "menuItems.menuItem3.onClick"
+    },
+    {
+      "key": "menuItems.menuItem2.onClick"
+    },
+    {
+      "key": "menuItems.menuItem1.onClick"
+    }
+  ],
+  "isCompact": false,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "as4ga1s1da",
+  "label": "Actions",
+  "leftColumn": 54,
+  "menuColor": "#dcfce7",
+  "menuItems": {
+    "menuItem1": {
+      "iconName": "add",
+      "id": "menuItem1",
+      "index": 0,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "New",
+      "onClick": "{{ AppLoader.run(\"Opening invoice...\", \"salesInvoice.new\", { documentType: \"SALES_INVOICE\" }) }}",
+      "widgetId": ""
+    },
+    "menuItem2": {
+      "iconName": "refresh",
+      "id": "menuItem2",
+      "index": 1,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Refresh",
+      "onClick": "{{\n  ListInvoicesAndCreditNotes.run()\n    .then(() => {\n      storeValue(\"currentInvoiceId\", null);\n      resetWidget(\"InvoicesTable\", true);\n      showAlert(\"Invoices refreshed.\", \"success\");\n    })\n}}",
+      "widgetId": ""
+    },
+    "menuItem3": {
+      "iconName": "issue-closed",
+      "id": "menuItem3",
+      "index": 2,
+      "isDisabled": false,
+      "isVisible": "true",
+      "label": "Close day",
+      "onClick": "{{\n  AppLoader.run(\"Posting daily invoices...\", \"salesInvoice.postDay\", {\n    postingDate: moment(InvoiceDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\")\n  })\n}}",
+      "widgetId": ""
+    }
+  },
+  "menuItemsSource": "STATIC",
+  "menuVariant": "PRIMARY",
+  "mobileBottomRow": 4,
+  "mobileLeftColumn": 49,
+  "mobileRightColumn": 64,
+  "mobileTopRow": 0,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 16.96875,
+  "parentId": "0xmg2gzkdp",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "renderMode": "CANVAS",
+  "rightColumn": 63,
+  "topRow": 0,
+  "type": "MENU_BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "hllvu25wtm",
+  "widgetName": "MenuButton1"
+}

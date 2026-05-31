@@ -1,0 +1,20 @@
+INSERT INTO journal_entries (
+    company_id,
+    entry_number,
+    entry_date,
+    document_type,
+    reference_number,
+    description,
+    status,
+    created_by_user_id
+)
+VALUES (
+    {{ Number(appsmith.store.companyId || 1) }},
+    {{ this.params.entryNumber }},
+    {{ this.params.entryDate }},
+    'SALES_INVOICE',
+    {{ this.params.documentNumber }},
+    {{ this.params.description }},
+    'POSTED',
+    {{ Number(appsmith.store.userId || 0) }}
+);

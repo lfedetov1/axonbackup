@@ -1,0 +1,18 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+    d.document_date AS documentDate,
+    d.status,
+    d.posting_status AS postingStatus,
+    COALESCE(d.subtotal_amount, 0) AS subtotalAmount,
+    COALESCE(d.discount_amount, 0) AS discountAmount,
+    COALESCE(d.tax_amount, 0) AS taxAmount,
+    COALESCE(d.total_amount, 0) AS totalAmount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status = 'DRAFT'
+  AND d.posting_status <> 'POSTED'
+  AND d.document_date = {{ moment((this.params && this.params.postingDate) || moment()).format("YYYY-MM-DD") }}
+ORDER BY d.id;

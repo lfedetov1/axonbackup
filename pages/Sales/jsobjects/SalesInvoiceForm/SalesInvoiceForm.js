@@ -11,12 +11,39 @@ export default {
     return !!this.documentId();
   },
 
+  cleanValue(value, fallback = "") {
+    if (value === undefined || value === null) return fallback;
+    if (String(value) === "undefined" || String(value) === "null") return fallback;
+    return value;
+  },
+
+  selectValue(widget, fallback = "") {
+    return this.cleanValue(
+      widget.selectedOptionValue ||
+      widget.value ||
+      widget.text,
+      fallback
+    );
+  },
+
+  customerId() {
+    return Number(appsmith.store.selectedInvoiceCustomerId || 0);
+  },
+
   documentType() {
-    return InvoiceDocumentTypeSelect.selectedOptionValue || "SALES_INVOICE";
+    return this.selectValue(InvoiceDocumentTypeSelect, "SALES_INVOICE");
   },
 
   warehouseId() {
-    return Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0);
+    return Number(this.selectValue(InvoiceWarehouseSelect, appsmith.store.warehouseId || 0) || 0);
+  },
+
+  paymentMethod() {
+    return this.selectValue(InvoicePaymentMethodSelect, "");
+  },
+
+  currencyCode() {
+    return this.selectValue(InvoiceCurrencySelect, "EUR");
   },
 
   firstRow(result, queryObject) {
@@ -39,6 +66,7 @@ export default {
 
     return (
       selected.documentId ||
+      selected.invoiceId ||
       selected.id ||
       selected.ID ||
       selected["Document ID"] ||
@@ -64,6 +92,36 @@ export default {
     } catch (error) {
       console.log("Audit log skipped:", error);
     }
+  },
+
+  async syncCustomer() {
+    const rows = ListInvoiceCustomers.data || [];
+
+    const rawValue =
+      InvoiceCustomerSelect1.selectedOptionValue ||
+      InvoiceCustomerSelect1.value ||
+      "";
+
+    let customerId = Number(rawValue || 0);
+
+    if (!customerId) {
+      const label = String(
+        InvoiceCustomerSelect1.selectedOptionLabel ||
+        InvoiceCustomerSelect1.text ||
+        ""
+      ).trim();
+
+      const found = rows.find(row =>
+        String(row.label || "").trim() === label ||
+        String(row.name || "").trim() === label ||
+        String(row.value || "") === label
+      );
+
+      customerId = Number(found?.value || found?.partnerId || found?.id || 0);
+    }
+
+    await storeValue("selectedInvoiceCustomerId", customerId);
+    return customerId;
   },
 
   recalcRow(row = {}) {
@@ -145,11 +203,14 @@ export default {
     await storeValue("currentSalesInvoiceId", null);
     await storeValue("salesInvoiceItems", []);
     await storeValue("salesInvoiceTotals", { quantity: 0, subtotal: 0, discount: 0, tax: 0, total: 0 });
+    await storeValue("selectedInvoiceCustomerId", 0);
+    await storeValue("selectedInvoiceCustomer", {});
     await storeValue("salesInvoiceFormVisible", true);
 
     if (typeof ListInvoiceDocumentTypes !== "undefined") await ListInvoiceDocumentTypes.run();
     if (typeof ListPaymentMethods !== "undefined") await ListPaymentMethods.run();
     if (typeof ListCurrencies !== "undefined") await ListCurrencies.run();
+    if (typeof ListInvoiceCustomers !== "undefined") await ListInvoiceCustomers.run();
 
     const numberRows = await GetNextDocumentNumberByType.run({ documentType });
     const nextNumber =
@@ -162,7 +223,7 @@ export default {
     InvoiceStatusInput.setValue("DRAFT");
     InvoiceDateInput.setValue(moment().format("YYYY-MM-DD"));
     InvoiceDueDateInput.setValue(moment().format("YYYY-MM-DD"));
-    InvoiceCustomerSelect.setSelectedOption("");
+    InvoiceCustomerSelect1.setSelectedOption("");
     InvoiceWarehouseSelect.setSelectedOption(String(appsmith.store.warehouseId || ""));
     InvoicePaymentMethodSelect.setSelectedOption("CASH");
     InvoiceCurrencySelect.setSelectedOption("EUR");
@@ -251,50 +312,45 @@ export default {
     const lookup = String(lookupValue || "").trim();
     if (!lookup) return;
 
-    try {
-      const result = await FindSalesProduct.run({
-        lookup,
-        warehouseId: this.warehouseId()
-      });
+    const result = await FindSalesProduct.run({
+      lookup,
+      warehouseId: this.warehouseId()
+    });
 
-      const raw = this.firstRow(result, FindSalesProduct);
+    const raw = this.firstRow(result, FindSalesProduct);
 
-      if (!raw) {
-        showAlert("Product was not found.", "warning");
-        return;
-      }
-
-      const product = this.normalizeProduct(raw, lookup);
-      const rows = [...this.rows()];
-      const index = rowIndex >= 0 ? rowIndex : rows.length;
-      const existingRow = rows[index] || {};
-
-      rows[index] = this.recalcRow({
-        ...existingRow,
-        lineNo: index + 1,
-        barcode: product.barcode,
-        productId: product.productId,
-        productCode: product.productCode,
-        productName: product.productName,
-        sku: product.sku,
-        description: existingRow.description || product.productName,
-        unitId: product.unitId,
-        unitCode: product.unitCode,
-        taxRateId: product.taxRateId,
-        taxRate: product.taxRate,
-        quantity: Number(existingRow.quantity || 1),
-        unitPrice: Number(existingRow.unitPrice || product.unitPrice || 0),
-        discountPercent: Number(existingRow.discountPercent || 0),
-        availableStock: product.availableStock,
-        trackStock: product.trackStock,
-        note: existingRow.note || ""
-      });
-
-      await this.setRows(rows);
-    } catch (error) {
-      showAlert("Error while loading product: " + error.message, "error");
-      console.log(error);
+    if (!raw) {
+      showAlert("Product was not found.", "warning");
+      return;
     }
+
+    const product = this.normalizeProduct(raw, lookup);
+    const rows = [...this.rows()];
+    const index = rowIndex >= 0 ? rowIndex : rows.length;
+    const existingRow = rows[index] || {};
+
+    rows[index] = this.recalcRow({
+      ...existingRow,
+      lineNo: index + 1,
+      barcode: product.barcode,
+      productId: product.productId,
+      productCode: product.productCode,
+      productName: product.productName,
+      sku: product.sku,
+      description: existingRow.description || product.productName,
+      unitId: product.unitId,
+      unitCode: product.unitCode,
+      taxRateId: product.taxRateId,
+      taxRate: product.taxRate,
+      quantity: Number(existingRow.quantity || 1),
+      unitPrice: Number(existingRow.unitPrice || product.unitPrice || 0),
+      discountPercent: Number(existingRow.discountPercent || 0),
+      availableStock: product.availableStock,
+      trackStock: product.trackStock,
+      note: existingRow.note || ""
+    });
+
+    await this.setRows(rows);
   },
 
   async resolveProductFromEditedRow(editedRow = {}) {
@@ -397,22 +453,22 @@ export default {
       return false;
     }
 
-    if (!InvoiceCustomerSelect.selectedOptionValue) {
+    if (!this.customerId()) {
       showAlert("Customer is required.", "warning");
       return false;
     }
 
-    if (!InvoiceWarehouseSelect.selectedOptionValue) {
+    if (!this.warehouseId()) {
       showAlert("Warehouse is required.", "warning");
       return false;
     }
 
-    if (!InvoicePaymentMethodSelect.selectedOptionValue) {
+    if (!this.paymentMethod()) {
       showAlert("Payment method is required.", "warning");
       return false;
     }
 
-    if (!InvoiceCurrencySelect.selectedOptionValue) {
+    if (!this.currencyCode()) {
       showAlert("Currency is required.", "warning");
       return false;
     }
@@ -437,27 +493,18 @@ export default {
   },
 
   async refreshLists() {
-    if (typeof ListInvoicesAndCreditNotes !== "undefined") {
-      await ListInvoicesAndCreditNotes.run();
-    }
-
-    if (typeof GetInvoiceOverviewHeader !== "undefined") {
-      await GetInvoiceOverviewHeader.run();
-    }
-
-    if (typeof GetInvoiceOverviewItems !== "undefined") {
-      await GetInvoiceOverviewItems.run();
-    }
-
-    if (typeof GetInvoiceOverviewTaxSummary !== "undefined") {
-      await GetInvoiceOverviewTaxSummary.run();
-    }
+    if (typeof ListInvoicesAndCreditNotes !== "undefined") await ListInvoicesAndCreditNotes.run();
+    if (typeof GetInvoiceOverviewHeader !== "undefined") await GetInvoiceOverviewHeader.run();
+    if (typeof GetInvoiceOverviewItems !== "undefined") await GetInvoiceOverviewItems.run();
+    if (typeof GetInvoiceOverviewTaxSummary !== "undefined") await GetInvoiceOverviewTaxSummary.run();
   },
 
   async afterSave() {
     await storeValue("currentSalesInvoiceId", null);
     await storeValue("salesInvoiceItems", []);
     await storeValue("salesInvoiceTotals", { quantity: 0, subtotal: 0, discount: 0, tax: 0, total: 0 });
+    await storeValue("selectedInvoiceCustomerId", 0);
+    await storeValue("selectedInvoiceCustomer", {});
     await storeValue("salesInvoiceFormVisible", false);
 
     await this.refreshLists();
@@ -468,6 +515,7 @@ export default {
   },
 
   async saveDraft() {
+    await this.syncCustomer();
     await this.updateRows();
 
     if (!this.validate()) return;
@@ -485,10 +533,10 @@ export default {
           documentNumber: InvoiceNumberInput.text,
           documentDate: this.dateValue(InvoiceDateInput),
           dueDate: this.dateValue(InvoiceDueDateInput),
-          customerId: Number(InvoiceCustomerSelect.selectedOptionValue || 0),
-          warehouseId: Number(InvoiceWarehouseSelect.selectedOptionValue || 0),
-          paymentMethod: InvoicePaymentMethodSelect.selectedOptionValue || null,
-          currencyCode: InvoiceCurrencySelect.selectedOptionValue || "EUR",
+          customerId: this.customerId(),
+          warehouseId: this.warehouseId(),
+          paymentMethod: this.paymentMethod() || null,
+          currencyCode: this.currencyCode(),
           exchangeRate: Number(InvoiceExchangeRateInput.text || 1),
           subtotalAmount: totals.subtotal,
           discountAmount: totals.discount,
@@ -504,10 +552,10 @@ export default {
           documentNumber: InvoiceNumberInput.text,
           documentDate: this.dateValue(InvoiceDateInput),
           dueDate: this.dateValue(InvoiceDueDateInput),
-          customerId: Number(InvoiceCustomerSelect.selectedOptionValue || 0),
-          warehouseId: Number(InvoiceWarehouseSelect.selectedOptionValue || 0),
-          paymentMethod: InvoicePaymentMethodSelect.selectedOptionValue || null,
-          currencyCode: InvoiceCurrencySelect.selectedOptionValue || "EUR",
+          customerId: this.customerId(),
+          warehouseId: this.warehouseId(),
+          paymentMethod: this.paymentMethod() || null,
+          currencyCode: this.currencyCode(),
           exchangeRate: Number(InvoiceExchangeRateInput.text || 1),
           subtotalAmount: totals.subtotal,
           discountAmount: totals.discount,
@@ -534,7 +582,7 @@ export default {
       }
 
       for (let i = 0; i < rows.length; i += 1) {
-        await InsertSalesInvoiceItem.run({
+        await InsertInvoiceItem.run({
           documentId,
           lineNo: i + 1,
           productId: rows[i].productId,
@@ -591,6 +639,8 @@ export default {
     const items = itemRows || GetInvoiceItemsForEdit.data || [];
 
     await storeValue("currentSalesInvoiceId", header.documentId || documentId);
+    await storeValue("selectedInvoiceCustomerId", Number(header.partnerId || 0));
+    await storeValue("selectedInvoiceCustomer", { value: header.partnerId, label: header.partnerName || "" });
     await storeValue("salesInvoiceFormVisible", true);
 
     InvoiceDocumentTypeSelect.setSelectedOption(header.documentType || "SALES_INVOICE");
@@ -598,7 +648,7 @@ export default {
     InvoiceStatusInput.setValue(header.status || "DRAFT");
     InvoiceDateInput.setValue(moment(header.documentDate).format("YYYY-MM-DD"));
     InvoiceDueDateInput.setValue(moment(header.dueDate || header.documentDate).format("YYYY-MM-DD"));
-    InvoiceCustomerSelect.setSelectedOption(header.partnerId ? String(header.partnerId) : "");
+    InvoiceCustomerSelect1.setSelectedOption(header.partnerId ? String(header.partnerId) : "");
     InvoiceWarehouseSelect.setSelectedOption(header.warehouseId ? String(header.warehouseId) : "");
     InvoicePaymentMethodSelect.setSelectedOption(header.paymentMethod || "CASH");
     InvoiceCurrencySelect.setSelectedOption(header.currencyCode || "EUR");
@@ -630,6 +680,151 @@ export default {
     if (typeof SalesInvoiceFormModal !== "undefined") {
       showModal(SalesInvoiceFormModal.name);
     }
+  },
+
+  accountingLines(header = {}) {
+    const total = Math.abs(Number(header.totalAmount || 0));
+    const subtotal = Math.abs(Number(header.subtotalAmount || 0));
+    const tax = Math.abs(Number(header.taxAmount || 0));
+
+    const arAccount = "1200";
+    const revenueAccount = "7600";
+    const vatAccount = "2400";
+
+    if (header.documentType === "CREDIT_NOTE") {
+      return [
+        { accountCode: revenueAccount, debit: subtotal, credit: 0, description: "Sales return / credit note revenue reversal" },
+        { accountCode: vatAccount, debit: tax, credit: 0, description: "VAT reversal" },
+        { accountCode: arAccount, debit: 0, credit: total, description: "Customer receivable reversal" }
+      ];
+    }
+
+    return [
+      { accountCode: arAccount, debit: total, credit: 0, description: "Customer receivable" },
+      { accountCode: revenueAccount, debit: 0, credit: subtotal, description: "Sales revenue" },
+      { accountCode: vatAccount, debit: 0, credit: tax, description: "VAT payable" }
+    ];
+  },
+
+  async postAccounting(header = {}) {
+    const existingRows = await GetSalesInvoiceExistingJournal.run({
+      documentNumber: header.documentNumber
+    });
+
+    const existing = existingRows?.[0] || GetSalesInvoiceExistingJournal.data?.[0];
+
+    if (existing?.journalEntryId) {
+      return existing.journalEntryId;
+    }
+
+    const entryNumber = `JE-SALES-${moment().format("YYYYMMDDHHmmss")}`;
+    const lines = this.accountingLines(header);
+
+    await InsertSalesInvoiceJournal.run({
+      entryNumber,
+      entryDate: moment().format("YYYY-MM-DD"),
+      documentNumber: header.documentNumber,
+      description: `${header.documentType} ${header.documentNumber}`
+    });
+
+    const entryRows = await GetSalesInvoiceJournalId.run({ entryNumber });
+    const entry = entryRows?.[0] || GetSalesInvoiceJournalId.data?.[0];
+
+    if (!entry?.journalEntryId) {
+      showAlert("Journal entry was not found after insert.", "error");
+      return null;
+    }
+
+    for (let i = 0; i < lines.length; i += 1) {
+      await InsertSalesInvoiceJournalLine.run({
+        journalEntryId: entry.journalEntryId,
+        lineNo: i + 1,
+        accountCode: lines[i].accountCode,
+        debit: lines[i].debit,
+        credit: lines[i].credit,
+        description: lines[i].description
+      });
+    }
+
+    return entry.journalEntryId;
+  },
+
+  async postDocument(row = null) {
+    const documentId = this.getDocumentIdFromRow(row);
+
+    if (!documentId) {
+      showAlert("Select invoice first.", "warning");
+      return;
+    }
+
+    const headerRows = await GetSalesInvoiceForPost.run({ documentId });
+    const header = headerRows?.[0] || GetSalesInvoiceForPost.data?.[0];
+
+    if (!header) {
+      showAlert("Invoice was not found.", "error");
+      return;
+    }
+
+    if (String(header.status || "").toUpperCase() !== "DRAFT") {
+      showAlert("Only draft invoices can be posted.", "warning");
+      return;
+    }
+
+    const journalEntryId = await this.postAccounting(header);
+
+    if (!journalEntryId) {
+      return;
+    }
+
+    await PostSalesInvoiceDocument.run({ documentId });
+
+    await this.audit("POST", documentId, {
+      document_type: header.documentType,
+      document_number: header.documentNumber,
+      status: "POSTED",
+      posting_status: "POSTED",
+      journal_entry_id: journalEntryId
+    });
+
+    await this.refreshLists();
+    showAlert("Invoice was posted and booked.", "success");
+  },
+
+  async postAllDraftInvoicesForDay(postingDate = moment().format("YYYY-MM-DD")) {
+    const rows = await GetDraftSalesInvoicesForPostin.run({ postingDate });
+    const documents = rows || GetDraftSalesInvoicesForPostin.data || [];
+
+    if (!documents.length) {
+      showAlert("No draft invoices found for selected day.", "info");
+      return;
+    }
+
+    let postedCount = 0;
+
+    for (const doc of documents) {
+      const journalEntryId = await this.postAccounting(doc);
+
+      if (!journalEntryId) {
+        showAlert(`Posting stopped. Journal was not created for ${doc.documentNumber}.`, "error");
+        return;
+      }
+
+      await PostSalesInvoiceDocument.run({ documentId: doc.documentId });
+
+      await this.audit("POST", doc.documentId, {
+        document_type: doc.documentType,
+        document_number: doc.documentNumber,
+        status: "POSTED",
+        posting_status: "POSTED",
+        journal_entry_id: journalEntryId,
+        batch_posting_date: postingDate
+      });
+
+      postedCount += 1;
+    }
+
+    await this.refreshLists();
+    showAlert(`${postedCount} invoice(s) posted and booked.`, "success");
   },
 
   async print(row = null) {
@@ -757,6 +952,8 @@ export default {
     await storeValue("currentSalesInvoiceId", null);
     await storeValue("salesInvoiceItems", []);
     await storeValue("salesInvoiceTotals", { quantity: 0, subtotal: 0, discount: 0, tax: 0, total: 0 });
+    await storeValue("selectedInvoiceCustomerId", 0);
+    await storeValue("selectedInvoiceCustomer", {});
     await storeValue("salesInvoiceFormVisible", false);
 
     if (typeof SalesInvoiceFormModal !== "undefined") {

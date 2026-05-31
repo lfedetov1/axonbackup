@@ -29,7 +29,7 @@
     ],
     "name": "GetSalesInvoicePrintTaxSummary",
     "pageId": "Sales",
-    "runBehaviour": "MANUAL",
+    "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false
   }
 }

@@ -1,0 +1,16 @@
+INSERT INTO journal_entry_lines (
+    journal_entry_id,
+    line_no,
+    account_code,
+    debit,
+    credit,
+    description
+)
+VALUES (
+    {{ Number(this.params.journalEntryId || 0) }},
+    {{ Number(this.params.lineNo || 0) }},
+    {{ this.params.accountCode }},
+    {{ Number(this.params.debit || 0) }},
+    {{ Number(this.params.credit || 0) }},
+    {{ this.params.description || null }}
+);
