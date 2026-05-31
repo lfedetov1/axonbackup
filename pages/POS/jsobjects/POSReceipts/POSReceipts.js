@@ -28,72 +28,50 @@ export default {
   },
 
   async refresh() {
-  await storeValue("posSelectedReceiptId", null);
-  await storeValue("posSelectedReceiptNumber", "");
+    await storeValue("posSelectedReceiptId", null);
+    await storeValue("posSelectedReceiptNumber", "");
 
-  await ListPOSReceipts.run();
+    await ListPOSReceipts.run();
 
-  if (typeof GetPOSReceiptOverviewItems !== "undefined") {
-    await GetPOSReceiptOverviewItems.run({ documentId: 0 });
-  }
-},
-
-async openReceiptsModal() {
-  POSReceiptDateFrom.setValue(moment().format("YYYY-MM-DD"));
-  POSReceiptDateTo.setValue(moment().format("YYYY-MM-DD"));
-
-  await this.refresh();
-
-  showModal(InvoicePreviewModal.name);
-},
-
-  async refreshWithLoader() {
-    return AppLoader.run(
-      "Refreshing receipts",
-      "Loading POS receipts...",
-      async () => {
-        await this.refresh();
-      }
-    );
+    if (typeof GetPOSReceiptOverviewItems !== "undefined") {
+      await GetPOSReceiptOverviewItems.run({ documentId: 0 });
+    }
   },
 
   async openReceiptsModal() {
     POSReceiptDateFrom.setValue(moment().format("YYYY-MM-DD"));
     POSReceiptDateTo.setValue(moment().format("YYYY-MM-DD"));
 
-    await this.refreshWithLoader();
+    await this.refresh();
 
     showModal(InvoicePreviewModal.name);
   },
 
   async select(row = null) {
-    const documentId = this.documentId(row);
-    const documentNumber = this.documentNumber(row);
+  const documentId = this.documentId(row);
+  const documentNumber = this.documentNumber(row);
 
-    if (!documentId) {
-      showAlert("Select receipt first.", "warning");
-      return;
-    }
-
-    await storeValue("posSelectedReceiptId", documentId);
-    await storeValue("posSelectedReceiptNumber", documentNumber);
+  if (!documentId || !documentNumber) {
+    await storeValue("posSelectedReceiptId", null);
+    await storeValue("posSelectedReceiptNumber", "");
+    await storeValue("posReceiptPrintData", null);
 
     if (typeof GetPOSReceiptOverviewItems !== "undefined") {
-      await GetPOSReceiptOverviewItems.run({ documentId });
+      await GetPOSReceiptOverviewItems.run({ documentId: 0 });
     }
-  },
 
-  async selectWithLoader(row = null) {
-    const payload = { ...this.row(row) };
+    return;
+  }
 
-    return AppLoader.run(
-      "Loading receipt",
-      "Loading receipt details...",
-      async () => {
-        await this.select(payload);
-      }
-    );
-  },
+  await storeValue("posSelectedReceiptId", documentId);
+  await storeValue("posSelectedReceiptNumber", documentNumber);
+
+  if (typeof GetPOSReceiptOverviewItems !== "undefined") {
+    await GetPOSReceiptOverviewItems.run({ documentId });
+  }
+
+  await POSReceiptPrint.preview(documentNumber);
+},
 
   async print(row = null) {
     const documentNumber = this.documentNumber(row);

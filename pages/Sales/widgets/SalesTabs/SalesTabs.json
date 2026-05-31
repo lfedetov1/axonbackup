@@ -466,7 +466,7 @@
   "mobileTopRow": 14,
   "needsErrorInfo": false,
   "onTabSelected": "{{\n  storeValue(\n    \"salesTab\",\n    SalesTabs.selectedTab === \"Dashboard\" ? \"OVERVIEW\" :\n    SalesTabs.selectedTab === \"Quotes\" ? \"QUOTES\" :\n    SalesTabs.selectedTab === \"Sales Orders\" ? \"SALES_ORDERS\" :\n    SalesTabs.selectedTab === \"Delivery / Shipping\" ? \"DELIVERY_SHIPPING\" :\n    SalesTabs.selectedTab === \"Invoices\" ? \"INVOICES\" :\n    SalesTabs.selectedTab === \"Customers\" ? \"CUSTOMERS\" :\n    SalesTabs.selectedTab === \"Reports\" ? \"REPORT_CENTER\" :\n    SalesTabs.selectedTab\n  )\n  .then(() => storeValue(\"salesViewMode\", \"LIST\"))\n  .then(() => SalesNav.refreshForTab(appsmith.store.salesTab))\n}}",
-  "originalBottomRow": 114,
+  "originalBottomRow": 82,
   "originalTopRow": 7,
   "parentColumnSpace": 17.28125,
   "parentId": "0",

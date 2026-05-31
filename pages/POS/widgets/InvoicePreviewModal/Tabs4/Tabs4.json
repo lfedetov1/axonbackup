@@ -101,7 +101,7 @@
       "widgetName": "Canvas42"
     }
   ],
-  "defaultTab": "Print",
+  "defaultTab": "Itmes",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -129,7 +129,7 @@
   "mobileRightColumn": 60,
   "mobileTopRow": 26,
   "needsErrorInfo": false,
-  "originalBottomRow": 57,
+  "originalBottomRow": 75,
   "originalTopRow": 21,
   "parentColumnSpace": 16.4078125,
   "parentId": "1oinhzm9g9",

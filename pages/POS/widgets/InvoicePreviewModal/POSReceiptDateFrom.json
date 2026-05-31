@@ -59,7 +59,7 @@
   "mobileRightColumn": 27,
   "mobileTopRow": 31,
   "needsErrorInfo": false,
-  "onDateSelected": "{{ POSReceipts.refreshWithLoader() }}",
+  "onDateSelected": "{{ POSReceipts.refresh() }}",
   "originalBottomRow": 12,
   "originalTopRow": 8,
   "parentColumnSpace": 13.921875,

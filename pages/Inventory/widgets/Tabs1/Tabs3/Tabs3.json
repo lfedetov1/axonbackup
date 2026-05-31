@@ -93,7 +93,7 @@
       "rightColumn": 407.25,
       "shouldScrollContents": false,
       "tabId": "tab2",
-      "tabName": "Informations",
+      "tabName": "Preview",
       "topRow": 0,
       "type": "CANVAS_WIDGET",
       "version": 1,
@@ -160,7 +160,7 @@
       "id": "tab2",
       "index": 1,
       "isVisible": true,
-      "label": "Informations",
+      "label": "Preview",
       "positioning": "vertical",
       "widgetId": "oqi2xsk8bh"
     }

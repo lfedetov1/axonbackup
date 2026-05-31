@@ -1,40 +1,67 @@
 export default {
-  async open() {
-    const documentNumber = invoice_no.text;
+  async build(documentNumber) {
+    const number = String(documentNumber || "").trim();
 
-    if (!documentNumber) {
+    if (!number) {
       showAlert("Invoice number is missing.", "error");
-      return;
+      return false;
     }
 
-    try {
-      await storeValue("posPrintDocumentNumber", documentNumber);
+    await storeValue("posReceiptPrintData", null);
+    await storeValue("posPrintDocumentNumber", number);
 
-      const headerRows = await GetPOSInvoicePrintHeader.run();
-      const itemRows = await GetPOSInvoicePrintItems.run();
-      const taxRows = await GetPOSInvoicePrintTaxSummary.run();
-      const paymentRows = await GetPOSInvoicePrintPayments.run();
+    const headerRows = await GetPOSInvoicePrintHeader.run();
+    const itemRows = await GetPOSInvoicePrintItems.run();
+    const taxRows = await GetPOSInvoicePrintTaxSummary.run();
 
-      const header = headerRows?.[0] || GetPOSInvoicePrintHeader.data?.[0];
-      const items = itemRows || GetPOSInvoicePrintItems.data || [];
-      const taxes = taxRows || GetPOSInvoicePrintTaxSummary.data || [];
-      const payments = paymentRows || GetPOSInvoicePrintPayments.data || [];
+    let paymentRows = [];
 
-      if (!header) {
-        showAlert("POS receipt print data was not found.", "error");
-        return;
-      }
-
-      await storeValue("posReceiptPrintData", {
-        header,
-        items,
-        taxes
-      });
-
-      showModal(POSReceiptPrintModal.name);
-    } catch (error) {
-      showAlert("Error while preparing POS receipt print: " + error.message, "error");
-      console.log(error);
+    if (typeof GetPOSInvoicePrintPayments !== "undefined") {
+      const result = await GetPOSInvoicePrintPayments.run();
+      paymentRows = result || GetPOSInvoicePrintPayments.data || [];
     }
+
+    const header = headerRows?.[0] || GetPOSInvoicePrintHeader.data?.[0];
+    const items = itemRows || GetPOSInvoicePrintItems.data || [];
+    const taxes = taxRows || GetPOSInvoicePrintTaxSummary.data || [];
+
+    if (!header) {
+      showAlert("POS receipt print data was not found.", "error");
+      return false;
+    }
+
+    await storeValue("posReceiptPrintData", {
+      header,
+      items,
+      taxes,
+      payments: paymentRows,
+      username: appsmith.store.username || ""
+    });
+
+    return true;
+  },
+
+  async open(documentNumber = null) {
+    const number =
+      documentNumber ||
+      appsmith.store.posSelectedReceiptNumber ||
+      appsmith.store.posPrintDocumentNumber ||
+      invoice_no.text;
+
+    const ok = await this.build(number);
+
+    if (!ok) return;
+
+    showModal(POSReceiptPrintModal.name);
+  },
+
+  async preview(documentNumber = null) {
+    const number =
+      documentNumber ||
+      appsmith.store.posSelectedReceiptNumber ||
+      appsmith.store.posPrintDocumentNumber ||
+      invoice_no.text;
+
+    return this.build(number);
   }
 };

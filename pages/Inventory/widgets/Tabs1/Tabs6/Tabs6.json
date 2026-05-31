@@ -99,6 +99,51 @@
       "version": 1,
       "widgetId": "imj7an6bxh",
       "widgetName": "Canvas48"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 350,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "6ruu2e34r0",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 390,
+      "minWidth": 450,
+      "mobileBottomRow": 391,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1086,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "f3rhtv7v5f",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1086,
+      "tabId": "tabn43mn6r2hh",
+      "tabName": "Preview",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "hhrv269qot",
+      "widgetName": "Canvas92"
     }
   ],
   "defaultTab": "Items",
@@ -163,6 +208,13 @@
       "label": "Pick list",
       "positioning": "vertical",
       "widgetId": "imj7an6bxh"
+    },
+    "tabn43mn6r2hh": {
+      "id": "tabn43mn6r2hh",
+      "index": 2,
+      "isVisible": true,
+      "label": "Preview",
+      "widgetId": "hhrv269qot"
     }
   },
   "topRow": 43,

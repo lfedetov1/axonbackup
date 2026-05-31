@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_4c5b3c1b-49aa-47eb-878c-97eefcdb076d",
-  "id": "POS_POSReceiptPrint.open",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0cc65622-e56d-400f-9bea-0a3e948e0424",
+  "id": "POS_POSReceiptPrint.build",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -8,8 +8,7 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "documentNumber",
-          "value": "{{null}}"
+          "name": "documentNumber"
         }
       ],
       "paginationType": "NONE",
@@ -27,8 +26,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "POSReceiptPrint.open",
-    "name": "open",
+    "fullyQualifiedName": "POSReceiptPrint.build",
+    "name": "build",
     "pageId": "POS",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
