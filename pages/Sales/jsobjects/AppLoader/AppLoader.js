@@ -36,6 +36,44 @@ export default {
     };
   },
 
+  invoiceRow(payload = {}) {
+    return (
+      payload ||
+      InvoicesTable.triggeredRow ||
+      InvoicesTable.selectedRow ||
+      {}
+    );
+  },
+
+  invoicePayload(payload = {}) {
+    const row = this.invoiceRow(payload);
+
+    return {
+      documentId:
+        row.documentId ||
+        row.invoiceId ||
+        row.ID ||
+        row.id ||
+        row["Document ID"] ||
+        row["Invoice ID"],
+      invoiceId:
+        row.invoiceId ||
+        row.documentId ||
+        row.ID ||
+        row.id ||
+        row["Document ID"] ||
+        row["Invoice ID"],
+      documentNumber:
+        row.documentNumber ||
+        row["Document Number"] ||
+        row["Invoice Number"],
+      documentType:
+        row.documentType ||
+        row["Document Type"] ||
+        row.Type
+    };
+  },
+
   async run(message = "Processing...", action = "", payload = {}) {
     const actionText = String(action || "");
 
@@ -52,6 +90,26 @@ export default {
     if (actionText.includes("QuoteForm.print")) {
       action = "quote.print";
       payload = this.quotePayload(payload);
+    }
+
+    if (actionText.includes("SalesInvoiceForm.loadForEdit")) {
+      action = "salesInvoice.edit";
+      payload = this.invoicePayload(payload);
+    }
+
+    if (actionText.includes("SalesInvoiceForm.print")) {
+      action = "salesInvoice.print";
+      payload = this.invoicePayload(payload);
+    }
+
+    if (actionText.includes("SalesInvoiceForm.voidDocument")) {
+      action = "salesInvoice.void";
+      payload = this.invoicePayload(payload);
+    }
+
+    if (actionText.includes("SalesInvoiceForm.createCreditNote")) {
+      action = "salesInvoice.creditNote";
+      payload = this.invoicePayload(payload);
     }
 
     try {
@@ -76,6 +134,34 @@ export default {
 
       if (action === "quote.save") {
         return await QuoteForm.saveDraft();
+      }
+
+      if (action === "salesInvoice.new") {
+        return await SalesInvoiceForm.startNew(payload.documentType || "SALES_INVOICE");
+      }
+
+      if (action === "salesInvoice.save") {
+        return await SalesInvoiceForm.saveDraft();
+      }
+
+      if (action === "salesInvoice.edit") {
+        return await SalesInvoiceForm.loadForEdit(this.invoicePayload(payload));
+      }
+
+      if (action === "salesInvoice.print") {
+        return await SalesInvoiceForm.print(this.invoicePayload(payload));
+      }
+
+      if (action === "salesInvoice.void") {
+        return await SalesInvoiceForm.voidDocument(this.invoicePayload(payload));
+      }
+
+      if (action === "salesInvoice.creditNote") {
+        return await SalesInvoiceForm.createCreditNote(this.invoicePayload(payload));
+      }
+
+      if (action === "salesInvoice.cancel") {
+        return await SalesInvoiceForm.cancel();
       }
 
       showAlert("Unknown loader action: " + actionText, "error");

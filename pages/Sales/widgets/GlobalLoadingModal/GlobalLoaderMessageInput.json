@@ -39,7 +39,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 58,
   "shouldTruncate": false,
-  "text": "{{ appsmith.store.globalLoadingTitle || \"Processing\" }}",
+  "text": "{{ appsmith.store.globalLoaderMessage || \"Processing...\" }}",
   "textAlign": "LEFT",
   "textColor": "#231F20",
   "topRow": 1,

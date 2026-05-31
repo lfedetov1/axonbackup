@@ -1,0 +1,66 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS `Invoice Number`,
+    d.document_date AS `Invoice Date`,
+    DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Issue Time`,
+
+    d.document_type AS documentType,
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN 'Credit Note'
+      ELSE 'Sales Invoice'
+    END AS `Type`,
+
+    bp.code AS `Customer Code`,
+    bp.name AS `Customer`,
+
+    d.payment_method AS `Payment Method`,
+    d.currency_code AS `Currency`,
+    d.exchange_rate AS `Exchange Rate`,
+
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(d.subtotal_amount) ELSE d.subtotal_amount END AS `Subtotal`,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(d.discount_amount) ELSE d.discount_amount END AS `Discount`,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(d.tax_amount) ELSE d.tax_amount END AS `Tax`,
+    CASE WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(d.total_amount) ELSE d.total_amount END AS `Total`,
+
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+    d.fiscal_status AS `Fiscal Status`,
+    d.fiscal_number AS `Fiscal Number`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+
+    u.username AS `Created By`,
+    d.created_at AS createdAt,
+    d.updated_at AS updatedAt
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+
+  AND (
+      {{ InvoiceSearchInput.text || "" }} = ""
+      OR d.document_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR d.fiscal_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR bp.name LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR bp.code LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+  )
+
+  AND (
+      {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }} = 0
+      OR d.partner_id = {{ Number(InvoiceCustomerSelect.selectedOptionValue || 0) }}
+  )
+
+  AND (
+      {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+      OR d.warehouse_id = {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+  )
+
+  AND d.document_date >= {{ moment(InvoiceDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(InvoiceDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+ORDER BY d.document_date DESC, d.id DESC;

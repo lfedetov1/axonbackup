@@ -17,6 +17,7 @@ SELECT
 
     d.payment_method AS `Payment Method`,
     d.currency_code AS `Currency`,
+    COALESCE(d.exchange_rate, 1) AS `Exchange Rate`,
 
     CASE
       WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.subtotal_amount, 0))
@@ -53,10 +54,8 @@ SELECT
     d.posting_status AS `Posting Status`,
     d.fiscal_status AS `Fiscal Status`,
 
-    d.jir AS jir,
-    d.zki AS zki,
-    d.fiscal_jir AS fiscalJir,
-    d.fiscal_zki AS fiscalZki,
+    COALESCE(d.fiscal_jir, d.jir) AS jir,
+    COALESCE(d.fiscal_zki, d.zki) AS zki,
 
     w.code AS `Warehouse Code`,
     w.name AS `Warehouse`,
@@ -70,15 +69,15 @@ LEFT JOIN business_partners bp ON bp.id = d.partner_id
 LEFT JOIN warehouses w ON w.id = d.warehouse_id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 
-WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
   AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
 
   AND (
       {{ InvoiceSearchInput.text || "" }} = ""
       OR d.document_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
-      OR d.fiscal_number LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
-      OR bp.name LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
-      OR bp.code LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR COALESCE(d.fiscal_number, '') LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR COALESCE(bp.name, '') LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
+      OR COALESCE(bp.code, '') LIKE CONCAT('%', {{ InvoiceSearchInput.text || "" }}, '%')
   )
 
   AND (
@@ -97,11 +96,11 @@ WHERE d.company_id = {{ Number(appsmith.store.companyId || 0) }}
   )
 
   AND (
-      {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
-      OR d.warehouse_id = {{ Number(InvoiceWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+      {{ Number(InvoiceWarehouseSelect.selectedOptionValue || 0) }} = 0
+      OR d.warehouse_id = {{ Number(InvoiceWarehouseSelect.selectedOptionValue || 0) }}
   )
 
-  AND d.document_date >= {{ moment(InvoiceDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date >= {{ moment(InvoiceDateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
   AND d.document_date <= {{ moment(InvoiceDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
 
 ORDER BY d.document_date DESC, d.id DESC;

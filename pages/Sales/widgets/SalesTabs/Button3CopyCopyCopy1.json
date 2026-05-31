@@ -35,7 +35,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{ SalesOrderForm.startNew() }}",
+  "onClick": "{{ AppLoader.run(\"Opening invoice...\", \"salesInvoice.new\", { documentType: \"SALES_INVOICE\" }) }}",
   "parentColumnSpace": 16.96875,
   "parentId": "0xmg2gzkdp",
   "parentRowSpace": 10,
