@@ -1,0 +1,30 @@
+SELECT
+    p.id AS value,
+    CONCAT(p.plan_code, ' - ', p.plan_name) AS label,
+
+    p.id AS planId,
+    p.plan_code AS planCode,
+    p.plan_name AS planName,
+    p.plan_type AS planType,
+    p.period_type AS periodType,
+    p.date_from AS dateFrom,
+    p.date_to AS dateTo,
+    p.currency_code AS currencyCode,
+    p.status,
+
+    p.total_sales_target AS totalSalesTarget,
+    p.total_quantity_target AS totalQuantityTarget,
+    p.total_margin_target AS totalMarginTarget,
+
+    p.total_budget_amount AS totalBudgetAmount,
+    p.total_workforce_budget AS totalWorkforceBudget,
+    p.total_operating_budget AS totalOperatingBudget,
+    p.total_marketing_budget AS totalMarketingBudget,
+
+    p.planned_hours AS plannedHours,
+    p.planned_working_days AS plannedWorkingDays,
+    p.break_even_amount AS breakEvenAmount
+FROM business_planning_plans p
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND p.status IN ('ACTIVE', 'APPROVED', 'DRAFT')
+ORDER BY p.date_from DESC, p.id DESC;

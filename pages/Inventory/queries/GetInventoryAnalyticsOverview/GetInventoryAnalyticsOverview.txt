@@ -1,0 +1,78 @@
+SELECT
+    {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} AS warehouseId,
+    {{ appsmith.store.inventoryAnalyticsDateFrom || moment().subtract(30, "days").format("YYYY-MM-DD") }} AS dateFrom,
+    {{ appsmith.store.inventoryAnalyticsDateTo || moment().format("YYYY-MM-DD") }} AS dateTo,
+
+    COUNT(*) AS productCount,
+    SUM(CASE WHEN b.quantityOnHand > 0 THEN 1 ELSE 0 END) AS productsInStock,
+    SUM(CASE WHEN b.quantityOnHand <= 0 THEN 1 ELSE 0 END) AS outOfStockCount,
+    SUM(CASE WHEN b.quantityOnHand > 0 AND b.quantityOnHand <= 5 THEN 1 ELSE 0 END) AS lowStockCount,
+
+    COALESCE(SUM(b.quantityOnHand), 0) AS totalQuantity,
+    COALESCE(SUM(b.stockValue), 0) AS stockValue,
+
+    (
+      SELECT COALESCE(SUM(CASE WHEN sm2.quantity > 0 THEN sm2.quantity ELSE 0 END), 0)
+      FROM stock_movements sm2
+      WHERE ({{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0 OR sm2.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }})
+        AND sm2.movement_date >= {{ appsmith.store.inventoryAnalyticsDateFrom || moment().subtract(30, "days").format("YYYY-MM-DD") }}
+        AND sm2.movement_date <= {{ appsmith.store.inventoryAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+    ) AS periodInQuantity,
+
+    (
+      SELECT COALESCE(SUM(CASE WHEN sm3.quantity < 0 THEN ABS(sm3.quantity) ELSE 0 END), 0)
+      FROM stock_movements sm3
+      WHERE ({{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0 OR sm3.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }})
+        AND sm3.movement_date >= {{ appsmith.store.inventoryAnalyticsDateFrom || moment().subtract(30, "days").format("YYYY-MM-DD") }}
+        AND sm3.movement_date <= {{ appsmith.store.inventoryAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+    ) AS periodOutQuantity,
+
+    (
+      SELECT COUNT(*)
+      FROM documents d
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type = 'TRANSFER_REQUEST'
+        AND d.status NOT IN ('CANCELLED', 'RECEIVED', 'POSTED')
+        AND (
+            {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+            OR d.source_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+            OR d.destination_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+        )
+    ) AS openTransfers,
+
+    (
+      SELECT COUNT(*)
+      FROM warehouse_tasks wt
+      WHERE wt.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND wt.status NOT IN ('DONE', 'CANCELLED')
+        AND (
+            {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+            OR wt.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+        )
+    ) AS openTasks,
+
+    (
+  SELECT COUNT(*)
+  FROM document_packages dp
+  WHERE COALESCE(dp.package_status, '') NOT IN ('RECEIVED', 'CANCELLED')
+    AND (
+        {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+        OR dp.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+        OR dp.source_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+        OR dp.destination_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+    )
+) AS openPackages
+
+FROM (
+    SELECT
+        p.id AS productId,
+        COALESCE(SUM(sm.quantity), 0) AS quantityOnHand,
+        COALESCE(SUM(sm.total_cost), 0) AS stockValue
+    FROM products p
+    JOIN stock_movements sm ON sm.product_id = p.id
+    WHERE (
+        {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+        OR sm.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+    )
+    GROUP BY p.id
+) b;

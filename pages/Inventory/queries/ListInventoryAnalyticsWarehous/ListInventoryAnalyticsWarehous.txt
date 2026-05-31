@@ -1,0 +1,33 @@
+SELECT
+    0 AS value,
+    'All Warehouses' AS label,
+    'ALL' AS code,
+    'All Warehouses' AS name
+WHERE {{ (
+  (appsmith.store.roleCodes || []).includes("ADMIN") ||
+  (appsmith.store.roleCodes || []).includes("OWNER") ||
+  (appsmith.store.permissions || []).includes("inventory.warehouse.all") ||
+  (appsmith.store.permissions || []).includes("inventory.view_all_warehouses") ||
+  (appsmith.store.permissions || []).includes("inventory.analytics.all_warehouses")
+) ? 1 : 0 }} = 1
+
+UNION ALL
+
+SELECT
+    w.id AS value,
+    CONCAT(w.code, ' - ', w.name) AS label,
+    w.code,
+    w.name
+FROM warehouses w
+WHERE w.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+      {{ (
+        (appsmith.store.roleCodes || []).includes("ADMIN") ||
+        (appsmith.store.roleCodes || []).includes("OWNER") ||
+        (appsmith.store.permissions || []).includes("inventory.warehouse.all") ||
+        (appsmith.store.permissions || []).includes("inventory.view_all_warehouses") ||
+        (appsmith.store.permissions || []).includes("inventory.analytics.all_warehouses")
+      ) ? 1 : 0 }} = 1
+      OR w.id = {{ Number(appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+  )
+ORDER BY value;

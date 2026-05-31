@@ -1,0 +1,20 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode AS barcode,
+
+    COALESCE(SUM(sm.quantity), 0) AS quantityOnHand,
+    COALESCE(SUM(sm.total_cost), 0) AS stockValue,
+
+    CASE
+      WHEN COALESCE(SUM(sm.quantity), 0) = 0 THEN 0
+      ELSE COALESCE(SUM(sm.total_cost), 0) / COALESCE(NULLIF(SUM(sm.quantity), 0), 1)
+    END AS avgUnitCost
+FROM products p
+JOIN stock_movements sm ON sm.product_id = p.id
+WHERE ({{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0 OR sm.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }})
+GROUP BY p.id, p.code, p.name, p.barcode
+HAVING COALESCE(SUM(sm.quantity), 0) > 0
+ORDER BY stockValue DESC, quantityOnHand DESC
+LIMIT 20;

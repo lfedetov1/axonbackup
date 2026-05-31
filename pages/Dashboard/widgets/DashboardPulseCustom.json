@@ -3,7 +3,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 60,
+  "bottomRow": 53,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "defaultModel": "{{\n{\n  score: GetDashboardPulseScore.data?.[0] || {},\n  actions: GetDashboardPulseActions.data || [],\n  flow: GetDashboardFlowRadar.data || [],\n  delta: GetDashboardYesterdayDelta.data?.[0] || {},\n  generatedAt: moment().format(\"DD.MM.YYYY HH:mm:ss\")\n}\n}}",
   "dynamicBindingPathList": [

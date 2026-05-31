@@ -1,0 +1,122 @@
+SELECT
+    p.id AS planId,
+    p.plan_code AS planCode,
+    p.plan_name AS planName,
+    p.date_from AS dateFrom,
+    p.date_to AS dateTo,
+    p.currency_code AS currencyCode,
+
+    p.total_sales_target AS salesTarget,
+    p.total_quantity_target AS quantityTarget,
+    p.total_margin_target AS marginTarget,
+    p.total_budget_amount AS budgetAmount,
+    p.total_workforce_budget AS workforceBudget,
+    p.total_operating_budget AS operatingBudget,
+    p.total_marketing_budget AS marketingBudget,
+    p.planned_hours AS plannedHours,
+    p.planned_working_days AS plannedWorkingDays,
+    p.break_even_amount AS breakEvenAmount,
+
+    COALESCE(actual.actualSales, 0) AS actualSales,
+    COALESCE(actual.actualQuantity, 0) AS actualQuantity,
+    COALESCE(actual.receiptCount, 0) AS receiptCount,
+
+    COALESCE(workforce.plannedHours, 0) AS workforcePlannedHours,
+    COALESCE(workforce.actualHours, 0) AS workforceActualHours,
+    COALESCE(workforce.plannedLaborCost, 0) AS plannedLaborCost,
+    COALESCE(workforce.actualLaborCost, 0) AS actualLaborCost,
+
+    COALESCE(absence.lostHours, 0) AS lostHours,
+    COALESCE(absence.sickLeaveHours, 0) AS sickLeaveHours,
+    COALESCE(absence.vacationHours, 0) AS vacationHours,
+    COALESCE(absence.absenceSalesImpact, 0) AS absenceSalesImpact,
+    COALESCE(absence.absenceCostImpact, 0) AS absenceCostImpact,
+
+    COALESCE(budget.actualBudgetUsed, 0) AS actualBudgetUsed,
+    COALESCE(budget.committedBudget, 0) AS committedBudget,
+
+    CASE
+      WHEN p.total_sales_target = 0 THEN 0
+      ELSE COALESCE(actual.actualSales, 0) / p.total_sales_target * 100
+    END AS salesAchievementPercent,
+
+    CASE
+      WHEN p.planned_hours = 0 THEN 0
+      ELSE COALESCE(actual.actualSales, 0) / p.planned_hours
+    END AS salesPerPlannedHour,
+
+    CASE
+      WHEN COALESCE(workforce.actualHours, 0) = 0 THEN 0
+      ELSE COALESCE(actual.actualSales, 0) / workforce.actualHours
+    END AS salesPerActualHour,
+
+    DATEDIFF({{ moment().format("YYYY-MM-DD") }}, p.date_from) + 1 AS elapsedDays,
+    DATEDIFF(p.date_to, p.date_from) + 1 AS totalDays,
+
+    CASE
+      WHEN DATEDIFF({{ moment().format("YYYY-MM-DD") }}, p.date_from) + 1 <= 0 THEN 0
+      ELSE COALESCE(actual.actualSales, 0) / (DATEDIFF({{ moment().format("YYYY-MM-DD") }}, p.date_from) + 1) * (DATEDIFF(p.date_to, p.date_from) + 1)
+    END AS projectedSales,
+
+    p.total_sales_target - COALESCE(actual.actualSales, 0) AS salesRemaining,
+    p.total_budget_amount - COALESCE(budget.actualBudgetUsed, 0) AS budgetRemaining
+
+FROM business_planning_plans p
+
+LEFT JOIN (
+    SELECT
+        COALESCE(SUM(d.total_amount), 0) AS actualSales,
+        COALESCE(SUM(di.quantity), 0) AS actualQuantity,
+        COUNT(DISTINCT d.id) AS receiptCount
+    FROM documents d
+    LEFT JOIN document_items di ON di.document_id = d.id
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+      AND d.status NOT IN ('CANCELLED')
+      AND d.document_date >= (
+          SELECT date_from
+          FROM business_planning_plans
+          WHERE id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+          LIMIT 1
+      )
+      AND d.document_date <= (
+          SELECT date_to
+          FROM business_planning_plans
+          WHERE id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+          LIMIT 1
+      )
+) actual ON 1 = 1
+
+LEFT JOIN (
+    SELECT
+        COALESCE(SUM(planned_hours), 0) AS plannedHours,
+        COALESCE(SUM(actual_hours), 0) AS actualHours,
+        COALESCE(SUM(planned_labor_cost), 0) AS plannedLaborCost,
+        COALESCE(SUM(actual_labor_cost), 0) AS actualLaborCost
+    FROM business_planning_workforce
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+) workforce ON 1 = 1
+
+LEFT JOIN (
+    SELECT
+        COALESCE(SUM(lost_hours), 0) AS lostHours,
+        COALESCE(SUM(CASE WHEN absence_type = 'SICK_LEAVE' THEN lost_hours ELSE 0 END), 0) AS sickLeaveHours,
+        COALESCE(SUM(CASE WHEN absence_type = 'VACATION' THEN lost_hours ELSE 0 END), 0) AS vacationHours,
+        COALESCE(SUM(estimated_sales_impact), 0) AS absenceSalesImpact,
+        COALESCE(SUM(estimated_cost_impact), 0) AS absenceCostImpact
+    FROM business_planning_absences
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+      AND absence_status NOT IN ('CANCELLED')
+) absence ON 1 = 1
+
+LEFT JOIN (
+    SELECT
+        COALESCE(SUM(actual_amount), 0) AS actualBudgetUsed,
+        COALESCE(SUM(committed_amount), 0) AS committedBudget
+    FROM business_planning_budget_lines
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+) budget ON 1 = 1
+
+WHERE p.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+  AND p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

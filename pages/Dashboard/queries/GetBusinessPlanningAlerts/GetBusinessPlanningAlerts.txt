@@ -1,0 +1,43 @@
+SELECT
+    'SALES_BEHIND' AS alertType,
+    'Sales are behind target.' AS alertText,
+    p.total_sales_target - COALESCE(actual.actualSales, 0) AS amountValue,
+    1 AS sortOrder
+FROM business_planning_plans p
+LEFT JOIN (
+    SELECT COALESCE(SUM(d.total_amount), 0) AS actualSales
+    FROM documents d
+    JOIN business_planning_plans p2 ON p2.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+      AND d.status NOT IN ('CANCELLED')
+      AND d.document_date >= p2.date_from
+      AND d.document_date <= p2.date_to
+) actual ON 1 = 1
+WHERE p.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+  AND COALESCE(actual.actualSales, 0) < p.total_sales_target
+
+UNION ALL
+
+SELECT
+    'BUDGET_OVER',
+    'Budget usage is above planned budget.',
+    COALESCE(SUM(actual_amount), 0) - COALESCE(SUM(planned_amount), 0),
+    2
+FROM business_planning_budget_lines
+WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+HAVING COALESCE(SUM(actual_amount), 0) > COALESCE(SUM(planned_amount), 0)
+
+UNION ALL
+
+SELECT
+    'ABSENCE_IMPACT',
+    'Absences have sales impact.',
+    COALESCE(SUM(estimated_sales_impact), 0),
+    3
+FROM business_planning_absences
+WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+  AND absence_status NOT IN ('CANCELLED')
+HAVING COALESCE(SUM(estimated_sales_impact), 0) > 0
+
+ORDER BY sortOrder;

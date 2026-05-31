@@ -1,0 +1,30 @@
+SELECT
+    b.warehouseId,
+    b.warehouseCode,
+    b.warehouseName,
+    COUNT(*) AS productCount,
+    SUM(CASE WHEN b.quantityOnHand > 0 THEN 1 ELSE 0 END) AS productsInStock,
+    SUM(CASE WHEN b.quantityOnHand <= 0 THEN 1 ELSE 0 END) AS outOfStockCount,
+    SUM(CASE WHEN b.quantityOnHand > 0 AND b.quantityOnHand <= 5 THEN 1 ELSE 0 END) AS lowStockCount,
+    COALESCE(SUM(b.quantityOnHand), 0) AS totalQuantity,
+    COALESCE(SUM(b.stockValue), 0) AS stockValue
+FROM (
+    SELECT
+        w.id AS warehouseId,
+        w.code AS warehouseCode,
+        w.name AS warehouseName,
+        p.id AS productId,
+        COALESCE(SUM(sm.quantity), 0) AS quantityOnHand,
+        COALESCE(SUM(sm.total_cost), 0) AS stockValue
+    FROM warehouses w
+    JOIN stock_movements sm ON sm.warehouse_id = w.id
+    JOIN products p ON p.id = sm.product_id
+    WHERE w.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND (
+          {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+          OR w.id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+      )
+    GROUP BY w.id, w.code, w.name, p.id
+) b
+GROUP BY b.warehouseId, b.warehouseCode, b.warehouseName
+ORDER BY stockValue DESC;

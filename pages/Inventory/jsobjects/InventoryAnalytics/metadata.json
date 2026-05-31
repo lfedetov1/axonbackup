@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_f0fe8ed5-2ca7-4e17-9db9-7312c009ddef",
+  "id": "Inventory_InventoryAnalytics",
+  "unpublishedCollection": {
+    "name": "InventoryAnalytics",
+    "pageId": "Inventory",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

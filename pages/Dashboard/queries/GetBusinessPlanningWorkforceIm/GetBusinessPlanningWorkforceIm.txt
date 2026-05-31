@@ -1,0 +1,36 @@
+SELECT
+    w.work_date AS workDate,
+    DATE_FORMAT(w.work_date, '%d.%m.%Y') AS workDateText,
+
+    wh.code AS warehouseCode,
+    wh.name AS warehouseName,
+
+    u.username,
+    CONCAT(u.first_name, ' ', u.last_name) AS employeeName,
+
+    COALESCE(w.planned_hours, 0) AS plannedHours,
+    COALESCE(w.actual_hours, 0) AS actualHours,
+    COALESCE(w.planned_labor_cost, 0) AS plannedLaborCost,
+    COALESCE(w.actual_labor_cost, 0) AS actualLaborCost,
+    COALESCE(w.expected_sales_amount, 0) AS expectedSalesAmount,
+    COALESCE(w.expected_sales_per_hour, 0) AS expectedSalesPerHour,
+
+    COALESCE(a.absence_type, '') AS absenceType,
+    COALESCE(a.lost_hours, 0) AS lostHours,
+    COALESCE(a.estimated_sales_impact, 0) AS estimatedSalesImpact,
+    COALESCE(a.estimated_cost_impact, 0) AS estimatedCostImpact,
+
+    ru.username AS replacementUsername
+
+FROM business_planning_workforce w
+LEFT JOIN warehouses wh ON wh.id = w.warehouse_id
+LEFT JOIN users u ON u.id = w.user_id
+LEFT JOIN business_planning_absences a
+  ON a.plan_id = w.plan_id
+ AND a.user_id = w.user_id
+ AND a.absence_date = w.work_date
+ AND a.absence_status NOT IN ('CANCELLED')
+LEFT JOIN users ru ON ru.id = a.replacement_user_id
+
+WHERE w.plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+ORDER BY w.work_date, wh.code, u.username;

@@ -1,0 +1,84 @@
+SELECT
+    x.dayDate,
+    DATE_FORMAT(x.dayDate, '%d.%m.%Y') AS dayText,
+
+    COALESCE(t.targetAmount, 0) AS targetAmount,
+    COALESCE(a.actualAmount, 0) AS actualAmount,
+    COALESCE(t.targetQuantity, 0) AS targetQuantity,
+    COALESCE(a.actualQuantity, 0) AS actualQuantity,
+    COALESCE(w.plannedHours, 0) AS plannedHours,
+    COALESCE(w.actualHours, 0) AS actualHours,
+    COALESCE(abs.lostHours, 0) AS lostHours,
+
+    COALESCE(a.actualAmount, 0) - COALESCE(t.targetAmount, 0) AS differenceAmount,
+
+    CASE
+      WHEN COALESCE(t.targetAmount, 0) = 0 THEN 0
+      ELSE COALESCE(a.actualAmount, 0) / t.targetAmount * 100
+    END AS achievementPercent
+
+FROM (
+    SELECT target_date AS dayDate
+    FROM business_planning_sales_targets
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+      AND target_date IS NOT NULL
+
+    UNION
+
+    SELECT d.document_date AS dayDate
+    FROM documents d
+    JOIN business_planning_plans p ON p.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+      AND d.status NOT IN ('CANCELLED')
+      AND d.document_date >= p.date_from
+      AND d.document_date <= p.date_to
+) x
+
+LEFT JOIN (
+    SELECT
+        target_date,
+        COALESCE(SUM(target_amount), 0) AS targetAmount,
+        COALESCE(SUM(target_quantity), 0) AS targetQuantity
+    FROM business_planning_sales_targets
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+    GROUP BY target_date
+) t ON t.target_date = x.dayDate
+
+LEFT JOIN (
+    SELECT
+        d.document_date,
+        COALESCE(SUM(d.total_amount), 0) AS actualAmount,
+        COALESCE(SUM(di.quantity), 0) AS actualQuantity
+    FROM documents d
+    LEFT JOIN document_items di ON di.document_id = d.id
+    JOIN business_planning_plans p ON p.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')
+      AND d.status NOT IN ('CANCELLED')
+      AND d.document_date >= p.date_from
+      AND d.document_date <= p.date_to
+    GROUP BY d.document_date
+) a ON a.document_date = x.dayDate
+
+LEFT JOIN (
+    SELECT
+        work_date,
+        COALESCE(SUM(planned_hours), 0) AS plannedHours,
+        COALESCE(SUM(actual_hours), 0) AS actualHours
+    FROM business_planning_workforce
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+    GROUP BY work_date
+) w ON w.work_date = x.dayDate
+
+LEFT JOIN (
+    SELECT
+        absence_date,
+        COALESCE(SUM(lost_hours), 0) AS lostHours
+    FROM business_planning_absences
+    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+      AND absence_status NOT IN ('CANCELLED')
+    GROUP BY absence_date
+) abs ON abs.absence_date = x.dayDate
+
+ORDER BY x.dayDate;

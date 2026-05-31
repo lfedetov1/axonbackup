@@ -1,0 +1,36 @@
+SELECT
+    b.productId,
+    b.productCode,
+    b.productName,
+    b.barcode,
+    b.quantityOnHand,
+    b.stockValue,
+    CASE
+      WHEN b.quantityOnHand <= 0 THEN 'OUT_OF_STOCK'
+      WHEN b.quantityOnHand > 0 AND b.quantityOnHand <= 5 THEN 'LOW_STOCK'
+      ELSE 'OK'
+    END AS alertType,
+    CASE
+      WHEN b.quantityOnHand <= 0 THEN 'Product is out of stock.'
+      WHEN b.quantityOnHand > 0 AND b.quantityOnHand <= 5 THEN 'Product stock is low.'
+      ELSE 'Stock is OK.'
+    END AS alertText
+FROM (
+    SELECT
+        p.id AS productId,
+        p.code AS productCode,
+        p.name AS productName,
+        p.barcode AS barcode,
+        COALESCE(SUM(sm.quantity), 0) AS quantityOnHand,
+        COALESCE(SUM(sm.total_cost), 0) AS stockValue
+    FROM products p
+    JOIN stock_movements sm ON sm.product_id = p.id
+    WHERE ({{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0 OR sm.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }})
+    GROUP BY p.id, p.code, p.name, p.barcode
+) b
+WHERE b.quantityOnHand <= 5
+ORDER BY
+    CASE WHEN b.quantityOnHand <= 0 THEN 1 ELSE 2 END,
+    b.quantityOnHand ASC,
+    b.productCode
+LIMIT 50;

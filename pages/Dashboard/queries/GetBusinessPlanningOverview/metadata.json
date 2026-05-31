@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_05bcd4e9-e31e-442f-9d3e-bc99e256cfc6",
+  "id": "Dashboard_GetBusinessPlanningOverview",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n    p.id AS planId,\n    p.plan_code AS planCode,\n    p.plan_name AS planName,\n    p.date_from AS dateFrom,\n    p.date_to AS dateTo,\n    p.currency_code AS currencyCode,\n\n    p.total_sales_target AS salesTarget,\n    p.total_quantity_target AS quantityTarget,\n    p.total_margin_target AS marginTarget,\n    p.total_budget_amount AS budgetAmount,\n    p.total_workforce_budget AS workforceBudget,\n    p.total_operating_budget AS operatingBudget,\n    p.total_marketing_budget AS marketingBudget,\n    p.planned_hours AS plannedHours,\n    p.planned_working_days AS plannedWorkingDays,\n    p.break_even_amount AS breakEvenAmount,\n\n    COALESCE(actual.actualSales, 0) AS actualSales,\n    COALESCE(actual.actualQuantity, 0) AS actualQuantity,\n    COALESCE(actual.receiptCount, 0) AS receiptCount,\n\n    COALESCE(workforce.plannedHours, 0) AS workforcePlannedHours,\n    COALESCE(workforce.actualHours, 0) AS workforceActualHours,\n    COALESCE(workforce.plannedLaborCost, 0) AS plannedLaborCost,\n    COALESCE(workforce.actualLaborCost, 0) AS actualLaborCost,\n\n    COALESCE(absence.lostHours, 0) AS lostHours,\n    COALESCE(absence.sickLeaveHours, 0) AS sickLeaveHours,\n    COALESCE(absence.vacationHours, 0) AS vacationHours,\n    COALESCE(absence.absenceSalesImpact, 0) AS absenceSalesImpact,\n    COALESCE(absence.absenceCostImpact, 0) AS absenceCostImpact,\n\n    COALESCE(budget.actualBudgetUsed, 0) AS actualBudgetUsed,\n    COALESCE(budget.committedBudget, 0) AS committedBudget,\n\n    CASE\n      WHEN p.total_sales_target = 0 THEN 0\n      ELSE COALESCE(actual.actualSales, 0) / p.total_sales_target * 100\n    END AS salesAchievementPercent,\n\n    CASE\n      WHEN p.planned_hours = 0 THEN 0\n      ELSE COALESCE(actual.actualSales, 0) / p.planned_hours\n    END AS salesPerPlannedHour,\n\n    CASE\n      WHEN COALESCE(workforce.actualHours, 0) = 0 THEN 0\n      ELSE COALESCE(actual.actualSales, 0) / workforce.actualHours\n    END AS salesPerActualHour,\n\n    DATEDIFF({{ moment().format(\"YYYY-MM-DD\") }}, p.date_from) + 1 AS elapsedDays,\n    DATEDIFF(p.date_to, p.date_from) + 1 AS totalDays,\n\n    CASE\n      WHEN DATEDIFF({{ moment().format(\"YYYY-MM-DD\") }}, p.date_from) + 1 <= 0 THEN 0\n      ELSE COALESCE(actual.actualSales, 0) / (DATEDIFF({{ moment().format(\"YYYY-MM-DD\") }}, p.date_from) + 1) * (DATEDIFF(p.date_to, p.date_from) + 1)\n    END AS projectedSales,\n\n    p.total_sales_target - COALESCE(actual.actualSales, 0) AS salesRemaining,\n    p.total_budget_amount - COALESCE(budget.actualBudgetUsed, 0) AS budgetRemaining\n\nFROM business_planning_plans p\n\nLEFT JOIN (\n    SELECT\n        COALESCE(SUM(d.total_amount), 0) AS actualSales,\n        COALESCE(SUM(di.quantity), 0) AS actualQuantity,\n        COUNT(DISTINCT d.id) AS receiptCount\n    FROM documents d\n    LEFT JOIN document_items di ON di.document_id = d.id\n    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE')\n      AND d.status NOT IN ('CANCELLED')\n      AND d.document_date >= (\n          SELECT date_from\n          FROM business_planning_plans\n          WHERE id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n          LIMIT 1\n      )\n      AND d.document_date <= (\n          SELECT date_to\n          FROM business_planning_plans\n          WHERE id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n          LIMIT 1\n      )\n) actual ON 1 = 1\n\nLEFT JOIN (\n    SELECT\n        COALESCE(SUM(planned_hours), 0) AS plannedHours,\n        COALESCE(SUM(actual_hours), 0) AS actualHours,\n        COALESCE(SUM(planned_labor_cost), 0) AS plannedLaborCost,\n        COALESCE(SUM(actual_labor_cost), 0) AS actualLaborCost\n    FROM business_planning_workforce\n    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n) workforce ON 1 = 1\n\nLEFT JOIN (\n    SELECT\n        COALESCE(SUM(lost_hours), 0) AS lostHours,\n        COALESCE(SUM(CASE WHEN absence_type = 'SICK_LEAVE' THEN lost_hours ELSE 0 END), 0) AS sickLeaveHours,\n        COALESCE(SUM(CASE WHEN absence_type = 'VACATION' THEN lost_hours ELSE 0 END), 0) AS vacationHours,\n        COALESCE(SUM(estimated_sales_impact), 0) AS absenceSalesImpact,\n        COALESCE(SUM(estimated_cost_impact), 0) AS absenceCostImpact\n    FROM business_planning_absences\n    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n      AND absence_status NOT IN ('CANCELLED')\n) absence ON 1 = 1\n\nLEFT JOIN (\n    SELECT\n        COALESCE(SUM(actual_amount), 0) AS actualBudgetUsed,\n        COALESCE(SUM(committed_amount), 0) AS committedBudget\n    FROM business_planning_budget_lines\n    WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n) budget ON 1 = 1\n\nWHERE p.id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}\n  AND p.company_id = {{ Number(appsmith.store.companyId || 1) }}\nLIMIT 1;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetBusinessPlanningOverview",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

@@ -1,0 +1,11 @@
+SELECT
+    budget_type AS budgetType,
+    budget_category AS budgetCategory,
+    COALESCE(SUM(planned_amount), 0) AS plannedAmount,
+    COALESCE(SUM(committed_amount), 0) AS committedAmount,
+    COALESCE(SUM(actual_amount), 0) AS actualAmount,
+    COALESCE(SUM(planned_amount), 0) - COALESCE(SUM(actual_amount), 0) AS remainingAmount
+FROM business_planning_budget_lines
+WHERE plan_id = {{ Number(appsmith.store.businessPlanningPlanId || 0) }}
+GROUP BY budget_type, budget_category
+ORDER BY budget_type, budget_category;

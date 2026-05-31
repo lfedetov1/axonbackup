@@ -1,0 +1,37 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    DATE_FORMAT(d.document_date, '%d.%m.%Y') AS documentDateText,
+
+    d.status,
+    d.posting_status AS postingStatus,
+
+    sw.code AS sourceWarehouseCode,
+    sw.name AS sourceWarehouseName,
+    dw.code AS destinationWarehouseCode,
+    dw.name AS destinationWarehouseName,
+
+    COALESCE(SUM(di.quantity), 0) AS totalQuantity,
+    COUNT(di.id) AS itemCount,
+
+    d.note,
+    u.username AS createdBy
+FROM documents d
+LEFT JOIN document_items di ON di.document_id = d.id
+LEFT JOIN warehouses sw ON sw.id = d.source_warehouse_id
+LEFT JOIN warehouses dw ON dw.id = d.destination_warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'TRANSFER_REQUEST'
+  AND d.status NOT IN ('CANCELLED', 'RECEIVED', 'POSTED')
+  AND (
+      {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0
+      OR d.source_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+      OR d.destination_warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }}
+  )
+GROUP BY
+    d.id, d.document_number, d.document_date, d.status, d.posting_status,
+    sw.code, sw.name, dw.code, dw.name, d.note, u.username
+ORDER BY d.document_date DESC, d.id DESC
+LIMIT 50;

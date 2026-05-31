@@ -1,0 +1,30 @@
+SELECT
+    sm.id AS movementId,
+    sm.movement_date AS movementDate,
+    DATE_FORMAT(sm.movement_date, '%d.%m.%Y') AS movementDateText,
+    sm.movement_type AS movementType,
+
+    p.code AS productCode,
+    p.name AS productName,
+
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COALESCE(sm.quantity, 0) AS quantity,
+    COALESCE(sm.unit_cost, 0) AS unitCost,
+    COALESCE(sm.total_cost, 0) AS totalCost,
+
+    d.document_number AS documentNumber,
+    d.document_type AS documentType,
+
+    sm.note,
+    sm.created_at AS createdAt
+FROM stock_movements sm
+LEFT JOIN products p ON p.id = sm.product_id
+LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+LEFT JOIN documents d ON d.id = sm.document_id
+WHERE ({{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }} = 0 OR sm.warehouse_id = {{ Number(appsmith.store.inventoryAnalyticsWarehouseId || 0) }})
+  AND sm.movement_date >= {{ appsmith.store.inventoryAnalyticsDateFrom || moment().subtract(30, "days").format("YYYY-MM-DD") }}
+  AND sm.movement_date <= {{ appsmith.store.inventoryAnalyticsDateTo || moment().format("YYYY-MM-DD") }}
+ORDER BY sm.movement_date DESC, sm.id DESC
+LIMIT 150;
