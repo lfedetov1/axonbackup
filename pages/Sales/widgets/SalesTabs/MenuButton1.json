@@ -6,6 +6,12 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "menuItems.menuItem1.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem3.isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -20,6 +26,9 @@
     },
     {
       "key": "menuItems.menuItem1.onClick"
+    },
+    {
+      "key": "menuItems.menuItem1.isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -47,7 +56,7 @@
       "id": "menuItem1",
       "index": 0,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": "{{ AppAccess.has(\"sales.invoices.create\") }}",
       "label": "New",
       "onClick": "{{ AppLoader.run(\"Opening invoice...\", \"salesInvoice.new\", { documentType: \"SALES_INVOICE\" }) }}",
       "widgetId": ""
@@ -67,7 +76,7 @@
       "id": "menuItem3",
       "index": 2,
       "isDisabled": false,
-      "isVisible": "true",
+      "isVisible": "{{ AppAccess.has(\"sales.invoices.post\") }}",
       "label": "Close day",
       "onClick": "{{\n  AppLoader.run(\"Posting daily invoices...\", \"salesInvoice.postDay\", {\n    postingDate: moment(InvoiceDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\")\n  })\n}}",
       "widgetId": ""

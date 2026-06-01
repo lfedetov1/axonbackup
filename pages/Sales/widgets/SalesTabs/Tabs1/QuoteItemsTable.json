@@ -111,11 +111,17 @@
     },
     {
       "key": "primaryColumns.Note.computedValue"
+    },
+    {
+      "key": "primaryColumns.Unit_Price.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "tableData"
+    },
+    {
+      "key": "primaryColumns.Unit_Price.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -461,7 +467,7 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "columnType": "number",
-      "computedValue": "{{(() => { const tableData = QuoteItemsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"Total\"])) : Total })()}}",
+      "computedValue": "{{(() => { const tableData = QuoteItemsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.canViewSensitiveTotals() )) :  AppAccess.canViewSensitiveTotals()  })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,
@@ -532,7 +538,7 @@
       "id": "Unit_Price",
       "index": 8,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = QuoteItemsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.canViewCost() )) :  AppAccess.canViewCost()  })()}}",
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,

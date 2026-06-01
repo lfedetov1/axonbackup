@@ -169,6 +169,15 @@
     },
     {
       "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -192,6 +201,15 @@
     },
     {
       "key": "primaryColumns.customColumn3.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -282,7 +300,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.hasAny([\"sales.delivery.label_print\", \"sales.delivery.print\"]) )) :  AppAccess.hasAny([\"sales.delivery.label_print\", \"sales.delivery.print\"])  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  Number(SalesDeliveryNotesTable.selectedRow[\"Package Count\"] || 0) <= 0\n)) : \n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  Number(SalesDeliveryNotesTable.selectedRow[\"Package Count\"] || 0) <= 0\n })()}}",
       "isDiscardVisible": true,
@@ -321,7 +339,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.hasAny([\"sales.delivery.pack\", \"sales.delivery.edit\"]) )) :  AppAccess.hasAny([\"sales.delivery.pack\", \"sales.delivery.edit\"])  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  [\"PACKED\", \"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    SalesDeliveryNotesTable.selectedRow.Status || SalesDeliveryNotesTable.selectedRow.status || \"\"\n  )\n)) : \n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  [\"PACKED\", \"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    SalesDeliveryNotesTable.selectedRow.Status || SalesDeliveryNotesTable.selectedRow.status || \"\"\n  )\n })()}}",
       "isDiscardVisible": true,
@@ -360,7 +378,7 @@
       "id": "customColumn3",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.hasAny([\"sales.delivery.pack\", \"sales.delivery.edit\"]) )) :  AppAccess.hasAny([\"sales.delivery.pack\", \"sales.delivery.edit\"])  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesDeliveryPackagesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  [\"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    SalesDeliveryNotesTable.selectedRow.Status || SalesDeliveryNotesTable.selectedRow.status || \"\"\n  )\n)) : \n  !SalesDeliveryNotesTable.selectedRow?.documentId ||\n  [\"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    SalesDeliveryNotesTable.selectedRow.Status || SalesDeliveryNotesTable.selectedRow.status || \"\"\n  )\n })()}}",
       "isDiscardVisible": true,

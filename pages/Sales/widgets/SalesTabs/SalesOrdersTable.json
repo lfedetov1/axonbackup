@@ -192,6 +192,15 @@
     },
     {
       "key": "primaryColumns.customColumn6.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn6.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -233,6 +242,15 @@
     },
     {
       "key": "primaryColumns.customColumn6.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn6.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -992,7 +1010,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.salesorders.edit\") )) :  AppAccess.has(\"sales.salesorders.edit\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( ![\"DRAFT\", \"CONFIRMED\"].includes(currentRow.Status || currentRow.status || \"\") )) :  ![\"DRAFT\", \"CONFIRMED\"].includes(currentRow.Status || currentRow.status || \"\")  })()}}",
       "isDiscardVisible": true,
@@ -1109,7 +1127,7 @@
       "id": "customColumn5",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.salesorders.void\") )) :  AppAccess.has(\"sales.salesorders.void\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( ![\"DRAFT\", \"CONFIRMED\", \"PACKED\"].includes(currentRow.Status || currentRow.status || \"\") )) :  ![\"DRAFT\", \"CONFIRMED\", \"PACKED\"].includes(currentRow.Status || currentRow.status || \"\")  })()}}",
       "isDiscardVisible": true,
@@ -1148,7 +1166,7 @@
       "id": "customColumn6",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.salesorders.void\") )) :  AppAccess.has(\"sales.salesorders.void\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesOrdersTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( [\"CANCELLED\", \"INVOICED\"].includes(currentRow.Status || currentRow.status || \"\") )) :  [\"CANCELLED\", \"INVOICED\"].includes(currentRow.Status || currentRow.status || \"\")  })()}}",
       "isDiscardVisible": true,

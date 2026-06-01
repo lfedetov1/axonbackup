@@ -18,12 +18,18 @@
     },
     {
       "key": "defaultModel"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicHeight": "FIXED",
   "dynamicPropertyPathList": [
     {
       "key": "onDeliveryControlAction"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -41,7 +47,7 @@
   "isCanvas": false,
   "isLoading": false,
   "isSearchWildcard": true,
-  "isVisible": true,
+  "isVisible": "{{ AppAccess.has(\"sales.reports.view\") }}",
   "key": "wxld9gxit1",
   "leftColumn": 0,
   "maxDynamicHeight": 9000,

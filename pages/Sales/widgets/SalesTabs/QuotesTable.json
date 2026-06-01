@@ -184,6 +184,15 @@
     },
     {
       "key": "primaryColumns.updatedAt.computedValue"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -213,6 +222,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn5.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -971,7 +989,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.quotes.edit\") )) :  AppAccess.has(\"sales.quotes.edit\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow.Status !== \"DRAFT\" )) :  currentRow.Status !== \"DRAFT\"  })()}}",
       "isDiscardVisible": true,
@@ -1010,7 +1028,7 @@
       "id": "customColumn3",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.quotes.void\") )) :  AppAccess.has(\"sales.quotes.void\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( [\"CANCELLED\", \"CONVERTED\"].includes(currentRow.Status) )) :  [\"CANCELLED\", \"CONVERTED\"].includes(currentRow.Status)  })()}}",
       "isDiscardVisible": true,
@@ -1049,7 +1067,7 @@
       "id": "customColumn5",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.convert_documents\") )) :  AppAccess.has(\"sales.convert_documents\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( ![\"DRAFT\", \"SENT\", \"ACCEPTED\"].includes(currentRow.Status) )) :  ![\"DRAFT\", \"SENT\", \"ACCEPTED\"].includes(currentRow.Status)  })()}}",
       "isDiscardVisible": true,

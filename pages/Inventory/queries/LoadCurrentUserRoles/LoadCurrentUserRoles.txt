@@ -1,0 +1,7 @@
+SELECT DISTINCT
+    r.code AS roleCode
+FROM user_role_assignments ura
+JOIN roles r
+  ON r.id = ura.role_id
+WHERE ura.user_id = {{ Number(appsmith.store.userId || 0) }}
+ORDER BY r.code;

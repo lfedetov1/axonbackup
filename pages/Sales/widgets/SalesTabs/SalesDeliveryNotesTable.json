@@ -158,6 +158,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -178,6 +184,12 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -735,6 +747,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
+      "isCellVisible": "{{(() => { const tableData = SalesDeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.delivery.void\") )) :  AppAccess.has(\"sales.delivery.void\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesDeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !(\n    currentRow.documentId ||\n    currentRow.id ||\n    currentRow.ID ||\n    currentRow[\"Document ID\"]\n  ) ||\n  [\"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    String(currentRow.Status || currentRow.status || \"\").toUpperCase()\n  )\n)) : \n  !(\n    currentRow.documentId ||\n    currentRow.id ||\n    currentRow.ID ||\n    currentRow[\"Document ID\"]\n  ) ||\n  [\"SHIPPED\", \"RECEIVED\", \"POSTED\", \"CANCELLED\"].includes(\n    String(currentRow.Status || currentRow.status || \"\").toUpperCase()\n  )\n })()}}",
       "isDiscardVisible": true,
@@ -773,7 +786,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = SalesDeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.delivery.manifest\") )) :  AppAccess.has(\"sales.delivery.manifest\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = SalesDeliveryNotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  !(\n    currentRow.documentId ||\n    currentRow.id ||\n    currentRow.ID ||\n    currentRow[\"Document ID\"]\n  ) ||\n  Number(currentRow[\"Package Count\"] || 0) <= 0\n)) : \n  !(\n    currentRow.documentId ||\n    currentRow.id ||\n    currentRow.ID ||\n    currentRow[\"Document ID\"]\n  ) ||\n  Number(currentRow[\"Package Count\"] || 0) <= 0\n })()}}",
       "isDiscardVisible": true,

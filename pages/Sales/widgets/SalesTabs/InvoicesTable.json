@@ -214,6 +214,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -249,6 +258,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn3.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn2.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -1037,7 +1055,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.invoices.edit\") )) :  AppAccess.has(\"sales.invoices.edit\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
@@ -1076,7 +1094,7 @@
       "id": "customColumn2",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.hasAny([\"sales.invoices.void\", \"sales.creditnote.create\"]) )) :  AppAccess.hasAny([\"sales.invoices.void\", \"sales.creditnote.create\"])  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
@@ -1115,7 +1133,7 @@
       "id": "customColumn3",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": true,
+      "isCellVisible": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"sales.invoices.post\") )) :  AppAccess.has(\"sales.invoices.post\")  })()}}",
       "isDerived": true,
       "isDisabled": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n)) : \n  String(currentRow[\"Status\"] || currentRow.status || \"\") !== \"DRAFT\"\n })()}}",
       "isDiscardVisible": true,
