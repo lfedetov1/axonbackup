@@ -1,0 +1,37 @@
+SELECT
+    d.id AS documentId,
+    d.document_type AS documentType,
+    d.document_number AS `Document Number`,
+    d.document_date AS `Document Date`,
+    d.status AS `Status`,
+    d.posting_status AS `Posting Status`,
+    d.payment_method AS `Payment Method`,
+    d.currency_code AS `Currency`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+      ELSE COALESCE(d.total_amount, 0)
+    END AS `Total`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.paid_amount, 0))
+      ELSE COALESCE(d.paid_amount, 0)
+    END AS `Paid`,
+
+    CASE
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
+      ELSE COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
+    END AS `Open Amount`,
+
+    w.code AS `Warehouse Code`,
+    w.name AS `Warehouse`,
+    d.created_at AS createdAt
+FROM documents d
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.partner_id = {{ Number(Customer360CustomerSelect.selectedOptionValue || 0) }}
+  AND d.document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.document_date >= {{ moment(Customer360DateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(Customer360DateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+ORDER BY d.document_date DESC, d.id DESC;

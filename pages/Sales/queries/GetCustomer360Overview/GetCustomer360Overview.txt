@@ -1,0 +1,71 @@
+SELECT
+    bp.id AS customerId,
+    bp.code AS customerCode,
+    bp.name AS customerName,
+    bp.legal_name AS legalName,
+    bp.tax_number AS taxNumber,
+    bp.registration_number AS registrationNumber,
+    bp.email,
+    bp.phone,
+    bp.address_line1 AS address,
+    bp.city_name AS city,
+    bp.postal_code AS postalCode,
+
+    COALESCE(s.documentCount, 0) AS documentCount,
+    COALESCE(s.invoiceCount, 0) AS invoiceCount,
+    COALESCE(s.creditNoteCount, 0) AS creditNoteCount,
+    COALESCE(s.orderCount, 0) AS orderCount,
+    COALESCE(s.quoteCount, 0) AS quoteCount,
+
+    COALESCE(s.totalSales, 0) AS totalSales,
+    COALESCE(s.totalPaid, 0) AS totalPaid,
+    COALESCE(s.openAmount, 0) AS openAmount,
+    COALESCE(s.lastDocumentDate, '') AS lastDocumentDate,
+    COALESCE(s.lastInvoiceDate, '') AS lastInvoiceDate
+FROM business_partners bp
+LEFT JOIN (
+    SELECT
+        d.partner_id,
+
+        COUNT(*) AS documentCount,
+        SUM(CASE WHEN d.document_type = 'SALES_INVOICE' THEN 1 ELSE 0 END) AS invoiceCount,
+        SUM(CASE WHEN d.document_type = 'CREDIT_NOTE' THEN 1 ELSE 0 END) AS creditNoteCount,
+        SUM(CASE WHEN d.document_type = 'SALES_ORDER' THEN 1 ELSE 0 END) AS orderCount,
+        SUM(CASE WHEN d.document_type = 'QUOTE' THEN 1 ELSE 0 END) AS quoteCount,
+
+        SUM(
+          CASE
+            WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+            ELSE COALESCE(d.total_amount, 0)
+          END
+        ) AS totalSales,
+
+        SUM(
+          CASE
+            WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.paid_amount, 0))
+            ELSE COALESCE(d.paid_amount, 0)
+          END
+        ) AS totalPaid,
+
+        SUM(
+          CASE
+            WHEN d.document_type = 'CREDIT_NOTE'
+            THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
+            ELSE COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
+          END
+        ) AS openAmount,
+
+        MAX(d.document_date) AS lastDocumentDate,
+        MAX(CASE WHEN d.document_type = 'SALES_INVOICE' THEN d.document_date ELSE NULL END) AS lastInvoiceDate
+    FROM documents d
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('QUOTE', 'SALES_ORDER', 'DELIVERY_NOTE', 'SALES_INVOICE', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND d.document_date >= {{ moment(Customer360DateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
+      AND d.document_date <= {{ moment(Customer360DateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+    GROUP BY d.partner_id
+) s
+  ON s.partner_id = bp.id
+WHERE bp.id = {{ Number(Customer360CustomerSelect.selectedOptionValue || 0) }}
+  AND bp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

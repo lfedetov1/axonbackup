@@ -1,0 +1,18 @@
+SELECT
+    DATE_FORMAT(d.document_date, '%Y-%m') AS monthKey,
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ) AS totalAmount,
+    COUNT(*) AS documentCount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.partner_id = {{ Number(Customer360CustomerSelect.selectedOptionValue || 0) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(Customer360DateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(Customer360DateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+GROUP BY DATE_FORMAT(d.document_date, '%Y-%m')
+ORDER BY monthKey;

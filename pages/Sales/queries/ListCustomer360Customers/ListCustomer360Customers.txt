@@ -1,0 +1,9 @@
+SELECT
+    bp.id AS value,
+    CONCAT(COALESCE(bp.code, ''), ' - ', bp.name) AS label,
+    bp.id AS customerId,
+    bp.code AS customerCode,
+    bp.name AS customerName
+FROM business_partners bp
+WHERE bp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+ORDER BY bp.name;

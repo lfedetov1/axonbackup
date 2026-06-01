@@ -1,0 +1,31 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+        ELSE COALESCE(di.quantity, 0)
+      END
+    ) AS quantity,
+
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.line_total, 0))
+        ELSE COALESCE(di.line_total, 0)
+      END
+    ) AS totalAmount
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.partner_id = {{ Number(Customer360CustomerSelect.selectedOptionValue || 0) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(Customer360DateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(Customer360DateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+GROUP BY p.id, p.code, p.name, p.barcode
+ORDER BY totalAmount DESC
+LIMIT 20;
