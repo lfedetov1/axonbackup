@@ -11,7 +11,7 @@
       "key": "borderRadius"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -20,6 +20,9 @@
     },
     {
       "key": "isDisabled"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -30,9 +33,9 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{ !Auth.can(\"inventory.stock_movement.create\") }}\n",
+  "isDisabled": "",
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ AppAccess.has(\"inventory.stockmovements.create\") }}",
   "key": "8w7eb48e8j",
   "leftColumn": 52,
   "minWidth": 120,

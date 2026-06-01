@@ -11,7 +11,7 @@
       "key": "borderRadius"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -20,9 +20,6 @@
     },
     {
       "key": "isVisible"
-    },
-    {
-      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -33,9 +30,9 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{ !Auth.can(\"inventory.inbound.create\") }}\n",
+  "isDisabled": false,
   "isLoading": false,
-  "isVisible": "true",
+  "isVisible": "{{ AppAccess.has(\"inventory.inbound.create\") }}",
   "key": "r7qe3g1qa4",
   "leftColumn": 56,
   "minWidth": 120,

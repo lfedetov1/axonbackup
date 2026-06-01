@@ -11,7 +11,7 @@
       "key": "borderRadius"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -19,7 +19,7 @@
       "key": "onClick"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -30,9 +30,9 @@
   "iconAlign": "left",
   "iconName": "add",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{ !Auth.can(\"inventory.goods_receipt.create\") }}\n",
+  "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ AppAccess.has(\"inventory.goodsreceipt.create\") }}",
   "key": "7fam1cqhk7",
   "leftColumn": 52,
   "minWidth": 120,
