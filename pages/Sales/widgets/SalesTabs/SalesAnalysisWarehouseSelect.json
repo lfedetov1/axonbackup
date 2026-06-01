@@ -1,0 +1,72 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 7,
+  "boxShadow": "none",
+  "defaultOptionValue": "ALL",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "4xg9wrggod",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Warehouse :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 13,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 20,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{\n  SalesAnalysis.refresh())\n}}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "originalBottomRow": 34,
+  "originalTopRow": 27,
+  "parentColumnSpace": 16.96875,
+  "parentId": "061wgy65kz",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 15,
+  "serverSideFiltering": false,
+  "sourceData": "{{\n[\n  { label: \"All Warehouses\", value: 0 },\n  ...(ListWarehouses.data || []).map(w => ({\n    label: `${w.code || w.warehouseCode || \"\"} - ${w.name || w.warehouseName || \"\"}`,\n    value: w.id || w.warehouseId\n  }))\n]\n}}",
+  "topRow": 0,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "xjpqcldvmm",
+  "widgetName": "SalesAnalysisWarehouseSelect"
+}

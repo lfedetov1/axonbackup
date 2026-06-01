@@ -1,19 +1,12 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_7fe67237-30b0-4521-932b-5aa8c63d0cdb",
-  "id": "Sales_AppAccess.canViewTab",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_51ad16ad-9cd1-4ac7-90dd-dcf07309bebe",
+  "id": "Sales_AppAccess.canViewAllWarehouses",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [
-        {
-          "name": "moduleName"
-        },
-        {
-          "name": "tabName"
-        }
-      ],
+      "jsArguments": [],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -29,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "AppAccess.canViewTab",
-    "name": "canViewTab",
+    "fullyQualifiedName": "AppAccess.canViewAllWarehouses",
+    "name": "canViewAllWarehouses",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

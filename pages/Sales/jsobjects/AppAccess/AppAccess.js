@@ -1,141 +1,59 @@
 export default {
-  list(value) {
-    if (!value) return [];
-
-    if (Array.isArray(value)) {
-      return value
-        .map(x =>
-          typeof x === "string"
-            ? x
-            : x.code || x.name || x.roleCode || x.permissionCode || x.value || ""
-        )
-        .filter(Boolean);
-    }
-
-    if (typeof value === "string") {
-      return value.split(",").map(x => x.trim()).filter(Boolean);
-    }
-
-    if (typeof value === "object") {
-      return Object.values(value)
-        .map(x =>
-          typeof x === "string"
-            ? x
-            : x?.code || x?.name || x?.roleCode || x?.permissionCode || x?.value || ""
-        )
-        .filter(Boolean);
-    }
-
-    return [];
-  },
-
   roleCodes() {
-    return this.list(appsmith.store.roleCodes).map(x => String(x).toUpperCase());
+    return appsmith.store.roleCodes || [];
   },
 
   permissions() {
-    return this.list(appsmith.store.permissions).map(x => String(x).toLowerCase());
+    return appsmith.store.permissions || [];
   },
 
   isAdmin() {
-    const roles = this.roleCodes();
+    return this.roleCodes().includes("ADMIN") || appsmith.store.isAdmin === true;
+  },
 
+  has(code) {
+    return this.isAdmin() || this.permissions().includes(code);
+  },
+
+  hasAny(codes = []) {
+    return this.isAdmin() || codes.some(code => this.permissions().includes(code));
+  },
+
+  canViewTab(moduleName, tabName) {
+    return this.has(`${moduleName}.${tabName}.view`);
+  },
+
+  canViewAllWarehouses() {
     return (
-      roles.includes("ADMIN") ||
-      roles.includes("OWNER") ||
-      roles.includes("SUPERADMIN") ||
-      roles.includes("SUPER_ADMIN")
+      this.isAdmin() ||
+      appsmith.store.canViewAllWarehouses === true ||
+      this.has("inventory.warehouse_all") ||
+      this.has("sales.view_all_warehouses")
     );
   },
 
-  can(code) {
-    if (this.isAdmin()) return true;
-
-    return this.permissions().includes(String(code || "").toLowerCase());
+  warehouseIds() {
+    return appsmith.store.warehouseAccessIds || [];
   },
 
-  canAny(codes = []) {
-    if (this.isAdmin()) return true;
+  canUseWarehouse(warehouseId) {
+    const id = Number(warehouseId || 0);
 
-    return codes.some(code => this.can(code));
-  },
+    if (this.canViewAllWarehouses()) return true;
+    if (!id) return false;
 
-  canViewTab(module, tab) {
-    const m = String(module || "").toLowerCase();
-    const t = String(tab || "").toLowerCase();
-
-    return this.canAny([
-      `${m}.${t}.view`,
-      `${m}.${t}.manage`,
-      `${m}.view`,
-      `${m}.manage`
-    ]);
-  },
-
-  canCreate(module, area) {
-    return this.canAny([
-      `${module}.${area}.create`,
-      `${module}.${area}.manage`,
-      `${module}.manage`
-    ]);
-  },
-
-  canEdit(module, area) {
-    return this.canAny([
-      `${module}.${area}.edit`,
-      `${module}.${area}.manage`,
-      `${module}.manage`
-    ]);
-  },
-
-  canPost(module, area) {
-    return this.canAny([
-      `${module}.${area}.post`,
-      `${module}.${area}.manage`,
-      `${module}.manage`
-    ]);
-  },
-
-  canVoid(module, area) {
-    return this.canAny([
-      `${module}.${area}.void`,
-      `${module}.${area}.manage`,
-      `${module}.manage`
-    ]);
-  },
-
-  canPrint(module, area) {
-    return this.canAny([
-      `${module}.${area}.print`,
-      `${module}.${area}.manage`,
-      `${module}.manage`
-    ]);
+    return this.warehouseIds().includes(id);
   },
 
   canViewCost() {
-    return this.canAny([
-      "cost.view",
-      "inventory.cost.view",
-      "purchase.cost.view",
-      "product.cost.view"
-    ]);
+    return this.has("sales.view_cost") || this.has("inventory.view_cost");
   },
 
   canViewMargin() {
-    return this.canAny([
-      "margin.view",
-      "sales.margin.view",
-      "product.margin.view"
-    ]);
+    return this.has("sales.view_margin");
   },
 
-  debug() {
-    return {
-      roleCodes: appsmith.store.roleCodes,
-      permissions: appsmith.store.permissions,
-      normalizedRoles: this.roleCodes(),
-      normalizedPermissions: this.permissions(),
-      isAdmin: this.isAdmin()
-    };
+  canViewSensitiveTotals() {
+    return this.has("sales.sensitive_totals.view");
   }
 };

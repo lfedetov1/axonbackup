@@ -1,19 +1,12 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_7fe67237-30b0-4521-932b-5aa8c63d0cdb",
-  "id": "Sales_AppAccess.canViewTab",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_553ed055-8e04-4e36-8926-1d651afea5f2",
+  "id": "Sales_AppAccess.canViewSensitiveTotals",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [
-        {
-          "name": "moduleName"
-        },
-        {
-          "name": "tabName"
-        }
-      ],
+      "jsArguments": [],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -29,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "AppAccess.canViewTab",
-    "name": "canViewTab",
+    "fullyQualifiedName": "AppAccess.canViewSensitiveTotals",
+    "name": "canViewSensitiveTotals",
     "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

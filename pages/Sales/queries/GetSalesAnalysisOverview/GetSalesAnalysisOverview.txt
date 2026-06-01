@@ -1,0 +1,68 @@
+SELECT
+    COUNT(*) AS documentCount,
+
+    SUM(CASE WHEN d.document_type = 'SALES_INVOICE' THEN 1 ELSE 0 END) AS invoiceCount,
+    SUM(CASE WHEN d.document_type = 'CREDIT_NOTE' THEN 1 ELSE 0 END) AS creditNoteCount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.subtotal_amount, 0))
+        ELSE COALESCE(d.subtotal_amount, 0)
+      END
+    ), 0) AS subtotalAmount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.discount_amount, 0))
+        ELSE COALESCE(d.discount_amount, 0)
+      END
+    ), 0) AS discountAmount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.tax_amount, 0))
+        ELSE COALESCE(d.tax_amount, 0)
+      END
+    ), 0) AS taxAmount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ), 0) AS totalAmount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.paid_amount, 0))
+        ELSE COALESCE(d.paid_amount, 0)
+      END
+    ), 0) AS paidAmount,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
+        ELSE COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
+      END
+    ), 0) AS openAmount,
+
+    COALESCE(AVG(
+      CASE
+        WHEN d.document_type = 'SALES_INVOICE' THEN COALESCE(d.total_amount, 0)
+        ELSE NULL
+      END
+    ), 0) AS averageInvoiceAmount,
+
+    COUNT(DISTINCT d.partner_id) AS customerCount,
+    COUNT(DISTINCT d.warehouse_id) AS warehouseCount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(SalesAnalysisDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(SalesAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+      {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+      OR d.warehouse_id = {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+  );

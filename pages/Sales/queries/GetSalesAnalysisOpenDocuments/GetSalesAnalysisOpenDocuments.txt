@@ -1,0 +1,24 @@
+SELECT
+    d.id AS documentId,
+    d.document_number AS documentNumber,
+    d.document_date AS documentDate,
+    bp.name AS customerName,
+    d.currency_code AS currencyCode,
+    COALESCE(d.total_amount, 0) AS totalAmount,
+    COALESCE(d.paid_amount, 0) AS paidAmount,
+    COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) AS openAmount,
+    d.status AS status
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type = 'SALES_INVOICE'
+  AND d.status <> 'CANCELLED'
+  AND COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) > 0
+  AND d.document_date >= {{ moment(SalesAnalysisDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(SalesAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+      {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+      OR d.warehouse_id = {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+  )
+ORDER BY openAmount DESC
+LIMIT 20;

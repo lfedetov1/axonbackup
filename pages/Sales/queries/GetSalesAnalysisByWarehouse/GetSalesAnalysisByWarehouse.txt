@@ -1,0 +1,24 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+    COUNT(*) AS documentCount,
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ), 0) AS totalAmount
+FROM documents d
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.document_type IN ('SALES_INVOICE', 'CREDIT_NOTE')
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(SalesAnalysisDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(SalesAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+      {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }} = 0
+      OR d.warehouse_id = {{ Number(SalesAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId1 || appsmith.store.warehouseId || 0) }}
+  )
+GROUP BY w.id, w.code, w.name
+ORDER BY totalAmount DESC;
