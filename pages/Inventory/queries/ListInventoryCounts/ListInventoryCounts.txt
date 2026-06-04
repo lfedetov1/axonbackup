@@ -46,18 +46,23 @@ LEFT JOIN (
 
 WHERE d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'INVENTORY_COUNT'
-  AND (
-      {{InventorySearchInput.text || ''}} = ''
-      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR w.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR w.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-  )
-  AND (
-      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
-      OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
-  )
-  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
-  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+ 
+	AND (
+    {{ InventoryCountSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ InventoryCountSearchInput.text || "" }}, '%')
+    OR d.note LIKE CONCAT('%', {{ InventoryCountSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(InventoryCountDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(InventoryCountDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
+ 
 
 GROUP BY
     d.id,

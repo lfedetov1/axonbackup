@@ -66,6 +66,12 @@ WHERE sm.company_id = {{appsmith.store.companyId}}
       {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
       OR sm.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
   )
+	AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
 
 GROUP BY
     p.id,

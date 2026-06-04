@@ -36,18 +36,26 @@ WHERE d.document_type = 'DELIVERY_NOTE'
       OR d.company_id = {{Number(appsmith.store.companyId || 0)}}
   )
   AND (
-      {{InventorySearchInput.text || ''}} = ''
-      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR bp.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR bp.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR d.reference_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-  )
+    {{ DeliveryNoteSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ DeliveryNoteSearchInput.text || "" }}, '%')
+    OR bp.name LIKE CONCAT('%', {{ DeliveryNoteSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(DeliveryNoteDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(DeliveryNoteDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+
   AND (
       {{Number(InventoryWarehouseSelect.selectedOptionValue || 0)}} = 0
       OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || 0)}}
   )
-  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || '2000-01-01').format("YYYY-MM-DD")}}
-  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || '2099-12-31').format("YYYY-MM-DD")}}
+
+)
 
 GROUP BY
     d.id,

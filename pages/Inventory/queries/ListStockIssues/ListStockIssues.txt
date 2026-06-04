@@ -25,6 +25,22 @@ LEFT JOIN document_items di
 
 WHERE d.document_type = 'STOCK_OUT'
 
+AND (
+    {{ StockIssueSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ StockIssueSearchInput.text || "" }}, '%')
+    OR d.note LIKE CONCAT('%', {{ StockIssueSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(StockIssueDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(StockIssueDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
+
 GROUP BY
     d.id,
     d.document_number,

@@ -37,7 +37,7 @@
   "isLoading": false,
   "isVisible": "{{ AppAccess.has(\"inventory.transfer.create\") }}",
   "key": "fxhh1kirgz",
-  "leftColumn": 54,
+  "leftColumn": 56,
   "minWidth": 120,
   "mobileBottomRow": 5,
   "mobileLeftColumn": 47,

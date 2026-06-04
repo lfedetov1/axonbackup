@@ -38,6 +38,14 @@ WHERE dm.company_id = {{ Number(appsmith.store.companyId || 0) }}
   AND dm.manifest_date >= {{ DeliveryManifestDateFrom.selectedDate ? moment(DeliveryManifestDateFrom.selectedDate).format("YYYY-MM-DD") : moment().startOf("month").format("YYYY-MM-DD") }}
   AND dm.manifest_date <= {{ DeliveryManifestDateTo.selectedDate ? moment(DeliveryManifestDateTo.selectedDate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD") }}
 
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
+
+
 GROUP BY
     dm.id,
     dm.manifest_number,

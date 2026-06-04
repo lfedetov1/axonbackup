@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    d.id AS `Issue ID`,\n    d.document_number AS `Issue Number`,\n    d.document_date AS `Issue Date`,\n    d.status AS `Status`,\n\n    w.code AS `Warehouse Code`,\n    w.name AS `Warehouse`,\n\n    COUNT(di.id) AS `Lines`,\n    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,\n    d.total_amount AS `Total Value`,\n\n    d.note AS `Reason / Note`,\n    d.created_at AS `Created At`,\n    d.updated_at AS `Updated At`\n\nFROM documents d\n\nLEFT JOIN warehouses w\n  ON w.id = d.warehouse_id\n\nLEFT JOIN document_items di\n  ON di.document_id = d.id\n\nWHERE d.document_type = 'STOCK_OUT'\n\nGROUP BY\n    d.id,\n    d.document_number,\n    d.document_date,\n    d.status,\n    w.code,\n    w.name,\n    d.total_amount,\n    d.note,\n    d.created_at,\n    d.updated_at\n\nORDER BY\n    d.id DESC;\n",
+      "body": "SELECT\n    d.id AS `Issue ID`,\n    d.document_number AS `Issue Number`,\n    d.document_date AS `Issue Date`,\n    d.status AS `Status`,\n\n    w.code AS `Warehouse Code`,\n    w.name AS `Warehouse`,\n\n    COUNT(di.id) AS `Lines`,\n    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,\n    d.total_amount AS `Total Value`,\n\n    d.note AS `Reason / Note`,\n    d.created_at AS `Created At`,\n    d.updated_at AS `Updated At`\n\nFROM documents d\n\nLEFT JOIN warehouses w\n  ON w.id = d.warehouse_id\n\nLEFT JOIN document_items di\n  ON di.document_id = d.id\n\nWHERE d.document_type = 'STOCK_OUT'\n\nAND (\n    {{ StockIssueSearchInput.text || \"\" }} = \"\"\n    OR d.document_number LIKE CONCAT('%', {{ StockIssueSearchInput.text || \"\" }}, '%')\n    OR d.note LIKE CONCAT('%', {{ StockIssueSearchInput.text || \"\" }}, '%')\n)\n\nAND d.document_date >= {{ moment(StockIssueDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\nAND d.document_date <= {{ moment(StockIssueDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n\nAND (\n    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1\n    OR d.warehouse_id IN (\n        {{ (appsmith.store.warehouseAccessIds || [0]).join(\",\") }}\n    )\n)\n\nGROUP BY\n    d.id,\n    d.document_number,\n    d.document_date,\n    d.status,\n    w.code,\n    w.name,\n    d.total_amount,\n    d.note,\n    d.created_at,\n    d.updated_at\n\nORDER BY\n    d.id DESC;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,11 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "dynamicBindingPathList": [],
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
     "name": "ListStockIssues",
     "pageId": "Inventory",
     "runBehaviour": "AUTOMATIC",

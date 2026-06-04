@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    d.id AS `Receipt ID`,\n    d.company_id AS `Company ID`,\n    d.document_number AS `Receipt Number`,\n    d.document_date AS `Receipt Date`,\n    d.status AS `Status`,\n\n    bp.code AS `Supplier Code`,\n    bp.name AS `Supplier`,\n\n    w.code AS `Warehouse Code`,\n    w.name AS `Warehouse`,\n\n    COUNT(di.id) AS `Lines`,\n    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,\n    d.total_amount AS `Total Value`,\n\n    d.note AS `Note`,\n    d.created_at AS `Created At`,\n    d.updated_at AS `Updated At`\n\nFROM documents d\n\nLEFT JOIN business_partners bp\n  ON bp.id = d.partner_id\n\nLEFT JOIN warehouses w\n  ON w.id = d.warehouse_id\n\nLEFT JOIN document_items di\n  ON di.document_id = d.id\n\nWHERE d.document_type = 'PURCHASE_RECEIPT'\n\nGROUP BY\n    d.id,\n    d.company_id,\n    d.document_number,\n    d.document_date,\n    d.status,\n    bp.code,\n    bp.name,\n    w.code,\n    w.name,\n    d.total_amount,\n    d.note,\n    d.created_at,\n    d.updated_at\n\nORDER BY\n    d.id DESC;\n",
+      "body": "SELECT\n    d.id AS `Receipt ID`,\n    d.company_id AS `Company ID`,\n    d.document_number AS `Receipt Number`,\n    d.document_date AS `Receipt Date`,\n    d.status AS `Status`,\n\n    bp.code AS `Supplier Code`,\n    bp.name AS `Supplier`,\n\n    w.code AS `Warehouse Code`,\n    w.name AS `Warehouse`,\n\n    COUNT(di.id) AS `Lines`,\n    COALESCE(SUM(di.quantity), 0) AS `Total Quantity`,\n    d.total_amount AS `Total Value`,\n\n    d.note AS `Note`,\n    d.created_at AS `Created At`,\n    d.updated_at AS `Updated At`\n\nFROM documents d\n\nLEFT JOIN business_partners bp\n  ON bp.id = d.partner_id\n\nLEFT JOIN warehouses w\n  ON w.id = d.warehouse_id\n\nLEFT JOIN document_items di\n  ON di.document_id = d.id\n\nWHERE d.document_type = 'PURCHASE_RECEIPT'\n\nAND (\n    {{ GoodsReceiptSearchInput.text || \"\" }} = \"\"\n    OR d.document_number LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || \"\" }}, '%')\n    OR bp.name LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || \"\" }}, '%')\n    OR bp.code LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || \"\" }}, '%')\n)\n\nAND d.document_date >= {{ moment(GoodsReceiptDateFrom.selectedDate || moment().startOf(\"month\")).format(\"YYYY-MM-DD\") }}\nAND d.document_date <= {{ moment(GoodsReceiptDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}\n\nAND (\n    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1\n    OR d.warehouse_id IN (\n        {{ (appsmith.store.warehouseAccessIds || [0]).join(\",\") }}\n    )\n)\n\nGROUP BY\n    d.id,\n    d.company_id,\n    d.document_number,\n    d.document_date,\n    d.status,\n    bp.code,\n    bp.name,\n    w.code,\n    w.name,\n    d.total_amount,\n    d.note,\n    d.created_at,\n    d.updated_at\n\nORDER BY\n    d.id DESC;\n",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,11 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "dynamicBindingPathList": [],
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
     "name": "ListGoodsReceipts",
     "pageId": "Inventory",
     "runBehaviour": "AUTOMATIC",

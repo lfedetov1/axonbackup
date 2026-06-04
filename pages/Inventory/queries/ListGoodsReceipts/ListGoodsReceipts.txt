@@ -32,6 +32,23 @@ LEFT JOIN document_items di
 
 WHERE d.document_type = 'PURCHASE_RECEIPT'
 
+AND (
+    {{ GoodsReceiptSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || "" }}, '%')
+    OR bp.name LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || "" }}, '%')
+    OR bp.code LIKE CONCAT('%', {{ GoodsReceiptSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(GoodsReceiptDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(GoodsReceiptDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
+
 GROUP BY
     d.id,
     d.company_id,

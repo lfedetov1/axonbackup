@@ -20,13 +20,23 @@ LEFT JOIN document_items di ON di.document_id = d.id
 LEFT JOIN users u ON u.id = d.created_by_user_id
 WHERE d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'TRANSFER_REQUEST'
-  AND (
-    {{InventorySearchInput.text || ''}} = ''
-    OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-    OR sw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-    OR dw.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-  )
-  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
-  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+ AND (
+    {{ TransferRequestSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ TransferRequestSearchInput.text || "" }}, '%')
+    OR d.note LIKE CONCAT('%', {{ TransferRequestSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(TransferRequestDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(TransferRequestDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.source_warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+    OR d.destination_warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
 GROUP BY d.id, d.document_number, d.document_date, d.status, sw.code, sw.name, dw.code, dw.name, d.total_amount, d.note, u.username, d.created_at
 ORDER BY d.document_date DESC, d.id DESC;

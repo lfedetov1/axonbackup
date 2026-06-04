@@ -23,18 +23,27 @@ LEFT JOIN document_items di ON di.document_id = d.id
 
 WHERE d.company_id = {{appsmith.store.companyId}}
   AND d.document_type = 'OPENING_STOCK'
-  AND (
-      {{InventorySearchInput.text || ''}} = ''
-      OR d.document_number LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR w.name LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-      OR w.code LIKE CONCAT('%', {{InventorySearchInput.text || ''}}, '%')
-  )
-  AND (
+	
+	 AND (
       {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
       OR d.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
   )
-  AND d.document_date >= {{moment(InventoryDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD")}}
-  AND d.document_date <= {{moment(InventoryDateTo.selectedDate || moment()).format("YYYY-MM-DD")}}
+	
+  AND (
+    {{ OpeningStockSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ OpeningStockSearchInput.text || "" }}, '%')
+    OR d.note LIKE CONCAT('%', {{ OpeningStockSearchInput.text || "" }}, '%')
+)
+
+AND d.document_date >= {{ moment(OpeningStockDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+AND d.document_date <= {{ moment(OpeningStockDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN (
+        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+)
 
 GROUP BY
     d.id,

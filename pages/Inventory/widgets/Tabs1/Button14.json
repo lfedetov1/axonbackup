@@ -37,7 +37,7 @@
   "isLoading": false,
   "isVisible": "{{ AppAccess.has(\"inventory.stockissue.create\") }}",
   "key": "u855oeapx2",
-  "leftColumn": 53,
+  "leftColumn": 57,
   "minWidth": 120,
   "mobileBottomRow": 5,
   "mobileLeftColumn": 47,

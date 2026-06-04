@@ -1,10 +1,11 @@
 {
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
+  "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 7,
+  "bottomRow": 4,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultText": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -16,44 +17,49 @@
   "dynamicHeight": "FIXED",
   "dynamicPropertyPathList": [
     {
-      "key": "sourceData"
+      "key": "onTextChanged"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "search",
+  "inputType": "TEXT",
   "isDisabled": false,
-  "isFilterable": true,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "1xoxx16n6c",
+  "key": "mt9ccaf0xw",
+  "label": "",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelText": "Warehouse :",
+  "labelStyle": "",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 22,
+  "leftColumn": 0,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
   "mobileBottomRow": 7,
-  "mobileLeftColumn": 22,
-  "mobileRightColumn": 42,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 20,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "optionLabel": "name",
-  "optionValue": "code",
-  "parentColumnSpace": 13.34375,
-  "parentId": "xrr5dc1l9i",
+  "onTextChanged": "{{ ListInboundDeliveries.run() }}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "tvtqewmo08",
   "parentRowSpace": 10,
-  "placeholderText": "Select option",
   "renderMode": "CANVAS",
+  "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 42,
-  "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "rightColumn": 20,
+  "showStepArrows": false,
   "topRow": 0,
-  "type": "SELECT_WIDGET",
-  "version": 1,
-  "widgetId": "m6axd5p8on",
-  "widgetName": "PutawayWarehouseSelect"
+  "type": "INPUT_WIDGET_V2",
+  "version": 2,
+  "widgetId": "2du3w1vnts",
+  "widgetName": "InboundDeliverySearchInput"
 }
