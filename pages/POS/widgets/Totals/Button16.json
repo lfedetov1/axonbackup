@@ -12,7 +12,7 @@
       "key": "borderRadius"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -20,7 +20,7 @@
       "key": "onClick"
     },
     {
-      "key": "isDisabled"
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -31,9 +31,9 @@
   "iconAlign": "left",
   "iconName": "issue-closed",
   "isDefaultClickDisabled": true,
-  "isDisabled": "{{\n  !(\n    (appsmith.store.roleCodes || []).includes(\"ADMIN\")\n    || (appsmith.store.roleCodes || []).includes(\"OWNER\")\n    || (appsmith.store.permissions || []).includes(\"pos.close_day\")\n  )\n}}\n",
+  "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ AppAccess.has(\"pos.open_close_register\") }}",
   "key": "peygnbgbfq",
   "leftColumn": 22,
   "minWidth": 120,

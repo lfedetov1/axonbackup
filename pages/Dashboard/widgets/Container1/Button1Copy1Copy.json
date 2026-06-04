@@ -33,7 +33,7 @@
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": "{{JSAccess.has(\"POS.manage\")}}\n",
+  "isVisible": "{{ AppAccess.has(\"pos.view\") }}",
   "key": "m7sc6r0t8m",
   "leftColumn": 0,
   "minWidth": 120,

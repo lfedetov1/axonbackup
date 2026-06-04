@@ -29,7 +29,7 @@
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": "{{JSAccess.isAdmin() || JSAccess.hasAny([\"finance.manage\", \"sales.manage\"])}}",
+  "isVisible": "{{ AppAccess.has(\"pos.void\") }}",
   "key": "i412cra3be",
   "leftColumn": 3,
   "minWidth": 120,
