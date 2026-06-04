@@ -1,0 +1,13 @@
+SELECT
+    u.id AS userId,
+    u.username,
+    pac.id AS accessCodeId
+FROM users u
+JOIN pos_user_access_codes pac
+  ON pac.user_id = u.id
+WHERE u.id = {{ Number(appsmith.store.userId || 0) }}
+  AND pac.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND u.is_active = 1
+  AND pac.is_active = 1
+  AND LOWER(pac.access_code_hash) = LOWER(SHA2({{ PosAccessCodeInput.text || "" }}, 256))
+LIMIT 1;

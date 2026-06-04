@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_0f00a2bc-3f62-4566-a3af-5f4d76e6a151",
+  "id": "Dashboard_POSAccess",
+  "unpublishedCollection": {
+    "name": "POSAccess",
+    "pageId": "Dashboard",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

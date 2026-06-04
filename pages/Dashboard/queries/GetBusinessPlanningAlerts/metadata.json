@@ -29,7 +29,7 @@
     ],
     "name": "GetBusinessPlanningAlerts",
     "pageId": "Dashboard",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }
