@@ -1,0 +1,14 @@
+UPDATE warehouse_tasks
+SET
+    status = 'DONE',
+    note = CONCAT(
+      COALESCE(note, ''),
+      CASE WHEN COALESCE(note, '') <> '' THEN '\n' ELSE '' END,
+      'Picked / extracted at ',
+      DATE_FORMAT(NOW(), '%d.%m.%Y %H:%i:%s'),
+      ' by ',
+      {{ appsmith.store.username || "" }}
+    )
+WHERE id = {{ Number(this.params.taskId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND status NOT IN ('DONE', 'COMPLETED', 'CANCELLED');

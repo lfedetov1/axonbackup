@@ -16,24 +16,24 @@ LEFT JOIN warehouses w
   ON w.id = d.warehouse_id
 LEFT JOIN document_items di
   ON di.document_id = d.id
-WHERE d.company_id = {{appsmith.store.companyId}}
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
   AND d.document_type = 'PURCHASE_RECEIPT'
   AND d.status IN ('POSTED', 'APPROVED')
   AND (
-    {{ PutawaySearchInput.text || "" }} = ""
-    OR wt.task_number LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
-    OR d.document_number LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
-)
-
-AND wt.created_at >= {{ moment(PutawayDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
-AND wt.created_at < DATE_ADD({{ moment(PutawayDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}, INTERVAL 1 DAY)
-
-AND (
-    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
-    OR wt.warehouse_id IN (
-        {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
-    )
-)
+      {{ PutawaySearchInput.text || "" }} = ""
+      OR d.document_number LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
+      OR bp.name LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
+      OR w.code LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
+      OR w.name LIKE CONCAT('%', {{ PutawaySearchInput.text || "" }}, '%')
+  )
+  AND d.document_date >= {{ moment(PutawayDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(PutawayDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+      {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+      OR d.warehouse_id IN (
+          {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+      )
+  )
 GROUP BY
     d.id,
     d.document_number,

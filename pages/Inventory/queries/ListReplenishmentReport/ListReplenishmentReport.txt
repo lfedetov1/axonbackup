@@ -54,17 +54,17 @@ LEFT JOIN (
         d.company_id,
         d.warehouse_id,
         di.product_id,
-        SUM(di.quantity) AS sold_quantity
+        SUM(COALESCE(di.quantity, 0)) AS sold_quantity
     FROM documents d
     JOIN document_items di
       ON di.document_id = d.id
-    WHERE d.company_id = {{appsmith.store.companyId}}
-      AND d.document_type IN ('SALES_INVOICE', 'SALES_RECEIPT', 'DELIVERY_NOTE', 'STOCK_ISSUE', 'POS_SALE')
-      AND d.status IN ('POSTED', 'PICKED', 'PARTIAL_PICKED')
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'DELIVERY_NOTE', 'STOCK_OUT')
+      AND d.status IN ('POSTED', 'PICKED', 'PACKED', 'SHIPPED')
       AND d.document_date =
         CASE
-          WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
-          WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+          WHEN {{ ReplenishmentPeriodSelect.selectedOptionValue || "TODAY" }} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+          WHEN {{ ReplenishmentPeriodSelect.selectedOptionValue || "TODAY" }} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
           ELSE CURDATE()
         END
     GROUP BY
@@ -83,30 +83,42 @@ LEFT JOIN warehouse_replenishment_done wrd
  AND COALESCE(wrd.location_id, 0) = COALESCE(wlp.location_id, 0)
  AND wrd.report_date =
     CASE
-      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
-      WHEN {{ReplenishmentPeriodSelect.selectedOptionValue || 'TODAY'}} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+      WHEN {{ ReplenishmentPeriodSelect.selectedOptionValue || "TODAY" }} = 'YESTERDAY' THEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+      WHEN {{ ReplenishmentPeriodSelect.selectedOptionValue || "TODAY" }} = 'TOMORROW' THEN DATE_ADD(CURDATE(), INTERVAL 1 DAY)
       ELSE CURDATE()
     END
 
-WHERE wlp.company_id = {{appsmith.store.companyId}}
+WHERE wlp.company_id = {{ Number(appsmith.store.companyId || 1) }}
   AND wlp.is_active = 1
   AND wl.is_active = 1
   AND COALESCE(wrd.id, 0) = 0
+
   AND (
-      {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}} = 0
-      OR wlp.warehouse_id = {{Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0)}}
+      {{ Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+      OR wlp.warehouse_id = {{ Number(InventoryWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
   )
+
   AND (
-      {{ReplenishmentSearchInput.text || ''}} = ''
-      OR p.code LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
-      OR p.name LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
-      OR p.barcode LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
-      OR wl.code LIKE CONCAT('%', {{ReplenishmentSearchInput.text || ''}}, '%')
+      {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+      OR wlp.warehouse_id IN (
+          {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+      )
   )
+
+  AND (
+      {{ ReplenishmentSearchInput.text || "" }} = ""
+      OR p.code LIKE CONCAT('%', {{ ReplenishmentSearchInput.text || "" }}, '%')
+      OR p.name LIKE CONCAT('%', {{ ReplenishmentSearchInput.text || "" }}, '%')
+      OR p.barcode LIKE CONCAT('%', {{ ReplenishmentSearchInput.text || "" }}, '%')
+      OR wl.code LIKE CONCAT('%', {{ ReplenishmentSearchInput.text || "" }}, '%')
+      OR wl.name LIKE CONCAT('%', {{ ReplenishmentSearchInput.text || "" }}, '%')
+  )
+
   AND (
       COALESCE(wlp.minimum_quantity, 0) > 0
       OR COALESCE(sold.sold_quantity, 0) > 0
   )
+
   AND (
       COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0)
       OR COALESCE(sold.sold_quantity, 0) > 0
