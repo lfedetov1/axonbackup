@@ -32,7 +32,6 @@
     }
   },
   "columnOrder": [
-    "partnerId",
     "Code",
     "Name",
     "Legal_Name",
@@ -53,9 +52,10 @@
     "Risk___Status",
     "Status",
     "createdAt",
-    "updatedAt"
+    "updatedAt",
+    "Partner_ID"
   ],
-  "columnUpdatedAt": 1780662258088,
+  "columnUpdatedAt": 1780662771953,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -77,9 +77,6 @@
     },
     {
       "key": "tableData"
-    },
-    {
-      "key": "primaryColumns.partnerId.computedValue"
     },
     {
       "key": "primaryColumns.Code.computedValue"
@@ -143,14 +140,24 @@
     },
     {
       "key": "primaryColumns.updatedAt.computedValue"
+    },
+    {
+      "key": "primaryColumns.Partner_ID.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "tableData"
+    },
+    {
+      "key": "onRowSelected"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onRowSelected"
+    }
+  ],
   "enableClientSideSearch": true,
   "endOfData": false,
   "flexVerticalAlignment": "start",
@@ -172,6 +179,7 @@
   "mobileRightColumn": 20,
   "mobileTopRow": 15,
   "needsErrorInfo": false,
+  "onRowSelected": "{{\n  Partner360.load(PartnersTable.selectedRow)\n}}",
   "parentColumnSpace": 16.69873046875,
   "parentId": "syvciyevr2",
   "parentRowSpace": 10,
@@ -516,6 +524,40 @@
       "verticalAlignment": "CENTER",
       "width": 150
     },
+    "Partner_ID": {
+      "alias": "Partner ID",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "cellBackground": "",
+      "columnType": "number",
+      "computedValue": "{{(() => { const tableData = PartnersTable1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"Partner ID\"])) : Partner ID })()}}",
+      "currencyCode": "USD",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "fontStyle": "",
+      "horizontalAlignment": "LEFT",
+      "id": "Partner_ID",
+      "index": 21,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": false,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Partner ID",
+      "notation": "standard",
+      "originalId": "Partner ID",
+      "sticky": "",
+      "textColor": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
     "Phone": {
       "alias": "Phone",
       "allowCellWrapping": false,
@@ -848,40 +890,6 @@
       "label": "createdAt",
       "notation": "standard",
       "originalId": "createdAt",
-      "sticky": "",
-      "textColor": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "partnerId": {
-      "alias": "partnerId",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "cellBackground": "",
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = PartnersTable1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"partnerId\"])) : partnerId })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "fontStyle": "",
-      "horizontalAlignment": "LEFT",
-      "id": "partnerId",
-      "index": 0,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "partnerId",
-      "notation": "standard",
-      "originalId": "partnerId",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",

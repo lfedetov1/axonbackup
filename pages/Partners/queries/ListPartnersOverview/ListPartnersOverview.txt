@@ -1,5 +1,5 @@
 SELECT
-  bp.id AS partnerId,
+  bp.id AS `Partner ID`,
   bp.code AS `Code`,
   bp.name AS `Name`,
   bp.legal_name AS `Legal Name`,

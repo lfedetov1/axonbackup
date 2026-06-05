@@ -1,0 +1,18 @@
+SELECT
+  d.id AS documentId,
+  d.document_type AS documentType,
+  d.document_number AS documentNumber,
+  d.document_date AS documentDate,
+  d.status,
+  d.posting_status AS postingStatus,
+  d.payment_method AS paymentMethod,
+  d.currency_code AS currencyCode,
+  COALESCE(d.total_amount, 0) AS totalAmount,
+  COALESCE(d.paid_amount, 0) AS paidAmount,
+  COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) AS openAmount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.partner_id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}
+  AND d.status <> 'CANCELLED'
+ORDER BY d.document_date DESC, d.id DESC
+LIMIT 20;

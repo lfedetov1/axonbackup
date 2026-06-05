@@ -1,0 +1,15 @@
+SELECT
+  p.code AS productCode,
+  p.name AS productName,
+  COALESCE(SUM(di.quantity), 0) AS quantity,
+  COALESCE(SUM(di.line_total), 0) AS totalAmount
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND d.partner_id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}
+  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'PURCHASE_INVOICE', 'PURCHASE_RECEIPT')
+  AND d.status <> 'CANCELLED'
+GROUP BY p.code, p.name
+ORDER BY totalAmount DESC
+LIMIT 10;
