@@ -1,4 +1,0 @@
-SELECT id AS journalEntryId
-FROM journal_entries
-WHERE entry_number = {{this.params.entryNumber}}
-LIMIT 1;

@@ -1,5 +1,0 @@
-SELECT DISTINCT
-    uwa.warehouse_id AS warehouseId
-FROM user_warehouse_access uwa
-WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
-ORDER BY uwa.warehouse_id;

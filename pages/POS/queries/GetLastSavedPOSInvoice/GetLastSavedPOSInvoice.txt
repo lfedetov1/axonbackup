@@ -1,9 +1,0 @@
-SELECT
-    id,
-    document_number
-FROM documents
-WHERE company_id = {{appsmith.store.companyId}}
-  AND document_type = 'POS_SALE'
-  AND created_by_user_id = {{appsmith.store.userId}}
-ORDER BY id DESC
-LIMIT 1;

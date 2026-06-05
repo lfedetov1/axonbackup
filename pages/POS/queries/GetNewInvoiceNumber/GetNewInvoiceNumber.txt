@@ -1,1 +1,0 @@
-SELECT CONCAT('POS-', DATE_FORMAT(NOW(6), '%Y%m%d%H%i%s%f')) AS invoiceNumber;

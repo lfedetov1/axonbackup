@@ -1,5 +1,0 @@
-SELECT id, document_number
-FROM documents
-WHERE document_number = '{{ appsmith.store.posPrintDocumentNumber || invoice_no.text || "" }}'
-ORDER BY id DESC
-LIMIT 1;
