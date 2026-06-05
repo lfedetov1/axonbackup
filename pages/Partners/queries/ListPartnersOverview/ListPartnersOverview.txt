@@ -1,0 +1,108 @@
+SELECT
+  bp.id AS partnerId,
+  bp.code AS `Code`,
+  bp.name AS `Name`,
+  bp.legal_name AS `Legal Name`,
+  bp.partner_type AS `Type`,
+  bp.tax_number AS `Tax Number`,
+  bp.registration_number AS `Registration Number`,
+
+  bp.email AS `Email`,
+  bp.phone AS `Phone`,
+  bp.address_line1 AS `Address`,
+  bp.city_name AS `City`,
+  bp.postal_code AS `Postal Code`,
+  bp.country_id AS `Country`,
+
+  COALESCE(fin.openAmount, 0) AS `Open Amount`,
+  COALESCE(fin.salesAmount, 0) AS `Sales`,
+  COALESCE(fin.purchaseAmount, 0) AS `Purchases`,
+  COALESCE(fin.documentCount, 0) AS `Documents`,
+  fin.lastDocumentDate AS `Last Document Date`,
+
+  CASE
+    WHEN bp.is_active = 0 THEN 'INACTIVE'
+    WHEN COALESCE(fin.openAmount, 0) > 0 THEN 'OPEN_BALANCE'
+    WHEN COALESCE(fin.documentCount, 0) = 0 THEN 'NEW'
+    ELSE 'ACTIVE'
+  END AS `Risk / Status`,
+
+  CASE WHEN bp.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Status`,
+
+  bp.created_at AS createdAt,
+  bp.updated_at AS updatedAt
+
+FROM business_partners bp
+
+LEFT JOIN (
+  SELECT
+    d.partner_id,
+    COUNT(d.id) AS documentCount,
+    MAX(d.document_date) AS lastDocumentDate,
+
+    SUM(CASE
+      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+      THEN COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
+      ELSE 0
+    END) AS openAmount,
+
+    SUM(CASE
+      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+      THEN COALESCE(d.total_amount, 0)
+      ELSE 0
+    END) AS salesAmount,
+
+    SUM(CASE
+      WHEN d.document_type IN ('PURCHASE_INVOICE', 'PURCHASE_RECEIPT')
+      THEN COALESCE(d.total_amount, 0)
+      ELSE 0
+    END) AS purchaseAmount
+
+  FROM documents d
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_date >= {{ moment(PartnerDateFrom.selectedDate || moment().startOf("year")).format("YYYY-MM-DD") }}
+    AND d.document_date <= {{ moment(PartnerDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+    AND d.status <> 'CANCELLED'
+  GROUP BY d.partner_id
+) fin ON fin.partner_id = bp.id
+
+WHERE bp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND (
+    {{ PartnersSearchInput.text || "" }} = ""
+    OR bp.code LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+    OR bp.name LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+    OR bp.legal_name LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+    OR bp.tax_number LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+    OR bp.email LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+    OR bp.phone LIKE CONCAT('%', {{ PartnersSearchInput.text || "" }}, '%')
+  )
+
+  AND (
+    {{ PartnerTypeFilterSelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR bp.partner_type = {{ PartnerTypeFilterSelect.selectedOptionValue || "ALL" }}
+    OR (
+      {{ PartnerTypeFilterSelect.selectedOptionValue || "ALL" }} = "CUSTOMER"
+      AND bp.partner_type = 'BOTH'
+    )
+    OR (
+      {{ PartnerTypeFilterSelect.selectedOptionValue || "ALL" }} = "SUPPLIER"
+      AND bp.partner_type = 'BOTH'
+    )
+  )
+
+  AND (
+    {{ PartnerStatusFilterSelect.selectedOptionValue || "ACTIVE" }} = "ALL"
+    OR (
+      {{ PartnerStatusFilterSelect.selectedOptionValue || "ACTIVE" }} = "ACTIVE"
+      AND bp.is_active = 1
+    )
+    OR (
+      {{ PartnerStatusFilterSelect.selectedOptionValue || "ACTIVE" }} = "INACTIVE"
+      AND bp.is_active = 0
+    )
+  )
+
+ORDER BY bp.name;

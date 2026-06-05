@@ -1,0 +1,14 @@
+SELECT
+  di.line_no AS lineNo,
+  p.code AS productCode,
+  p.barcode AS barcode,
+  COALESCE(di.description, p.name) AS description,
+  di.quantity AS quantity,
+  di.unit_price AS unitPrice,
+  di.discount_amount AS discountAmount,
+  di.tax_amount AS taxAmount,
+  di.line_total AS lineTotal
+FROM document_items di
+LEFT JOIN products p ON p.id = di.product_id
+WHERE di.document_id = {{ Number(this.params.documentId || appsmith.store.selectedPOSReceiptPrintId || 0) }}
+ORDER BY di.line_no;

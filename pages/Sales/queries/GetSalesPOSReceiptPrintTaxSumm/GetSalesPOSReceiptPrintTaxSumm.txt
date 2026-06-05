@@ -1,0 +1,9 @@
+SELECT
+  COALESCE(tr.rate, 0) AS taxRate,
+  COALESCE(SUM(di.line_subtotal), 0) AS taxableAmount,
+  COALESCE(SUM(di.tax_amount), 0) AS taxAmount
+FROM document_items di
+LEFT JOIN tax_rates tr ON tr.id = di.tax_rate_id
+WHERE di.document_id = {{ Number(this.params.documentId || appsmith.store.selectedPOSReceiptPrintId || 0) }}
+GROUP BY tr.rate
+ORDER BY tr.rate;

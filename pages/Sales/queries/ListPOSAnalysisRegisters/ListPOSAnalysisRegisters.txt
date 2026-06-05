@@ -1,0 +1,17 @@
+SELECT
+  0 AS value,
+  'All Registers' AS label
+
+UNION ALL
+
+SELECT
+  cr.id AS value,
+  CONCAT(cr.code, ' - ', cr.name) AS label
+FROM cash_registers cr
+WHERE cr.is_active = 1
+  AND cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+    OR cr.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+  )
+ORDER BY label;

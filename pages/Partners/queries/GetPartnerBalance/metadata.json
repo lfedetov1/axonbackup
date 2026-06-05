@@ -29,7 +29,7 @@
     ],
     "name": "GetPartnerBalance",
     "pageId": "Partners",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

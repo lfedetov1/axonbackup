@@ -1,0 +1,15 @@
+SELECT
+  ct.transaction_type AS transactionType,
+  COUNT(ct.id) AS transactionCount,
+  COALESCE(SUM(ct.amount), 0) AS amount
+FROM cash_transactions ct
+JOIN cash_registers cr ON cr.id = ct.cash_register_id
+WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND ct.transaction_date >= {{ moment(POSAnalysisDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND ct.transaction_date < DATE_ADD({{ moment(POSAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}, INTERVAL 1 DAY)
+  AND (
+    {{ Number(POSAnalysisRegisterSelect.selectedOptionValue || 0) }} = 0
+    OR ct.cash_register_id = {{ Number(POSAnalysisRegisterSelect.selectedOptionValue || 0) }}
+  )
+GROUP BY ct.transaction_type
+ORDER BY amount DESC;

@@ -1,0 +1,30 @@
+SELECT
+  x.paymentMethod,
+  x.cardType,
+  COUNT(*) AS paymentCount,
+  COALESCE(SUM(x.amount), 0) AS amount
+FROM (
+  SELECT
+    COALESCE(pdp.payment_method, d.payment_method, 'UNKNOWN') AS paymentMethod,
+    COALESCE(pdp.card_type, '') AS cardType,
+    COALESCE(pdp.amount, d.total_amount, 0) AS amount,
+    d.warehouse_id
+  FROM documents d
+  LEFT JOIN pos_document_payments pdp
+    ON pdp.document_id = d.id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND (
+      d.document_type IN ('POS_SALE', 'SALES_RECEIPT')
+      OR d.sales_channel = 'POS'
+      OR d.document_number LIKE 'POS-%'
+    )
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= {{ moment(POSAnalysisDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+    AND d.document_date <= {{ moment(POSAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+) x
+WHERE (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }} = 0
+    OR x.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }}
+  )
+GROUP BY x.paymentMethod, x.cardType
+ORDER BY amount DESC;

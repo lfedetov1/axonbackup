@@ -29,7 +29,7 @@
     ],
     "name": "GetSalesAnalysisOpenDocuments",
     "pageId": "Sales",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

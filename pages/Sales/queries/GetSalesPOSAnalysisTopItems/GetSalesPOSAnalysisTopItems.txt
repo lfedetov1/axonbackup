@@ -1,0 +1,24 @@
+SELECT
+  p.code AS productCode,
+  p.name AS productName,
+  COALESCE(SUM(di.quantity), 0) AS quantity,
+  COALESCE(SUM(di.line_total), 0) AS totalSales
+FROM documents d
+JOIN document_items di ON di.document_id = d.id
+LEFT JOIN products p ON p.id = di.product_id
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    d.document_type IN ('POS_SALE', 'SALES_RECEIPT')
+    OR d.sales_channel = 'POS'
+    OR d.document_number LIKE 'POS-%'
+  )
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(POSAnalysisDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(POSAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }} = 0
+    OR d.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }}
+  )
+GROUP BY p.code, p.name
+ORDER BY totalSales DESC
+LIMIT 15;

@@ -1,0 +1,10 @@
+SELECT
+  payment_method AS paymentMethod,
+  card_type AS cardType,
+  amount,
+  cash_received_amount AS cashReceivedAmount,
+  cash_change_amount AS cashChangeAmount,
+  reference_number AS referenceNumber
+FROM pos_document_payments
+WHERE document_id = {{ Number(this.params.documentId || appsmith.store.selectedPOSReceiptPrintId || 0) }}
+ORDER BY id;

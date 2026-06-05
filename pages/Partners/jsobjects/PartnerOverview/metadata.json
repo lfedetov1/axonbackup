@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_55dd8f8c-5859-41b8-aa29-8cc59fa02aa3",
+  "id": "Partners_PartnerOverview",
+  "unpublishedCollection": {
+    "name": "PartnerOverview",
+    "pageId": "Partners",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

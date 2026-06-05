@@ -1,0 +1,24 @@
+SELECT
+  HOUR(d.created_at) AS hourValue,
+  COUNT(d.id) AS receiptCount,
+  COALESCE(SUM(d.total_amount), 0) AS totalSales
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    d.document_type IN ('POS_SALE', 'SALES_RECEIPT')
+    OR d.sales_channel = 'POS'
+    OR d.document_number LIKE 'POS-%'
+  )
+  AND d.status <> 'CANCELLED'
+  AND d.document_date >= {{ moment(POSAnalysisDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(POSAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }} = 0
+    OR d.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }}
+  )
+  AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN ({{ (appsmith.store.warehouseAccessIds || [0]).join(",") }})
+  )
+GROUP BY HOUR(d.created_at)
+ORDER BY hourValue;

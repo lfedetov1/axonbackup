@@ -1,0 +1,25 @@
+SELECT
+  COUNT(d.id) AS receiptCount,
+  COALESCE(SUM(d.total_amount), 0) AS totalSales,
+  COALESCE(SUM(d.tax_amount), 0) AS totalTax,
+  COALESCE(SUM(d.discount_amount), 0) AS totalDiscount,
+  COALESCE(AVG(d.total_amount), 0) AS averageBasket,
+  COUNT(DISTINCT d.partner_id) AS customerCount,
+  SUM(CASE WHEN d.status = 'CANCELLED' THEN 1 ELSE 0 END) AS voidCount
+FROM documents d
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    d.document_type IN ('POS_SALE', 'SALES_RECEIPT')
+    OR d.sales_channel = 'POS'
+    OR d.document_number LIKE 'POS-%'
+  )
+  AND d.document_date >= {{ moment(POSAnalysisDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(POSAnalysisDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }} = 0
+    OR d.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || 0) }}
+  )
+  AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN ({{ (appsmith.store.warehouseAccessIds || [0]).join(",") }})
+  );

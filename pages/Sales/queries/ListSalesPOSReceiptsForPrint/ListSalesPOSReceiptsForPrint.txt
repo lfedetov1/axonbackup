@@ -1,0 +1,59 @@
+SELECT
+  d.id AS documentId,
+  d.document_number AS `Receipt Number`,
+  COALESCE(d.fiscal_number, d.document_number) AS `Fiscal Number`,
+  d.document_date AS `Date`,
+  DATE_FORMAT(d.created_at, '%d.%m.%Y %H:%i:%s') AS `Issue Time`,
+
+  bp.name AS `Customer`,
+  d.payment_method AS `Payment Method`,
+  d.currency_code AS `Currency`,
+
+  COALESCE(d.subtotal_amount, 0) AS `Subtotal`,
+  COALESCE(d.discount_amount, 0) AS `Discount`,
+  COALESCE(d.tax_amount, 0) AS `Tax`,
+  COALESCE(d.total_amount, 0) AS `Total`,
+  COALESCE(d.paid_amount, d.total_amount, 0) AS `Paid`,
+
+  d.status AS `Status`,
+  d.fiscal_status AS `Fiscal Status`,
+
+  w.code AS `Warehouse Code`,
+  w.name AS `Warehouse`,
+
+  u.username AS `Cashier`,
+  d.created_at AS createdAt
+
+FROM documents d
+LEFT JOIN business_partners bp ON bp.id = d.partner_id
+LEFT JOIN warehouses w ON w.id = d.warehouse_id
+LEFT JOIN users u ON u.id = d.created_by_user_id
+
+WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    d.document_type IN ('POS_SALE', 'SALES_RECEIPT')
+    OR d.sales_channel = 'POS'
+    OR d.document_number LIKE 'POS-%'
+  )
+
+  AND (
+    {{ POSReceiptSearchInput.text || "" }} = ""
+    OR d.document_number LIKE CONCAT('%', {{ POSReceiptSearchInput.text || "" }}, '%')
+    OR d.fiscal_number LIKE CONCAT('%', {{ POSReceiptSearchInput.text || "" }}, '%')
+    OR bp.name LIKE CONCAT('%', {{ POSReceiptSearchInput.text || "" }}, '%')
+  )
+
+  AND d.document_date >= {{ moment(POSReceiptDateFrom.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND d.document_date <= {{ moment(POSReceiptDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+
+  AND (
+    {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }} = 0
+    OR d.warehouse_id = {{ Number(POSAnalysisWarehouseSelect.selectedOptionValue || appsmith.store.warehouseId || 0) }}
+  )
+
+  AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR d.warehouse_id IN ({{ (appsmith.store.warehouseAccessIds || [0]).join(",") }})
+  )
+
+ORDER BY d.document_date DESC, d.created_at DESC, d.id DESC;

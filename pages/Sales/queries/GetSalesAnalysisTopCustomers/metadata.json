@@ -29,7 +29,7 @@
     ],
     "name": "GetSalesAnalysisTopCustomers",
     "pageId": "Sales",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

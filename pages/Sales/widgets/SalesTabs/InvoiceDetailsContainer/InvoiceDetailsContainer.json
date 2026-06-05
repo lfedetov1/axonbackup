@@ -5,12 +5,12 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 86,
+  "bottomRow": 99,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 440,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -56,7 +56,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 430,
+      "bottomRow": 440,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -102,7 +102,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 440,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -147,7 +147,7 @@
     },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
+      "bottomRow": 440,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": false,
       "containerStyle": "none",
@@ -234,6 +234,51 @@
       "version": 1,
       "widgetId": "3zy11i50tp",
       "widgetName": "Canvas30"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 440,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "dzvekmp3yq",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1052.0625,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "kqiz5gie5e",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1052.0625,
+      "tabId": "tabvd4bwvum7w",
+      "tabName": "POS Recepi",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "k4ihmvodvr",
+      "widgetName": "Canvas39"
     }
   ],
   "defaultTab": "Items",
@@ -264,8 +309,8 @@
   "mobileRightColumn": 25,
   "mobileTopRow": 36,
   "needsErrorInfo": false,
-  "originalBottomRow": 86,
-  "originalTopRow": 52,
+  "originalBottomRow": 99,
+  "originalTopRow": 51,
   "parentColumnSpace": 16.96875,
   "parentId": "0xmg2gzkdp",
   "parentRowSpace": 10,
@@ -294,7 +339,7 @@
     },
     "tab2": {
       "id": "tab2",
-      "index": 3,
+      "index": 4,
       "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Overview",
@@ -303,7 +348,8 @@
     },
     "tabert10351xr": {
       "id": "tabert10351xr",
-      "index": 4,
+      "index": 5,
+      "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Preview",
       "widgetId": "3zy11i50tp"
@@ -315,9 +361,17 @@
       "isVisible": true,
       "label": "Deatil ",
       "widgetId": "a34pkbo5wk"
+    },
+    "tabvd4bwvum7w": {
+      "id": "tabvd4bwvum7w",
+      "index": 3,
+      "isDuplicateLabel": false,
+      "isVisible": true,
+      "label": "POS Recepi",
+      "widgetId": "k4ihmvodvr"
     }
   },
-  "topRow": 52,
+  "topRow": 51,
   "type": "TABS_WIDGET",
   "version": 3,
   "widgetId": "kqiz5gie5e",
