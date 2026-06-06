@@ -175,9 +175,6 @@
       "key": "primaryColumns.customColumn1.boxShadow"
     },
     {
-      "key": "primaryColumns.customColumn1.isCellVisible"
-    },
-    {
       "key": "primaryColumns.customColumn2.borderRadius"
     },
     {
@@ -191,6 +188,9 @@
     },
     {
       "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn1.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -1199,7 +1199,7 @@
       "id": "customColumn1",
       "index": 10,
       "isCellEditable": false,
-      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( \nJSAccess.has(\"products.edit\") )) :  \nJSAccess.has(\"products.edit\")  })()}}",
+      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( JSAccess.has(\"products.edit\") )) :  JSAccess.has(\"products.edit\")  })()}}",
       "isDerived": true,
       "isDisabled": false,
       "isDiscardVisible": true,
@@ -1209,7 +1209,7 @@
       "label": "Edit",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{ ProductForm.loadProductForEdit(null, currentRow.Code) }}\n\n",
+      "onClick": "{{\n  ProductForm.loadProductForEdit(\n    currentRow[\"Product ID\"] ||\n    currentRow.productId ||\n    currentRow.product_id ||\n    currentRow.id ||\n    null,\n\n    currentRow.Code ||\n    currentRow.code ||\n    currentRow.productCode ||\n    currentRow.product_code ||\n    null\n  )\n}}",
       "originalId": "customColumn1",
       "sticky": "",
       "textSize": "0.875rem",

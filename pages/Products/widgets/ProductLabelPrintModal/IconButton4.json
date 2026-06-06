@@ -10,11 +10,6 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicPropertyPathList": [
-    {
-      "key": "onClick"
-    }
-  ],
   "dynamicTriggerPathList": [
     {
       "key": "onClick"
@@ -25,7 +20,7 @@
   "isDisabled": false,
   "isLoading": false,
   "isVisible": true,
-  "key": "6y69rlcjwl",
+  "key": "lxzm4347if",
   "leftColumn": 58,
   "minWidth": 50,
   "mobileBottomRow": 4,
@@ -33,14 +28,14 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{ ProductForm.closeProductModal() }}\n",
-  "parentId": "dssm9fgrap",
+  "onClick": "{{closeModal(ProductLabelPrintModal.name);\nProductLabels.model();}}",
+  "parentId": "yakoxhby37",
   "renderMode": "CANVAS",
   "responsiveBehavior": "hug",
   "rightColumn": 64,
   "topRow": 0,
   "type": "ICON_BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "vbhzj99l5v",
-  "widgetName": "IconButton1"
+  "widgetId": "fi1hzy0nwp",
+  "widgetName": "IconButton4"
 }

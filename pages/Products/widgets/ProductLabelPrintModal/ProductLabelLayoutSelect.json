@@ -1,0 +1,67 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 11,
+  "boxShadow": "none",
+  "defaultOptionValue": "GREEN",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "c52h5evndn",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Layout :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 22,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 11,
+  "mobileLeftColumn": 22,
+  "mobileRightColumn": 42,
+  "mobileTopRow": 4,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{ ProductLabels.setLayout(ProductLabelLayoutSelect.selectedOptionValue) }}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 16.4078125,
+  "parentId": "yakoxhby37",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 34,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  { \"label\": \"A4 - 4 labels per row\", \"value\": \"A4_4\" },\n  { \"label\": \"A4 - 3 labels per row\", \"value\": \"A4_3\" },\n  { \"label\": \"A4 - 2 labels per row\", \"value\": \"A4_2\" },\n  { \"label\": \"Single Label\", \"value\": \"SINGLE\" }\n]",
+  "topRow": 4,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "qv4ci3zvim",
+  "widgetName": "ProductLabelLayoutSelect"
+}

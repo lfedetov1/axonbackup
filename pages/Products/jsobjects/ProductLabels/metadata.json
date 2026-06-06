@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_aa87cb09-93c4-47b2-b5de-5d2f70fda483",
+  "id": "Products_ProductLabels",
+  "unpublishedCollection": {
+    "name": "ProductLabels",
+    "pageId": "Products",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

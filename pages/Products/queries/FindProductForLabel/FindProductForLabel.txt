@@ -1,0 +1,29 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode,
+    p.sku,
+
+    COALESCE(
+      (
+        SELECT pp.price
+        FROM product_prices pp
+        WHERE pp.product_id = p.id
+        ORDER BY pp.id DESC
+        LIMIT 1
+      ),
+      0
+    ) AS salesPrice
+
+FROM products p
+
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+      p.barcode = {{ this.params.lookup || "" }}
+      OR p.code = {{ this.params.lookup || "" }}
+      OR p.sku = {{ this.params.lookup || "" }}
+      OR p.id = {{ Number(this.params.productId || 0) }}
+  )
+
+LIMIT 1;

@@ -15,6 +15,9 @@
     },
     {
       "key": "menuItems.menuItem3.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem1.isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -29,6 +32,12 @@
     },
     {
       "key": "menuItems.menuItem3.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem1.isVisible"
+    },
+    {
+      "key": "menuItems.menuItem7bh88jhwx4.onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -37,6 +46,9 @@
     },
     {
       "key": "menuItems.menuItemkwpgu8865w.onClick"
+    },
+    {
+      "key": "menuItems.menuItem7bh88jhwx4.onClick"
     }
   ],
   "iconAlign": "left",
@@ -55,9 +67,9 @@
       "id": "menuItem1",
       "index": 0,
       "isDisabled": false,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.actions.sale\") }}",
       "label": "New sales",
-      "onClick": "{{ JSAccess.has(\"sales.invoices.create\") }}",
+      "onClick": "",
       "widgetId": ""
     },
     "menuItem2": {
@@ -65,7 +77,7 @@
       "id": "menuItem2",
       "index": 1,
       "isDisabled": false,
-      "isVisible": "{{ JSAccess.has(\"sales.quotations.create\") }}\n",
+      "isVisible": "{{ JSAccess.has(\"products.actions.quote\") }}",
       "label": "New Offer",
       "widgetId": ""
     },
@@ -77,6 +89,16 @@
       "isVisible": "{{ JSAccess.has(\"purchase.documents.create\") }}",
       "label": "New document",
       "widgetId": ""
+    },
+    "menuItem7bh88jhwx4": {
+      "iconName": "label",
+      "id": "menuItem7bh88jhwx4",
+      "index": 7,
+      "isDisabled": false,
+      "isVisible": true,
+      "label": "Label - pricing",
+      "onClick": "{{ ProductLabels.open(ProductsTable.selectedRow) }}",
+      "widgetId": "ws8zuecrn2"
     },
     "menuItemd0xbe8kw0a": {
       "iconName": "shopping-cart",
