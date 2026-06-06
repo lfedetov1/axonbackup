@@ -1,73 +1,97 @@
 SELECT
-  bp.id AS partnerId,
-  bp.code AS partnerCode,
-  bp.name AS partnerName,
-  bp.legal_name AS legalName,
-  bp.partner_type AS partnerType,
-  bp.tax_number AS taxNumber,
-  bp.registration_number AS registrationNumber,
+    bp.id AS partnerId,
+    bp.company_id AS companyId,
+    bp.code AS partnerCode,
+    bp.name AS partnerName,
+    bp.legal_name AS legalName,
+    bp.contact_person AS contactPerson,
+    bp.tax_number AS taxNumber,
+    bp.registration_number AS registrationNumber,
 
-  bp.email,
-  bp.phone,
-  bp.mobile,
-  bp.contact_person AS contactPerson,
-  bp.address_line1 AS address,
-  bp.city_name AS city,
-  bp.postal_code AS postalCode,
+    bp.email,
+    bp.phone,
+    bp.mobile,
+    bp.address_line1 AS address,
+    bp.city_name AS city,
+    bp.postal_code AS postalCode,
+    bp.payment_term_days AS paymentTermDays,
+    bp.credit_limit AS creditLimit,
 
-  bp.is_active AS isActive,
-  bp.created_at AS createdAt,
-  bp.updated_at AS updatedAt,
+    bp.is_active AS isActive,
 
-  COALESCE(fin.documentCount, 0) AS documentCount,
-  COALESCE(fin.salesAmount, 0) AS salesAmount,
-  COALESCE(fin.purchaseAmount, 0) AS purchaseAmount,
-  COALESCE(fin.openAmount, 0) AS openAmount,
-  fin.lastDocumentDate AS lastDocumentDate,
+    COALESCE(fin.documentCount, 0) AS documentCount,
+    COALESCE(fin.salesAmount, 0) AS salesAmount,
+    COALESCE(fin.purchaseAmount, 0) AS purchaseAmount,
+    COALESCE(fin.openAmount, 0) AS openAmount,
+    fin.lastDocumentDate AS lastDocumentDate,
 
-  CASE
-    WHEN bp.is_active = 0 THEN 'INACTIVE'
-    WHEN COALESCE(fin.openAmount, 0) > 0 THEN 'OPEN_BALANCE'
-    WHEN COALESCE(fin.documentCount, 0) = 0 THEN 'NEW'
-    ELSE 'ACTIVE'
-  END AS riskStatus
+    CASE
+        WHEN bp.is_active = 0 THEN 'INACTIVE'
+        WHEN COALESCE(fin.openAmount, 0) > 0 THEN 'OPEN_BALANCE'
+        WHEN COALESCE(fin.documentCount, 0) = 0 THEN 'NEW'
+        ELSE 'ACTIVE'
+    END AS riskStatus
 
 FROM business_partners bp
 
 LEFT JOIN (
-  SELECT
-    d.partner_id,
-    COUNT(d.id) AS documentCount,
-    MAX(d.document_date) AS lastDocumentDate,
+    SELECT
+        d.partner_id,
+        COUNT(d.id) AS documentCount,
+        MAX(d.document_date) AS lastDocumentDate,
 
-    SUM(CASE
-      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
-      THEN COALESCE(d.total_amount, 0)
-      ELSE 0
-    END) AS salesAmount,
+        SUM(
+            CASE
+                WHEN d.document_type IN (
+                    'SALES_INVOICE',
+                    'POS_SALE',
+                    'SALES_RECEIPT'
+                )
+                THEN COALESCE(d.total_amount, 0)
+                ELSE 0
+            END
+        ) AS salesAmount,
 
-    SUM(CASE
-      WHEN d.document_type IN ('PURCHASE_INVOICE', 'PURCHASE_RECEIPT')
-      THEN COALESCE(d.total_amount, 0)
-      ELSE 0
-    END) AS purchaseAmount,
+        SUM(
+            CASE
+                WHEN d.document_type IN (
+                    'PURCHASE_INVOICE',
+                    'PURCHASE_RECEIPT'
+                )
+                THEN COALESCE(d.total_amount, 0)
+                ELSE 0
+            END
+        ) AS purchaseAmount,
 
-    SUM(CASE
-      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
-      THEN COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
-      WHEN d.document_type = 'CREDIT_NOTE'
-      THEN -ABS(COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0))
-      ELSE 0
-    END) AS openAmount
+        SUM(
+            CASE
+                WHEN d.document_type IN (
+                    'SALES_INVOICE',
+                    'POS_SALE',
+                    'SALES_RECEIPT'
+                )
+                THEN COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0)
 
-  FROM documents d
-  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
-    AND d.partner_id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}
-    AND d.status <> 'CANCELLED'
-  GROUP BY d.partner_id
+                WHEN d.document_type = 'CREDIT_NOTE'
+                THEN -ABS(
+                    COALESCE(d.total_amount, 0) -
+                    COALESCE(d.paid_amount, 0)
+                )
+
+                ELSE 0
+            END
+        ) AS openAmount
+
+    FROM documents d
+    WHERE d.partner_id = {{ Number(appsmith.store.selectedPartnerId || 0) }}
+      AND d.status <> 'CANCELLED'
+    GROUP BY d.partner_id
 ) fin ON fin.partner_id = bp.id
 
-WHERE bp.company_id = {{ Number(appsmith.store.companyId || 1) }}
-  AND bp.id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}
+WHERE bp.id = {{ Number(appsmith.store.selectedPartnerId || 0) }}
+  AND (
+      {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }} = 0
+      OR bp.company_id = {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }}
+  )
 
 LIMIT 1;

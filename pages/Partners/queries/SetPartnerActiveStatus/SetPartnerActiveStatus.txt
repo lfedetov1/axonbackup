@@ -1,0 +1,6 @@
+UPDATE business_partners
+SET
+  is_active = {{ Number(this.params.targetStatus || 0) }},
+  updated_at = NOW()
+WHERE id = {{ Number(this.params.partnerId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 0) }};

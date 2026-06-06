@@ -8,7 +8,8 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "partnerId"
+          "name": "rowOrId",
+          "value": "{{null}}"
         }
       ],
       "paginationType": "NONE",

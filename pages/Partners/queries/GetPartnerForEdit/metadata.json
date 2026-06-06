@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n    bp.id AS partnerId,\n    bp.partner_type AS partnerType,\n    bp.code AS partnerCode,\n    bp.name AS partnerName,\n    bp.legal_name AS legalName,\n    bp.contact_person AS contactPerson,\n    bp.tax_number AS oib,\n    bp.registration_number AS registrationNumber,\n    bp.email AS email,\n    bp.phone AS phone,\n    bp.mobile AS mobile,\n    bp.address_line1 AS addressLine1,\n    bp.address_line2 AS addressLine2,\n    bp.city_name AS city,\n    bp.postal_code AS postalCode,\n    c.code AS countryCode,\n    bp.payment_term_days AS paymentTermDays,\n    bp.credit_limit AS creditLimit,\n    bp.note AS note,\n    bp.is_active AS isActive\nFROM business_partners bp\nLEFT JOIN countries c ON c.id = bp.country_id\nWHERE bp.company_id = {{appsmith.store.companyId}}\n  AND bp.id = {{this.params.partnerId}}\nLIMIT 1;\n",
+      "body": "SELECT\n    bp.id AS partnerId,\n    bp.company_id AS companyId,\n    bp.code AS partnerCode,\n    bp.name AS partnerName,\n    bp.legal_name AS legalName,\n    bp.contact_person AS contactPerson,\n    bp.tax_number AS oib,\n    bp.registration_number AS registrationNumber,\n    bp.email,\n    bp.phone,\n    bp.mobile,\n    bp.address_line1 AS addressLine1,\n    bp.city_name AS city,\n    bp.postal_code AS postalCode,\n    bp.payment_term_days AS paymentTermDays,\n    bp.credit_limit AS creditLimit,\n    bp.is_active AS isActive\nFROM business_partners bp\nWHERE bp.id = {{\n  Number(\n    this.params.partnerId ||\n    appsmith.store.currentPartnerId ||\n    0\n  )\n}}\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

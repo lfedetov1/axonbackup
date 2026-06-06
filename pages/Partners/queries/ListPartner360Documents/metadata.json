@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  d.id AS documentId,\n  d.document_type AS documentType,\n  d.document_number AS documentNumber,\n  d.document_date AS documentDate,\n  d.status,\n  d.posting_status AS postingStatus,\n  d.payment_method AS paymentMethod,\n  d.currency_code AS currencyCode,\n  COALESCE(d.total_amount, 0) AS totalAmount,\n  COALESCE(d.paid_amount, 0) AS paidAmount,\n  COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) AS openAmount\nFROM documents d\nWHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND d.partner_id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}\n  AND d.status <> 'CANCELLED'\nORDER BY d.document_date DESC, d.id DESC\nLIMIT 20;",
+      "body": "SELECT\n    d.id AS documentId,\n    d.document_type AS documentType,\n    d.document_number AS documentNumber,\n    d.document_date AS documentDate,\n    d.status,\n    d.posting_status AS postingStatus,\n    d.payment_method AS paymentMethod,\n    d.currency_code AS currencyCode,\n\n    COALESCE(d.total_amount, 0) AS totalAmount,\n    COALESCE(d.paid_amount, 0) AS paidAmount,\n    COALESCE(d.total_amount, 0) - COALESCE(d.paid_amount, 0) AS openAmount\n\nFROM documents d\n\nWHERE d.partner_id = {{ Number(appsmith.store.selectedPartnerId || 0) }}\n  AND d.status <> 'CANCELLED'\n  AND (\n      {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }} = 0\n      OR d.company_id = {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }}\n  )\n\nORDER BY d.document_date DESC, d.id DESC\nLIMIT 20;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

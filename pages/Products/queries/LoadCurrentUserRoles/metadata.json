@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_bb6e1046-d612-4c29-b0c1-3e40b756a062",
-  "id": "Partners_Query1",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_c44a2bf4-f0ae-4fba-b2b9-199df62442ee",
+  "id": "Products_LoadCurrentUserRoles",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "SELECT DISTINCT\n    r.code AS roleCode\nFROM user_role_assignments ura\nJOIN roles r\n  ON r.id = ura.role_id\nWHERE ura.user_id = {{ Number(appsmith.store.userId || 0) }}\nORDER BY r.code;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,8 +22,13 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
-    "pageId": "Partners",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "LoadCurrentUserRoles",
+    "pageId": "Products",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }

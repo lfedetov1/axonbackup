@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_45da8c62-3544-45d5-a4a7-73b15d372e0f",
+  "id": "Products_ProductQuickActions",
+  "unpublishedCollection": {
+    "name": "ProductQuickActions",
+    "pageId": "Products",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

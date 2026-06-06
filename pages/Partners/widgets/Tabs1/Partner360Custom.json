@@ -5,7 +5,7 @@
   "borderWidth": "1",
   "bottomRow": 64,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-  "defaultModel": "{{ Partner360.model() }}",
+  "defaultModel": "{{\n  {\n    header: GetPartner360Header.data?.[0] || {},\n    documents: ListPartner360Documents.data || [],\n    topProducts: ListPartner360TopProducts.data || [],\n    printedAt: moment().format(\"DD.MM.YYYY HH:mm:ss\"),\n    printedBy: appsmith.store.username || \"\"\n  }\n}}",
   "dynamicBindingPathList": [
     {
       "key": "theme"

@@ -169,9 +169,6 @@
       "key": "primaryColumns.Category.computedValue"
     },
     {
-      "key": "isVisible"
-    },
-    {
       "key": "primaryColumns.customColumn1.borderRadius"
     },
     {
@@ -191,6 +188,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.boxShadow"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -199,9 +199,6 @@
     },
     {
       "key": "onRowSelected"
-    },
-    {
-      "key": "isVisible"
     },
     {
       "key": "primaryColumns.customColumn1.isCellVisible"
@@ -214,6 +211,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -239,7 +239,7 @@
   "inlineEditingSaveOption": "ROW_LEVEL",
   "isLoading": false,
   "isSortable": true,
-  "isVisible": "{{ JSAccess.has(\"products.view\") }}\n",
+  "isVisible": "{{ JSAccess.has(\"products.overview.view\") || JSAccess.has(\"products.lookup.view\") }}",
   "isVisibleDownload": true,
   "isVisibleFilters": false,
   "isVisiblePagination": true,

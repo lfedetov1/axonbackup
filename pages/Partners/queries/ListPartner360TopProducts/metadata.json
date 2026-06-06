@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  p.code AS productCode,\n  p.name AS productName,\n  COALESCE(SUM(di.quantity), 0) AS quantity,\n  COALESCE(SUM(di.line_total), 0) AS totalAmount\nFROM documents d\nJOIN document_items di ON di.document_id = d.id\nLEFT JOIN products p ON p.id = di.product_id\nWHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND d.partner_id = {{ Number(this.params.partnerId || appsmith.store.selectedPartnerId || 0) }}\n  AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'PURCHASE_INVOICE', 'PURCHASE_RECEIPT')\n  AND d.status <> 'CANCELLED'\nGROUP BY p.code, p.name\nORDER BY totalAmount DESC\nLIMIT 10;",
+      "body": "SELECT\n    p.code AS productCode,\n    p.name AS productName,\n    COALESCE(SUM(di.quantity), 0) AS quantity,\n    COALESCE(SUM(di.line_total), 0) AS totalAmount\n\nFROM documents d\n\nJOIN document_items di\n  ON di.document_id = d.id\n\nLEFT JOIN products p\n  ON p.id = di.product_id\n\nWHERE d.partner_id = {{ Number(appsmith.store.selectedPartnerId || 0) }}\n  AND d.status <> 'CANCELLED'\n  AND (\n      {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }} = 0\n      OR d.company_id = {{ Number(appsmith.store.selectedPartnerCompanyId || appsmith.store.companyId || 0) }}\n  )\n\nGROUP BY\n    p.id,\n    p.code,\n    p.name\n\nORDER BY totalAmount DESC\nLIMIT 10;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
