@@ -1,0 +1,174 @@
+SELECT alerts.*
+FROM (
+    SELECT
+        'MISSING_PRICE' AS alertType,
+        'HIGH' AS severity,
+        'Products Without Sale Price' AS title,
+        COUNT(*) AS countValue,
+        'Add an active sale price before selling these products.' AS actionText
+    FROM products p
+    LEFT JOIN product_prices sp
+      ON sp.id = (
+        SELECT pp.id
+        FROM product_prices pp
+        WHERE pp.product_id = p.id
+          AND pp.price_type = 'SALE'
+          AND pp.valid_from <= CURDATE()
+          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+        ORDER BY pp.valid_from DESC, pp.id DESC
+        LIMIT 1
+      )
+    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND p.is_active = 1
+      AND COALESCE(sp.price, 0) <= 0
+      AND (
+        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+        OR p.category_id =
+           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+      )
+
+    UNION ALL
+
+    SELECT
+        'MISSING_BARCODE',
+        'MEDIUM',
+        'Products Without Barcode',
+        COUNT(*),
+        'Add barcodes to improve POS and warehouse scanning.'
+    FROM products p
+    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND p.is_active = 1
+      AND COALESCE(p.barcode, '') = ''
+      AND (
+        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+        OR p.category_id =
+           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+      )
+
+    UNION ALL
+
+    SELECT
+        'OUT_OF_STOCK',
+        'HIGH',
+        'Out of Stock Products',
+        COUNT(*),
+        'Review stock and create replenishment or purchase requests.'
+    FROM (
+        SELECT p.id
+        FROM products p
+
+        LEFT JOIN v_inventory_balance ib
+          ON ib.product_id = p.id
+         AND ib.company_id = p.company_id
+         AND (
+           {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0
+           OR ib.warehouse_id =
+              {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}
+         )
+         AND (
+           {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+           OR ib.warehouse_id IN (
+             {{
+               (
+                 (appsmith.store.warehouseAccessIds || []).length
+                   ? appsmith.store.warehouseAccessIds
+                   : [0]
+               ).join(",")
+             }}
+           )
+         )
+
+        WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+          AND p.is_active = 1
+          AND (
+            {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+            OR p.category_id =
+               {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+          )
+
+        GROUP BY p.id
+        HAVING COALESCE(SUM(ib.quantity_balance), 0) <= 0
+    ) outProducts
+
+    UNION ALL
+
+    SELECT
+        'NEGATIVE_MARGIN',
+        'HIGH',
+        'Products With Negative Margin',
+        COUNT(*),
+        'Review sale and purchase prices immediately.'
+    FROM products p
+
+    LEFT JOIN product_prices salePrice
+      ON salePrice.id = (
+        SELECT pp.id
+        FROM product_prices pp
+        WHERE pp.product_id = p.id
+          AND pp.price_type = 'SALE'
+          AND pp.valid_from <= CURDATE()
+          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+        ORDER BY pp.valid_from DESC, pp.id DESC
+        LIMIT 1
+      )
+
+    LEFT JOIN product_prices purchasePrice
+      ON purchasePrice.id = (
+        SELECT pp.id
+        FROM product_prices pp
+        WHERE pp.product_id = p.id
+          AND pp.price_type = 'PURCHASE'
+          AND pp.valid_from <= CURDATE()
+          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+        ORDER BY pp.valid_from DESC, pp.id DESC
+        LIMIT 1
+      )
+
+    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND p.is_active = 1
+      AND COALESCE(salePrice.price, 0) > 0
+      AND salePrice.price <= COALESCE(purchasePrice.price, 0)
+      AND (
+        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+        OR p.category_id =
+           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+      )
+
+    UNION ALL
+
+    SELECT
+        'PROMOTION_ENDING',
+        'MEDIUM',
+        'Promotions Ending Within 7 Days',
+        COUNT(*),
+        'Review upcoming price restorations.'
+    FROM product_price_change_records pcr
+
+    JOIN product_price_change_items pci
+      ON pci.price_change_record_id = pcr.id
+
+    JOIN products p
+      ON p.id = pci.product_id
+
+    WHERE pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND pcr.change_type = 'PROMOTION'
+      AND pcr.status = 'POSTED'
+      AND COALESCE(pci.promotion_end_date, '1000-01-01') >= CURDATE()
+      AND COALESCE(pci.promotion_end_date, '9999-12-31')
+          <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+      AND (
+        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+        OR p.category_id =
+           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+      )
+) alerts
+
+WHERE alerts.countValue > 0
+
+ORDER BY
+    CASE alerts.severity
+      WHEN 'HIGH' THEN 1
+      WHEN 'MEDIUM' THEN 2
+      ELSE 3
+    END,
+    alerts.countValue DESC;

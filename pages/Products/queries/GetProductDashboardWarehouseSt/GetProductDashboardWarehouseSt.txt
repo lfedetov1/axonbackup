@@ -1,0 +1,60 @@
+SELECT
+    w.id AS warehouseId,
+    w.code AS warehouseCode,
+    w.name AS warehouseName,
+
+    COUNT(DISTINCT ib.product_id) AS productCount,
+    COALESCE(SUM(ib.quantity_balance), 0) AS stockQuantity,
+
+    COALESCE(
+      SUM(
+        ib.quantity_balance *
+        COALESCE(purchasePrice.price, 0)
+      ),
+      0
+    ) AS stockValue
+
+FROM warehouses w
+
+LEFT JOIN v_inventory_balance ib
+  ON ib.warehouse_id = w.id
+ AND ib.company_id = w.company_id
+
+LEFT JOIN products p
+  ON p.id = ib.product_id
+
+LEFT JOIN product_prices purchasePrice
+  ON purchasePrice.id = (
+    SELECT pp.id
+    FROM product_prices pp
+    WHERE pp.product_id = p.id
+      AND pp.price_type = 'PURCHASE'
+      AND pp.valid_from <= CURDATE()
+      AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+    ORDER BY pp.valid_from DESC, pp.id DESC
+    LIMIT 1
+  )
+
+WHERE w.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND (
+    {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0
+    OR w.id =
+       {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}
+  )
+
+  AND (
+    {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+    OR w.id IN (
+      {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+    )
+  )
+
+  AND (
+    {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+    OR p.category_id =
+       {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+  )
+
+GROUP BY w.id, w.code, w.name
+ORDER BY stockValue DESC;

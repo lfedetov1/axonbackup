@@ -1,0 +1,72 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    COALESCE(stock.quantityBalance, 0) AS stockQuantity,
+    COALESCE(sales.soldQuantity, 0) AS soldQuantity,
+    sales.lastSaleDate
+
+FROM products p
+
+LEFT JOIN (
+    SELECT
+        ib.product_id,
+        SUM(ib.quantity_balance) AS quantityBalance
+    FROM v_inventory_balance ib
+    WHERE ib.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND (
+        {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0
+        OR ib.warehouse_id =
+           {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}
+      )
+      AND (
+        {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+        OR ib.warehouse_id IN (
+          {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+        )
+      )
+    GROUP BY ib.product_id
+) stock ON stock.product_id = p.id
+
+LEFT JOIN (
+    SELECT
+        di.product_id,
+        SUM(di.quantity) AS soldQuantity,
+        MAX(d.document_date) AS lastSaleDate
+    FROM documents d
+    JOIN document_items di ON di.document_id = d.id
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'SALES_RECEIPT', 'POS_SALE')
+      AND d.status <> 'CANCELLED'
+      AND d.document_date >= {{
+        appsmith.store.productDashboardDateFrom ||
+        moment().startOf("month").format("YYYY-MM-DD")
+      }}
+      AND d.document_date < DATE_ADD(
+        {{
+          appsmith.store.productDashboardDateTo ||
+          moment().format("YYYY-MM-DD")
+        }},
+        INTERVAL 1 DAY
+      )
+      AND (
+        {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0
+        OR d.warehouse_id =
+           {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}
+      )
+    GROUP BY di.product_id
+) sales ON sales.product_id = p.id
+
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND p.is_active = 1
+  AND COALESCE(stock.quantityBalance, 0) > 0
+  AND COALESCE(sales.soldQuantity, 0) = 0
+
+  AND (
+    {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+    OR p.category_id =
+       {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+  )
+
+ORDER BY stockQuantity DESC
+LIMIT 20;

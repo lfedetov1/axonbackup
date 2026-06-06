@@ -1,0 +1,57 @@
+SELECT
+    pcr.id AS priceChangeId,
+    pcr.record_number AS recordNumber,
+    pcr.record_date AS recordDate,
+    pcr.effective_date AS effectiveDate,
+    pcr.change_type AS changeType,
+    pcr.status,
+
+    COUNT(DISTINCT pci.product_id) AS itemCount,
+
+    SUM(
+      CASE WHEN pci.new_price < pci.old_price
+      THEN 1 ELSE 0 END
+    ) AS decreasedCount,
+
+    SUM(
+      CASE WHEN pci.new_price > pci.old_price
+      THEN 1 ELSE 0 END
+    ) AS increasedCount
+
+FROM product_price_change_records pcr
+LEFT JOIN product_price_change_items pci
+  ON pci.price_change_record_id = pcr.id
+LEFT JOIN products p
+  ON p.id = pci.product_id
+
+WHERE pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND pcr.record_date >= {{
+    appsmith.store.productDashboardDateFrom ||
+    moment().startOf("month").format("YYYY-MM-DD")
+  }}
+
+  AND pcr.record_date < DATE_ADD(
+    {{
+      appsmith.store.productDashboardDateTo ||
+      moment().format("YYYY-MM-DD")
+    }},
+    INTERVAL 1 DAY
+  )
+
+  AND (
+    {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+    OR p.category_id =
+       {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+  )
+
+GROUP BY
+    pcr.id,
+    pcr.record_number,
+    pcr.record_date,
+    pcr.effective_date,
+    pcr.change_type,
+    pcr.status
+
+ORDER BY pcr.record_date DESC, pcr.id DESC
+LIMIT 20;

@@ -1,0 +1,139 @@
+SELECT
+    COUNT(DISTINCT p.id) AS activeProducts,
+
+    SUM(
+      CASE WHEN COALESCE(p.barcode, '') = ''
+      THEN 1 ELSE 0 END
+    ) AS productsWithoutBarcode,
+
+    SUM(
+      CASE WHEN COALESCE(salePrice.price, 0) <= 0
+      THEN 1 ELSE 0 END
+    ) AS productsWithoutSalePrice,
+
+    SUM(
+      CASE WHEN COALESCE(stock.quantityBalance, 0) <= 0
+      THEN 1 ELSE 0 END
+    ) AS outOfStockProducts,
+
+    SUM(
+      CASE
+        WHEN COALESCE(stock.quantityBalance, 0) > 0
+         AND COALESCE(stock.quantityBalance, 0) <= 5
+        THEN 1 ELSE 0
+      END
+    ) AS lowStockProducts,
+
+    COALESCE(SUM(stock.quantityBalance), 0) AS totalStockQuantity,
+
+    COALESCE(
+      SUM(
+        COALESCE(stock.quantityBalance, 0) *
+        COALESCE(purchasePrice.price, 0)
+      ),
+      0
+    ) AS totalStockValue,
+
+    COALESCE(
+      AVG(
+        CASE
+          WHEN COALESCE(salePrice.price, 0) > 0
+          THEN (
+            (
+              salePrice.price - COALESCE(purchasePrice.price, 0)
+            ) / salePrice.price
+          ) * 100
+          ELSE 0
+        END
+      ),
+      0
+    ) AS averageMarginPercent,
+
+    SUM(
+      CASE
+        WHEN COALESCE(salePrice.price, 0) > 0
+         AND COALESCE(salePrice.price, 0) <=
+             COALESCE(purchasePrice.price, 0)
+        THEN 1 ELSE 0
+      END
+    ) AS negativeMarginProducts,
+
+    (
+      SELECT COUNT(DISTINCT pci.product_id)
+      FROM product_price_change_records pcr
+      JOIN product_price_change_items pci
+        ON pci.price_change_record_id = pcr.id
+      JOIN products promoProduct
+        ON promoProduct.id = pci.product_id
+      WHERE pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND pcr.change_type = 'PROMOTION'
+        AND pcr.status = 'POSTED'
+        AND pcr.effective_date <= CURDATE()
+        AND COALESCE(pci.promotion_end_date, '1000-01-01') >= CURDATE()
+        AND (
+          {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+          OR promoProduct.category_id =
+             {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+        )
+    ) AS activePromotions,
+
+    (
+      SELECT COUNT(*)
+      FROM product_price_change_records pending
+      WHERE pending.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND pending.status IN ('DRAFT', 'APPROVED')
+    ) AS pendingPriceChanges
+
+FROM products p
+
+LEFT JOIN (
+    SELECT
+        ib.product_id,
+        SUM(ib.quantity_balance) AS quantityBalance
+    FROM v_inventory_balance ib
+    WHERE ib.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND (
+        {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0
+        OR ib.warehouse_id =
+           {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}
+      )
+      AND (
+        {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+        OR ib.warehouse_id IN (
+          {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+        )
+      )
+    GROUP BY ib.product_id
+) stock ON stock.product_id = p.id
+
+LEFT JOIN product_prices salePrice
+  ON salePrice.id = (
+    SELECT pp.id
+    FROM product_prices pp
+    WHERE pp.product_id = p.id
+      AND pp.price_type = 'SALE'
+      AND pp.valid_from <= CURDATE()
+      AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+    ORDER BY pp.valid_from DESC, pp.id DESC
+    LIMIT 1
+  )
+
+LEFT JOIN product_prices purchasePrice
+  ON purchasePrice.id = (
+    SELECT pp.id
+    FROM product_prices pp
+    WHERE pp.product_id = p.id
+      AND pp.price_type = 'PURCHASE'
+      AND pp.valid_from <= CURDATE()
+      AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()
+    ORDER BY pp.valid_from DESC, pp.id DESC
+    LIMIT 1
+  )
+
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND p.is_active = 1
+  AND (
+    {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0
+    OR p.category_id =
+       {{ Number(appsmith.store.productDashboardCategoryId || 0) }}
+  );

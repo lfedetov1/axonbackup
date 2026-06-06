@@ -1,0 +1,16 @@
+SELECT 0 AS value, 'All Accessible Warehouses' AS label
+
+UNION ALL
+
+SELECT
+    w.id AS value,
+    CONCAT(w.code, ' - ', w.name) AS label
+FROM warehouses w
+WHERE w.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+      {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1
+      OR w.id IN (
+          {{ (appsmith.store.warehouseAccessIds || [0]).join(",") }}
+      )
+  )
+ORDER BY label;

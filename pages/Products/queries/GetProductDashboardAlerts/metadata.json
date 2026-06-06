@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_476a73bf-e304-4fdd-a793-30fad488a82b",
+  "id": "Products_GetProductDashboardAlerts",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT alerts.*\nFROM (\n    SELECT\n        'MISSING_PRICE' AS alertType,\n        'HIGH' AS severity,\n        'Products Without Sale Price' AS title,\n        COUNT(*) AS countValue,\n        'Add an active sale price before selling these products.' AS actionText\n    FROM products p\n    LEFT JOIN product_prices sp\n      ON sp.id = (\n        SELECT pp.id\n        FROM product_prices pp\n        WHERE pp.product_id = p.id\n          AND pp.price_type = 'SALE'\n          AND pp.valid_from <= CURDATE()\n          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()\n        ORDER BY pp.valid_from DESC, pp.id DESC\n        LIMIT 1\n      )\n    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND p.is_active = 1\n      AND COALESCE(sp.price, 0) <= 0\n      AND (\n        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0\n        OR p.category_id =\n           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}\n      )\n\n    UNION ALL\n\n    SELECT\n        'MISSING_BARCODE',\n        'MEDIUM',\n        'Products Without Barcode',\n        COUNT(*),\n        'Add barcodes to improve POS and warehouse scanning.'\n    FROM products p\n    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND p.is_active = 1\n      AND COALESCE(p.barcode, '') = ''\n      AND (\n        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0\n        OR p.category_id =\n           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}\n      )\n\n    UNION ALL\n\n    SELECT\n        'OUT_OF_STOCK',\n        'HIGH',\n        'Out of Stock Products',\n        COUNT(*),\n        'Review stock and create replenishment or purchase requests.'\n    FROM (\n        SELECT p.id\n        FROM products p\n\n        LEFT JOIN v_inventory_balance ib\n          ON ib.product_id = p.id\n         AND ib.company_id = p.company_id\n         AND (\n           {{ Number(appsmith.store.productDashboardWarehouseId || 0) }} = 0\n           OR ib.warehouse_id =\n              {{ Number(appsmith.store.productDashboardWarehouseId || 0) }}\n         )\n         AND (\n           {{ AppAccess.canViewAllWarehouses() ? 1 : 0 }} = 1\n           OR ib.warehouse_id IN (\n             {{\n               (\n                 (appsmith.store.warehouseAccessIds || []).length\n                   ? appsmith.store.warehouseAccessIds\n                   : [0]\n               ).join(\",\")\n             }}\n           )\n         )\n\n        WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}\n          AND p.is_active = 1\n          AND (\n            {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0\n            OR p.category_id =\n               {{ Number(appsmith.store.productDashboardCategoryId || 0) }}\n          )\n\n        GROUP BY p.id\n        HAVING COALESCE(SUM(ib.quantity_balance), 0) <= 0\n    ) outProducts\n\n    UNION ALL\n\n    SELECT\n        'NEGATIVE_MARGIN',\n        'HIGH',\n        'Products With Negative Margin',\n        COUNT(*),\n        'Review sale and purchase prices immediately.'\n    FROM products p\n\n    LEFT JOIN product_prices salePrice\n      ON salePrice.id = (\n        SELECT pp.id\n        FROM product_prices pp\n        WHERE pp.product_id = p.id\n          AND pp.price_type = 'SALE'\n          AND pp.valid_from <= CURDATE()\n          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()\n        ORDER BY pp.valid_from DESC, pp.id DESC\n        LIMIT 1\n      )\n\n    LEFT JOIN product_prices purchasePrice\n      ON purchasePrice.id = (\n        SELECT pp.id\n        FROM product_prices pp\n        WHERE pp.product_id = p.id\n          AND pp.price_type = 'PURCHASE'\n          AND pp.valid_from <= CURDATE()\n          AND COALESCE(pp.valid_to, '9999-12-31') >= CURDATE()\n        ORDER BY pp.valid_from DESC, pp.id DESC\n        LIMIT 1\n      )\n\n    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND p.is_active = 1\n      AND COALESCE(salePrice.price, 0) > 0\n      AND salePrice.price <= COALESCE(purchasePrice.price, 0)\n      AND (\n        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0\n        OR p.category_id =\n           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}\n      )\n\n    UNION ALL\n\n    SELECT\n        'PROMOTION_ENDING',\n        'MEDIUM',\n        'Promotions Ending Within 7 Days',\n        COUNT(*),\n        'Review upcoming price restorations.'\n    FROM product_price_change_records pcr\n\n    JOIN product_price_change_items pci\n      ON pci.price_change_record_id = pcr.id\n\n    JOIN products p\n      ON p.id = pci.product_id\n\n    WHERE pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND pcr.change_type = 'PROMOTION'\n      AND pcr.status = 'POSTED'\n      AND COALESCE(pci.promotion_end_date, '1000-01-01') >= CURDATE()\n      AND COALESCE(pci.promotion_end_date, '9999-12-31')\n          <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)\n      AND (\n        {{ Number(appsmith.store.productDashboardCategoryId || 0) }} = 0\n        OR p.category_id =\n           {{ Number(appsmith.store.productDashboardCategoryId || 0) }}\n      )\n) alerts\n\nWHERE alerts.countValue > 0\n\nORDER BY\n    CASE alerts.severity\n      WHEN 'HIGH' THEN 1\n      WHEN 'MEDIUM' THEN 2\n      ELSE 3\n    END,\n    alerts.countValue DESC;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetProductDashboardAlerts",
+    "pageId": "Products",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

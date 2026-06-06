@@ -1,0 +1,11 @@
+SELECT 0 AS value, 'All Categories' AS label
+
+UNION ALL
+
+SELECT DISTINCT
+    p.category_id AS value,
+    CONCAT('Category #', p.category_id) AS label
+FROM products p
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND COALESCE(p.category_id, 0) > 0
+ORDER BY label;
