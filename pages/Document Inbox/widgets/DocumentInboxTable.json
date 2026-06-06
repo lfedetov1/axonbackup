@@ -1,0 +1,69 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 12,
+  "boxShadow": "none",
+  "defaultOptionValue": "GREEN",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "k4wlt214wn",
+  "labelAlignment": "left",
+  "labelPosition": "Left",
+  "labelText": "Status :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 41,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 13,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{ ListInvoicesAndCreditNotes.run() }}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "originalBottomRow": 12,
+  "originalTopRow": 7,
+  "parentColumnSpace": 16.96875,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 60,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  { \"label\": \"All\", \"value\": \"ALL\" },\n  { \"label\": \"Invoice\", \"value\": \"SALES_INVOICE\" },\n  { \"label\": \"Credit Note\", \"value\": \"CREDIT_NOTE\" }\n]",
+  "topRow": 7,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "2bptjbj7m1",
+  "widgetName": "DocumentInboxTable"
+}

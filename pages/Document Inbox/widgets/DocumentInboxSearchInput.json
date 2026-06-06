@@ -3,7 +3,7 @@
   "animateLoading": true,
   "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 16,
+  "bottomRow": 12,
   "boxShadow": "none",
   "defaultText": "",
   "dynamicBindingPathList": [
@@ -18,6 +18,9 @@
   "dynamicPropertyPathList": [
     {
       "key": "onSubmit"
+    },
+    {
+      "key": "onTextChanged"
     }
   ],
   "dynamicTriggerPathList": [
@@ -26,14 +29,14 @@
     }
   ],
   "iconAlign": "left",
-  "iconName": "geosearch",
+  "iconName": "search",
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "ylgbhyz46x",
-  "label": "Search : ",
+  "key": "986acdlo8r",
+  "label": "",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
@@ -43,25 +46,27 @@
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 16,
-  "mobileLeftColumn": 1,
-  "mobileRightColumn": 21,
-  "mobileTopRow": 9,
+  "mobileBottomRow": 7,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 14,
+  "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onSubmit": "{{ SearchProducts.run() }}",
-  "originalBottomRow": 16,
-  "originalTopRow": 9,
-  "parentColumnSpace": 17.453125,
+  "onSubmit": "{{ ListInvoicesAndCreditNotes.run() }}",
+  "onTextChanged": "{{}}",
+  "originalBottomRow": 12,
+  "originalTopRow": 7,
+  "parentColumnSpace": 16.96875,
   "parentId": "0",
   "parentRowSpace": 10,
+  "placeholderText": "Search",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 17,
+  "rightColumn": 14,
   "showStepArrows": false,
-  "topRow": 9,
+  "topRow": 7,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "o39lw614gl",
-  "widgetName": "ProductSearchInput"
+  "widgetId": "dph713qti7",
+  "widgetName": "DocumentInboxSearchInput"
 }

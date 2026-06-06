@@ -80,6 +80,10 @@
     {
       "id": "Sales",
       "isDefault": false
+    },
+    {
+      "id": "Document Inbox",
+      "isDefault": false
     }
   ],
   "unpublishedAppLayout": {

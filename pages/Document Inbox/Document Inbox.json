@@ -1,23 +1,23 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_d384f0fe-fff1-4ad4-9e0b-46308b827ecd",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_5d040668-31b2-441c-a189-0f83632fa34d",
   "unpublishedPage": {
     "isHidden": false,
     "layouts": [
       {
         "dsl": {
           "backgroundColor": "none",
-          "bottomRow": 920,
+          "bottomRow": 760,
           "canExtend": true,
           "containerStyle": "none",
           "detachFromLayout": true,
           "dynamicBindingPathList": [],
           "leftColumn": 0,
-          "minHeight": 550,
+          "minHeight": 800,
           "parentColumnSpace": 1,
           "parentRowSpace": 1,
           "rightColumn": 1224,
           "snapColumns": 64,
-          "snapRows": 53,
+          "snapRows": 78,
           "topRow": 0,
           "type": "CANVAS_WIDGET",
           "version": 94,
@@ -26,7 +26,7 @@
         }
       }
     ],
-    "name": "Products",
-    "slug": "products"
+    "name": "Document Inbox",
+    "slug": "document-inbox"
   }
 }
