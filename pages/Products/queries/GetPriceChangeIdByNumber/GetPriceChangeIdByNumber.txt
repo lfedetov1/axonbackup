@@ -1,0 +1,7 @@
+SELECT
+    id AS priceChangeId,
+    record_number AS recordNumber
+FROM product_price_change_records
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND record_number = {{ this.params.recordNumber }}
+LIMIT 1;

@@ -1,0 +1,8 @@
+UPDATE product_price_change_records
+SET
+    status = 'POSTED',
+    posted_by_user_id = NULLIF({{ Number(appsmith.store.userId || 0) }}, 0),
+    posted_at = NOW()
+WHERE id = {{ Number(this.params.priceChangeId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND status = 'APPROVED';

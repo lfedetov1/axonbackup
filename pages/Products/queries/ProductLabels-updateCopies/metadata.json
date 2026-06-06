@@ -8,10 +8,11 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "rowIndex"
+          "name": "rowIndexOrRow"
         },
         {
-          "name": "value"
+          "name": "value",
+          "value": "{{null}}"
         }
       ],
       "paginationType": "NONE",

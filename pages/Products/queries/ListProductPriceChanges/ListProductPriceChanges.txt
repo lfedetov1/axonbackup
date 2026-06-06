@@ -1,0 +1,71 @@
+SELECT
+    pcr.id AS priceChangeId,
+    pcr.record_number AS `Record Number`,
+    pcr.record_date AS `Record Date`,
+    pcr.effective_date AS `Effective Date`,
+    pcr.change_type AS `Change Type`,
+    pcr.status AS `Status`,
+    pcr.reason AS `Reason`,
+
+    COUNT(pci.id) AS `Item Count`,
+
+    SUM(CASE
+        WHEN pci.new_price < pci.old_price THEN 1 ELSE 0
+    END) AS `Price Decreases`,
+
+    SUM(CASE
+        WHEN pci.new_price > pci.old_price THEN 1 ELSE 0
+    END) AS `Price Increases`,
+
+    creator.username AS `Created By`,
+    approver.username AS `Approved By`,
+    poster.username AS `Posted By`,
+
+    pcr.created_at AS createdAt,
+    pcr.approved_at AS approvedAt,
+    pcr.posted_at AS postedAt
+
+FROM product_price_change_records pcr
+
+LEFT JOIN product_price_change_items pci
+  ON pci.price_change_record_id = pcr.id
+
+LEFT JOIN users creator
+  ON creator.id = pcr.created_by_user_id
+
+LEFT JOIN users approver
+  ON approver.id = pcr.approved_by_user_id
+
+LEFT JOIN users poster
+  ON poster.id = pcr.posted_by_user_id
+
+WHERE pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND (
+    {{ PriceChangeSearchInput.text || "" }} = ""
+    OR pcr.record_number LIKE CONCAT('%', {{ PriceChangeSearchInput.text || "" }}, '%')
+    OR pcr.reason LIKE CONCAT('%', {{ PriceChangeSearchInput.text || "" }}, '%')
+  )
+
+  AND (
+    {{ PriceChangeStatusSelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR pcr.status = {{ PriceChangeStatusSelect.selectedOptionValue || "ALL" }}
+  )
+
+  AND pcr.record_date >= {{
+    moment(PriceChangeDateFrom.selectedDate || moment().startOf("month"))
+      .format("YYYY-MM-DD")
+  }}
+
+  AND pcr.record_date <= {{
+    moment(PriceChangeDateTo.selectedDate || moment())
+      .format("YYYY-MM-DD")
+  }}
+
+GROUP BY
+    pcr.id,
+    creator.username,
+    approver.username,
+    poster.username
+
+ORDER BY pcr.record_date DESC, pcr.id DESC;

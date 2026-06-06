@@ -1,0 +1,22 @@
+INSERT INTO product_price_change_records (
+    company_id,
+    record_number,
+    record_date,
+    effective_date,
+    change_type,
+    status,
+    reason,
+    note,
+    created_by_user_id
+)
+VALUES (
+    {{ Number(appsmith.store.companyId || 1) }},
+    {{ this.params.recordNumber }},
+    {{ this.params.recordDate }},
+    {{ this.params.effectiveDate }},
+    {{ this.params.changeType }},
+    'DRAFT',
+    {{ this.params.reason || null }},
+    {{ this.params.note || null }},
+    NULLIF({{ Number(appsmith.store.userId || 0) }}, 0)
+);

@@ -1,0 +1,10 @@
+UPDATE product_price_change_records
+SET
+    record_date = {{ this.params.recordDate }},
+    effective_date = {{ this.params.effectiveDate }},
+    change_type = {{ this.params.changeType }},
+    reason = {{ this.params.reason || null }},
+    note = {{ this.params.note || null }}
+WHERE id = {{ Number(this.params.priceChangeId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND status = 'DRAFT';

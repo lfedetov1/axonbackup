@@ -1,0 +1,10 @@
+SELECT id AS restorePriceId
+FROM product_prices
+WHERE product_id = {{ Number(this.params.productId || 0) }}
+  AND price_type = 'SALE'
+  AND valid_from = DATE_ADD(
+      {{ this.params.promotionEndDate }},
+      INTERVAL 1 DAY
+  )
+ORDER BY id DESC
+LIMIT 1;

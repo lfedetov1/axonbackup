@@ -47,7 +47,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 4,
   "needsErrorInfo": false,
-  "onTextChanged": "{{\n  ProductLabelBarcodeInput.text?.trim().length >= 3\n    ? ProductLabels.scan(ProductLabelBarcodeInput.text)\n    : null\n}}",
+  "onTextChanged": "{{ ProductLabels.scanDebounced(ProductLabelBarcodeInput.text) }}",
   "parentColumnSpace": 16.4078125,
   "parentId": "yakoxhby37",
   "parentRowSpace": 10,

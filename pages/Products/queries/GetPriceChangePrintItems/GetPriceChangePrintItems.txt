@@ -1,0 +1,50 @@
+SELECT
+    pci.id AS priceChangeItemId,
+    pci.product_id AS productId,
+
+    p.code AS productCode,
+    p.name AS productName,
+    COALESCE(p.barcode, '') AS barcode,
+    COALESCE(p.sku, '') AS sku,
+
+    pci.currency_code AS currencyCode,
+    pci.old_price AS oldPrice,
+    pci.new_price AS newPrice,
+    pci.lowest_price_30_days AS lowestPrice30Days,
+
+    pci.new_price - pci.old_price AS difference,
+
+    CASE
+        WHEN pci.old_price > 0
+        THEN ROUND(
+            ((pci.new_price - pci.old_price) / pci.old_price) * 100,
+            2
+        )
+        ELSE 0
+    END AS changePercent,
+
+    pci.discount_percent AS discountPercent,
+    pci.promotion_end_date AS promotionEndDate,
+    pci.restore_price AS restorePrice,
+    pci.note,
+
+    CASE
+        WHEN pci.new_price < pci.old_price THEN 'PRICE DECREASE'
+        WHEN pci.new_price > pci.old_price THEN 'PRICE INCREASE'
+        ELSE 'NO CHANGE'
+    END AS changeDirection
+
+FROM product_price_change_items pci
+
+JOIN products p
+  ON p.id = pci.product_id
+
+WHERE pci.price_change_record_id = {{
+  Number(
+    (this.params && this.params.priceChangeId) ||
+    appsmith.store.selectedPriceChangePrintId ||
+    0
+  )
+}}
+
+ORDER BY p.name, p.code;

@@ -1,0 +1,5 @@
+UPDATE product_price_change_items
+SET
+    new_price_id = {{ this.params.newPriceId || null }},
+    restore_price_id = {{ this.params.restorePriceId || null }}
+WHERE id = {{ Number(this.params.priceChangeItemId || 0) }};

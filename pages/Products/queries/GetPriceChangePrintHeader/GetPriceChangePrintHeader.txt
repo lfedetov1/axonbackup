@@ -1,0 +1,73 @@
+SELECT
+    pcr.id AS priceChangeId,
+    pcr.record_number AS recordNumber,
+    pcr.record_date AS recordDate,
+    pcr.effective_date AS effectiveDate,
+    pcr.change_type AS changeType,
+    pcr.status,
+    pcr.reason,
+    pcr.note,
+
+    pcr.created_at AS createdAt,
+    pcr.approved_at AS approvedAt,
+    pcr.posted_at AS postedAt,
+    pcr.cancelled_at AS cancelledAt,
+
+    creator.username AS createdBy,
+    approver.username AS approvedBy,
+    poster.username AS postedBy,
+
+    c.name AS companyName,
+    c.tax_number AS companyTaxNumber,
+    c.registration_number AS companyRegistrationNumber,
+    c.address_line1 AS companyAddress,
+    c.city AS companyCity,
+    c.postal_code AS companyPostalCode,
+    c.email AS companyEmail,
+    c.phone AS companyPhone,
+    c.logo_path AS companyLogoPath,
+
+    (
+        SELECT COUNT(*)
+        FROM product_price_change_items pci
+        WHERE pci.price_change_record_id = pcr.id
+    ) AS itemCount,
+
+    (
+        SELECT COUNT(*)
+        FROM product_price_change_items pci
+        WHERE pci.price_change_record_id = pcr.id
+          AND pci.new_price < pci.old_price
+    ) AS decreasedCount,
+
+    (
+        SELECT COUNT(*)
+        FROM product_price_change_items pci
+        WHERE pci.price_change_record_id = pcr.id
+          AND pci.new_price > pci.old_price
+    ) AS increasedCount
+
+FROM product_price_change_records pcr
+
+JOIN companies c
+  ON c.id = pcr.company_id
+
+LEFT JOIN users creator
+  ON creator.id = pcr.created_by_user_id
+
+LEFT JOIN users approver
+  ON approver.id = pcr.approved_by_user_id
+
+LEFT JOIN users poster
+  ON poster.id = pcr.posted_by_user_id
+
+WHERE pcr.id = {{
+  Number(
+    (this.params && this.params.priceChangeId) ||
+    appsmith.store.selectedPriceChangePrintId ||
+    0
+  )
+}}
+AND pcr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+LIMIT 1;

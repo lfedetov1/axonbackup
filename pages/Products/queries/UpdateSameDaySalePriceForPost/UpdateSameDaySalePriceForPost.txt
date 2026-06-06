@@ -1,0 +1,7 @@
+UPDATE product_prices
+SET
+    currency_code = {{ this.params.currencyCode || "EUR" }},
+    price = {{ Number(this.params.newPrice || 0) }},
+    valid_to = {{ this.params.validTo || null }}
+WHERE id = {{ Number(this.params.sourcePriceId || 0) }}
+  AND price_type = 'SALE';

@@ -1,0 +1,21 @@
+SELECT
+    pci.id AS priceChangeItemId,
+    pci.product_id AS productId,
+    pci.currency_code AS currencyCode,
+    pci.source_price_id AS sourcePriceId,
+    source_price.valid_from AS sourcePriceValidFrom,
+
+    pci.old_price AS oldPrice,
+    pci.new_price AS newPrice,
+    pci.promotion_end_date AS promotionEndDate,
+    pci.restore_price AS restorePrice
+
+FROM product_price_change_items pci
+
+LEFT JOIN product_prices source_price
+  ON source_price.id = pci.source_price_id
+
+WHERE pci.price_change_record_id =
+      {{ Number(this.params.priceChangeId || 0) }}
+
+ORDER BY pci.id;

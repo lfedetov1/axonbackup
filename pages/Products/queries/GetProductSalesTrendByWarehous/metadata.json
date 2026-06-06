@@ -29,7 +29,7 @@
     ],
     "name": "GetProductSalesTrendByWarehous",
     "pageId": "Products",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

@@ -1,0 +1,64 @@
+SELECT
+    p.id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode,
+    p.sku,
+
+    cp.id AS sourcePriceId,
+    COALESCE(cp.currency_code, 'EUR') AS currencyCode,
+    COALESCE(cp.price, 0) AS oldPrice,
+
+    COALESCE(
+        (
+            SELECT MIN(history.price)
+            FROM product_prices history
+            WHERE history.product_id = p.id
+              AND history.price_type = 'SALE'
+              AND history.valid_from <
+                  {{ (this.params && this.params.effectiveDate) || moment().format("YYYY-MM-DD") }}
+              AND COALESCE(
+                    history.valid_to,
+                    {{ (this.params && this.params.effectiveDate) || moment().format("YYYY-MM-DD") }}
+                  ) >= DATE_SUB(
+                    {{ (this.params && this.params.effectiveDate) || moment().format("YYYY-MM-DD") }},
+                    INTERVAL 30 DAY
+                  )
+        ),
+        cp.price,
+        0
+    ) AS lowestPrice30Days
+
+FROM products p
+
+LEFT JOIN product_prices cp
+  ON cp.id = (
+      SELECT active_price.id
+      FROM product_prices active_price
+      WHERE active_price.product_id = p.id
+        AND active_price.price_type = 'SALE'
+        AND active_price.valid_from <=
+            {{ (this.params && this.params.effectiveDate) || moment().format("YYYY-MM-DD") }}
+        AND COALESCE(active_price.valid_to, '9999-12-31') >=
+            {{ (this.params && this.params.effectiveDate) || moment().format("YYYY-MM-DD") }}
+      ORDER BY active_price.valid_from DESC, active_price.id DESC
+      LIMIT 1
+  )
+
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+      (
+          {{ Number((this.params && this.params.productId) || 0) }} > 0
+          AND p.id = {{ Number((this.params && this.params.productId) || 0) }}
+      )
+      OR
+      (
+          {{ Number((this.params && this.params.productId) || 0) }} = 0
+          AND (
+              p.barcode = {{ (this.params && this.params.lookup) || "" }}
+              OR p.code = {{ (this.params && this.params.lookup) || "" }}
+              OR p.sku = {{ (this.params && this.params.lookup) || "" }}
+          )
+      )
+  )
+LIMIT 1;

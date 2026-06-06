@@ -1,0 +1,54 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 6,
+  "boxShadow": "none",
+  "buttonColor": "#a16207",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "6ys5wf8knr",
+  "leftColumn": 55,
+  "minWidth": 120,
+  "mobileBottomRow": 5,
+  "mobileLeftColumn": 44,
+  "mobileRightColumn": 60,
+  "mobileTopRow": 1,
+  "needsErrorInfo": false,
+  "onClick": "{{ ProductPriceChange.addSelectedProduct() }}",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "eg99stdk2v",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Add",
+  "topRow": 2,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "63ul2fqn54",
+  "widgetName": "AddPriceChangeProductButton"
+}

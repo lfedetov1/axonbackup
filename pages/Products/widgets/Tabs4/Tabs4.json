@@ -1,0 +1,416 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": 1,
+  "bottomRow": 87,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "children": [
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 690,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": true,
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isDisabled": false,
+      "isLoading": false,
+      "isVisible": true,
+      "key": "sncyauc89y",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 150,
+      "minWidth": 450,
+      "mobileBottomRow": 150,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 414.75,
+      "mobileTopRow": 0,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 414.75,
+      "shouldScrollContents": false,
+      "tabId": "tab1",
+      "tabName": "General Information",
+      "topRow": 0,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "thss4rjmo1",
+      "widgetName": "Canvas26"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 660,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": true,
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isDisabled": false,
+      "isLoading": false,
+      "isVisible": true,
+      "key": "sncyauc89y",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 150,
+      "minWidth": 450,
+      "mobileBottomRow": 150,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 414.75,
+      "mobileTopRow": 0,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 414.75,
+      "shouldScrollContents": false,
+      "tabId": "tab2",
+      "tabName": "Sales Analisys",
+      "topRow": 0,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "nthkz0m7qw",
+      "widgetName": "Canvas27"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 660,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "sncyauc89y",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 380,
+      "minWidth": 450,
+      "mobileBottomRow": 381,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tabqzbd6ajxmx",
+      "tabName": "Purchase",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "oxrnhfwoom",
+      "widgetName": "Canvas28"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 660,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "sncyauc89y",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 380,
+      "minWidth": 450,
+      "mobileBottomRow": 381,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tabmtziu211js",
+      "tabName": "Analystics",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "dson3sjbmk",
+      "widgetName": "Canvas29"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 660,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "sncyauc89y",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 380,
+      "minWidth": 450,
+      "mobileBottomRow": 381,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tab3k5uwxoxak",
+      "tabName": "Stock - product analystics",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "aqpb9v5a66",
+      "widgetName": "Canvas30"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 660,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "fo2bby3dxo",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 750,
+      "minWidth": 450,
+      "mobileBottomRow": 751,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "vw6ywxx3ez",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tabep5qen2id9",
+      "tabName": "Price Changes",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "v9jmntqtge",
+      "widgetName": "Canvas31"
+    }
+  ],
+  "defaultTab": "General Information",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabqzbd6ajxmx.isVisible"
+    },
+    {
+      "key": "tabsObj.tab3k5uwxoxak.isVisible"
+    },
+    {
+      "key": "tabsObj.undefined.isVisible"
+    },
+    {
+      "key": "tabsObj.tabep5qen2id9.isVisible"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabqzbd6ajxmx.isVisible"
+    },
+    {
+      "key": "tabsObj.tab0h37sdoqvs.isVisible"
+    },
+    {
+      "key": "tabsObj.tab3k5uwxoxak.isVisible"
+    },
+    {
+      "key": "tabsObj.tabep5qen2id9.isVisible"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "flexVerticalAlignment": "stretch",
+  "isCanvas": true,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "4p7hpjw1lh",
+  "leftColumn": 0,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 15,
+  "minWidth": 450,
+  "mobileBottomRow": 28,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 25,
+  "mobileTopRow": 13,
+  "needsErrorInfo": false,
+  "originalBottomRow": 66,
+  "originalTopRow": 17,
+  "parentColumnSpace": 17.28125,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 64,
+  "shouldScrollContents": true,
+  "shouldShowTabs": true,
+  "tabsObj": {
+    "tab1": {
+      "id": "tab1",
+      "index": 0,
+      "isDuplicateLabel": false,
+      "isVisible": true,
+      "label": "General Information",
+      "positioning": "vertical",
+      "widgetId": "thss4rjmo1"
+    },
+    "tab2": {
+      "id": "tab2",
+      "index": 1,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ JSAccess.has(\"products.sales.view\") }}",
+      "label": "Sales Analisys",
+      "positioning": "vertical",
+      "widgetId": "nthkz0m7qw"
+    },
+    "tab3k5uwxoxak": {
+      "id": "tab3k5uwxoxak",
+      "index": 4,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ JSAccess.has(\"products.stock_analytics.view\") }}",
+      "label": "Stock - product analystics",
+      "widgetId": "aqpb9v5a66"
+    },
+    "tabep5qen2id9": {
+      "id": "tabep5qen2id9",
+      "index": 5,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ JSAccess.has(\"products.pricing.view\") }}",
+      "label": "Price Changes",
+      "widgetId": "v9jmntqtge"
+    },
+    "tabmtziu211js": {
+      "id": "tabmtziu211js",
+      "index": 3,
+      "isDuplicateLabel": false,
+      "isVisible": true,
+      "label": "Analystics",
+      "widgetId": "dson3sjbmk"
+    },
+    "tabqzbd6ajxmx": {
+      "id": "tabqzbd6ajxmx",
+      "index": 2,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ JSAccess.has(\"products.purchase.view\") }}",
+      "label": "Purchase",
+      "widgetId": "oxrnhfwoom"
+    },
+    "undefined": {
+      "index": 6,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ JSAccess.has(\"products.analytics.view\") }}\n"
+    }
+  },
+  "topRow": 17,
+  "type": "TABS_WIDGET",
+  "version": 3,
+  "widgetId": "vw6ywxx3ez",
+  "widgetName": "Tabs4"
+}

@@ -1,0 +1,59 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 16,
+  "boxShadow": "none",
+  "defaultOptionValue": "GREEN",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "qi7b0m6yl0",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Type :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 25,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 18,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 15.582568359375,
+  "parentId": "0iqcdyppjv",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 16,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  {\n    \"label\": \"Permanent Price Change\",\n    \"value\": \"PERMANENT\"\n  },\n  {\n    \"label\": \"Promotion / Discount\",\n    \"value\": \"PROMOTION\"\n  }\n]",
+  "topRow": 9,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "cetmlvnt3q",
+  "widgetName": "PriceChangeTypeSelect"
+}

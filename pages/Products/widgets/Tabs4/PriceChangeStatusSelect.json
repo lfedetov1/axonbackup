@@ -1,0 +1,59 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 13,
+  "boxShadow": "none",
+  "defaultOptionValue": "GREEN",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "qi7b0m6yl0",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Status :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 12,
+  "mobileLeftColumn": 15,
+  "mobileRightColumn": 35,
+  "mobileTopRow": 5,
+  "needsErrorInfo": false,
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 16.96875,
+  "parentId": "v9jmntqtge",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 17,
+  "serverSideFiltering": false,
+  "sourceData": "[\n  { \"label\": \"All Statuses\", \"value\": \"ALL\" },\n  { \"label\": \"Draft\", \"value\": \"DRAFT\" },\n  { \"label\": \"Approved\", \"value\": \"APPROVED\" },\n  { \"label\": \"Posted\", \"value\": \"POSTED\" },\n  { \"label\": \"Cancelled\", \"value\": \"CANCELLED\" }\n]",
+  "topRow": 6,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "s1mxsepdev",
+  "widgetName": "PriceChangeStatusSelect"
+}

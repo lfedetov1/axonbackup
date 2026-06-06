@@ -1,0 +1,7 @@
+UPDATE product_price_change_records
+SET
+    status = 'CANCELLED',
+    cancelled_at = NOW()
+WHERE id = {{ Number(this.params.priceChangeId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND status IN ('DRAFT', 'APPROVED');

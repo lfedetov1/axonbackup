@@ -1,0 +1,7 @@
+SELECT id AS priceId
+FROM product_prices
+WHERE product_id = {{ Number(this.params.productId || 0) }}
+  AND price_type = 'SALE'
+  AND valid_from = {{ this.params.effectiveDate }}
+ORDER BY id DESC
+LIMIT 1;

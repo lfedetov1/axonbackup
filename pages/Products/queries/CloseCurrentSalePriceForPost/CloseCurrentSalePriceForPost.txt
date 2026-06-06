@@ -1,0 +1,5 @@
+UPDATE product_prices
+SET valid_to = DATE_SUB({{ this.params.effectiveDate }}, INTERVAL 1 DAY)
+WHERE id = {{ Number(this.params.sourcePriceId || 0) }}
+  AND price_type = 'SALE'
+  AND valid_from < {{ this.params.effectiveDate }};

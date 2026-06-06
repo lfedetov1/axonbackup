@@ -1,0 +1,2 @@
+DELETE FROM product_price_change_items
+WHERE price_change_record_id = {{ Number(this.params.priceChangeId || 0) }};

@@ -11,11 +11,7 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicPropertyPathList": [
-    {
-      "key": "onClick"
-    }
-  ],
+  "dynamicPropertyPathList": [],
   "dynamicTriggerPathList": [
     {
       "key": "onClick"
@@ -35,7 +31,7 @@
   "mobileRightColumn": 59,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onClick": "{{ ProductLabels.clear() }}",
+  "onClick": "{{ProductLabels.clearAll();}}",
   "parentColumnSpace": 16.4078125,
   "parentId": "yakoxhby37",
   "parentRowSpace": 10,

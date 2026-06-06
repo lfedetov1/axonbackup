@@ -1,0 +1,25 @@
+SELECT
+    pci.id AS priceChangeItemId,
+    pci.product_id AS productId,
+    p.code AS productCode,
+    p.name AS productName,
+    p.barcode,
+    p.sku,
+
+    pci.currency_code AS currencyCode,
+    pci.source_price_id AS sourcePriceId,
+    pci.old_price AS oldPrice,
+    pci.new_price AS newPrice,
+    pci.lowest_price_30_days AS lowestPrice30Days,
+    pci.discount_percent AS discountPercent,
+    pci.promotion_end_date AS promotionEndDate,
+    pci.restore_price AS restorePrice,
+    pci.note
+
+FROM product_price_change_items pci
+JOIN products p ON p.id = pci.product_id
+
+WHERE pci.price_change_record_id =
+      {{ Number(this.params.priceChangeId || 0) }}
+
+ORDER BY pci.id;
