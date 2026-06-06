@@ -251,6 +251,18 @@
     },
     {
       "key": "isVisible"
+    },
+    {
+      "key": "tabsObj.tabuvm6pdvfu3.isVisible"
+    },
+    {
+      "key": "tabsObj.tab0h37sdoqvs.isVisible"
+    },
+    {
+      "key": "tabsObj.tabl1znso8dzy.isVisible"
+    },
+    {
+      "key": "tabsObj.tab2bupnudk4f.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -260,6 +272,18 @@
     },
     {
       "key": "isVisible"
+    },
+    {
+      "key": "tabsObj.tabuvm6pdvfu3.isVisible"
+    },
+    {
+      "key": "tabsObj.tab0h37sdoqvs.isVisible"
+    },
+    {
+      "key": "tabsObj.tabl1znso8dzy.isVisible"
+    },
+    {
+      "key": "tabsObj.tab2bupnudk4f.isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -291,14 +315,14 @@
     "tab0h37sdoqvs": {
       "id": "tab0h37sdoqvs",
       "index": 2,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.analytics.view\") }}\n",
       "label": "Analytics",
       "widgetId": "g7vak2qiac"
     },
     "tab2": {
       "id": "tab2",
       "index": 0,
-      "isVisible": "{{ JSAccess.hasAny([\"purchase.view\", \"purchase.receipts.view\", \"purchase.invoices.view\"]) }}\n\n",
+      "isVisible": "{{ JSAccess.has(\"products.sales.view\") }}",
       "label": "Sales",
       "positioning": "vertical",
       "widgetId": "z4knilxvbu"
@@ -306,21 +330,21 @@
     "tab2bupnudk4f": {
       "id": "tab2bupnudk4f",
       "index": 4,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.sales_stock_analytics.view\") }}",
       "label": "Sales stock analystics",
       "widgetId": "isux44f36p"
     },
     "tabl1znso8dzy": {
       "id": "tabl1znso8dzy",
       "index": 3,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.stock_analytics.view\") }}",
       "label": "Stock product analytics",
       "widgetId": "nms2vz1l69"
     },
     "tabuvm6pdvfu3": {
       "id": "tabuvm6pdvfu3",
       "index": 1,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.purchase.view\") }}",
       "label": "Purchase",
       "widgetId": "mfw7742td7"
     }

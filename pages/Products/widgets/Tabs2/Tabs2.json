@@ -5,7 +5,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 90,
+  "bottomRow": 89,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
     {
@@ -300,7 +300,7 @@
       "flexLayers": [],
       "isLoading": false,
       "isVisible": true,
-      "key": "jvcdd0plk9",
+      "key": "odhuc1hx8w",
       "leftColumn": 0,
       "maxDynamicHeight": 9000,
       "minDynamicHeight": 4,
@@ -317,12 +317,12 @@
       "renderMode": "CANVAS",
       "responsiveBehavior": "fill",
       "rightColumn": 1099.546875,
-      "tabId": "tab4jh5nroio6",
-      "tabName": "Margin",
+      "tabId": "tab5dud0dunmd",
+      "tabName": "Margins",
       "topRow": 1,
       "type": "CANVAS_WIDGET",
       "version": 1,
-      "widgetId": "92h3cxco7t",
+      "widgetId": "gsnugl7i3b",
       "widgetName": "Canvas24"
     }
   ],
@@ -345,6 +345,18 @@
     },
     {
       "key": "tabsObj.tab1.isVisible"
+    },
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtg7tqzgtpz.isVisible"
+    },
+    {
+      "key": "tabsObj.tab87yo4wvndr.isVisible"
+    },
+    {
+      "key": "tabsObj.tab5dud0dunmd.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -357,6 +369,18 @@
     },
     {
       "key": "tabsObj.tab1.isVisible"
+    },
+    {
+      "key": "tabsObj.tab2.isVisible"
+    },
+    {
+      "key": "tabsObj.tabtg7tqzgtpz.isVisible"
+    },
+    {
+      "key": "tabsObj.tab87yo4wvndr.isVisible"
+    },
+    {
+      "key": "tabsObj.tab5dud0dunmd.isVisible"
     }
   ],
   "dynamicTriggerPathList": [],
@@ -374,8 +398,8 @@
   "mobileRightColumn": 25,
   "mobileTopRow": 46,
   "needsErrorInfo": false,
-  "originalBottomRow": 90,
-  "originalTopRow": 56,
+  "originalBottomRow": 89,
+  "originalTopRow": 55,
   "parentColumnSpace": 17.453125,
   "parentId": "0",
   "parentRowSpace": 10,
@@ -396,22 +420,22 @@
     "tab2": {
       "id": "tab2",
       "index": 1,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.pricing.view\") }}",
       "label": "Pricing",
       "positioning": "vertical",
       "widgetId": "88u12wfho0"
     },
-    "tab4jh5nroio6": {
-      "id": "tab4jh5nroio6",
+    "tab5dud0dunmd": {
+      "id": "tab5dud0dunmd",
       "index": 6,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.margin.view\") }}",
       "label": "Margin",
-      "widgetId": "92h3cxco7t"
+      "widgetId": "gsnugl7i3b"
     },
     "tab87yo4wvndr": {
       "id": "tab87yo4wvndr",
       "index": 3,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.card.view\") }}",
       "label": "Product Card",
       "widgetId": "7ph0yoldum"
     },
@@ -425,19 +449,19 @@
     "tabm27jnq14ad": {
       "id": "tabm27jnq14ad",
       "index": 5,
-      "isVisible": "{{ JSAccess.has(\"products.import\") || JSAccess.has(\"admin.access\") }}",
+      "isVisible": "{{ JSAccess.has(\"products.import_history.view\") }}",
       "label": "Import History ",
       "widgetId": "qoyzimzeuc"
     },
     "tabtg7tqzgtpz": {
       "id": "tabtg7tqzgtpz",
       "index": 2,
-      "isVisible": true,
+      "isVisible": "{{ JSAccess.has(\"products.inventory.view\") }}",
       "label": "Inventory",
       "widgetId": "5qkgqwv993"
     }
   },
-  "topRow": 56,
+  "topRow": 55,
   "type": "TABS_WIDGET",
   "version": 3,
   "widgetId": "umwvjsf7t0",
