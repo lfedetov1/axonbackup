@@ -1,0 +1,30 @@
+{{
+{
+  companyId: 1,
+
+  partnerId:
+    Number(DocumentUploadPartnerSelect.selectedOptionValue || 0) || null,
+
+  recipientName:
+    DocumentUploadRecipientNameInp.text,
+
+  recipientEmail:
+    DocumentUploadRecipientEmailIn.text,
+
+  linkName:
+    DocumentUploadLinkNameInput.text ||
+    "Document Upload",
+
+  expiresHours:
+    Number(DocumentUploadExpiresHoursInpu.text || 72),
+
+  maxUploads:
+    Number(DocumentUploadMaxUploadsInput.text || 5),
+
+  createdByUserId:
+    Number(appsmith.store.userId || 0) || null,
+
+  message:
+    DocumentUploadMessageInput.text
+}
+}}

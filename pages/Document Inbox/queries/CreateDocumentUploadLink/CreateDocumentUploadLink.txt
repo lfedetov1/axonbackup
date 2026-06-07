@@ -1,0 +1,10 @@
+{{
+{
+  "companyId": 1,
+  "partnerId": null,
+  "linkName": "Appsmith Test Upload",
+  "expiresHours": 72,
+  "maxUploads": 5,
+  "createdByUserId": null
+}
+}}

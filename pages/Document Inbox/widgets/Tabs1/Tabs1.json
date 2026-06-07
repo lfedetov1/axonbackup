@@ -5,55 +5,9 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": 1,
-  "bottomRow": 76,
+  "bottomRow": 80,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "children": [
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": true,
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isDisabled": false,
-      "isLoading": false,
-      "isVisible": true,
-      "key": "vlj65sbipe",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 150,
-      "minWidth": 450,
-      "mobileBottomRow": 150,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 414.75,
-      "mobileTopRow": 0,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "6kcto2s397",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 414.75,
-      "shouldScrollContents": false,
-      "tabId": "tab1",
-      "tabName": "Detail",
-      "topRow": 0,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "u8ujgxhesn",
-      "widgetName": "Canvas2"
-    },
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
       "bottomRow": 300,
@@ -144,9 +98,54 @@
       "version": 1,
       "widgetId": "dp729lmopa",
       "widgetName": "Canvas4"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 300,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "5g373uv0i4",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 340,
+      "minWidth": 450,
+      "mobileBottomRow": 341,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "6kcto2s397",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tabz2yj1l8kjz",
+      "tabName": "Note",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "cazd9azj0e",
+      "widgetName": "Canvas5"
     }
   ],
-  "defaultTab": "Tab 1",
+  "defaultTab": "File",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -174,8 +173,8 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 42,
   "needsErrorInfo": false,
-  "originalBottomRow": 77,
-  "originalTopRow": 42,
+  "originalBottomRow": 80,
+  "originalTopRow": 46,
   "parentColumnSpace": 17.28125,
   "parentId": "0",
   "parentRowSpace": 10,
@@ -185,18 +184,9 @@
   "shouldScrollContents": true,
   "shouldShowTabs": true,
   "tabsObj": {
-    "tab1": {
-      "id": "tab1",
-      "index": 0,
-      "isDuplicateLabel": false,
-      "isVisible": true,
-      "label": "Detail",
-      "positioning": "vertical",
-      "widgetId": "u8ujgxhesn"
-    },
     "tab2": {
       "id": "tab2",
-      "index": 2,
+      "index": 1,
       "isDuplicateLabel": false,
       "isVisible": true,
       "label": "Events",
@@ -205,14 +195,21 @@
     },
     "tabbufk7certc": {
       "id": "tabbufk7certc",
-      "index": 1,
+      "index": 0,
       "isDuplicateLabel": false,
       "isVisible": true,
       "label": "File",
       "widgetId": "dp729lmopa"
+    },
+    "tabz2yj1l8kjz": {
+      "id": "tabz2yj1l8kjz",
+      "index": 2,
+      "isVisible": true,
+      "label": "Note",
+      "widgetId": "cazd9azj0e"
     }
   },
-  "topRow": 42,
+  "topRow": 46,
   "type": "TABS_WIDGET",
   "version": 3,
   "widgetId": "6kcto2s397",

@@ -1,0 +1,9 @@
+{{
+{
+  companyId: 1,
+  userId: Number(appsmith.store.userId || 0) || null,
+  actorName: appsmith.store.username || "Appsmith User",
+  status: this.params.status,
+  note: this.params.note || null
+}
+}}

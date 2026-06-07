@@ -1,0 +1,6 @@
+{{
+{
+  companyId: 1,
+  mode: this.params.mode || "preview"
+}
+}}
