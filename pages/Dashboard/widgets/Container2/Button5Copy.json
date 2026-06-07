@@ -12,15 +12,30 @@
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isVisible"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "folder-close",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{\n  (appsmith.store.roleCodes || []).includes(\"ADMIN\") ||\n  AppAccess.has(\"documents.inbox.view\")\n}}",
   "key": "97fwhq2htc",
   "leftColumn": 51,
   "minWidth": 120,
@@ -29,6 +44,7 @@
   "mobileRightColumn": 23,
   "mobileTopRow": 41,
   "needsErrorInfo": false,
+  "onClick": "{{ navigateTo(\"Document Inbox\") }}",
   "originalBottomRow": 17,
   "originalTopRow": 13,
   "parentColumnSpace": 30.5625,

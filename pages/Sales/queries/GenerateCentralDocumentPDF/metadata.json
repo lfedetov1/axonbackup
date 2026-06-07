@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_018abb42-0a18-4247-ab5d-7e48601a258b",
-  "id": "Document Inbox_ProcessDocumentInbox",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_b4246e44-068e-460e-b183-39db449cf53a",
+  "id": "Sales_GenerateCentralDocumentPDF",
   "pluginId": "restapi-plugin",
   "pluginType": "API",
   "unpublishedAction": {
@@ -11,7 +11,7 @@
           "value": "application/json"
         }
       ],
-      "body": "{{\n{\n  companyId: Number(appsmith.store.companyId || 1),\n  createdByUserId: Number(appsmith.store.userId || 0),\n  warehouseId: Number(this.params.warehouseId || 0) || null,\n  targetType: this.params.targetType || \"AUTO\",\n  actorName: appsmith.store.username || \"Appsmith User\"\n}\n}}",
+      "body": "{{\n  {\n    kind: this.params.kind,\n    companyId: Number(this.params.companyId || appsmith.store.companyId || 1),\n    documentNumber: this.params.documentNumber || \"\",\n    productId: Number(this.params.productId || 0),\n    productCode: this.params.productCode || \"\",\n    barcode: this.params.barcode || \"\",\n    packageNumber: this.params.packageNumber || \"\",\n    warehouseId: Number(this.params.warehouseId || 0),\n    period: this.params.period || \"TODAY\",\n    printType: this.params.printType || \"\",\n    header: this.params.header || undefined,\n    items: this.params.items || undefined,\n    taxes: this.params.taxes || undefined\n  }\n}}",
       "bodyFormData": [],
       "encodeParamsToggle": true,
       "formData": {
@@ -20,13 +20,13 @@
       "headers": [
         {
           "key": "x-api-key",
-          "value": "e6365a72a9c75b39e02d2cdf099503ccdd687bdf6f9bce9feac6ddc0d752c65d"
+          "value": "041ee8fd8c3059a3b9129f7c72620043746e602b4cb914fc30c32d42279c783e"
         }
       ],
       "httpMethod": "POST",
       "httpVersion": "HTTP11",
       "paginationType": "NONE",
-      "path": "/api/admin/submissions/{{ this.params.submissionId }}/process",
+      "path": "/pdf/document-pdf",
       "pluginSpecifiedTemplates": [
         {
           "value": true
@@ -46,14 +46,11 @@
     },
     "dynamicBindingPathList": [
       {
-        "key": "path"
-      },
-      {
         "key": "body"
       }
     ],
-    "name": "ProcessDocumentInbox",
-    "pageId": "Document Inbox",
+    "name": "GenerateCentralDocumentPDF",
+    "pageId": "Sales",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }

@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_33e1de67-d2f3-4be3-88d7-cab523277cd8",
-  "id": "Document Inbox_DocumentInbox.process",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7a6932d8-ee3f-473d-a0e0-08d5568c40a0",
+  "id": "Document Inbox_DocumentInbox.processedDocumentId",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -10,10 +10,6 @@
         {
           "name": "row",
           "value": "{{null}}"
-        },
-        {
-          "name": "targetType",
-          "value": "AUTO"
         }
       ],
       "paginationType": "NONE",
@@ -31,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "DocumentInbox.process",
-    "name": "process",
+    "fullyQualifiedName": "DocumentInbox.processedDocumentId",
+    "name": "processedDocumentId",
     "pageId": "Document Inbox",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

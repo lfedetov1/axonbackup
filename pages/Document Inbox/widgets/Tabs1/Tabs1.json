@@ -143,51 +143,6 @@
       "version": 1,
       "widgetId": "cazd9azj0e",
       "widgetName": "Canvas5"
-    },
-    {
-      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 300,
-      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-      "canExtend": false,
-      "containerStyle": "none",
-      "detachFromLayout": true,
-      "dynamicBindingPathList": [
-        {
-          "key": "borderRadius"
-        },
-        {
-          "key": "boxShadow"
-        }
-      ],
-      "dynamicHeight": "AUTO_HEIGHT",
-      "dynamicTriggerPathList": [],
-      "flexLayers": [],
-      "isLoading": false,
-      "isVisible": true,
-      "key": "lnh1wawl2r",
-      "leftColumn": 0,
-      "maxDynamicHeight": 9000,
-      "minDynamicHeight": 4,
-      "minHeight": 340,
-      "minWidth": 450,
-      "mobileBottomRow": 341,
-      "mobileLeftColumn": 0,
-      "mobileRightColumn": 1106,
-      "mobileTopRow": 1,
-      "needsErrorInfo": false,
-      "parentColumnSpace": 1,
-      "parentId": "6kcto2s397",
-      "parentRowSpace": 1,
-      "renderMode": "CANVAS",
-      "responsiveBehavior": "fill",
-      "rightColumn": 1106,
-      "tabId": "tab01acrmoapt",
-      "tabName": "Proceed",
-      "topRow": 1,
-      "type": "CANVAS_WIDGET",
-      "version": 1,
-      "widgetId": "ceorzbxheb",
-      "widgetName": "Canvas7"
     }
   ],
   "defaultTab": "File",
@@ -218,7 +173,7 @@
   "mobileRightColumn": 24,
   "mobileTopRow": 42,
   "needsErrorInfo": false,
-  "originalBottomRow": 80,
+  "originalBottomRow": 79,
   "originalTopRow": 46,
   "parentColumnSpace": 17.28125,
   "parentId": "0",
@@ -229,13 +184,6 @@
   "shouldScrollContents": true,
   "shouldShowTabs": true,
   "tabsObj": {
-    "tab01acrmoapt": {
-      "id": "tab01acrmoapt",
-      "index": 3,
-      "isVisible": true,
-      "label": "Proceed",
-      "widgetId": "ceorzbxheb"
-    },
     "tab2": {
       "id": "tab2",
       "index": 1,

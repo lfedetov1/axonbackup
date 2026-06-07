@@ -1,0 +1,17 @@
+{{
+  {
+    kind: this.params.kind,
+    companyId: Number(this.params.companyId || appsmith.store.companyId || 1),
+    documentNumber: this.params.documentNumber || "",
+    productId: Number(this.params.productId || 0),
+    productCode: this.params.productCode || "",
+    barcode: this.params.barcode || "",
+    packageNumber: this.params.packageNumber || "",
+    warehouseId: Number(this.params.warehouseId || 0),
+    period: this.params.period || "TODAY",
+    printType: this.params.printType || "",
+    header: this.params.header || undefined,
+    items: this.params.items || undefined,
+    taxes: this.params.taxes || undefined
+  }
+}}

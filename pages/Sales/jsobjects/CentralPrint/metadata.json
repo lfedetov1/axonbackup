@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_801ffec5-f873-4394-a3f5-625307f3df5f",
+  "id": "Sales_CentralPrint",
+  "unpublishedCollection": {
+    "name": "CentralPrint",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

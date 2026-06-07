@@ -7,9 +7,19 @@ export default {
     const selected = this.selected(row);
 
     return Number(
-      selected.id ||
       selected.submissionId ||
+      selected.id ||
       selected.ID ||
+      0
+    );
+  },
+
+  processedDocumentId(row = null) {
+    const selected = this.selected(row);
+
+    return Number(
+      selected.processedDocumentId ||
+      selected.processed_document_id ||
       0
     );
   },
@@ -17,7 +27,10 @@ export default {
   async refresh() {
     await ListDocumentInbox.run();
 
-    if (appsmith.store.selectedDocumentInboxId) {
+    if (
+      appsmith.store.selectedDocumentInboxId &&
+      typeof GetDocumentInboxDetails !== "undefined"
+    ) {
       await GetDocumentInboxDetails.run();
     }
   },
@@ -44,7 +57,7 @@ export default {
 
   async createUploadLink() {
     try {
-      const params = {
+      const response = await CreateDocumentUploadLink.run({
         companyId: Number(appsmith.store.companyId || 1),
 
         partnerId:
@@ -61,30 +74,23 @@ export default {
 
         createdByUserId:
           Number(appsmith.store.userId || 0) || null
-      };
+      });
 
-      const response = await CreateDocumentUploadLink.run(params);
-
-      const result =
-        response?.uploadUrl
-          ? response
-          : CreateDocumentUploadLink.data || {};
-
-      console.log("Create upload link result:", result);
+      const result = response?.uploadUrl
+        ? response
+        : CreateDocumentUploadLink.data || {};
 
       if (!result.uploadUrl) {
         showAlert("Upload URL was not returned by the server.", "error");
         return null;
       }
 
-      await storeValue("documentUploadGeneratedLink", result.uploadUrl);
-
-      if (typeof DocumentUploadGeneratedLinkInput !== "undefined") {
-        DocumentUploadGeneratedLinkInp.setValue(result.uploadUrl);
-      }
+      await storeValue(
+        "documentUploadGeneratedLink",
+        result.uploadUrl
+      );
 
       showAlert("Secure upload link created.", "success");
-
       return result;
     } catch (error) {
       showAlert(
@@ -96,47 +102,50 @@ export default {
       return null;
     }
   },
-	
 
-archive(row = null) {
-  return this.process(row, "ARCHIVE_ONLY");
-},
-	
-	async sendUploadLink() {
-  const recipientEmail =
-    String(DocumentUploadRecipientEmailIn.text || "").trim();
+  async sendUploadLink() {
+    const recipientEmail = String(
+      DocumentUploadRecipientEmailIn.text || ""
+    ).trim();
 
-  const uploadUrl =
-    String(appsmith.store.documentUploadGeneratedLink || "").trim();
+    let uploadUrl = String(
+      appsmith.store.documentUploadGeneratedLink || ""
+    ).trim();
 
-  if (!recipientEmail) {
-    showAlert("Recipient email is required.", "warning");
-    return;
-  }
+    if (!recipientEmail) {
+      showAlert("Recipient email is required.", "warning");
+      return;
+    }
 
-  if (!uploadUrl) {
-    showAlert("Create upload link first.", "warning");
-    return;
-  }
+    if (!uploadUrl) {
+      const result = await this.createUploadLink();
+      uploadUrl = result?.uploadUrl || "";
+    }
 
-  try {
-    const response = await SendDocumentUploadLink.run({
-      recipientEmail,
-      recipientName: DocumentUploadRecipientNameInp.text || "",
-      uploadUrl,
-      linkName: DocumentUploadLinkNameInput.text || "Document Upload",
-      message: DocumentUploadMessageInput.text || ""
-    });
+    if (!uploadUrl) {
+      return;
+    }
 
-    console.log("Send email response:", response);
+    try {
+      await SendDocumentUploadLink.run({
+        recipientEmail,
+        recipientName: DocumentUploadRecipientNameInp.text || "",
+        uploadUrl,
+        linkName: DocumentUploadLinkNameInput.text || "Document Upload",
+        message: DocumentUploadMessageInput.text || ""
+      });
 
-    showAlert("Secure upload link was sent successfully.", "success");
-  } catch (error) {
-    showAlert("Error while sending upload link: " + error.message, "error");
-    console.log(error);
-  }
-},
-	
+      showAlert("Secure upload link was sent successfully.", "success");
+    } catch (error) {
+      showAlert(
+        "Error while sending upload link: " + error.message,
+        "error"
+      );
+
+      console.log(error);
+    }
+  },
+
   async changeStatus(status, row = null, note = null) {
     const submissionId = this.submissionId(row);
 
@@ -182,79 +191,71 @@ archive(row = null) {
     );
   },
 
- async process(row = null, forcedTargetType = null) {
-  const selected = this.selected(row);
-  const submissionId = this.submissionId(selected);
-
-  const status = String(
-    selected.status ||
-    selected.Status ||
-    ""
-  ).toUpperCase();
-
-  if (!submissionId) {
-    showAlert("Select inbox document first.", "warning");
-    return;
-  }
-
-  if (status !== "APPROVED") {
-    showAlert("Only approved documents can be processed.", "warning");
-    return;
-  }
-
-  const sourceType = String(
-    selected.documentType ||
-    selected.document_type ||
-    selected["Document Type"] ||
-    ""
-  ).toUpperCase();
-
-  const typeMap = {
-    SUPPLIER_INVOICE: "PURCHASE_INVOICE",
-    PURCHASE_INVOICE: "PURCHASE_INVOICE",
-    SUPPLIER_QUOTE: "PURCHASE_QUOTE",
-    PURCHASE_QUOTE: "PURCHASE_QUOTE",
-    DELIVERY_NOTE: "DELIVERY_NOTE"
-  };
-
-  const targetType = forcedTargetType || typeMap[sourceType];
-
-  if (!targetType) {
-    showAlert(
-      `Processing type is not configured for ${sourceType || "this document"}.`,
-      "warning"
-    );
-    return;
-  }
-
-  try {
-    const result = await ProcessDocumentInbox.run({
-      submissionId,
-      targetType,
-      warehouseId: Number(appsmith.store.warehouseId || 0) || null
-    });
-
-    await this.refresh();
-
-    showAlert(
-      result?.documentNumber
-        ? `ERP document ${result.documentNumber} was created.`
-        : "Document was processed successfully.",
-      "success"
-    );
-
-    return result;
-  } catch (error) {
-    showAlert("Error while processing document: " + error.message, "error");
-    console.log(error);
-  }
-},
-	
   cancel(row = null) {
     return this.changeStatus(
       "CANCELLED",
       row,
       DocumentInboxDecisionNoteInput.text || null
     );
+  },
+
+  async process(row = null, targetType = "AUTO") {
+    const selected = this.selected(row);
+    const submissionId = this.submissionId(selected);
+    const processedDocumentId = this.processedDocumentId(selected);
+
+    const status = String(
+      selected.status ||
+      selected.Status ||
+      ""
+    ).toUpperCase();
+
+    if (!submissionId) {
+      showAlert("Document was not found.", "warning");
+      return;
+    }
+
+    if (status !== "APPROVED") {
+      showAlert("Only approved documents can be processed.", "warning");
+      return;
+    }
+
+    if (processedDocumentId) {
+      showAlert("Document has already been processed.", "warning");
+      return;
+    }
+
+    try {
+      const result = await ProcessDocumentInbox.run({
+        submissionId,
+        targetType,
+        warehouseId:
+          Number(appsmith.store.warehouseId || 0) || null
+      });
+
+      await storeValue("selectedDocumentInboxId", submissionId);
+      await this.refresh();
+
+      showAlert(
+        result?.documentNumber
+          ? `${result.documentType} ${result.documentNumber} was created.`
+          : "Document was processed successfully.",
+        "success"
+      );
+
+      return result;
+    } catch (error) {
+      showAlert(
+        "Error while processing document: " + error.message,
+        "error"
+      );
+
+      console.log(error);
+      return null;
+    }
+  },
+
+  archive(row = null) {
+    return this.process(row, "ARCHIVE_ONLY");
   }
 };
