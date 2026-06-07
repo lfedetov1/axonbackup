@@ -65,9 +65,10 @@
     "customColumn5",
     "customColumn3",
     "customColumn4",
-    "customColumn6"
+    "customColumn6",
+    "email"
   ],
-  "columnUpdatedAt": 1780857141632,
+  "columnUpdatedAt": 1780858456971,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -230,6 +231,9 @@
     },
     {
       "key": "primaryColumns.customColumn6.boxShadow"
+    },
+    {
+      "key": "primaryColumns.email.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -1273,7 +1277,7 @@
       "label": "Email",
       "labelColor": "#FFFFFF",
       "notation": "standard",
-      "onClick": "{{ CentralPrint.printDocument(\"sales_invoice\", InvoicesTable.selectedRow) }}",
+      "onClick": "{{\n  CentralPrint.emailDocument(\n    \"sales_invoice\",\n    InvoicesTable.selectedRow,\n    InvoicesTable.selectedRow.partnerEmail ||\n    InvoicesTable.selectedRow.email ||\n    \"\"\n  )\n}}",
       "originalId": "customColumn6",
       "sticky": "",
       "textSize": "0.875rem",
@@ -1338,6 +1342,40 @@
       "notation": "standard",
       "originalId": "documentType",
       "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "email": {
+      "alias": "email",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "cellBackground": "",
+      "columnType": "text",
+      "computedValue": "{{(() => { const tableData = InvoicesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"email\"])) : email })()}}",
+      "currencyCode": "USD",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "fontStyle": "",
+      "horizontalAlignment": "LEFT",
+      "id": "email",
+      "index": 9,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": false,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": false,
+      "label": "email",
+      "notation": "standard",
+      "originalId": "email",
+      "sticky": "",
+      "textColor": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},
