@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -22,20 +28,20 @@
     }
   ],
   "iconAlign": "left",
-  "iconName": "send-message",
+  "iconName": "segmented-control",
   "isDefaultClickDisabled": true,
-  "isDisabled": false,
+  "isDisabled": "{{\n  !DocumentInboxTable.selectedRow?.id ||\n  String(DocumentInboxTable.selectedRow?.status || \"\").toUpperCase() !== \"APPROVED\" ||\n  !!DocumentInboxTable.selectedRow?.processed_document_id\n}}",
   "isLoading": false,
   "isVisible": true,
   "key": "47wjojcflq",
-  "leftColumn": 48,
+  "leftColumn": 56,
   "minWidth": 120,
   "mobileBottomRow": 17,
   "mobileLeftColumn": 17,
   "mobileRightColumn": 33,
   "mobileTopRow": 13,
   "needsErrorInfo": false,
-  "onClick": "{{ DocumentInbox.openUploadLinkModal() }}",
+  "onClick": "{{ DocumentInbox.process() }}",
   "originalBottomRow": 11,
   "originalTopRow": 7,
   "parentColumnSpace": 17.28125,
@@ -46,11 +52,11 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 55,
-  "text": "Send link",
+  "rightColumn": 63,
+  "text": "Process",
   "topRow": 7,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "g7flq5gn9n",
-  "widgetName": "Button5"
+  "widgetId": "96ig57960l",
+  "widgetName": "Button5Copy"
 }

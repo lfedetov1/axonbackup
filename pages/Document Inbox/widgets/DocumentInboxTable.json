@@ -64,9 +64,10 @@
     "customColumn4",
     "customColumn5",
     "customColumn6",
-    "customColumn7"
+    "customColumn7",
+    "customColumn9"
   ],
-  "columnUpdatedAt": 1780826423992,
+  "columnUpdatedAt": 1780831006753,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -223,6 +224,15 @@
     },
     {
       "key": "primaryColumns.customColumn8.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn9.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn9.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn9.isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
@@ -267,6 +277,12 @@
     },
     {
       "key": "primaryColumns.customColumn8.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn9.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn9.isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -293,6 +309,9 @@
     },
     {
       "key": "primaryColumns.customColumn8.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn9.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -794,6 +813,45 @@
       "notation": "standard",
       "onClick": "{{ DocumentInbox.review(currentRow) }}",
       "originalId": "customColumn8",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn9": {
+      "alias": "Archive",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{DocumentInboxTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{DocumentInboxTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#1e3a8a",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "archive",
+      "id": "customColumn9",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": "{{(() => { const tableData = DocumentInboxTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (\n  String(currentRow.status || currentRow.Status || \"\").toUpperCase() !== \"APPROVED\" ||\n  !!(currentRow.processedDocumentId || currentRow.processed_document_id)\n)) : \n  String(currentRow.status || currentRow.Status || \"\").toUpperCase() !== \"APPROVED\" ||\n  !!(currentRow.processedDocumentId || currentRow.processed_document_id)\n })()}}",
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Archive",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ DocumentInbox.archive(currentRow) }}",
+      "originalId": "customColumn9",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

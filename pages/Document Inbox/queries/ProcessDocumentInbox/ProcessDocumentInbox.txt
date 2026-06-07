@@ -1,0 +1,9 @@
+{{
+{
+  companyId: Number(appsmith.store.companyId || 1),
+  createdByUserId: Number(appsmith.store.userId || 0),
+  warehouseId: Number(this.params.warehouseId || 0) || null,
+  targetType: this.params.targetType,
+  actorName: appsmith.store.username || "Appsmith User"
+}
+}}

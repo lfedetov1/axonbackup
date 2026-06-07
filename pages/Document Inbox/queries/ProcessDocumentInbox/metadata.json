@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_a9dba69a-ccca-4576-ad38-1cd2391c54ea",
-  "id": "Document Inbox_CreateDocumentUploadLink",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_018abb42-0a18-4247-ab5d-7e48601a258b",
+  "id": "Document Inbox_ProcessDocumentInbox",
   "pluginId": "restapi-plugin",
   "pluginType": "API",
   "unpublishedAction": {
@@ -11,7 +11,7 @@
           "value": "application/json"
         }
       ],
-      "body": "{{\n{\n  companyId: Number(appsmith.store.companyId || 1),\n  partnerId: Number(DocumentUploadPartnerSelect.selectedOptionValue || 0) || null,\n  linkName: DocumentUploadLinkNameInput.text || \"Document Upload\",\n  expiresHours: Number(DocumentUploadExpiresHoursInpu.text || 72),\n  maxUploads: Number(DocumentUploadMaxUploadsInput.text || 5),\n  createdByUserId: Number(appsmith.store.userId || 0) || null\n}\n}}",
+      "body": "{{\n{\n  companyId: Number(appsmith.store.companyId || 1),\n  createdByUserId: Number(appsmith.store.userId || 0),\n  warehouseId: Number(this.params.warehouseId || 0) || null,\n  targetType: this.params.targetType,\n  actorName: appsmith.store.username || \"Appsmith User\"\n}\n}}",
       "bodyFormData": [],
       "encodeParamsToggle": true,
       "formData": {
@@ -21,16 +21,12 @@
         {
           "key": "x-api-key",
           "value": "e6365a72a9c75b39e02d2cdf099503ccdd687bdf6f9bce9feac6ddc0d752c65d"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/json"
         }
       ],
       "httpMethod": "POST",
       "httpVersion": "HTTP11",
       "paginationType": "NONE",
-      "path": "/api/admin/upload-links",
+      "path": "/api/admin/submissions/{{ this.params.submissionId }}/process",
       "pluginSpecifiedTemplates": [
         {
           "value": true
@@ -50,10 +46,13 @@
     },
     "dynamicBindingPathList": [
       {
+        "key": "path"
+      },
+      {
         "key": "body"
       }
     ],
-    "name": "CreateDocumentUploadLink",
+    "name": "ProcessDocumentInbox",
     "pageId": "Document Inbox",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

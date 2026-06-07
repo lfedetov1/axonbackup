@@ -1,10 +1,10 @@
 {{
 {
-  "companyId": 1,
-  "partnerId": null,
-  "linkName": "Appsmith Test Upload",
-  "expiresHours": 72,
-  "maxUploads": 5,
-  "createdByUserId": null
+  companyId: Number(appsmith.store.companyId || 1),
+  partnerId: Number(DocumentUploadPartnerSelect.selectedOptionValue || 0) || null,
+  linkName: DocumentUploadLinkNameInput.text || "Document Upload",
+  expiresHours: Number(DocumentUploadExpiresHoursInpu.text || 72),
+  maxUploads: Number(DocumentUploadMaxUploadsInput.text || 5),
+  createdByUserId: Number(appsmith.store.userId || 0) || null
 }
 }}

@@ -21,78 +21,122 @@ export default {
       await GetDocumentInboxDetails.run();
     }
   },
-	async openUploadLinkModal() {
-  await storeValue("lastDocumentUploadLink", "");
 
-  if (typeof ListDocumentUploadPartners !== "undefined") {
-    await ListDocumentUploadPartners.run();
-  }
+  async openUploadLinkModal() {
+    await storeValue("documentUploadGeneratedLink", "");
 
-  DocumentUploadRecipientNameInp.setValue("");
-  DocumentUploadRecipientEmailIn.setValue("");
-  DocumentUploadPartnerSelect.setSelectedOption("");
-  DocumentUploadLinkNameInput.setValue("Document Upload");
-  DocumentUploadExpiresHoursInpu.setValue("72");
-  DocumentUploadMaxUploadsInput.setValue("5");
-  DocumentUploadMessageInput.setValue(
-    "Please upload the requested documents using the secure link below."
-  );
-
-  showModal(DocumentUploadLinkModal.name);
-},
-
-async createUploadLink() {
-  try {
-    const result = await CreateDocumentUploadLink.run();
-
-    const uploadUrl =
-      result?.uploadUrl ||
-      CreateDocumentUploadLink.data?.uploadUrl ||
-      "";
-
-    if (!uploadUrl) {
-      showAlert("Upload link was not created.", "error");
-      return;
+    if (typeof ListDocumentUploadPartners !== "undefined") {
+      await ListDocumentUploadPartners.run();
     }
 
-    await storeValue("lastDocumentUploadLink", uploadUrl);
-
-    showAlert("Secure upload link was created.", "success");
-  } catch (error) {
-    showAlert(
-      "Error while creating upload link: " + error.message,
-      "error"
+    DocumentUploadRecipientNameInp.setValue("");
+    DocumentUploadRecipientEmailIn.setValue("");
+    DocumentUploadPartnerSelect.setSelectedOption("");
+    DocumentUploadLinkNameInput.setValue("Document Upload");
+    DocumentUploadExpiresHoursInpu.setValue("72");
+    DocumentUploadMaxUploadsInput.setValue("5");
+    DocumentUploadMessageInput.setValue(
+      "Please upload the requested documents using the secure link below."
     );
-  }
-},
 
-async sendUploadLink() {
-  if (!DocumentUploadRecipientEmailIn.text.trim()) {
+    showModal(DocumentUploadLinkModal.name);
+  },
+
+  async createUploadLink() {
+    try {
+      const params = {
+        companyId: Number(appsmith.store.companyId || 1),
+
+        partnerId:
+          Number(DocumentUploadPartnerSelect.selectedOptionValue || 0) || null,
+
+        linkName:
+          DocumentUploadLinkNameInput.text || "Document Upload",
+
+        expiresHours:
+          Number(DocumentUploadExpiresHoursInpu.text || 72),
+
+        maxUploads:
+          Number(DocumentUploadMaxUploadsInput.text || 5),
+
+        createdByUserId:
+          Number(appsmith.store.userId || 0) || null
+      };
+
+      const response = await CreateDocumentUploadLink.run(params);
+
+      const result =
+        response?.uploadUrl
+          ? response
+          : CreateDocumentUploadLink.data || {};
+
+      console.log("Create upload link result:", result);
+
+      if (!result.uploadUrl) {
+        showAlert("Upload URL was not returned by the server.", "error");
+        return null;
+      }
+
+      await storeValue("documentUploadGeneratedLink", result.uploadUrl);
+
+      if (typeof DocumentUploadGeneratedLinkInput !== "undefined") {
+        DocumentUploadGeneratedLinkInp.setValue(result.uploadUrl);
+      }
+
+      showAlert("Secure upload link created.", "success");
+
+      return result;
+    } catch (error) {
+      showAlert(
+        "Error while creating upload link: " + error.message,
+        "error"
+      );
+
+      console.log(error);
+      return null;
+    }
+  },
+	
+
+archive(row = null) {
+  return this.process(row, "ARCHIVE_ONLY");
+},
+	
+	async sendUploadLink() {
+  const recipientEmail =
+    String(DocumentUploadRecipientEmailIn.text || "").trim();
+
+  const uploadUrl =
+    String(appsmith.store.documentUploadGeneratedLink || "").trim();
+
+  if (!recipientEmail) {
     showAlert("Recipient email is required.", "warning");
     return;
   }
 
+  if (!uploadUrl) {
+    showAlert("Create upload link first.", "warning");
+    return;
+  }
+
   try {
-    const result = await SendDocumentUploadLink.run();
+    const response = await SendDocumentUploadLink.run({
+      recipientEmail,
+      recipientName: DocumentUploadRecipientNameInp.text || "",
+      uploadUrl,
+      linkName: DocumentUploadLinkNameInput.text || "Document Upload",
+      message: DocumentUploadMessageInput.text || ""
+    });
 
-    const uploadUrl =
-      result?.uploadUrl ||
-      SendDocumentUploadLink.data?.uploadUrl ||
-      "";
+    console.log("Send email response:", response);
 
-    if (uploadUrl) {
-      await storeValue("lastDocumentUploadLink", uploadUrl);
-    }
-
-    showAlert("Secure upload link was sent.", "success");
+    showAlert("Secure upload link was sent successfully.", "success");
   } catch (error) {
-    showAlert(
-      "Upload email could not be sent: " + error.message,
-      "error"
-    );
+    showAlert("Error while sending upload link: " + error.message, "error");
+    console.log(error);
   }
 },
-
+	
   async changeStatus(status, row = null, note = null) {
     const submissionId = this.submissionId(row);
 
@@ -113,7 +157,11 @@ async sendUploadLink() {
 
       showAlert(`Document status changed to ${status}.`, "success");
     } catch (error) {
-      showAlert("Document status could not be changed: " + error.message, "error");
+      showAlert(
+        "Document status could not be changed: " + error.message,
+        "error"
+      );
+
       console.log(error);
     }
   },
@@ -134,10 +182,74 @@ async sendUploadLink() {
     );
   },
 
-  process(row = null) {
-    return this.changeStatus("PROCESSED", row);
-  },
+ async process(row = null, forcedTargetType = null) {
+  const selected = this.selected(row);
+  const submissionId = this.submissionId(selected);
 
+  const status = String(
+    selected.status ||
+    selected.Status ||
+    ""
+  ).toUpperCase();
+
+  if (!submissionId) {
+    showAlert("Select inbox document first.", "warning");
+    return;
+  }
+
+  if (status !== "APPROVED") {
+    showAlert("Only approved documents can be processed.", "warning");
+    return;
+  }
+
+  const sourceType = String(
+    selected.documentType ||
+    selected.document_type ||
+    selected["Document Type"] ||
+    ""
+  ).toUpperCase();
+
+  const typeMap = {
+    SUPPLIER_INVOICE: "PURCHASE_INVOICE",
+    PURCHASE_INVOICE: "PURCHASE_INVOICE",
+    SUPPLIER_QUOTE: "PURCHASE_QUOTE",
+    PURCHASE_QUOTE: "PURCHASE_QUOTE",
+    DELIVERY_NOTE: "DELIVERY_NOTE"
+  };
+
+  const targetType = forcedTargetType || typeMap[sourceType];
+
+  if (!targetType) {
+    showAlert(
+      `Processing type is not configured for ${sourceType || "this document"}.`,
+      "warning"
+    );
+    return;
+  }
+
+  try {
+    const result = await ProcessDocumentInbox.run({
+      submissionId,
+      targetType,
+      warehouseId: Number(appsmith.store.warehouseId || 0) || null
+    });
+
+    await this.refresh();
+
+    showAlert(
+      result?.documentNumber
+        ? `ERP document ${result.documentNumber} was created.`
+        : "Document was processed successfully.",
+      "success"
+    );
+
+    return result;
+  } catch (error) {
+    showAlert("Error while processing document: " + error.message, "error");
+    console.log(error);
+  }
+},
+	
   cancel(row = null) {
     return this.changeStatus(
       "CANCELLED",

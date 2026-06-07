@@ -1,12 +1,17 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_296189c2-b9a2-4d14-81c3-73fe365853d9",
-  "id": "Document Inbox_DocumentInbox.sendUploadLink",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_d874d6eb-965e-4617-bb75-1ddd9cc89bbd",
+  "id": "Document Inbox_DocumentInbox.archive",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
     "actionConfiguration": {
       "encodeParamsToggle": true,
-      "jsArguments": [],
+      "jsArguments": [
+        {
+          "name": "row",
+          "value": "{{null}}"
+        }
+      ],
       "paginationType": "NONE",
       "timeoutInMillisecond": 10000
     },
@@ -22,8 +27,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "DocumentInbox.sendUploadLink",
-    "name": "sendUploadLink",
+    "fullyQualifiedName": "DocumentInbox.archive",
+    "name": "archive",
     "pageId": "Document Inbox",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
