@@ -1,0 +1,60 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 14,
+  "boxShadow": "none",
+  "buttonColor": "#b91c1c",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  !Number(AdminWarehouseAccessUserSelect.selectedOptionValue || 0) ||\n  !Number(AdminWarehouseAccessWarehouseS.selectedOptionValue || 0)\n}}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "5jm2g15q1b",
+  "leftColumn": 55,
+  "minWidth": 120,
+  "mobileBottomRow": 11,
+  "mobileLeftColumn": 28,
+  "mobileRightColumn": 44,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AddAdminWarehouseAccess.run()\n    .then(() =>\n      AdminAudit.log(\"ADD_WAREHOUSE_ACCESS\", \"user_warehouse_access\", AdminWarehouseAccessUserSelect.selectedOptionValue, {\n        user_id: AdminWarehouseAccessUserSelect.selectedOptionValue,\n        warehouse_id: AdminWarehouseAccessWarehouseS.selectedOptionValue\n      })\n    )\n    .then(() => ListAdminWarehouseAccess.run())\n    .then(() => ListAdminUsers.run())\n    .then(() => showAlert(\"Warehouse access added.\", \"success\"))\n}}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "zq4fg0axko",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 63,
+  "text": "Add",
+  "topRow": 10,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "sfw59m7wid",
+  "widgetName": "Button3Copy1"
+}

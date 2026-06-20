@@ -1,0 +1,8 @@
+INSERT IGNORE INTO user_warehouse_access (
+  user_id,
+  warehouse_id
+)
+VALUES (
+  {{ Number(AdminWarehouseAccessUserSelect.selectedOptionValue || 0) }},
+  {{ Number(AdminWarehouseAccessWarehouseS.selectedOptionValue || 0) }}
+);

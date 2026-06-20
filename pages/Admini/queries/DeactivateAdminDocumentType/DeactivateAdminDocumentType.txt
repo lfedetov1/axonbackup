@@ -1,0 +1,6 @@
+UPDATE document_type_settings
+SET
+  is_active = 0,
+  updated_at = NOW()
+WHERE id = {{ Number(this.params.id || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

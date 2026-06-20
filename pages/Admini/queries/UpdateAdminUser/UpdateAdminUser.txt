@@ -1,0 +1,10 @@
+UPDATE users
+SET
+  username = {{ AdminUserUsernameInput.text.trim() }},
+  email = {{ AdminUserEmailInput.text.trim() }},
+  first_name = {{ AdminUserFirstNameInput.text.trim() }},
+  last_name = {{ AdminUserLastNameInput.text.trim() }},
+  phone = {{ AdminUserPhoneInput.text.trim() || null }},
+  is_active = {{ AdminUserActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  updated_at = NOW()
+WHERE id = {{ Number(appsmith.store.selectedAdminUserId || 0) }};

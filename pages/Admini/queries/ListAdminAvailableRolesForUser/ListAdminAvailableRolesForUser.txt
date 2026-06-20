@@ -1,0 +1,9 @@
+SELECT
+  r.id AS value,
+  CONCAT(r.code, ' - ', r.name) AS label
+FROM roles r
+LEFT JOIN user_role_assignments ura
+  ON ura.role_id = r.id
+ AND ura.user_id = {{ Number(appsmith.store.selectedAdminUserId || 0) }}
+WHERE COALESCE(ura.role_id, 0) = 0
+ORDER BY r.code;

@@ -1,0 +1,60 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 11,
+  "boxShadow": "none",
+  "buttonColor": "#b91c1c",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "{{\n  !Number(AdminPOSAccessUserSelect.selectedOptionValue || 0) ||\n  !AdminPOSAccessCodeInput.text\n}}",
+  "isLoading": false,
+  "isVisible": true,
+  "key": "5jm2g15q1b",
+  "leftColumn": 56,
+  "minWidth": 120,
+  "mobileBottomRow": 11,
+  "mobileLeftColumn": 28,
+  "mobileRightColumn": 44,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  UpsertAdminPOSAccessCode.run()\n    .then(() =>\n      AdminAudit.log(\"UPSERT_POS_ACCESS\", \"pos_user_access_codes\", AdminPOSAccessUserSelect.selectedOptionValue, {\n        user_id: AdminPOSAccessUserSelect.selectedOptionValue,\n        is_active: 1\n      })\n    )\n    .then(() => AdminPOSAccessCodeInput.setValue(\"\"))\n    .then(() => ListAdminPOSAccessCodes.run())\n    .then(() => ListAdminUsers.run())\n    .then(() => showAlert(\"POS access code saved.\", \"success\"))\n}}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "jw2w146soe",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 64,
+  "text": "Add",
+  "topRow": 7,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "o6pvwcukyr",
+  "widgetName": "Button3Copy1Copy"
+}

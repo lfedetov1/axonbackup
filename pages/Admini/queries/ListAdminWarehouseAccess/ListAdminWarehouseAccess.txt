@@ -1,0 +1,28 @@
+SELECT
+  uwa.id AS accessId,
+  u.id AS userId,
+  u.username AS `Username`,
+  CONCAT(u.first_name, ' ', u.last_name) AS `Full Name`,
+  w.id AS warehouseId,
+  w.code AS `Warehouse Code`,
+  w.name AS `Warehouse`,
+  CASE WHEN u.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `User Status`
+FROM user_warehouse_access uwa
+JOIN users u
+  ON u.id = uwa.user_id
+JOIN warehouses w
+  ON w.id = uwa.warehouse_id
+WHERE
+  (
+    {{ AdminWarehouseAccessSearchInpu.text || "" }} = ""
+    OR u.username LIKE CONCAT('%', {{ AdminWarehouseAccessSearchInpu.text || "" }}, '%')
+    OR u.first_name LIKE CONCAT('%', {{ AdminWarehouseAccessSearchInpu.text || "" }}, '%')
+    OR u.last_name LIKE CONCAT('%', {{ AdminWarehouseAccessSearchInpu.text || "" }}, '%')
+    OR w.code LIKE CONCAT('%', {{ AdminWarehouseAccessSearchInpu.text || "" }}, '%')
+    OR w.name LIKE CONCAT('%', {{ AdminWarehouseAccessSearchInpu.text || "" }}, '%')
+  )
+  AND (
+    COALESCE(w.company_id, {{ Number(appsmith.store.companyId || 1) }}) =
+    {{ Number(appsmith.store.companyId || 1) }}
+  )
+ORDER BY u.username, w.code;

@@ -1,0 +1,8 @@
+INSERT IGNORE INTO user_role_assignments (
+  user_id,
+  role_id
+)
+VALUES (
+  {{ Number(appsmith.store.selectedAdminUserId || 0) }},
+  {{ Number(AdminAddUserRoleSelect.selectedOptionValue || 0) }}
+);

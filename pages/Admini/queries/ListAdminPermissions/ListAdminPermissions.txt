@@ -1,0 +1,31 @@
+SELECT
+  p.id AS permissionId,
+  p.code AS `Permission Code`,
+  p.name AS `Permission Name`,
+  p.module_name AS `Module`,
+  p.description AS `Description`,
+  COUNT(DISTINCT rp.role_id) AS `Role Count`,
+  p.created_at AS `Created At`
+FROM permissions p
+LEFT JOIN role_permissions rp
+  ON rp.permission_id = p.id
+WHERE
+  (
+    {{ AdminPermissionSearchInput.text || "" }} = ""
+    OR p.code LIKE CONCAT('%', {{ AdminPermissionSearchInput.text || "" }}, '%')
+    OR p.name LIKE CONCAT('%', {{ AdminPermissionSearchInput.text || "" }}, '%')
+    OR p.module_name LIKE CONCAT('%', {{ AdminPermissionSearchInput.text || "" }}, '%')
+    OR p.description LIKE CONCAT('%', {{ AdminPermissionSearchInput.text || "" }}, '%')
+  )
+  AND (
+    {{ AdminPermissionModuleSelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR p.module_name = {{ AdminPermissionModuleSelect.selectedOptionValue || "ALL" }}
+  )
+GROUP BY
+  p.id,
+  p.code,
+  p.name,
+  p.module_name,
+  p.description,
+  p.created_at
+ORDER BY p.module_name, p.code;

@@ -1,0 +1,18 @@
+INSERT INTO users (
+  username,
+  email,
+  password_hash,
+  first_name,
+  last_name,
+  phone,
+  is_active
+)
+VALUES (
+  {{ AdminUserUsernameInput.text.trim() }},
+  {{ AdminUserEmailInput.text.trim() }},
+  SHA2({{ AdminUserPasswordInput.text || "" }}, 256),
+  {{ AdminUserFirstNameInput.text.trim() }},
+  {{ AdminUserLastNameInput.text.trim() }},
+  {{ AdminUserPhoneInput.text.trim() || null }},
+  {{ AdminUserActiveSwitch.isSwitchedOn ? 1 : 0 }}
+);

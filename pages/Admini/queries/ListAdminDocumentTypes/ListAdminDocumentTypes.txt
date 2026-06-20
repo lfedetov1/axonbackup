@@ -1,0 +1,35 @@
+SELECT
+  id AS documentTypeSettingId,
+  code AS `Document Type`,
+  name AS `Name`,
+  document_direction AS `Direction`,
+  module_code AS `Module`,
+  number_prefix AS `Prefix`,
+  default_status AS `Default Status`,
+  default_posting_status AS `Default Posting`,
+  default_currency_code AS `Currency`,
+  default_payment_method_code AS `Default Payment`,
+  stock_effect AS `Stock Effect`,
+  stock_posting_stage AS `Stock Stage`,
+  print_kind AS `Print Kind`,
+  CASE WHEN affects_stock = 1 THEN 'YES' ELSE 'NO' END AS `Affects Stock`,
+  CASE WHEN affects_customer_balance = 1 THEN 'YES' ELSE 'NO' END AS `Customer Balance`,
+  CASE WHEN affects_supplier_balance = 1 THEN 'YES' ELSE 'NO' END AS `Supplier Balance`,
+  CASE WHEN requires_partner = 1 THEN 'YES' ELSE 'NO' END AS `Requires Partner`,
+  CASE WHEN requires_warehouse = 1 THEN 'YES' ELSE 'NO' END AS `Requires Warehouse`,
+  CASE WHEN requires_payment_method = 1 THEN 'YES' ELSE 'NO' END AS `Requires Payment`,
+  CASE WHEN fiscalization_allowed = 1 THEN 'YES' ELSE 'NO' END AS `Fiscal Allowed`,
+  CASE WHEN fiscalization_required = 1 THEN 'YES' ELSE 'NO' END AS `Fiscal Required`,
+  CASE WHEN can_print = 1 THEN 'YES' ELSE 'NO' END AS `Can Print`,
+  CASE WHEN can_email = 1 THEN 'YES' ELSE 'NO' END AS `Can Email`,
+  CASE WHEN can_convert = 1 THEN 'YES' ELSE 'NO' END AS `Can Convert`,
+  CASE WHEN is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Status`
+FROM document_type_settings
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    {{ AdminDocumentTypeSearchInput.text || "" }} = ""
+    OR code LIKE CONCAT('%', {{ AdminDocumentTypeSearchInput.text || "" }}, '%')
+    OR name LIKE CONCAT('%', {{ AdminDocumentTypeSearchInput.text || "" }}, '%')
+    OR module_code LIKE CONCAT('%', {{ AdminDocumentTypeSearchInput.text || "" }}, '%')
+  )
+ORDER BY module_code, code;

@@ -1,0 +1,31 @@
+UPDATE document_type_settings
+SET
+  name = {{ AdminDocumentTypeNameInput.text.trim() }},
+  module_code = {{ AdminDocumentTypeModuleInput.text.trim() }},
+  document_direction = {{ AdminDocumentTypeDirectionSele.selectedOptionValue || "NONE" }},
+  number_prefix = {{ AdminDocumentTypePrefixInput.text.trim() || "DOC" }},
+  print_kind = {{ AdminDocumentTypePrintKindInpu.text.trim() || null }},
+  default_status = {{ AdminDocumentTypeDefaultStatus.selectedOptionValue || "DRAFT" }},
+  default_posting_status = {{ AdminDocumentTypeDefaultPostin.selectedOptionValue || "NOT_POSTED" }},
+  stock_effect = {{ AdminDocumentTypeStockEffectSe.selectedOptionValue || "NONE" }},
+  stock_posting_stage = {{ AdminDocumentTypeStockStageSel.selectedOptionValue || "POST" }},
+  default_currency_code = {{ AdminDocumentTypeCurrencyInput.text.trim() || "EUR" }},
+  default_payment_method_code = {{ AdminDocumentTypePaymentMethod.text.trim() || null }},
+
+  affects_stock = {{ AdminDocumentTypeAffectsStockS.isSwitchedOn ? 1 : 0 }},
+  affects_customer_balance = {{ AdminDocumentTypeCustomerBalan.isSwitchedOn ? 1 : 0 }},
+  affects_supplier_balance = {{ AdminDocumentTypeSupplierBalan.isSwitchedOn ? 1 : 0 }},
+  requires_partner = {{ AdminDocumentTypeRequiresPartn.isSwitchedOn ? 1 : 0 }},
+  requires_warehouse = {{ AdminDocumentTypeRequiresWareh.isSwitchedOn ? 1 : 0 }},
+  requires_payment_method = {{ AdminDocumentTypeRequiresPayme.isSwitchedOn ? 1 : 0 }},
+  fiscalization_allowed = {{ AdminDocumentTypeFiscalAllowed.isSwitchedOn ? 1 : 0 }},
+  fiscalization_required = {{ AdminDocumentTypeFiscalRequire.isSwitchedOn ? 1 : 0 }},
+  allows_fiscalization = {{ AdminDocumentTypeFiscalAllowed.isSwitchedOn ? 1 : 0 }},
+  requires_fiscalization = {{ AdminDocumentTypeFiscalRequire.isSwitchedOn ? 1 : 0 }},
+  can_print = {{ AdminDocumentTypeCanPrintSwitc.isSwitchedOn ? 1 : 0 }},
+  can_email = {{ AdminDocumentTypeCanEmailSwitc.isSwitchedOn ? 1 : 0 }},
+  can_convert = {{ AdminDocumentTypeCanConvertSwi.isSwitchedOn ? 1 : 0 }},
+  is_active = {{ AdminDocumentTypeActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  updated_at = NOW()
+WHERE id = {{ Number(appsmith.store.selectedAdminDocumentTypeSettingId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

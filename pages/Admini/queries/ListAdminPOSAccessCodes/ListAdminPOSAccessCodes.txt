@@ -1,0 +1,21 @@
+SELECT
+  pac.id AS accessId,
+  pac.user_id AS userId,
+  u.username AS `Username`,
+  CONCAT(u.first_name, ' ', u.last_name) AS `Full Name`,
+  u.email AS `Email`,
+  CASE WHEN pac.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `POS Access Status`,
+  pac.created_at AS `Created At`,
+  pac.updated_at AS `Updated At`
+FROM pos_user_access_codes pac
+JOIN users u
+  ON u.id = pac.user_id
+WHERE pac.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    {{ AdminPOSAccessSearchInput.text || "" }} = ""
+    OR u.username LIKE CONCAT('%', {{ AdminPOSAccessSearchInput.text || "" }}, '%')
+    OR u.first_name LIKE CONCAT('%', {{ AdminPOSAccessSearchInput.text || "" }}, '%')
+    OR u.last_name LIKE CONCAT('%', {{ AdminPOSAccessSearchInput.text || "" }}, '%')
+    OR u.email LIKE CONCAT('%', {{ AdminPOSAccessSearchInput.text || "" }}, '%')
+  )
+ORDER BY u.username;

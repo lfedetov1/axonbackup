@@ -1,0 +1,63 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 4,
+  "boxShadow": "none",
+  "buttonColor": "#b91c1c",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    },
+    {
+      "key": "isDisabled"
+    },
+    {
+      "key": "isVisible"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "iconAlign": "left",
+  "iconName": "add",
+  "isDefaultClickDisabled": true,
+  "isDisabled": "",
+  "isLoading": false,
+  "isVisible": "{{\n  !Number(appsmith.store.selectedAdminUserId || 0) ||\n  !Number(AdminAddUserRoleSelect.selectedOptionValue || 0)\n}}",
+  "key": "5jm2g15q1b",
+  "leftColumn": 21,
+  "minWidth": 120,
+  "mobileBottomRow": 11,
+  "mobileLeftColumn": 28,
+  "mobileRightColumn": 44,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "onClick": "{{\n  AddAdminUserRole.run()\n    .then(() =>\n      AdminAudit.log(\"ASSIGN_ROLE\", \"user_role_assignments\", appsmith.store.selectedAdminUserId, {\n        user_id: appsmith.store.selectedAdminUserId,\n        role_id: AdminAddUserRoleSelect.selectedOptionValue\n      })\n    )\n    .then(() => ListAdminUserRoles.run())\n    .then(() => ListAdminAvailableRolesForUser.run())\n    .then(() => ListAdminUsers.run())\n    .then(() => showAlert(\"Role assigned to user.\", \"success\"))\n}}",
+  "parentColumnSpace": 16.96875,
+  "parentId": "43h4v81tmr",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 28,
+  "text": "Add",
+  "topRow": 0,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "z6zj3pr9j7",
+  "widgetName": "Button3Copy"
+}

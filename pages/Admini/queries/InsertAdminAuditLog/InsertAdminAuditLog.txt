@@ -1,0 +1,18 @@
+INSERT INTO audit_logs (
+  entity_name,
+  entity_id,
+  action_type,
+  old_values,
+  new_values,
+  created_by_user_id,
+  created_at
+)
+VALUES (
+  {{ this.params.entityName }},
+  {{ Number(this.params.entityId || 0) }},
+  {{ this.params.actionType }},
+  {{ this.params.oldValues || null }},
+  {{ this.params.newValues || null }},
+  {{ Number(appsmith.store.userId || 0) }},
+  NOW()
+);

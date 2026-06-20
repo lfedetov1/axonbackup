@@ -1,0 +1,31 @@
+SELECT
+  r.id AS roleId,
+  r.code AS `Role Code`,
+  r.name AS `Role Name`,
+  r.description AS `Description`,
+  CASE WHEN r.is_system = 1 THEN 'YES' ELSE 'NO' END AS `System Role`,
+  COUNT(DISTINCT rp.permission_id) AS `Permission Count`,
+  COUNT(DISTINCT ura.user_id) AS `User Count`,
+  r.created_at AS `Created At`,
+  r.updated_at AS `Updated At`
+FROM roles r
+LEFT JOIN role_permissions rp
+  ON rp.role_id = r.id
+LEFT JOIN user_role_assignments ura
+  ON ura.role_id = r.id
+WHERE
+  (
+    {{ AdminRoleSearchInput.text || "" }} = ""
+    OR r.code LIKE CONCAT('%', {{ AdminRoleSearchInput.text || "" }}, '%')
+    OR r.name LIKE CONCAT('%', {{ AdminRoleSearchInput.text || "" }}, '%')
+    OR r.description LIKE CONCAT('%', {{ AdminRoleSearchInput.text || "" }}, '%')
+  )
+GROUP BY
+  r.id,
+  r.code,
+  r.name,
+  r.description,
+  r.is_system,
+  r.created_at,
+  r.updated_at
+ORDER BY r.code;

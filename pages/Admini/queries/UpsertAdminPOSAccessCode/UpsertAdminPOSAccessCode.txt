@@ -1,0 +1,16 @@
+INSERT INTO pos_user_access_codes (
+  company_id,
+  user_id,
+  access_code_hash,
+  is_active
+)
+VALUES (
+  {{ Number(appsmith.store.companyId || 1) }},
+  {{ Number(AdminPOSAccessUserSelect.selectedOptionValue || 0) }},
+  SHA2({{ AdminPOSAccessCodeInput.text || "" }}, 256),
+  1
+)
+ON DUPLICATE KEY UPDATE
+  access_code_hash = VALUES(access_code_hash),
+  is_active = 1,
+  updated_at = NOW();

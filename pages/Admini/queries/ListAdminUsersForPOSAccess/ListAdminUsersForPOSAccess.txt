@@ -1,0 +1,6 @@
+SELECT
+  u.id AS value,
+  CONCAT(u.username, ' - ', u.first_name, ' ', u.last_name) AS label
+FROM users u
+WHERE u.is_active = 1
+ORDER BY u.username;

@@ -1,0 +1,7 @@
+SELECT 'ALL' AS label, 'ALL' AS value
+UNION ALL
+SELECT DISTINCT
+  module_name AS label,
+  module_name AS value
+FROM permissions
+ORDER BY label;

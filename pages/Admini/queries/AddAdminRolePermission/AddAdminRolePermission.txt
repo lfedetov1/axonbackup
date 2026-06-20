@@ -1,0 +1,8 @@
+INSERT IGNORE INTO role_permissions (
+  role_id,
+  permission_id
+)
+VALUES (
+  {{ Number(appsmith.store.selectedAdminRoleId || 0) }},
+  {{ Number(AdminAddPermissionSelect.selectedOptionValue || 0) }}
+);

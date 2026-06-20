@@ -1,0 +1,18 @@
+SELECT
+  (SELECT COUNT(*) FROM users) AS userCount,
+  (SELECT COUNT(*) FROM users WHERE is_active = 1) AS activeUserCount,
+  (SELECT COUNT(*) FROM users WHERE is_active = 0) AS inactiveUserCount,
+
+  (SELECT COUNT(*) FROM roles) AS roleCount,
+  (SELECT COUNT(*) FROM permissions) AS permissionCount,
+  (SELECT COUNT(*) FROM role_permissions) AS rolePermissionCount,
+
+  (SELECT COUNT(*) FROM user_role_assignments) AS userRoleAssignmentCount,
+  (SELECT COUNT(*) FROM user_warehouse_access) AS warehouseAccessCount,
+
+  (
+    SELECT COUNT(*)
+    FROM pos_user_access_codes
+    WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND is_active = 1
+  ) AS activePosAccessCount;

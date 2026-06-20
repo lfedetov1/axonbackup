@@ -1,0 +1,5 @@
+SELECT
+  COUNT(*) AS documentCount
+FROM documents
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND document_type = {{ this.params.code || "" }};

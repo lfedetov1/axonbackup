@@ -1,0 +1,9 @@
+SELECT
+  p.id AS value,
+  CONCAT(p.module_name, ' / ', p.code) AS label
+FROM permissions p
+LEFT JOIN role_permissions rp
+  ON rp.permission_id = p.id
+ AND rp.role_id = {{ Number(appsmith.store.selectedAdminRoleId || 0) }}
+WHERE COALESCE(rp.permission_id, 0) = 0
+ORDER BY p.module_name, p.code;

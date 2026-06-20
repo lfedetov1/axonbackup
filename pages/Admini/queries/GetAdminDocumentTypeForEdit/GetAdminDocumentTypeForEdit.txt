@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM document_type_settings
+WHERE id = {{ Number(appsmith.store.selectedAdminDocumentTypeSettingId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

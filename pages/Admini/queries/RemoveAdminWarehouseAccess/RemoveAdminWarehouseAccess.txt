@@ -1,0 +1,2 @@
+DELETE FROM user_warehouse_access
+WHERE id = {{ Number(this.params.accessId || 0) }};

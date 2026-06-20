@@ -1,0 +1,11 @@
+SELECT
+  u.id AS userId,
+  u.username,
+  u.email,
+  u.first_name AS firstName,
+  u.last_name AS lastName,
+  u.phone,
+  u.is_active AS isActive
+FROM users u
+WHERE u.id = {{ Number(appsmith.store.selectedAdminUserId || 0) }}
+LIMIT 1;

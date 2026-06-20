@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 48,
+  "bottomRow": 52,
   "boxShadow": "none",
   "buttonColor": "#111827",
   "buttonVariant": "TERTIARY",
@@ -48,7 +48,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 46,
   "text": "Need Help ",
-  "topRow": 44,
+  "topRow": 48,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "yfq4v10uy6",
