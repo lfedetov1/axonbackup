@@ -459,6 +459,51 @@
       "version": 1,
       "widgetId": "my3mjdwhvk",
       "widgetName": "Canvas21"
+    },
+    {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "bottomRow": 380,
+      "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      "canExtend": false,
+      "containerStyle": "none",
+      "detachFromLayout": true,
+      "dynamicBindingPathList": [
+        {
+          "key": "borderRadius"
+        },
+        {
+          "key": "boxShadow"
+        }
+      ],
+      "dynamicHeight": "AUTO_HEIGHT",
+      "dynamicTriggerPathList": [],
+      "flexLayers": [],
+      "isLoading": false,
+      "isVisible": true,
+      "key": "dq4qodglo3",
+      "leftColumn": 0,
+      "maxDynamicHeight": 9000,
+      "minDynamicHeight": 4,
+      "minHeight": 420,
+      "minWidth": 450,
+      "mobileBottomRow": 421,
+      "mobileLeftColumn": 0,
+      "mobileRightColumn": 1106,
+      "mobileTopRow": 1,
+      "needsErrorInfo": false,
+      "parentColumnSpace": 1,
+      "parentId": "u79ghkstrn",
+      "parentRowSpace": 1,
+      "renderMode": "CANVAS",
+      "responsiveBehavior": "fill",
+      "rightColumn": 1106,
+      "tabId": "tabik67b2o3ly",
+      "tabName": "Cash Registers",
+      "topRow": 1,
+      "type": "CANVAS_WIDGET",
+      "version": 1,
+      "widgetId": "a9jbufw5h4",
+      "widgetName": "Canvas32"
     }
   ],
   "defaultTab": "Overview",
@@ -501,6 +546,9 @@
     },
     {
       "key": "tabsObj.tabafkpu62pu7.isVisible"
+    },
+    {
+      "key": "tabsObj.tabik67b2o3ly.isVisible"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -537,6 +585,9 @@
     },
     {
       "key": "tabsObj.tabafkpu62pu7.isVisible"
+    },
+    {
+      "key": "tabsObj.tabik67b2o3ly.isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -559,7 +610,7 @@
   "mobileTopRow": 8,
   "needsErrorInfo": false,
   "onTabSelected": "{{\n  AdminControl.openTab(AdminTabs.selectedTab)\n}}",
-  "originalBottomRow": 50,
+  "originalBottomRow": 27,
   "originalTopRow": 8,
   "parentColumnSpace": 17.28125,
   "parentId": "0",
@@ -573,6 +624,7 @@
     "tab1": {
       "id": "tab1",
       "index": 0,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.access\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Overview",
       "positioning": "vertical",
@@ -581,6 +633,7 @@
     "tab2": {
       "id": "tab2",
       "index": 1,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.users.view\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Users",
       "positioning": "vertical",
@@ -589,13 +642,15 @@
     "tab7zgyduit9m": {
       "id": "tab7zgyduit9m",
       "index": 5,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.users.edit\") && AdminControl.mode() === \"LIST\" }}",
       "label": "POS Access",
       "widgetId": "jw2w146soe"
     },
     "tabafkpu62pu7": {
       "id": "tabafkpu62pu7",
-      "index": 9,
+      "index": 10,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"audit.view\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Audit",
       "widgetId": "my3mjdwhvk"
@@ -603,6 +658,7 @@
     "tabfhh7g8vl77": {
       "id": "tabfhh7g8vl77",
       "index": 2,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.roles.view\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Roles",
       "widgetId": "zl9qfsmj4q"
@@ -610,13 +666,23 @@
     "tabiiqwqca9nz": {
       "id": "tabiiqwqca9nz",
       "index": 3,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.permissions.view\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Permissions",
       "widgetId": "o44r92p3ym"
     },
+    "tabik67b2o3ly": {
+      "id": "tabik67b2o3ly",
+      "index": 8,
+      "isDuplicateLabel": false,
+      "isVisible": "{{ AppAccess.has(\"admin.access\") && AdminControl.mode() === \"LIST\" }}",
+      "label": "Cash Registers",
+      "widgetId": "a9jbufw5h4"
+    },
     "tabkwshcqsvxq": {
       "id": "tabkwshcqsvxq",
       "index": 7,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.access\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Payment Setup",
       "widgetId": "pdrklwazfy"
@@ -624,13 +690,15 @@
     "tabn2pchka79o": {
       "id": "tabn2pchka79o",
       "index": 6,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.access\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Document Setup",
       "widgetId": "dpjur7pyup"
     },
     "tabv0pyl6zxw7": {
       "id": "tabv0pyl6zxw7",
-      "index": 8,
+      "index": 9,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.access\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Planning",
       "widgetId": "xm2hf2g0iv"
@@ -638,6 +706,7 @@
     "tabvoqigmv0gt": {
       "id": "tabvoqigmv0gt",
       "index": 4,
+      "isDuplicateLabel": false,
       "isVisible": "{{ AppAccess.has(\"admin.users.edit\") && AdminControl.mode() === \"LIST\" }}",
       "label": "Warehouse Access",
       "widgetId": "zq4fg0axko"

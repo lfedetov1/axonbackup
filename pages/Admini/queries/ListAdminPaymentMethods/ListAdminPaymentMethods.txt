@@ -1,0 +1,29 @@
+SELECT
+  id AS paymentMethodId,
+  code AS `Code`,
+  name AS `Name`,
+  payment_group AS `Payment Group`,
+  method_group AS `Method Group`,
+  fiscal_payment_code AS `Fiscal Code`,
+  default_due_days AS `Due Days`,
+  sort_order AS `Sort`,
+  CASE WHEN affects_cash_register = 1 THEN 'YES' ELSE 'NO' END AS `Cash Register`,
+  CASE WHEN is_cash = 1 THEN 'YES' ELSE 'NO' END AS `Cash`,
+  CASE WHEN requires_reference = 1 THEN 'YES' ELSE 'NO' END AS `Requires Reference`,
+  CASE WHEN requires_card_type = 1 THEN 'YES' ELSE 'NO' END AS `Requires Card Type`,
+  CASE WHEN requires_bank_account = 1 THEN 'YES' ELSE 'NO' END AS `Requires Bank Account`,
+  CASE WHEN is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Status`
+FROM payment_methods
+WHERE
+  (
+    COALESCE(company_id, {{ Number(appsmith.store.companyId || 1) }}) =
+    {{ Number(appsmith.store.companyId || 1) }}
+  )
+  AND (
+    {{ AdminPaymentMethodSearchInput.text || "" }} = ""
+    OR code LIKE CONCAT('%', {{ AdminPaymentMethodSearchInput.text || "" }}, '%')
+    OR name LIKE CONCAT('%', {{ AdminPaymentMethodSearchInput.text || "" }}, '%')
+    OR payment_group LIKE CONCAT('%', {{ AdminPaymentMethodSearchInput.text || "" }}, '%')
+    OR method_group LIKE CONCAT('%', {{ AdminPaymentMethodSearchInput.text || "" }}, '%')
+  )
+ORDER BY sort_order, code;
