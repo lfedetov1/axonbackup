@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT\n  id,\n  company_id,\n  code,\n  fiscal_business_space_code,\n  fiscal_device_code,\n  name,\n  currency_code,\n  warehouse_id,\n  responsible_user_id,\n  opening_balance,\n  is_active\nFROM cash_registers\nWHERE id = {{ Number(this.params.id || appsmith.store.selectedAdminCashRegisterId || 0) }}\n  AND company_id = {{ Number(appsmith.store.companyId || 1) }}\nLIMIT 1;",
+      "body": "SELECT\n  id,\n  company_id,\n  branch_id,\n  code,\n  fiscal_business_space_code,\n  fiscal_device_code,\n  name,\n  currency_code,\n  warehouse_id,\n  responsible_user_id,\n  opening_balance,\n  is_active\nFROM cash_registers\nWHERE id = {{ Number(this.params.id || appsmith.store.selectedAdminCashRegisterId || 0) }}\n  AND company_id = {{ Number(appsmith.store.companyId || 1) }}\nLIMIT 1;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

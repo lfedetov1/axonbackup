@@ -1,0 +1,33 @@
+SELECT
+  b.id AS branchId,
+  b.code AS `Code`,
+  b.name AS `Name`,
+  b.legal_name AS `Legal Name`,
+  b.address_line1 AS `Address`,
+  b.postal_code AS `Postal Code`,
+  b.city AS `City`,
+  b.country_code AS `Country`,
+  b.phone AS `Phone`,
+  b.email AS `Email`,
+  b.fiscal_business_space_code AS `Fiscal Business Space`,
+  w.code AS `Default Warehouse Code`,
+  w.name AS `Default Warehouse`,
+  u.username AS `Responsible User`,
+  CASE WHEN b.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Status`,
+  b.created_at AS `Created At`,
+  b.updated_at AS `Updated At`
+FROM branches b
+LEFT JOIN warehouses w
+  ON w.id = b.default_warehouse_id
+LEFT JOIN users u
+  ON u.id = b.responsible_user_id
+WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    {{ AdminBranchSearchInput.text || "" }} = ""
+    OR b.code LIKE CONCAT('%', {{ AdminBranchSearchInput.text || "" }}, '%')
+    OR b.name LIKE CONCAT('%', {{ AdminBranchSearchInput.text || "" }}, '%')
+    OR b.legal_name LIKE CONCAT('%', {{ AdminBranchSearchInput.text || "" }}, '%')
+    OR b.city LIKE CONCAT('%', {{ AdminBranchSearchInput.text || "" }}, '%')
+    OR b.fiscal_business_space_code LIKE CONCAT('%', {{ AdminBranchSearchInput.text || "" }}, '%')
+  )
+ORDER BY b.code;

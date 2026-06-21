@@ -1,5 +1,6 @@
 UPDATE cash_registers
 SET
+  branch_id = {{ Number(AdminCashRegisterBranchSelect.selectedOptionValue || 0) || null }},
   fiscal_business_space_code = {{ AdminCashRegisterBusinessSpace.text.trim() || null }},
   fiscal_device_code = {{ AdminCashRegisterFiscalDeviceI.text.trim() || null }},
   name = {{ AdminCashRegisterNameInput.text.trim() }},

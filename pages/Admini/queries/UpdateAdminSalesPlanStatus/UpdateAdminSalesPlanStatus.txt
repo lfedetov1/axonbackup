@@ -1,0 +1,16 @@
+UPDATE sales_plans
+SET
+  status = {{ this.params.status }},
+  approved_by_user_id = CASE
+    WHEN {{ this.params.status }} = 'APPROVED'
+    THEN {{ Number(appsmith.store.userId || 0) || null }}
+    ELSE approved_by_user_id
+  END,
+  approved_at = CASE
+    WHEN {{ this.params.status }} = 'APPROVED'
+    THEN NOW()
+    ELSE approved_at
+  END,
+  updated_at = NOW()
+WHERE id = {{ Number(this.params.id || appsmith.store.selectedAdminSalesPlanId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

@@ -1,0 +1,32 @@
+INSERT INTO branches (
+  company_id,
+  code,
+  name,
+  legal_name,
+  address_line1,
+  postal_code,
+  city,
+  country_code,
+  phone,
+  email,
+  fiscal_business_space_code,
+  default_warehouse_id,
+  responsible_user_id,
+  is_active
+)
+VALUES (
+  {{ Number(appsmith.store.companyId || 1) }},
+  {{ AdminBranchCodeInput.text.trim().toUpperCase() }},
+  {{ AdminBranchNameInput.text.trim() }},
+  {{ AdminBranchLegalNameInput.text.trim() || null }},
+  {{ AdminBranchAddressInput.text.trim() || null }},
+  {{ AdminBranchPostalCodeInput.text.trim() || null }},
+  {{ AdminBranchCityInput.text.trim() || null }},
+  {{ AdminBranchCountryInput.text.trim().toUpperCase() || "HR" }},
+  {{ AdminBranchPhoneInput.text.trim() || null }},
+  {{ AdminBranchEmailInput.text.trim() || null }},
+  {{ AdminBranchFiscalBusinessSpace.text.trim() || null }},
+  {{ Number(AdminBranchDefaultWarehouseSel.selectedOptionValue || 0) || null }},
+  {{ Number(AdminBranchResponsibleUserSele.selectedOptionValue || 0) || null }},
+  {{ AdminBranchActiveSwitch.isSwitchedOn ? 1 : 0 }}
+);

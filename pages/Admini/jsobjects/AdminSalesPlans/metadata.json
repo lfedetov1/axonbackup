@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_3d6848b0-c1c8-4540-9edf-826ffa9684cd",
+  "id": "Admini_AdminSalesPlans",
+  "unpublishedCollection": {
+    "name": "AdminSalesPlans",
+    "pageId": "Admini",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

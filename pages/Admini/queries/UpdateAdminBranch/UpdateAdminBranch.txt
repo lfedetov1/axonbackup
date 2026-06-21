@@ -1,0 +1,17 @@
+UPDATE branches
+SET
+  name = {{ AdminBranchNameInput.text.trim() }},
+  legal_name = {{ AdminBranchLegalNameInput.text.trim() || null }},
+  address_line1 = {{ AdminBranchAddressInput.text.trim() || null }},
+  postal_code = {{ AdminBranchPostalCodeInput.text.trim() || null }},
+  city = {{ AdminBranchCityInput.text.trim() || null }},
+  country_code = {{ AdminBranchCountryInput.text.trim().toUpperCase() || "HR" }},
+  phone = {{ AdminBranchPhoneInput.text.trim() || null }},
+  email = {{ AdminBranchEmailInput.text.trim() || null }},
+  fiscal_business_space_code = {{ AdminBranchFiscalBusinessSpace.text.trim() || null }},
+  default_warehouse_id = {{ Number(AdminBranchDefaultWarehouseSel.selectedOptionValue || 0) || null }},
+  responsible_user_id = {{ Number(AdminBranchResponsibleUserSele.selectedOptionValue || 0) || null }},
+  is_active = {{ AdminBranchActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  updated_at = NOW()
+WHERE id = {{ Number(appsmith.store.selectedAdminBranchId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

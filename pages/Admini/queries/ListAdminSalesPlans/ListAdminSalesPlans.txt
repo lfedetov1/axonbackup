@@ -1,0 +1,118 @@
+SELECT
+  sp.id AS salesPlanId,
+  sp.plan_code AS `Plan Code`,
+  sp.plan_name AS `Plan Name`,
+  sp.plan_period AS `Period`,
+  sp.period_start AS `Start Date`,
+  sp.period_end AS `End Date`,
+  b.code AS `Branch Code`,
+  b.name AS `Branch`,
+  w.code AS `Warehouse Code`,
+  w.name AS `Warehouse`,
+  u.username AS `Responsible User`,
+
+  sp.currency_code AS `Currency`,
+  sp.sales_target_amount AS `Sales Target`,
+  sp.margin_target_amount AS `Margin Target`,
+  sp.transaction_target_count AS `Transaction Target`,
+  sp.item_target_quantity AS `Item Qty Target`,
+
+  sp.planned_working_hours AS `Working Hours`,
+  sp.planned_absence_hours AS `Absence Hours`,
+  sp.planned_sick_leave_hours AS `Sick Leave Hours`,
+
+  COALESCE(actual.salesAmount, 0) AS `Actual Sales`,
+  COALESCE(actual.transactionCount, 0) AS `Actual Transactions`,
+  COALESCE(actual.itemQuantity, 0) AS `Actual Item Qty`,
+
+  CASE
+    WHEN sp.sales_target_amount > 0
+    THEN ROUND((COALESCE(actual.salesAmount, 0) / sp.sales_target_amount) * 100, 2)
+    ELSE 0
+  END AS `Sales Achievement %`,
+
+  sp.status AS `Status`,
+  CASE WHEN sp.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Active`,
+  sp.note AS `Note`,
+  sp.created_at AS `Created At`,
+  sp.updated_at AS `Updated At`
+
+FROM sales_plans sp
+
+LEFT JOIN branches b
+  ON b.id = sp.branch_id
+LEFT JOIN warehouses w
+  ON w.id = sp.warehouse_id
+LEFT JOIN users u
+  ON u.id = sp.responsible_user_id
+
+LEFT JOIN (
+  SELECT
+    d.company_id,
+    w2.branch_id,
+    d.warehouse_id,
+    SUM(CASE
+      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+      THEN COALESCE(d.total_amount, 0)
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(d.total_amount, 0))
+      ELSE 0
+    END) AS salesAmount,
+    COUNT(DISTINCT d.id) AS transactionCount,
+    SUM(CASE
+      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+      THEN COALESCE(items.itemQuantity, 0)
+      WHEN d.document_type = 'CREDIT_NOTE'
+      THEN -ABS(COALESCE(items.itemQuantity, 0))
+      ELSE 0
+    END) AS itemQuantity
+  FROM documents d
+  LEFT JOIN warehouses w2
+    ON w2.id = d.warehouse_id
+  LEFT JOIN (
+    SELECT
+      di.document_id,
+      SUM(COALESCE(di.quantity, 0)) AS itemQuantity
+    FROM document_items di
+    GROUP BY di.document_id
+  ) items
+    ON items.document_id = d.id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.status <> 'CANCELLED'
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+  GROUP BY d.company_id, w2.branch_id, d.warehouse_id
+) actual
+  ON actual.company_id = sp.company_id
+ AND (
+      COALESCE(sp.branch_id, 0) = 0
+      OR actual.branch_id = sp.branch_id
+ )
+ AND (
+      COALESCE(sp.warehouse_id, 0) = 0
+      OR actual.warehouse_id = sp.warehouse_id
+ )
+
+WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND sp.period_start <= {{ moment(AdminPlanningDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}
+  AND sp.period_end >= {{ moment(AdminPlanningDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }}
+
+  AND (
+    {{ AdminPlanningSearchInput.text || "" }} = ""
+    OR sp.plan_code LIKE CONCAT('%', {{ AdminPlanningSearchInput.text || "" }}, '%')
+    OR sp.plan_name LIKE CONCAT('%', {{ AdminPlanningSearchInput.text || "" }}, '%')
+    OR b.name LIKE CONCAT('%', {{ AdminPlanningSearchInput.text || "" }}, '%')
+    OR w.name LIKE CONCAT('%', {{ AdminPlanningSearchInput.text || "" }}, '%')
+    OR u.username LIKE CONCAT('%', {{ AdminPlanningSearchInput.text || "" }}, '%')
+  )
+
+  AND (
+    {{ AdminPlanningStatusSelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR sp.status = {{ AdminPlanningStatusSelect.selectedOptionValue || "ALL" }}
+  )
+
+  AND (
+    {{ Number(AdminPlanningBranchSelect.selectedOptionValue || 0) }} = 0
+    OR sp.branch_id = {{ Number(AdminPlanningBranchSelect.selectedOptionValue || 0) }}
+  )
+
+ORDER BY sp.period_start DESC, sp.plan_code;

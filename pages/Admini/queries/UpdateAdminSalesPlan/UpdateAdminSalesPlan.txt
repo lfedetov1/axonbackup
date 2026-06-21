@@ -1,0 +1,35 @@
+UPDATE sales_plans
+SET
+  branch_id = {{ Number(AdminSalesPlanBranchSelect.selectedOptionValue || 0) || null }},
+  warehouse_id = {{ Number(AdminSalesPlanWarehouseSelect.selectedOptionValue || 0) || null }},
+  responsible_user_id = {{ Number(AdminSalesPlanResponsibleUserS.selectedOptionValue || 0) || null }},
+  plan_name = {{ AdminSalesPlanNameInput.text.trim() }},
+  plan_period = {{ AdminSalesPlanPeriodSelect.selectedOptionValue || "MONTH" }},
+  period_start = {{ moment(AdminSalesPlanDateFrom.selectedDate || moment().startOf("month")).format("YYYY-MM-DD") }},
+  period_end = {{ moment(AdminSalesPlanDateTo.selectedDate || moment().endOf("month")).format("YYYY-MM-DD") }},
+  currency_code = {{ AdminSalesPlanCurrencyInput.text.trim().toUpperCase() || "EUR" }},
+  sales_target_amount = {{ Number(AdminSalesPlanSalesTargetInput.text || 0) }},
+  margin_target_amount = {{ Number(AdminSalesPlanMarginTargetInpu.text || 0) }},
+  transaction_target_count = {{ Number(AdminSalesPlanTransactionTarge.text || 0) }},
+  item_target_quantity = {{ Number(AdminSalesPlanItemQtyTargetInp.text || 0) }},
+  planned_working_hours = {{ Number(AdminSalesPlanWorkingHoursInpu.text || 0) }},
+  planned_absence_hours = {{ Number(AdminSalesPlanAbsenceHoursInpu.text || 0) }},
+  planned_sick_leave_hours = {{ Number(AdminSalesPlanSickLeaveHoursIn.text || 0) }},
+  status = {{ AdminSalesPlanStatusSelect.selectedOptionValue || "DRAFT" }},
+  note = {{ AdminSalesPlanNoteInput.text || null }},
+  is_active = {{ AdminSalesPlanActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  approved_by_user_id = CASE
+    WHEN {{ AdminSalesPlanStatusSelect.selectedOptionValue || "DRAFT" }} = 'APPROVED'
+     AND approved_by_user_id IS NULL
+    THEN {{ Number(appsmith.store.userId || 0) || null }}
+    ELSE approved_by_user_id
+  END,
+  approved_at = CASE
+    WHEN {{ AdminSalesPlanStatusSelect.selectedOptionValue || "DRAFT" }} = 'APPROVED'
+     AND approved_at IS NULL
+    THEN NOW()
+    ELSE approved_at
+  END,
+  updated_at = NOW()
+WHERE id = {{ Number(appsmith.store.selectedAdminSalesPlanId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

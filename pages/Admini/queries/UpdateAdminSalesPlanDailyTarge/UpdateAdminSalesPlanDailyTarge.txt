@@ -1,0 +1,13 @@
+UPDATE sales_plan_daily_targets
+SET
+  sales_target_amount = {{ Number(this.params.salesTarget || 0) }},
+  margin_target_amount = {{ Number(this.params.marginTarget || 0) }},
+  transaction_target_count = {{ Number(this.params.transactionTarget || 0) }},
+  item_target_quantity = {{ Number(this.params.itemQtyTarget || 0) }},
+  planned_working_hours = {{ Number(this.params.workingHours || 0) }},
+  planned_absence_hours = {{ Number(this.params.absenceHours || 0) }},
+  planned_sick_leave_hours = {{ Number(this.params.sickLeaveHours || 0) }},
+  note = {{ this.params.note || null }},
+  updated_at = NOW()
+WHERE id = {{ Number(this.params.dailyTargetId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

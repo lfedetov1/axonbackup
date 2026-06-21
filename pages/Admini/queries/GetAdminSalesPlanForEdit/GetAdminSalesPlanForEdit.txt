@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM sales_plans
+WHERE id = {{ Number(appsmith.store.selectedAdminSalesPlanId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

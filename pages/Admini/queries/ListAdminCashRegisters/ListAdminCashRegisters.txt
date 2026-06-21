@@ -4,6 +4,8 @@ SELECT
   cr.name AS `Name`,
   cr.currency_code AS `Currency`,
   cr.opening_balance AS `Opening Balance`,
+  b.code AS `Branch Code`,
+  b.name AS `Branch`,
   w.code AS `Warehouse Code`,
   w.name AS `Warehouse`,
   u.username AS `Responsible User`,
@@ -13,6 +15,8 @@ SELECT
   cr.created_at AS `Created At`,
   cr.updated_at AS `Updated At`
 FROM cash_registers cr
+LEFT JOIN branches b
+  ON b.id = cr.branch_id
 LEFT JOIN warehouses w
   ON w.id = cr.warehouse_id
 LEFT JOIN users u
@@ -24,6 +28,8 @@ WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
     OR cr.name LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
     OR cr.fiscal_business_space_code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
     OR cr.fiscal_device_code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR b.code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR b.name LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
     OR w.code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
     OR w.name LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
     OR u.username LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')

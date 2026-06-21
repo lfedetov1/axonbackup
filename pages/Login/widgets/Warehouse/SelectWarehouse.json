@@ -49,7 +49,7 @@
   "needsErrorInfo": false,
   "onFilterUpdate": "{{\n            Select_warehouses2.run();\n            \n          }}",
   "optionLabel": "code",
-  "optionValue": "code",
+  "optionValue": "company_id",
   "originalBottomRow": 19,
   "originalTopRow": 12,
   "parentColumnSpace": 6.9375,

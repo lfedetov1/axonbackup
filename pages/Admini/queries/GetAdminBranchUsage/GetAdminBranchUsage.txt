@@ -1,0 +1,16 @@
+SELECT
+  (
+    SELECT COUNT(*)
+    FROM warehouses w
+    WHERE w.branch_id = {{ Number(this.params.id || 0) }}
+  ) +
+  (
+    SELECT COUNT(*)
+    FROM cash_registers cr
+    WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND cr.warehouse_id IN (
+        SELECT w2.id
+        FROM warehouses w2
+        WHERE w2.branch_id = {{ Number(this.params.id || 0) }}
+      )
+  ) AS usageCount;

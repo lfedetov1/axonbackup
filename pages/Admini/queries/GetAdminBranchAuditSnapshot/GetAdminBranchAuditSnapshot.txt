@@ -1,0 +1,20 @@
+SELECT
+  id,
+  company_id,
+  code,
+  name,
+  legal_name,
+  address_line1,
+  postal_code,
+  city,
+  country_code,
+  phone,
+  email,
+  fiscal_business_space_code,
+  default_warehouse_id,
+  responsible_user_id,
+  is_active
+FROM branches
+WHERE id = {{ Number(this.params.id || appsmith.store.selectedAdminBranchId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

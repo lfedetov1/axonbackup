@@ -1,0 +1,7 @@
+SELECT
+  CAST(b.id AS CHAR) AS value,
+  CONCAT(b.code, ' - ', b.name) AS label
+FROM branches b
+WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND b.is_active = 1
+ORDER BY b.code;

@@ -18,6 +18,22 @@ export default {
     return this.firstRow(rows, GetAdminCashRegisterAuditSnaps);
   },
 
+  async loadSelects() {
+    if (typeof ListAdminCashRegisterBranches !== "undefined") {
+      await ListAdminCashRegisterBranches.run();
+    }
+
+    if (typeof ListAdminCashRegisterWarehouses !== "undefined") {
+      await ListAdminCashRegisterWarehouses.run();
+    } else if (typeof ListAdminCashRegisterWarehouse !== "undefined") {
+      await ListAdminCashRegisterWarehouse.run();
+    }
+
+    if (typeof ListAdminCashRegisterUsers !== "undefined") {
+      await ListAdminCashRegisterUsers.run();
+    }
+  },
+
   clearForm() {
     AdminCashRegisterCodeInput.setValue("");
     AdminCashRegisterNameInput.setValue("");
@@ -26,6 +42,7 @@ export default {
     AdminCashRegisterBusinessSpace.setValue("");
     AdminCashRegisterFiscalDeviceI.setValue("");
 
+    AdminCashRegisterBranchSelect.setSelectedOption("");
     AdminCashRegisterWarehouseSele.setSelectedOption("");
     AdminCashRegisterResponsibleUs.setSelectedOption("");
     AdminCashRegisterActiveSwitch.setValue(true);
@@ -33,16 +50,8 @@ export default {
 
   async openNew() {
     await storeValue("selectedAdminCashRegisterId", null);
+    await this.loadSelects();
     this.clearForm();
-
-    if (typeof ListAdminCashRegisterWarehouses !== "undefined") {
-      await ListAdminCashRegisterWarehouse.run();
-    }
-
-    if (typeof ListAdminCashRegisterUsers !== "undefined") {
-      await ListAdminCashRegisterUsers.run();
-    }
-
     showModal(AdminCashRegisterModal.name);
   },
 
@@ -60,14 +69,7 @@ export default {
     }
 
     await storeValue("selectedAdminCashRegisterId", id);
-
-    if (typeof ListAdminCashRegisterWarehouses !== "undefined") {
-      await ListAdminCashRegisterWarehouse.run();
-    }
-
-    if (typeof ListAdminCashRegisterUsers !== "undefined") {
-      await ListAdminCashRegisterUsers.run();
-    }
+    await this.loadSelects();
 
     const rows = await GetAdminCashRegisterForEdit.run();
     const cashRegister = this.firstRow(rows, GetAdminCashRegisterForEdit);
@@ -83,6 +85,10 @@ export default {
     AdminCashRegisterOpeningBalanc.setValue(String(cashRegister.opening_balance || 0));
     AdminCashRegisterBusinessSpace.setValue(cashRegister.fiscal_business_space_code || "");
     AdminCashRegisterFiscalDeviceI.setValue(cashRegister.fiscal_device_code || "");
+
+    AdminCashRegisterBranchSelect.setSelectedOption(
+      cashRegister.branch_id ? String(cashRegister.branch_id) : ""
+    );
 
     AdminCashRegisterWarehouseSele.setSelectedOption(
       cashRegister.warehouse_id ? String(cashRegister.warehouse_id) : ""
@@ -118,6 +124,7 @@ export default {
 
   payload() {
     return {
+      branch_id: Number(AdminCashRegisterBranchSelect.selectedOptionValue || 0) || null,
       code: AdminCashRegisterCodeInput.text.trim().toUpperCase(),
       name: AdminCashRegisterNameInput.text.trim(),
       currency_code: AdminCashRegisterCurrencyInput.text.trim().toUpperCase() || "EUR",

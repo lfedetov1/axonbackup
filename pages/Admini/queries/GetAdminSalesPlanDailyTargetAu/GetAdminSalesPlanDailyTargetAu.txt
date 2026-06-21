@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM sales_plan_daily_targets
+WHERE id = {{ Number(this.params.dailyTargetId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

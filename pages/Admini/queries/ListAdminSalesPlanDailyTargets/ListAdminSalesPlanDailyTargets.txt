@@ -1,0 +1,16 @@
+SELECT
+  id AS dailyTargetId,
+  sales_plan_id AS salesPlanId,
+  target_date AS `Date`,
+  sales_target_amount AS `Sales Target`,
+  margin_target_amount AS `Margin Target`,
+  transaction_target_count AS `Transaction Target`,
+  item_target_quantity AS `Item Qty Target`,
+  planned_working_hours AS `Working Hours`,
+  planned_absence_hours AS `Absence Hours`,
+  planned_sick_leave_hours AS `Sick Leave Hours`,
+  note AS `Note`
+FROM sales_plan_daily_targets
+WHERE company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND sales_plan_id = {{ Number(appsmith.store.selectedAdminSalesPlanId || 0) }}
+ORDER BY target_date;
