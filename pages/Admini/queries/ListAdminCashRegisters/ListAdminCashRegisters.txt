@@ -1,0 +1,31 @@
+SELECT
+  cr.id AS cashRegisterId,
+  cr.code AS `Code`,
+  cr.name AS `Name`,
+  cr.currency_code AS `Currency`,
+  cr.opening_balance AS `Opening Balance`,
+  w.code AS `Warehouse Code`,
+  w.name AS `Warehouse`,
+  u.username AS `Responsible User`,
+  cr.fiscal_business_space_code AS `Business Space`,
+  cr.fiscal_device_code AS `Fiscal Device`,
+  CASE WHEN cr.is_active = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END AS `Status`,
+  cr.created_at AS `Created At`,
+  cr.updated_at AS `Updated At`
+FROM cash_registers cr
+LEFT JOIN warehouses w
+  ON w.id = cr.warehouse_id
+LEFT JOIN users u
+  ON u.id = cr.responsible_user_id
+WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND (
+    {{ AdminCashRegisterSearchInput.text || "" }} = ""
+    OR cr.code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR cr.name LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR cr.fiscal_business_space_code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR cr.fiscal_device_code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR w.code LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR w.name LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+    OR u.username LIKE CONCAT('%', {{ AdminCashRegisterSearchInput.text || "" }}, '%')
+  )
+ORDER BY cr.code;

@@ -1,0 +1,2 @@
+DELETE FROM payment_methods
+WHERE id = {{ Number(this.params.id || 0) }};

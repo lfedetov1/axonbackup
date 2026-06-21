@@ -1,0 +1,16 @@
+SELECT
+  id,
+  company_id,
+  code,
+  fiscal_business_space_code,
+  fiscal_device_code,
+  name,
+  currency_code,
+  warehouse_id,
+  responsible_user_id,
+  opening_balance,
+  is_active
+FROM cash_registers
+WHERE id = {{ Number(this.params.id || appsmith.store.selectedAdminCashRegisterId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;

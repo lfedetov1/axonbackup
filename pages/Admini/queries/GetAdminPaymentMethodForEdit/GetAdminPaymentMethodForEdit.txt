@@ -1,0 +1,5 @@
+SELECT
+  *
+FROM payment_methods
+WHERE id = {{ Number(appsmith.store.selectedAdminPaymentMethodId || 0) }}
+LIMIT 1;

@@ -1,0 +1,32 @@
+INSERT INTO payment_methods (
+  company_id,
+  code,
+  name,
+  payment_group,
+  affects_cash_register,
+  is_active,
+  sort_order,
+  method_group,
+  is_cash,
+  requires_reference,
+  fiscal_payment_code,
+  default_due_days,
+  requires_card_type,
+  requires_bank_account
+)
+VALUES (
+  {{ Number(appsmith.store.companyId || 1) }},
+  {{ AdminPaymentCodeInput.text.trim().toUpperCase() }},
+  {{ AdminPaymentNameInput.text.trim() }},
+  {{ AdminPaymentGroupInput.text.trim().toUpperCase() || "OTHER" }},
+  {{ AdminPaymentCashRegisterSwitch.isSwitchedOn ? 1 : 0 }},
+  {{ AdminPaymentActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  {{ Number(AdminPaymentSortOrderInput.text || 100) }},
+  {{ AdminPaymentMethodGroupSelect.selectedOptionValue || "OTHER" }},
+  {{ AdminPaymentCashSwitch.isSwitchedOn ? 1 : 0 }},
+  {{ AdminPaymentRequiresReferenceS.isSwitchedOn ? 1 : 0 }},
+  {{ AdminPaymentFiscalCodeInput.text.trim().toUpperCase() || null }},
+  {{ Number(AdminPaymentDueDaysInput.text || 0) }},
+  {{ AdminPaymentRequiresCardTypeSw.isSwitchedOn ? 1 : 0 }},
+  {{ AdminPaymentRequiresBankAccoun.isSwitchedOn ? 1 : 0 }}
+);

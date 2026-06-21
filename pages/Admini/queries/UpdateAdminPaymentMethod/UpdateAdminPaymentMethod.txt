@@ -1,0 +1,15 @@
+UPDATE payment_methods
+SET
+  name = {{ AdminPaymentNameInput.text.trim() }},
+  payment_group = {{ AdminPaymentGroupInput.text.trim().toUpperCase() || "OTHER" }},
+  affects_cash_register = {{ AdminPaymentCashRegisterSwitch.isSwitchedOn ? 1 : 0 }},
+  is_active = {{ AdminPaymentActiveSwitch.isSwitchedOn ? 1 : 0 }},
+  sort_order = {{ Number(AdminPaymentSortOrderInput.text || 100) }},
+  method_group = {{ AdminPaymentMethodGroupSelect.selectedOptionValue || "OTHER" }},
+  is_cash = {{ AdminPaymentCashSwitch.isSwitchedOn ? 1 : 0 }},
+  requires_reference = {{ AdminPaymentRequiresReferenceS.isSwitchedOn ? 1 : 0 }},
+  fiscal_payment_code = {{ AdminPaymentFiscalCodeInput.text.trim().toUpperCase() || null }},
+  default_due_days = {{ Number(AdminPaymentDueDaysInput.text || 0) }},
+  requires_card_type = {{ AdminPaymentRequiresCardTypeSw.isSwitchedOn ? 1 : 0 }},
+  requires_bank_account = {{ AdminPaymentRequiresBankAccoun.isSwitchedOn ? 1 : 0 }}
+WHERE id = {{ Number(appsmith.store.selectedAdminPaymentMethodId || 0) }};

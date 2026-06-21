@@ -1,0 +1,17 @@
+SELECT
+  (
+    SELECT COUNT(*)
+    FROM documents d
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.cashier_user_id = (
+        SELECT responsible_user_id
+        FROM cash_registers
+        WHERE id = {{ Number(this.params.id || 0) }}
+        LIMIT 1
+      )
+  ) +
+  (
+    SELECT COUNT(*)
+    FROM pos_cash_register_sessions s
+    WHERE s.cash_register_id = {{ Number(this.params.id || 0) }}
+  ) AS usageCount;

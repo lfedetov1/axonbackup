@@ -1,0 +1,11 @@
+SELECT
+  (
+    SELECT COUNT(*)
+    FROM documents d
+    WHERE d.payment_method = {{ this.params.code || "" }}
+  ) +
+  (
+    SELECT COUNT(*)
+    FROM document_payments dp
+    WHERE dp.payment_method = {{ this.params.code || "" }}
+  ) AS usageCount;

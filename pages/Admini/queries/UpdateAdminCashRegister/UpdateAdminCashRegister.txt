@@ -1,0 +1,12 @@
+UPDATE cash_registers
+SET
+  fiscal_business_space_code = {{ AdminCashRegisterBusinessSpace.text.trim() || null }},
+  fiscal_device_code = {{ AdminCashRegisterFiscalDeviceI.text.trim() || null }},
+  name = {{ AdminCashRegisterNameInput.text.trim() }},
+  currency_code = {{ AdminCashRegisterCurrencyInput.text.trim().toUpperCase() || "EUR" }},
+  warehouse_id = {{ Number(AdminCashRegisterWarehouseSele.selectedOptionValue || 0) || null }},
+  responsible_user_id = {{ Number(AdminCashRegisterResponsibleUs.selectedOptionValue || 0) || null }},
+  opening_balance = {{ Number(AdminCashRegisterOpeningBalanc.text || 0) }},
+  is_active = {{ AdminCashRegisterActiveSwitch.isSwitchedOn ? 1 : 0 }}
+WHERE id = {{ Number(appsmith.store.selectedAdminCashRegisterId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

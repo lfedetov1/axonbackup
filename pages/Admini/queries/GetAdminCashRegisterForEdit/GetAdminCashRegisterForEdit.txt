@@ -1,0 +1,6 @@
+SELECT
+  *
+FROM cash_registers
+WHERE id = {{ Number(appsmith.store.selectedAdminCashRegisterId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }}
+LIMIT 1;
