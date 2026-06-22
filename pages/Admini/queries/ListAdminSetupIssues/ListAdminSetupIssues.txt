@@ -1,0 +1,106 @@
+SELECT *
+FROM (
+  SELECT
+    'USERS_WITHOUT_ROLES' AS issueType,
+    'HIGH' AS severity,
+    'Users without roles' AS title,
+    COUNT(*) AS countValue,
+    'Assign roles so users can access the ERP correctly.' AS detailText,
+    'Users' AS moduleName,
+    10 AS sortOrder
+  FROM users u
+  WHERE u.is_active = 1
+    AND u.id NOT IN (
+      SELECT ura.user_id
+      FROM user_role_assignments ura
+    )
+
+  UNION ALL
+
+  SELECT
+    'USERS_WITHOUT_WAREHOUSE_ACCESS',
+    'HIGH',
+    'Users without warehouse access',
+    COUNT(*),
+    'Assign warehouse access so operational filters work correctly.',
+    'Warehouse Access',
+    20
+  FROM users u
+  WHERE u.is_active = 1
+    AND u.id NOT IN (
+      SELECT uwa.user_id
+      FROM user_warehouse_access uwa
+    )
+
+  UNION ALL
+
+  SELECT
+    'INCOMPLETE_CASH_REGISTERS',
+    'MEDIUM',
+    'Incomplete cash registers',
+    COUNT(*),
+    'Cash registers should have warehouse and responsible user assigned.',
+    'Cash Registers',
+    30
+  FROM cash_registers cr
+  WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND cr.is_active = 1
+    AND (
+      COALESCE(cr.warehouse_id, 0) = 0
+      OR COALESCE(cr.responsible_user_id, 0) = 0
+    )
+
+  UNION ALL
+
+  SELECT
+    'BRANCHES_WITHOUT_WAREHOUSE',
+    'MEDIUM',
+    'Branches without default warehouse',
+    COUNT(*),
+    'Set a default warehouse for each branch.',
+    'Branches',
+    40
+  FROM branches b
+  WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND b.is_active = 1
+    AND COALESCE(b.default_warehouse_id, 0) = 0
+
+  UNION ALL
+
+  SELECT
+    'DOCUMENT_TYPES_WITHOUT_PREFIX',
+    'LOW',
+    'Document types without prefix',
+    COUNT(*),
+    'Document numbering should have a clear prefix.',
+    'Document Setup',
+    50
+  FROM document_type_settings dts
+  WHERE dts.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND dts.is_active = 1
+    AND COALESCE(dts.number_prefix, '') = ''
+
+  UNION ALL
+
+  SELECT
+    'PAYMENT_METHODS_NOT_FISCAL_MAPPED',
+    'LOW',
+    'Payment methods without fiscal code',
+    COUNT(*),
+    'Fiscal payment codes should be mapped for fiscal documents.',
+    'Payment Setup',
+    60
+  FROM payment_methods pm
+  WHERE COALESCE(pm.company_id, {{ Number(appsmith.store.companyId || 1) }}) = {{ Number(appsmith.store.companyId || 1) }}
+    AND pm.is_active = 1
+    AND COALESCE(pm.fiscal_payment_code, '') = ''
+    AND pm.method_group IN ('CASH', 'CARD', 'BANK', 'VOUCHER', 'GIFT_CARD', 'MOBILE', 'OTHER')
+) issues
+WHERE countValue > 0
+ORDER BY
+  CASE severity
+    WHEN 'HIGH' THEN 1
+    WHEN 'MEDIUM' THEN 2
+    ELSE 3
+  END,
+  sortOrder;

@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "69e7d447c5e91666c08fb1a7_cddfb80e-cf7a-4437-b3b0-f1312edb8f7f",
-  "id": "Admini_Query1",
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_4f289173-d130-4199-a316-23d5d2159099",
+  "id": "Dashboard_ListAuditViewerLogs",
   "pluginId": "mysql-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
@@ -22,8 +22,8 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
-    "name": "Query1",
-    "pageId": "Admini",
+    "name": "ListAuditViewerLogs",
+    "pageId": "Dashboard",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }

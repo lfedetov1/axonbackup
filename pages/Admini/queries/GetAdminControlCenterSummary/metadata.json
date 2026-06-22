@@ -29,7 +29,7 @@
     ],
     "name": "GetAdminControlCenterSummary",
     "pageId": "Admini",
-    "runBehaviour": "MANUAL",
-    "userSetOnLoad": false
+    "runBehaviour": "ON_PAGE_LOAD",
+    "userSetOnLoad": true
   }
 }
