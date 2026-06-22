@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_fe86261c-996a-4940-877d-03074e51dda2",
+  "id": "Dashboard_GetDashboardActionCenter",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT *\nFROM (\n  SELECT\n    'DOCUMENT_APPROVAL' AS actionType,\n    'HIGH' AS severity,\n    'Documents waiting approval' AS title,\n    COUNT(*) AS countValue,\n    'Review and approve pending documents.' AS detailText,\n    'Sales / Purchase / Inventory' AS moduleName,\n    'APPROVALS' AS actionKey,\n    10 AS sortOrder\n  FROM documents d\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.status IN ('DRAFT', 'CONFIRMED', 'READY')\n    AND d.document_type IN (\n      'SALES_ORDER',\n      'CREDIT_NOTE',\n      'TRANSFER_REQUEST',\n      'PURCHASE_INVOICE',\n      'PURCHASE_RETURN',\n      'INVENTORY_COUNT',\n      'OPENING_STOCK'\n    )\n\n  UNION ALL\n\n  SELECT\n    'DOCUMENT_INBOX',\n    'HIGH',\n    'Inbox documents waiting',\n    COUNT(*),\n    'Uploaded supplier/customer documents need review.',\n    'Document Inbox',\n    'DOCUMENT_INBOX',\n    20\n  FROM document_inbox_submissions dis\n  WHERE dis.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND dis.status IN ('NEW', 'UNDER_REVIEW', 'APPROVED')\n\n  UNION ALL\n\n  SELECT\n    'OUT_OF_STOCK',\n    'HIGH',\n    'Products out of stock',\n    COUNT(*),\n    'Review replenishment or purchase needs.',\n    'Inventory',\n    'STOCK_ALERTS',\n    30\n  FROM (\n    SELECT p.id\n    FROM products p\n    LEFT JOIN v_inventory_balance ib\n      ON ib.product_id = p.id\n     AND ib.company_id = p.company_id\n    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND p.is_active = 1\n    GROUP BY p.id\n    HAVING COALESCE(SUM(ib.quantity_balance), 0) <= 0\n  ) x\n\n  UNION ALL\n\n  SELECT\n    'LOW_STOCK',\n    'MEDIUM',\n    'Products below minimum',\n    COUNT(*),\n    'Warehouse locations need replenishment.',\n    'Inventory',\n    'REPLENISHMENT',\n    40\n  FROM warehouse_location_products wlp\n  LEFT JOIN v_inventory_balance ib\n    ON ib.company_id = wlp.company_id\n   AND ib.product_id = wlp.product_id\n   AND ib.warehouse_id = wlp.warehouse_id\n  WHERE wlp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND wlp.is_active = 1\n    AND COALESCE(wlp.minimum_quantity, 0) > 0\n    AND COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0)\n\n  UNION ALL\n\n  SELECT\n    'FISCALIZATION',\n    'HIGH',\n    'Invoices need fiscalization',\n    COUNT(*),\n    'Invoices are posted but missing fiscal confirmation.',\n    'Sales / POS',\n    'FISCALIZATION',\n    50\n  FROM documents d\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'CREDIT_NOTE')\n    AND d.status IN ('POSTED', 'INVOICED')\n    AND COALESCE(d.fiscal_status, '') NOT IN ('SUCCESS', 'OK')\n    AND COALESCE(d.fiscal_jir, d.jir, '') = ''\n\n  UNION ALL\n\n \n\nSELECT\n  'OPEN_CASH_REGISTERS',\n  'MEDIUM',\n  'Open cash register sessions',\n  COUNT(*),\n  'Cash registers should be closed at end of day.',\n  'POS',\n  'POS_CASH',\n  60\nFROM pos_cash_register_sessions pcs\nWHERE pcs.company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND pcs.status = 'OPEN'\n\n  UNION ALL\n\n  SELECT\n    'PLANNING_BELOW_TARGET',\n    'MEDIUM',\n    'Planning alerts',\n    COUNT(*),\n    'Some branches or days are below sales target.',\n    'Dashboard',\n    'PLANNING',\n    70\n  FROM (\n    SELECT\n      sp.branch_id,\n      dt.target_date,\n      SUM(COALESCE(dt.sales_target_amount, 0)) AS targetAmount,\n      COALESCE(actual.actualSales, 0) AS actualSales\n    FROM sales_plans sp\n    JOIN sales_plan_daily_targets dt\n      ON dt.sales_plan_id = sp.id\n    LEFT JOIN (\n      SELECT\n        w.branch_id,\n        d.document_date,\n        SUM(COALESCE(d.total_amount, 0)) AS actualSales\n      FROM documents d\n      JOIN warehouses w\n        ON w.id = d.warehouse_id\n      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n        AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n        AND d.status <> 'CANCELLED'\n      GROUP BY w.branch_id, d.document_date\n    ) actual\n      ON actual.branch_id = sp.branch_id\n     AND actual.document_date = dt.target_date\n    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND sp.status <> 'CANCELLED'\n      AND dt.target_date >= CURDATE()\n      AND dt.target_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)\n    GROUP BY sp.branch_id, dt.target_date, actual.actualSales\n    HAVING targetAmount > 0\n       AND actualSales < targetAmount * 0.85\n  ) p\n) actions\nWHERE countValue > 0\nORDER BY\n  CASE severity\n    WHEN 'HIGH' THEN 1\n    WHEN 'MEDIUM' THEN 2\n    ELSE 3\n  END,\n  sortOrder;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetDashboardActionCenter",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

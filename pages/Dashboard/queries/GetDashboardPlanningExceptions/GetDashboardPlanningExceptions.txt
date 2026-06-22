@@ -1,0 +1,151 @@
+SELECT
+  x.exceptionType,
+  x.severity,
+  x.branchId,
+  x.branchCode,
+  x.branchName,
+  x.targetDate,
+  x.title,
+  x.detail,
+  x.sortValue
+FROM (
+  SELECT
+    'SALES_BELOW_TARGET' AS exceptionType,
+    CASE
+      WHEN actual.actualSales < plan.salesTarget * 0.60 THEN 'HIGH'
+      WHEN actual.actualSales < plan.salesTarget * 0.85 THEN 'MEDIUM'
+      ELSE 'LOW'
+    END AS severity,
+    plan.branchId,
+    plan.branchCode,
+    plan.branchName,
+    plan.targetDate,
+    CONCAT(plan.branchName, ' is below sales target') AS title,
+    CONCAT(
+      DATE_FORMAT(plan.targetDate, '%d.%m.%Y'),
+      ' · Target ',
+      FORMAT(plan.salesTarget, 2),
+      ' · Actual ',
+      FORMAT(COALESCE(actual.actualSales, 0), 2)
+    ) AS detail,
+    plan.salesTarget - COALESCE(actual.actualSales, 0) AS sortValue
+  FROM (
+    SELECT
+      sp.branch_id AS branchId,
+      b.code AS branchCode,
+      b.name AS branchName,
+      dt.target_date AS targetDate,
+      SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget
+    FROM sales_plans sp
+    JOIN sales_plan_daily_targets dt
+      ON dt.sales_plan_id = sp.id
+    JOIN branches b
+      ON b.id = sp.branch_id
+    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND sp.status <> 'CANCELLED'
+      AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+      AND (
+        {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+        OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+      )
+    GROUP BY sp.branch_id, b.code, b.name, dt.target_date
+  ) plan
+  LEFT JOIN (
+    SELECT
+      w.branch_id AS branchId,
+      d.document_date AS targetDate,
+      SUM(
+        CASE
+          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+          ELSE COALESCE(d.total_amount, 0)
+        END
+      ) AS actualSales
+    FROM documents d
+    JOIN warehouses w
+      ON w.id = d.warehouse_id
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+      AND d.status <> 'CANCELLED'
+      AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY w.branch_id, d.document_date
+  ) actual
+    ON actual.branchId = plan.branchId
+   AND actual.targetDate = plan.targetDate
+  WHERE plan.salesTarget > 0
+    AND COALESCE(actual.actualSales, 0) < plan.salesTarget * 0.85
+
+  UNION ALL
+
+  SELECT
+    'NO_SALES',
+    'HIGH',
+    plan.branchId,
+    plan.branchCode,
+    plan.branchName,
+    plan.targetDate,
+    CONCAT(plan.branchName, ' has no sales activity'),
+    CONCAT(DATE_FORMAT(plan.targetDate, '%d.%m.%Y'), ' · No sales recorded against active target.'),
+    plan.salesTarget
+  FROM (
+    SELECT
+      sp.branch_id AS branchId,
+      b.code AS branchCode,
+      b.name AS branchName,
+      dt.target_date AS targetDate,
+      SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget
+    FROM sales_plans sp
+    JOIN sales_plan_daily_targets dt
+      ON dt.sales_plan_id = sp.id
+    JOIN branches b
+      ON b.id = sp.branch_id
+    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND sp.status <> 'CANCELLED'
+      AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+      AND (
+        {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+        OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+      )
+    GROUP BY sp.branch_id, b.code, b.name, dt.target_date
+  ) plan
+  LEFT JOIN (
+    SELECT
+      w.branch_id AS branchId,
+      d.document_date AS targetDate,
+      COUNT(DISTINCT d.id) AS saleCount
+    FROM documents d
+    JOIN warehouses w
+      ON w.id = d.warehouse_id
+    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+      AND d.status <> 'CANCELLED'
+      AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+    GROUP BY w.branch_id, d.document_date
+  ) actual
+    ON actual.branchId = plan.branchId
+   AND actual.targetDate = plan.targetDate
+  WHERE plan.salesTarget > 0
+    AND COALESCE(actual.saleCount, 0) = 0
+) x
+WHERE (
+  {{ (AppAccess.has("admin.access") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1
+  OR x.branchId IN (
+    SELECT DISTINCT waccess.branch_id
+    FROM user_warehouse_access uwa
+    JOIN warehouses waccess
+      ON waccess.id = uwa.warehouse_id
+    WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
+      AND COALESCE(waccess.branch_id, 0) > 0
+  )
+)
+ORDER BY
+  CASE x.severity
+    WHEN 'HIGH' THEN 1
+    WHEN 'MEDIUM' THEN 2
+    ELSE 3
+  END,
+  x.sortValue DESC
+LIMIT 12;

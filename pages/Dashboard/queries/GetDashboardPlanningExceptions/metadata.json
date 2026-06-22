@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_ecb6d406-9d7f-4b0f-a09d-fd70a288aea8",
+  "id": "Dashboard_GetDashboardPlanningExceptions",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  x.exceptionType,\n  x.severity,\n  x.branchId,\n  x.branchCode,\n  x.branchName,\n  x.targetDate,\n  x.title,\n  x.detail,\n  x.sortValue\nFROM (\n  SELECT\n    'SALES_BELOW_TARGET' AS exceptionType,\n    CASE\n      WHEN actual.actualSales < plan.salesTarget * 0.60 THEN 'HIGH'\n      WHEN actual.actualSales < plan.salesTarget * 0.85 THEN 'MEDIUM'\n      ELSE 'LOW'\n    END AS severity,\n    plan.branchId,\n    plan.branchCode,\n    plan.branchName,\n    plan.targetDate,\n    CONCAT(plan.branchName, ' is below sales target') AS title,\n    CONCAT(\n      DATE_FORMAT(plan.targetDate, '%d.%m.%Y'),\n      ' · Target ',\n      FORMAT(plan.salesTarget, 2),\n      ' · Actual ',\n      FORMAT(COALESCE(actual.actualSales, 0), 2)\n    ) AS detail,\n    plan.salesTarget - COALESCE(actual.actualSales, 0) AS sortValue\n  FROM (\n    SELECT\n      sp.branch_id AS branchId,\n      b.code AS branchCode,\n      b.name AS branchName,\n      dt.target_date AS targetDate,\n      SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget\n    FROM sales_plans sp\n    JOIN sales_plan_daily_targets dt\n      ON dt.sales_plan_id = sp.id\n    JOIN branches b\n      ON b.id = sp.branch_id\n    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND sp.status <> 'CANCELLED'\n      AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n      AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n      AND (\n        {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n        OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n      )\n    GROUP BY sp.branch_id, b.code, b.name, dt.target_date\n  ) plan\n  LEFT JOIN (\n    SELECT\n      w.branch_id AS branchId,\n      d.document_date AS targetDate,\n      SUM(\n        CASE\n          WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))\n          ELSE COALESCE(d.total_amount, 0)\n        END\n      ) AS actualSales\n    FROM documents d\n    JOIN warehouses w\n      ON w.id = d.warehouse_id\n    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n      AND d.status <> 'CANCELLED'\n      AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n      AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n    GROUP BY w.branch_id, d.document_date\n  ) actual\n    ON actual.branchId = plan.branchId\n   AND actual.targetDate = plan.targetDate\n  WHERE plan.salesTarget > 0\n    AND COALESCE(actual.actualSales, 0) < plan.salesTarget * 0.85\n\n  UNION ALL\n\n  SELECT\n    'NO_SALES',\n    'HIGH',\n    plan.branchId,\n    plan.branchCode,\n    plan.branchName,\n    plan.targetDate,\n    CONCAT(plan.branchName, ' has no sales activity'),\n    CONCAT(DATE_FORMAT(plan.targetDate, '%d.%m.%Y'), ' · No sales recorded against active target.'),\n    plan.salesTarget\n  FROM (\n    SELECT\n      sp.branch_id AS branchId,\n      b.code AS branchCode,\n      b.name AS branchName,\n      dt.target_date AS targetDate,\n      SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget\n    FROM sales_plans sp\n    JOIN sales_plan_daily_targets dt\n      ON dt.sales_plan_id = sp.id\n    JOIN branches b\n      ON b.id = sp.branch_id\n    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND sp.status <> 'CANCELLED'\n      AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n      AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n      AND (\n        {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n        OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n      )\n    GROUP BY sp.branch_id, b.code, b.name, dt.target_date\n  ) plan\n  LEFT JOIN (\n    SELECT\n      w.branch_id AS branchId,\n      d.document_date AS targetDate,\n      COUNT(DISTINCT d.id) AS saleCount\n    FROM documents d\n    JOIN warehouses w\n      ON w.id = d.warehouse_id\n    WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n      AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n      AND d.status <> 'CANCELLED'\n      AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n      AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n    GROUP BY w.branch_id, d.document_date\n  ) actual\n    ON actual.branchId = plan.branchId\n   AND actual.targetDate = plan.targetDate\n  WHERE plan.salesTarget > 0\n    AND COALESCE(actual.saleCount, 0) = 0\n) x\nWHERE (\n  {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n  OR x.branchId IN (\n    SELECT DISTINCT waccess.branch_id\n    FROM user_warehouse_access uwa\n    JOIN warehouses waccess\n      ON waccess.id = uwa.warehouse_id\n    WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n      AND COALESCE(waccess.branch_id, 0) > 0\n  )\n)\nORDER BY\n  CASE x.severity\n    WHEN 'HIGH' THEN 1\n    WHEN 'MEDIUM' THEN 2\n    ELSE 3\n  END,\n  x.sortValue DESC\nLIMIT 12;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetDashboardPlanningExceptions",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

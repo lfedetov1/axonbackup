@@ -14,7 +14,16 @@
       "key": "borderRadius"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
   "iconAlign": "left",
   "iconName": "notifications",
   "isDefaultClickDisabled": true,
@@ -22,13 +31,14 @@
   "isLoading": false,
   "isVisible": true,
   "key": "97fwhq2htc",
-  "leftColumn": 48,
+  "leftColumn": 49,
   "minWidth": 120,
   "mobileBottomRow": 45,
   "mobileLeftColumn": 7,
   "mobileRightColumn": 23,
   "mobileTopRow": 41,
   "needsErrorInfo": false,
+  "onClick": "{{ DashboardNotifications.open() }}",
   "originalBottomRow": 17,
   "originalTopRow": 13,
   "parentColumnSpace": 30.5625,
@@ -39,7 +49,7 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 50,
+  "rightColumn": 51,
   "text": "",
   "topRow": 0,
   "type": "BUTTON_WIDGET",

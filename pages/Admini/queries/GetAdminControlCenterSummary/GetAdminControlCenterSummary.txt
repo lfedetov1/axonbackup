@@ -1,0 +1,88 @@
+SELECT
+  (SELECT COUNT(*) FROM users u WHERE u.is_active = 1) AS activeUsers,
+
+  (
+    SELECT COUNT(*)
+    FROM users u
+    LEFT JOIN user_role_assignments ura
+      ON ura.user_id = u.id
+    WHERE u.is_active = 1
+    GROUP BY u.is_active
+    HAVING COUNT(ura.role_id) = 0
+  ) AS usersWithoutRoles,
+
+  (
+    SELECT COUNT(*)
+    FROM users u
+    LEFT JOIN user_warehouse_access uwa
+      ON uwa.user_id = u.id
+    WHERE u.is_active = 1
+      AND COALESCE(uwa.id, 0) = 0
+  ) AS usersWithoutWarehouseAccess,
+
+  (
+    SELECT COUNT(*)
+    FROM roles r
+    WHERE r.is_system = 1
+  ) AS systemRoles,
+
+  (
+    SELECT COUNT(*)
+    FROM cash_registers cr
+    WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND cr.is_active = 1
+  ) AS activeCashRegisters,
+
+  (
+    SELECT COUNT(*)
+    FROM cash_registers cr
+    WHERE cr.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND cr.is_active = 1
+      AND (
+        COALESCE(cr.warehouse_id, 0) = 0
+        OR COALESCE(cr.responsible_user_id, 0) = 0
+      )
+  ) AS incompleteCashRegisters,
+
+  (
+    SELECT COUNT(*)
+    FROM branches b
+    WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND b.is_active = 1
+  ) AS activeBranches,
+
+  (
+    SELECT COUNT(*)
+    FROM branches b
+    WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND b.is_active = 1
+      AND COALESCE(b.default_warehouse_id, 0) = 0
+  ) AS branchesWithoutWarehouse,
+
+  (
+    SELECT COUNT(*)
+    FROM document_type_settings dts
+    WHERE dts.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND dts.is_active = 1
+  ) AS activeDocumentTypes,
+
+  (
+    SELECT COUNT(*)
+    FROM payment_methods pm
+    WHERE COALESCE(pm.company_id, {{ Number(appsmith.store.companyId || 1) }}) = {{ Number(appsmith.store.companyId || 1) }}
+      AND pm.is_active = 1
+  ) AS activePaymentMethods,
+
+  (
+    SELECT COUNT(*)
+    FROM sales_plans sp
+    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND sp.status <> 'CANCELLED'
+  ) AS salesPlans,
+
+  (
+    SELECT COUNT(*)
+    FROM audit_logs al
+    WHERE al.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND al.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+  ) AS auditEventsLast24h;

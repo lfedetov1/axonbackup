@@ -1,0 +1,170 @@
+SELECT *
+FROM (
+  SELECT
+    'DOCUMENT_APPROVAL' AS actionType,
+    'HIGH' AS severity,
+    'Documents waiting approval' AS title,
+    COUNT(*) AS countValue,
+    'Review and approve pending documents.' AS detailText,
+    'Sales / Purchase / Inventory' AS moduleName,
+    'APPROVALS' AS actionKey,
+    10 AS sortOrder
+  FROM documents d
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.status IN ('DRAFT', 'CONFIRMED', 'READY')
+    AND d.document_type IN (
+      'SALES_ORDER',
+      'CREDIT_NOTE',
+      'TRANSFER_REQUEST',
+      'PURCHASE_INVOICE',
+      'PURCHASE_RETURN',
+      'INVENTORY_COUNT',
+      'OPENING_STOCK'
+    )
+
+  UNION ALL
+
+  SELECT
+    'DOCUMENT_INBOX',
+    'HIGH',
+    'Inbox documents waiting',
+    COUNT(*),
+    'Uploaded supplier/customer documents need review.',
+    'Document Inbox',
+    'DOCUMENT_INBOX',
+    20
+  FROM document_inbox_submissions dis
+  WHERE dis.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND dis.status IN ('NEW', 'UNDER_REVIEW', 'APPROVED')
+
+  UNION ALL
+
+  SELECT
+    'OUT_OF_STOCK',
+    'HIGH',
+    'Products out of stock',
+    COUNT(*),
+    'Review replenishment or purchase needs.',
+    'Inventory',
+    'STOCK_ALERTS',
+    30
+  FROM (
+    SELECT p.id
+    FROM products p
+    LEFT JOIN v_inventory_balance ib
+      ON ib.product_id = p.id
+     AND ib.company_id = p.company_id
+    WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND p.is_active = 1
+    GROUP BY p.id
+    HAVING COALESCE(SUM(ib.quantity_balance), 0) <= 0
+  ) x
+
+  UNION ALL
+
+  SELECT
+    'LOW_STOCK',
+    'MEDIUM',
+    'Products below minimum',
+    COUNT(*),
+    'Warehouse locations need replenishment.',
+    'Inventory',
+    'REPLENISHMENT',
+    40
+  FROM warehouse_location_products wlp
+  LEFT JOIN v_inventory_balance ib
+    ON ib.company_id = wlp.company_id
+   AND ib.product_id = wlp.product_id
+   AND ib.warehouse_id = wlp.warehouse_id
+  WHERE wlp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND wlp.is_active = 1
+    AND COALESCE(wlp.minimum_quantity, 0) > 0
+    AND COALESCE(ib.quantity_balance, 0) < COALESCE(wlp.minimum_quantity, 0)
+
+  UNION ALL
+
+  SELECT
+    'FISCALIZATION',
+    'HIGH',
+    'Invoices need fiscalization',
+    COUNT(*),
+    'Invoices are posted but missing fiscal confirmation.',
+    'Sales / POS',
+    'FISCALIZATION',
+    50
+  FROM documents d
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'CREDIT_NOTE')
+    AND d.status IN ('POSTED', 'INVOICED')
+    AND COALESCE(d.fiscal_status, '') NOT IN ('SUCCESS', 'OK')
+    AND COALESCE(d.fiscal_jir, d.jir, '') = ''
+
+  UNION ALL
+
+ 
+
+SELECT
+  'OPEN_CASH_REGISTERS',
+  'MEDIUM',
+  'Open cash register sessions',
+  COUNT(*),
+  'Cash registers should be closed at end of day.',
+  'POS',
+  'POS_CASH',
+  60
+FROM pos_cash_register_sessions pcs
+WHERE pcs.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND pcs.status = 'OPEN'
+
+  UNION ALL
+
+  SELECT
+    'PLANNING_BELOW_TARGET',
+    'MEDIUM',
+    'Planning alerts',
+    COUNT(*),
+    'Some branches or days are below sales target.',
+    'Dashboard',
+    'PLANNING',
+    70
+  FROM (
+    SELECT
+      sp.branch_id,
+      dt.target_date,
+      SUM(COALESCE(dt.sales_target_amount, 0)) AS targetAmount,
+      COALESCE(actual.actualSales, 0) AS actualSales
+    FROM sales_plans sp
+    JOIN sales_plan_daily_targets dt
+      ON dt.sales_plan_id = sp.id
+    LEFT JOIN (
+      SELECT
+        w.branch_id,
+        d.document_date,
+        SUM(COALESCE(d.total_amount, 0)) AS actualSales
+      FROM documents d
+      JOIN warehouses w
+        ON w.id = d.warehouse_id
+      WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+        AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+        AND d.status <> 'CANCELLED'
+      GROUP BY w.branch_id, d.document_date
+    ) actual
+      ON actual.branch_id = sp.branch_id
+     AND actual.document_date = dt.target_date
+    WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+      AND sp.status <> 'CANCELLED'
+      AND dt.target_date >= CURDATE()
+      AND dt.target_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+    GROUP BY sp.branch_id, dt.target_date, actual.actualSales
+    HAVING targetAmount > 0
+       AND actualSales < targetAmount * 0.85
+  ) p
+) actions
+WHERE countValue > 0
+ORDER BY
+  CASE severity
+    WHEN 'HIGH' THEN 1
+    WHEN 'MEDIUM' THEN 2
+    ELSE 3
+  END,
+  sortOrder;

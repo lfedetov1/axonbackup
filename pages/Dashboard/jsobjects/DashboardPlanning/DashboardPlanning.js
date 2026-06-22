@@ -66,5 +66,8 @@ export default {
     if (typeof GetDashboardPlanningBranchPerf !== "undefined") {
       await GetDashboardPlanningBranchPerf.run();
     }
+		if (typeof GetDashboardPlanningExceptions !== "undefined") {
+  await GetDashboardPlanningExceptions.run();
+}
   }
 };

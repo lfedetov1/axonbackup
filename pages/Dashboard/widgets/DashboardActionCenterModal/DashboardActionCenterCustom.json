@@ -1,0 +1,77 @@
+{
+  "actionSelected": "{{ DashboardNotifications.handle(DashboardActionCenterCustom.model.selectedAction) }}",
+  "backgroundColor": "#FFFFFF",
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": "1",
+  "bottomRow": 57,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "defaultModel": "{{\n  {\n    items: GetDashboardActionCenter.data || [],\n    totalCount: DashboardNotifications.totalCount(),\n    generatedAt: moment().format(\"DD.MM.YYYY HH:mm:ss\")\n  }\n}}",
+  "dynamicBindingPathList": [
+    {
+      "key": "theme"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "defaultModel"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "actionSelected"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onResetClick"
+    },
+    {
+      "key": "actionSelected"
+    }
+  ],
+  "events": [
+    "onResetClick",
+    "actionSelected"
+  ],
+  "isCanvas": false,
+  "isLoading": false,
+  "isSearchWildcard": true,
+  "isVisible": true,
+  "key": "a1zj2dcytq",
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "mobileBottomRow": 36,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 24,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onResetClick": "{{showAlert('Successfully reset!!', '');}}",
+  "parentColumnSpace": 16.4078125,
+  "parentId": "yptqxv0r8o",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "rightColumn": 63,
+  "srcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: #f6f8fc;\n  color: #111827;\n}\n\n.action-center {\n  padding: 18px;\n}\n\n.action-head {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n  margin-bottom: 14px;\n}\n\n.action-head h2 {\n  margin: 0;\n  font-size: 22px;\n  font-weight: 850;\n}\n\n.action-head p {\n  margin: 4px 0 0;\n  color: #64748b;\n  font-size: 13px;\n}\n\n.count-pill {\n  background: #111827;\n  color: #fff;\n  border-radius: 999px;\n  padding: 7px 11px;\n  font-size: 12px;\n  font-weight: 850;\n}\n\n.action-list {\n  display: grid;\n  gap: 10px;\n}\n\n.action-card {\n  border: 1px solid #e5e9f2;\n  background: #fff;\n  border-radius: 10px;\n  padding: 13px;\n  display: grid;\n  grid-template-columns: 1fr auto;\n  gap: 12px;\n  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);\n}\n\n.action-card strong {\n  display: block;\n  font-size: 14px;\n}\n\n.action-card span {\n  display: block;\n  margin-top: 4px;\n  color: #64748b;\n  font-size: 12px;\n}\n\n.action-card small {\n  display: inline-flex;\n  margin-top: 8px;\n  color: #475569;\n  font-weight: 800;\n  font-size: 11px;\n}\n\n.severity {\n  align-self: start;\n  border-radius: 999px;\n  padding: 5px 9px;\n  font-size: 11px;\n  font-weight: 900;\n}\n\n.high {\n  border-color: #fecaca;\n  background: #fff7f7;\n}\n\n.high .severity {\n  background: #fee2e2;\n  color: #b91c1c;\n}\n\n.medium {\n  border-color: #fde68a;\n  background: #fffbeb;\n}\n\n.medium .severity {\n  background: #fef3c7;\n  color: #92400e;\n}\n\n.low .severity {\n  background: #e8eef8;\n  color: #475569;\n}\n\n.empty {\n  height: 180px;\n  display: grid;\n  place-items: center;\n  color: #94a3b8;\n  border: 1px dashed #dbe3ef;\n  border-radius: 10px;\n}",
+    "html": "<div id=\"action-center-root\"></div>",
+    "js": "const root = document.getElementById(\"action-center-root\");\nfunction esc(value) {\n  return String(value ?? \"\").replace(/[&<>\"']/g, char => ({\n    \"&\": \"&amp;\",\n    \"<\": \"&lt;\",\n    \">\": \"&gt;\",\n    '\"': \"&quot;\",\n    \"'\": \"&#039;\"\n  })[char]);\n}\nfunction render() {\n  const model = appsmith.model || {};\n  const items = model.items || [];\n  root.innerHTML = `\n    <div class=\"action-center\">\n      <div class=\"action-head\">\n        <div>\n          <h2>Action Center</h2>\n          <p>Updated ${esc(model.generatedAt || \"\")}</p>\n        </div>\n        <div class=\"count-pill\">${Number(model.totalCount || 0)} open</div>\n      </div>\n\n      ${items.length ? `<div class=\"action-list\">\n              ${items.map((row, index) => `\n                <div class=\"action-card ${String(row.severity || \"LOW\").toLowerCase()}\" data-index=\"${index}\">\n                  <div>\n                    <strong>${esc(row.title || \"\")}</strong>\n                    <span>${esc(row.detailText || \"\")}</span>\n                    <small>${esc(row.moduleName || \"\")} · ${Number(row.countValue || 0)} item(s)</small>\n                  </div>\n                  <div class=\"severity\">${esc(row.severity || \"LOW\")}</div>\n                </div>\n              `).join(\"\")}\n            </div>` : `<div class=\"empty\">No urgent actions right now.</div>`}\n    </div>\n  `;\n  document.querySelectorAll(\".action-card\").forEach(card => {\n    card.onclick = () => {\n      const index = Number(card.dataset.index || 0);\n      appsmith.updateModel({\n        selectedAction: items[index]\n      });\n      appsmith.triggerEvent(\"actionSelected\");\n    };\n  });\n}\nappsmith.onReady(() => {\n  render();\n  appsmith.onModelChange(render);\n});"
+  },
+  "theme": "{{appsmith.theme}}",
+  "topRow": 6,
+  "type": "CUSTOM_WIDGET",
+  "uncompiledSrcDoc": {
+    "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: #f6f8fc;\n  color: #111827;\n}\n\n.action-center {\n  padding: 18px;\n}\n\n.action-head {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n  margin-bottom: 14px;\n}\n\n.action-head h2 {\n  margin: 0;\n  font-size: 22px;\n  font-weight: 850;\n}\n\n.action-head p {\n  margin: 4px 0 0;\n  color: #64748b;\n  font-size: 13px;\n}\n\n.count-pill {\n  background: #111827;\n  color: #fff;\n  border-radius: 999px;\n  padding: 7px 11px;\n  font-size: 12px;\n  font-weight: 850;\n}\n\n.action-list {\n  display: grid;\n  gap: 10px;\n}\n\n.action-card {\n  border: 1px solid #e5e9f2;\n  background: #fff;\n  border-radius: 10px;\n  padding: 13px;\n  display: grid;\n  grid-template-columns: 1fr auto;\n  gap: 12px;\n  box-shadow: 0 10px 24px rgba(15,23,42,.06);\n}\n\n.action-card strong {\n  display: block;\n  font-size: 14px;\n}\n\n.action-card span {\n  display: block;\n  margin-top: 4px;\n  color: #64748b;\n  font-size: 12px;\n}\n\n.action-card small {\n  display: inline-flex;\n  margin-top: 8px;\n  color: #475569;\n  font-weight: 800;\n  font-size: 11px;\n}\n\n.severity {\n  align-self: start;\n  border-radius: 999px;\n  padding: 5px 9px;\n  font-size: 11px;\n  font-weight: 900;\n}\n\n.high {\n  border-color: #fecaca;\n  background: #fff7f7;\n}\n\n.high .severity {\n  background: #fee2e2;\n  color: #b91c1c;\n}\n\n.medium {\n  border-color: #fde68a;\n  background: #fffbeb;\n}\n\n.medium .severity {\n  background: #fef3c7;\n  color: #92400e;\n}\n\n.low .severity {\n  background: #e8eef8;\n  color: #475569;\n}\n\n.empty {\n  height: 180px;\n  display: grid;\n  place-items: center;\n  color: #94a3b8;\n  border: 1px dashed #dbe3ef;\n  border-radius: 10px;\n}",
+    "html": "<div id=\"action-center-root\"></div>",
+    "js": "const root = document.getElementById(\"action-center-root\");\n\nfunction esc(value) {\n  return String(value ?? \"\").replace(/[&<>\"']/g, char => ({\n    \"&\": \"&amp;\",\n    \"<\": \"&lt;\",\n    \">\": \"&gt;\",\n    '\"': \"&quot;\",\n    \"'\": \"&#039;\"\n  })[char]);\n}\n\nfunction render() {\n  const model = appsmith.model || {};\n  const items = model.items || [];\n\n  root.innerHTML = `\n    <div class=\"action-center\">\n      <div class=\"action-head\">\n        <div>\n          <h2>Action Center</h2>\n          <p>Updated ${esc(model.generatedAt || \"\")}</p>\n        </div>\n        <div class=\"count-pill\">${Number(model.totalCount || 0)} open</div>\n      </div>\n\n      ${\n        items.length\n          ? `<div class=\"action-list\">\n              ${items.map((row, index) => `\n                <div class=\"action-card ${String(row.severity || \"LOW\").toLowerCase()}\" data-index=\"${index}\">\n                  <div>\n                    <strong>${esc(row.title || \"\")}</strong>\n                    <span>${esc(row.detailText || \"\")}</span>\n                    <small>${esc(row.moduleName || \"\")} · ${Number(row.countValue || 0)} item(s)</small>\n                  </div>\n                  <div class=\"severity\">${esc(row.severity || \"LOW\")}</div>\n                </div>\n              `).join(\"\")}\n            </div>`\n          : `<div class=\"empty\">No urgent actions right now.</div>`\n      }\n    </div>\n  `;\n\n  document.querySelectorAll(\".action-card\").forEach(card => {\n    card.onclick = () => {\n      const index = Number(card.dataset.index || 0);\n      appsmith.updateModel({ selectedAction: items[index] });\n      appsmith.triggerEvent(\"actionSelected\");\n    };\n  });\n}\n\nappsmith.onReady(() => {\n  render();\n  appsmith.onModelChange(render);\n});"
+  },
+  "version": 1,
+  "widgetId": "hqbdc8rr8r",
+  "widgetName": "DashboardActionCenterCustom"
+}
