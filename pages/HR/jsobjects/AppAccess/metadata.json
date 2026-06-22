@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_ecad219f-250b-4b23-9b0b-0dd11f505b1c",
+  "id": "HR_AppAccess",
+  "unpublishedCollection": {
+    "name": "AppAccess",
+    "pageId": "HR",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

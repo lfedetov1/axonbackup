@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_7cff4a53-e67e-4dab-b985-ae977159ac7e",
+  "id": "Accounting_AppAccess",
+  "unpublishedCollection": {
+    "name": "AppAccess",
+    "pageId": "Accounting",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

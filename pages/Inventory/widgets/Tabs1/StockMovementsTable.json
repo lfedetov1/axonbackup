@@ -61,9 +61,10 @@
     "createdAt",
     "customColumn1",
     "customColumn2",
-    "customColumn3"
+    "customColumn3",
+    "customColumn4"
   ],
-  "columnUpdatedAt": 1778660621738,
+  "columnUpdatedAt": 1782118064401,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -193,6 +194,15 @@
     },
     {
       "key": "primaryColumns.customColumn2.isDisabled"
+    },
+    {
+      "key": "primaryColumns.customColumn4.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn4.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -219,6 +229,12 @@
     },
     {
       "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -233,6 +249,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -474,6 +493,45 @@
       "notation": "standard",
       "onClick": "{{\n  (async () => {\n    const documentNumber =\n      currentRow.documentNumber ||\n      currentRow.document_number ||\n      currentRow.DocumentNumber ||\n      currentRow[\"Document Number\"] ||\n      currentRow[\"Document No.\"];\n\n    if (!documentNumber) {\n      showAlert(\"Document number was not found.\", \"error\");\n      return;\n    }\n\n    MovementNumberInput.setValue(documentNumber);\n\n    await GetStockDocumentPrintHeader.run({ documentNumber });\n    await GetStockDocumentPrintItems.run({ documentNumber });\n\n    showModal(PrintStockDocumentModal.name);\n  })()\n}}\n",
       "originalId": "customColumn3",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn4": {
+      "alias": "Change Log",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{StockMovementsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{StockMovementsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dbeafe",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "time",
+      "id": "customColumn4",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": "{{(() => { const tableData = StockMovementsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( EntityAuditHistory.canView() )) :  EntityAuditHistory.canView()  })()}}",
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Change Log",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ EntityAuditHistory.open(\"documents\", currentRow, \"Stock document change history\") }}",
+      "originalId": "customColumn4",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

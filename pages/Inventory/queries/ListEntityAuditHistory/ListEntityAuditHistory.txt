@@ -1,0 +1,21 @@
+SELECT
+  al.id AS auditId,
+  DATE_FORMAT(al.created_at, '%d.%m.%Y %H:%i:%s') AS `Time`,
+  COALESCE(u.username, '-') AS `User`,
+  al.entity_name AS `Entity`,
+  al.entity_id AS `Entity ID`,
+  al.action_type AS `Action`,
+  al.old_values AS oldValues,
+  al.new_values AS newValues,
+  al.ip_address AS `IP Address`
+FROM audit_logs al
+LEFT JOIN users u
+  ON u.id = al.user_id
+WHERE al.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND LOWER(al.entity_name) = LOWER({{ appsmith.store.auditHistoryEntityName || "" }})
+
+  AND al.entity_id = {{ Number(appsmith.store.auditHistoryEntityId || 0) }}
+
+ORDER BY al.created_at DESC
+LIMIT 200;
