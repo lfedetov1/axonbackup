@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "onClick"
+    },
+    {
+      "key": "isVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -22,20 +28,20 @@
     }
   ],
   "iconAlign": "left",
-  "iconName": "add",
+  "iconName": "cloud-upload",
   "isDefaultClickDisabled": true,
   "isDisabled": false,
   "isLoading": false,
-  "isVisible": true,
+  "isVisible": "{{ AppAccess.has(\"admin.access\") || AppAccess.has(\"admin.planning.manage\") }}",
   "key": "5jm2g15q1b",
-  "leftColumn": 47,
+  "leftColumn": 55,
   "minWidth": 120,
   "mobileBottomRow": 11,
   "mobileLeftColumn": 28,
   "mobileRightColumn": 44,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onClick": "{{ AdminSalesPlans.openNew() }}",
+  "onClick": "{{\n  storeValue(\"adminPlanningImportRows\", [])\n    .then(() => resetWidget(\"AdminPlanningImportFilePicker\", true))\n    .then(() => ListAdminPlanningImportPlans.run())\n    .then(() => showModal(AdminPlanningImportModal.name))\n}}",
   "originalBottomRow": 85,
   "originalTopRow": 81,
   "parentColumnSpace": 16.96875,
@@ -46,11 +52,11 @@
   "renderMode": "CANVAS",
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
-  "rightColumn": 55,
-  "text": "Add",
+  "rightColumn": 63,
+  "text": "Fast Load",
   "topRow": 11,
   "type": "BUTTON_WIDGET",
   "version": 1,
-  "widgetId": "50k13hupvy",
-  "widgetName": "Button3Copy1Copy1CopyCopyCopy"
+  "widgetId": "meul7gt72d",
+  "widgetName": "Button3Copy1Copy1CopyCopyCopyCopy1"
 }

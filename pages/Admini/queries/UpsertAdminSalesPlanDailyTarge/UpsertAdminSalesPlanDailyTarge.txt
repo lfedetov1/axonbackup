@@ -1,0 +1,36 @@
+INSERT INTO sales_plan_daily_targets (
+  company_id,
+  sales_plan_id,
+  target_date,
+  sales_target_amount,
+  margin_target_amount,
+  transaction_target_count,
+  item_target_quantity,
+  planned_working_hours,
+  planned_absence_hours,
+  planned_sick_leave_hours,
+  note
+)
+VALUES (
+  {{ Number(appsmith.store.companyId || 1) }},
+  {{ Number(this.params.salesPlanId || 0) }},
+  {{ this.params.targetDate }},
+  {{ Number(this.params.salesTargetAmount || 0) }},
+  {{ Number(this.params.marginTargetAmount || 0) }},
+  {{ Number(this.params.transactionTargetCount || 0) }},
+  {{ Number(this.params.itemTargetQuantity || 0) }},
+  {{ Number(this.params.plannedWorkingHours || 0) }},
+  {{ Number(this.params.plannedAbsenceHours || 0) }},
+  {{ Number(this.params.plannedSickLeaveHours || 0) }},
+  {{ this.params.note || null }}
+)
+ON DUPLICATE KEY UPDATE
+  sales_target_amount = VALUES(sales_target_amount),
+  margin_target_amount = VALUES(margin_target_amount),
+  transaction_target_count = VALUES(transaction_target_count),
+  item_target_quantity = VALUES(item_target_quantity),
+  planned_working_hours = VALUES(planned_working_hours),
+  planned_absence_hours = VALUES(planned_absence_hours),
+  planned_sick_leave_hours = VALUES(planned_sick_leave_hours),
+  note = VALUES(note),
+  updated_at = NOW();

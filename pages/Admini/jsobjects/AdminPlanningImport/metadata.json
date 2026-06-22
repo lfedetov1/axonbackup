@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_cb62d97b-ec21-4310-9623-33f611a52992",
+  "id": "Admini_AdminPlanningImport",
+  "unpublishedCollection": {
+    "name": "AdminPlanningImport",
+    "pageId": "Admini",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

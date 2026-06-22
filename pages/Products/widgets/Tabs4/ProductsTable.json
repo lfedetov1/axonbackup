@@ -62,9 +62,10 @@
     "Category",
     "customColumn1",
     "customColumn2",
-    "customColumn3"
+    "customColumn3",
+    "customColumn4"
   ],
-  "columnUpdatedAt": 1777831046422,
+  "columnUpdatedAt": 1782118863333,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -191,6 +192,15 @@
     },
     {
       "key": "primaryColumns.customColumn1.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn4.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn4.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -214,6 +224,12 @@
     },
     {
       "key": "isVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn4.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -228,6 +244,9 @@
     },
     {
       "key": "primaryColumns.customColumn3.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn4.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -1291,6 +1310,46 @@
       "notation": "standard",
       "onClick": "{{\n  (async () => {\n    const row = ProductsTable.selectedRow;\n\n    if (!row?.ID) {\n      showAlert(\"Select a product first.\", \"warning\");\n      return;\n    }\n\n    await DeactivateProduct.run({ productId: row.ID });\n    await SearchProducts.run();\n    showAlert(\"Product has been deactivated.\", \"success\");\n  })()\n}}\n",
       "originalId": "customColumn3",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn4": {
+      "alias": "Change Log",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{ProductsTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{ProductsTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#a16207",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "cellBackground": "",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "time",
+      "id": "customColumn4",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": "{{(() => { const tableData = ProductsTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( EntityAuditHistory.canView() )) :  EntityAuditHistory.canView()  })()}}",
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Change Log",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{ EntityAuditHistory.open(\"products\", currentRow, \"Product change history\") }}",
+      "originalId": "customColumn4",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

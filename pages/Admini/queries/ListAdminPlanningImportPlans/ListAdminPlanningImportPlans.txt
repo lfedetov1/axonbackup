@@ -1,0 +1,13 @@
+SELECT
+  CAST(sp.id AS CHAR) AS value,
+  CONCAT(
+    sp.plan_name,
+    ' · ',
+    DATE_FORMAT(sp.period_from, '%d.%m.%Y'),
+    ' - ',
+    DATE_FORMAT(sp.period_to, '%d.%m.%Y')
+  ) AS label
+FROM sales_plans sp
+WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND sp.status <> 'CANCELLED'
+ORDER BY sp.period_from DESC, sp.id DESC;

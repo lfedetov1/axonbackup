@@ -4,24 +4,35 @@ export default {
   },
 
   idFromRow(row = {}) {
-    return Number(
-      row.documentId ||
-      row.documentID ||
-      row.DocumentID ||
-      row["Document ID"] ||
-      row.invoiceId ||
-      row.quoteId ||
-      row.salesOrderId ||
-      row.deliveryNoteId ||
-      row.productId ||
-      row.partnerId ||
-      row.cashRegisterId ||
-      row.branchId ||
-      row.id ||
-      row.ID ||
-      0
-    );
-  },
+  return Number(
+    row.documentId ||
+    row.document_id ||
+    row.documentID ||
+    row.DocumentID ||
+    row["Document ID"] ||
+
+    row.productId ||
+    row.product_id ||
+    row.ProductID ||
+    row["Product ID"] ||
+
+    row.partnerId ||
+    row.partner_id ||
+    row.PartnerID ||
+    row["Partner ID"] ||
+
+    row.invoiceId ||
+    row.quoteId ||
+    row.salesOrderId ||
+    row.deliveryNoteId ||
+    row.cashRegisterId ||
+    row.branchId ||
+
+    row.id ||
+    row.ID ||
+    0
+  );
+},
 
   async open(entityName, rowOrId, title = "Change history") {
     if (!this.canView()) {
