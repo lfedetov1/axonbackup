@@ -1,0 +1,70 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 21,
+  "boxShadow": "none",
+  "defaultOptionValue": "ALL",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "a92eibdrat",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Action :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 14,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 13,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{ AuditViewer.refresh() }}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 16.4078125,
+  "parentId": "wtpzj3q3x0",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 26,
+  "serverSideFiltering": false,
+  "sourceData": "{{\n  [\n    { label: \"All actions\", value: \"ALL\" },\n    { label: \"Insert\", value: \"INSERT\" },\n    { label: \"Update\", value: \"UPDATE\" },\n    { label: \"Delete\", value: \"DELETE\" },\n    { label: \"Disable\", value: \"DISABLE\" },\n    { label: \"Enable\", value: \"ENABLE\" },\n    { label: \"Cancel\", value: \"CANCEL\" },\n    { label: \"Post\", value: \"POST\" },\n    { label: \"Void\", value: \"VOID\" },\n    { label: \"Approve\", value: \"APPROVE\" },\n    { label: \"Reject\", value: \"REJECT\" },\n    { label: \"Convert\", value: \"CONVERT\" },\n    { label: \"Login\", value: \"LOGIN\" }\n  ]\n}}",
+  "topRow": 14,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "gg4keu9yj9",
+  "widgetName": "AuditActionSelect"
+}

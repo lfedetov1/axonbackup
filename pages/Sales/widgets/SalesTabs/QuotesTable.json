@@ -58,9 +58,10 @@
     "Exchange_Rate",
     "Sales_Channel",
     "Posting_Status",
-    "updatedAt"
+    "updatedAt",
+    "customColumn6"
   ],
-  "columnUpdatedAt": 1779991956098,
+  "columnUpdatedAt": 1782116444339,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -193,6 +194,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn6.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn6.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn6.isCellVisible"
     }
   ],
   "dynamicPropertyPathList": [
@@ -231,6 +241,12 @@
     },
     {
       "key": "primaryColumns.customColumn5.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn6.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn6.isCellVisible"
     }
   ],
   "dynamicTriggerPathList": [
@@ -248,6 +264,9 @@
     },
     {
       "key": "primaryColumns.customColumn5.onClick"
+    },
+    {
+      "key": "primaryColumns.customColumn6.onClick"
     }
   ],
   "enableClientSideSearch": true,
@@ -1079,6 +1098,45 @@
       "notation": "standard",
       "onClick": "{{\n  QuoteForm.convertToInvoice({\n    quoteId: currentRow.documentId || currentRow.ID || currentRow.id || currentRow[\"Document ID\"],\n    documentId: currentRow.documentId || currentRow.ID || currentRow.id || currentRow[\"Document ID\"],\n    quoteNumber: currentRow[\"Quote Number\"]\n  })\n}}",
       "originalId": "customColumn5",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn6": {
+      "alias": "Change Log",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{QuotesTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "#dcfce7",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "iconName": "time",
+      "id": "customColumn6",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": "{{(() => { const tableData = QuotesTable.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( AppAccess.has(\"audit.view\") || AppAccess.has(\"admin.access\") )) :  AppAccess.has(\"audit.view\") || AppAccess.has(\"admin.access\")  })()}}",
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Change Log",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "onClick": "{{\n  EntityAuditHistory.open(\n    \"documents\",\n    currentRow.documentId || currentRow.id || currentRow.ID,\n    \"Quote change history\"\n  )\n}}",
+      "originalId": "customColumn6",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

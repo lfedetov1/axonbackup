@@ -1,0 +1,70 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 21,
+  "boxShadow": "none",
+  "defaultOptionValue": "ALL",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": false,
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "a92eibdrat",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Entity :",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 13,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 6,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{ AuditViewer.refresh() }}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "parentColumnSpace": 16.4078125,
+  "parentId": "wtpzj3q3x0",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 13,
+  "serverSideFiltering": false,
+  "sourceData": "{{\n  [\n    { label: \"All entities\", value: \"ALL\" },\n    { label: \"Documents\", value: \"documents\" },\n    { label: \"Document Items\", value: \"document_items\" },\n    { label: \"Products\", value: \"products\" },\n    { label: \"Partners\", value: \"business_partners\" },\n    { label: \"Users\", value: \"users\" },\n    { label: \"Roles\", value: \"roles\" },\n    { label: \"Permissions\", value: \"permissions\" },\n    { label: \"Payment Methods\", value: \"payment_methods\" },\n    { label: \"Cash Registers\", value: \"cash_registers\" },\n    { label: \"Branches\", value: \"branches\" },\n    { label: \"Sales Plans\", value: \"sales_plans\" },\n    { label: \"Warehouse Access\", value: \"user_warehouse_access\" },\n    { label: \"POS Access\", value: \"pos_user_access_codes\" },\n    { label: \"Document Setup\", value: \"document_type_settings\" }\n  ]\n}}",
+  "topRow": 14,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "oycopm1xr7",
+  "widgetName": "AuditEntitySelect"
+}

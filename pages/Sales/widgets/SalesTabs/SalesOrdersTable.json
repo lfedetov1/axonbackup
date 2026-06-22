@@ -57,9 +57,10 @@
     "customColumn4",
     "customColumn5",
     "customColumn6",
-    "customColumn1"
+    "customColumn1",
+    "customColumn7"
   ],
-  "columnUpdatedAt": 1779975680325,
+  "columnUpdatedAt": 1782116776775,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -201,6 +202,15 @@
     },
     {
       "key": "primaryColumns.customColumn5.isCellVisible"
+    },
+    {
+      "key": "primaryColumns.customColumn7.boxShadow"
+    },
+    {
+      "key": "primaryColumns.customColumn7.borderRadius"
+    },
+    {
+      "key": "primaryColumns.customColumn7.buttonColor"
     }
   ],
   "dynamicPropertyPathList": [
@@ -1178,6 +1188,43 @@
       "notation": "standard",
       "onClick": "{{\n  AppLoader.run(\n    \"Cancelling sales order\",\n    \"Cancelling selected sales order...\",\n    () => SalesOrderForm.cancelDocument(currentRow)\n  )\n}}",
       "originalId": "customColumn6",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    },
+    "customColumn7": {
+      "alias": "Change Log",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "borderRadius": "{{SalesOrdersTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.borderRadius.appBorderRadius)))}}",
+      "boxShadow": "{{SalesOrdersTable.processedTableData.map((currentRow, currentIndex) => ( \"none\"))}}",
+      "buttonColor": "{{SalesOrdersTable.processedTableData.map((currentRow, currentIndex) => ( (appsmith.theme.colors.primaryColor)))}}",
+      "buttonStyle": "rgb(3, 179, 101)",
+      "columnType": "iconButton",
+      "computedValue": "",
+      "currencyCode": "USD",
+      "customAlias": "",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "id": "customColumn7",
+      "index": 10,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": true,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Change Log",
+      "labelColor": "#FFFFFF",
+      "notation": "standard",
+      "originalId": "customColumn7",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,

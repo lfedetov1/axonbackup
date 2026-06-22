@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT * FROM accounting_accounts LIMIT 10;",
+      "body": "SELECT\n  al.id AS auditId,\n  al.created_at AS `Time`,\n  u.username AS `User`,\n  al.entity_name AS `Entity`,\n  al.entity_id AS `Entity ID`,\n  al.action_type AS `Action`,\n  al.old_values AS oldValues,\n  al.new_values AS newValues,\n  al.ip_address AS `IP Address`\nFROM audit_logs al\nLEFT JOIN users u\n  ON u.id = al.user_id\nWHERE al.company_id = {{ Number(appsmith.store.companyId || 1) }}\n\n  AND (\n    {{ AuditEntitySelect.selectedOptionValue || \"ALL\" }} = \"ALL\"\n    OR al.entity_name = {{ AuditEntitySelect.selectedOptionValue || \"ALL\" }}\n  )\n\n  AND (\n    {{ AuditActionSelect.selectedOptionValue || \"ALL\" }} = \"ALL\"\n    OR al.action_type = {{ AuditActionSelect.selectedOptionValue || \"ALL\" }}\n  )\n\n  AND al.created_at >= {{ moment(AuditDateFrom.selectedDate || moment().subtract(7, \"days\")).format(\"YYYY-MM-DD\") }}\n  AND al.created_at < DATE_ADD({{ moment(AuditDateTo.selectedDate || moment()).format(\"YYYY-MM-DD\") }}, INTERVAL 1 DAY)\n\n  AND (\n    {{ AuditSearchInput.text || \"\" }} = \"\"\n    OR u.username LIKE CONCAT('%', {{ AuditSearchInput.text || \"\" }}, '%')\n    OR al.entity_name LIKE CONCAT('%', {{ AuditSearchInput.text || \"\" }}, '%')\n    OR al.action_type LIKE CONCAT('%', {{ AuditSearchInput.text || \"\" }}, '%')\n    OR al.new_values LIKE CONCAT('%', {{ AuditSearchInput.text || \"\" }}, '%')\n    OR al.old_values LIKE CONCAT('%', {{ AuditSearchInput.text || \"\" }}, '%')\n  )\n\nORDER BY al.created_at DESC\nLIMIT 500;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,9 +22,14 @@
       "name": "Axon",
       "pluginId": "mysql-plugin"
     },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
     "name": "ListAuditViewerLogs",
     "pageId": "Dashboard",
-    "runBehaviour": "MANUAL",
+    "runBehaviour": "AUTOMATIC",
     "userSetOnLoad": false
   }
 }

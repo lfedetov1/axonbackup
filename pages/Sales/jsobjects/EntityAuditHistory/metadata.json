@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_5966be0e-0c59-4554-b38f-7638267683e6",
+  "id": "Sales_EntityAuditHistory",
+  "unpublishedCollection": {
+    "name": "EntityAuditHistory",
+    "pageId": "Sales",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

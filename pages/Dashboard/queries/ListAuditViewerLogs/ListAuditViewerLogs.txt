@@ -1,1 +1,39 @@
-SELECT * FROM accounting_accounts LIMIT 10;
+SELECT
+  al.id AS auditId,
+  al.created_at AS `Time`,
+  u.username AS `User`,
+  al.entity_name AS `Entity`,
+  al.entity_id AS `Entity ID`,
+  al.action_type AS `Action`,
+  al.old_values AS oldValues,
+  al.new_values AS newValues,
+  al.ip_address AS `IP Address`
+FROM audit_logs al
+LEFT JOIN users u
+  ON u.id = al.user_id
+WHERE al.company_id = {{ Number(appsmith.store.companyId || 1) }}
+
+  AND (
+    {{ AuditEntitySelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR al.entity_name = {{ AuditEntitySelect.selectedOptionValue || "ALL" }}
+  )
+
+  AND (
+    {{ AuditActionSelect.selectedOptionValue || "ALL" }} = "ALL"
+    OR al.action_type = {{ AuditActionSelect.selectedOptionValue || "ALL" }}
+  )
+
+  AND al.created_at >= {{ moment(AuditDateFrom.selectedDate || moment().subtract(7, "days")).format("YYYY-MM-DD") }}
+  AND al.created_at < DATE_ADD({{ moment(AuditDateTo.selectedDate || moment()).format("YYYY-MM-DD") }}, INTERVAL 1 DAY)
+
+  AND (
+    {{ AuditSearchInput.text || "" }} = ""
+    OR u.username LIKE CONCAT('%', {{ AuditSearchInput.text || "" }}, '%')
+    OR al.entity_name LIKE CONCAT('%', {{ AuditSearchInput.text || "" }}, '%')
+    OR al.action_type LIKE CONCAT('%', {{ AuditSearchInput.text || "" }}, '%')
+    OR al.new_values LIKE CONCAT('%', {{ AuditSearchInput.text || "" }}, '%')
+    OR al.old_values LIKE CONCAT('%', {{ AuditSearchInput.text || "" }}, '%')
+  )
+
+ORDER BY al.created_at DESC
+LIMIT 500;
