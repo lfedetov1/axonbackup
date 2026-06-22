@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_5b83ed9b-8c2a-4b10-82e7-c6b3b71785cf",
+  "id": "Dashboard_GetDashboardPlanningDailyTrend",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  calendar.targetDate AS targetDate,\n  DATE_FORMAT(calendar.targetDate, '%d.%m.') AS label,\n\n  COALESCE(plan.salesTarget, 0) AS salesTarget,\n  COALESCE(actual.actualSales, 0) AS actualSales,\n\n  COALESCE(plan.transactionTarget, 0) AS transactionTarget,\n  COALESCE(actual.actualTransactions, 0) AS actualTransactions,\n\n  COALESCE(plan.itemQtyTarget, 0) AS itemQtyTarget,\n  COALESCE(actual.actualItemQty, 0) AS actualItemQty,\n\n  CASE\n    WHEN COALESCE(plan.salesTarget, 0) > 0\n    THEN ROUND((COALESCE(actual.actualSales, 0) / COALESCE(plan.salesTarget, 0)) * 100, 2)\n    ELSE 0\n  END AS salesAchievementPct\n\nFROM (\n  SELECT DATE_ADD(\n    {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }},\n    INTERVAL seq.n DAY\n  ) AS targetDate\n  FROM (\n    SELECT 0 n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4\n    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9\n    UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14\n    UNION ALL SELECT 15 UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19\n    UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23 UNION ALL SELECT 24\n    UNION ALL SELECT 25 UNION ALL SELECT 26 UNION ALL SELECT 27 UNION ALL SELECT 28 UNION ALL SELECT 29\n    UNION ALL SELECT 30 UNION ALL SELECT 31 UNION ALL SELECT 32 UNION ALL SELECT 33 UNION ALL SELECT 34\n    UNION ALL SELECT 35 UNION ALL SELECT 36 UNION ALL SELECT 37 UNION ALL SELECT 38 UNION ALL SELECT 39\n    UNION ALL SELECT 40 UNION ALL SELECT 41 UNION ALL SELECT 42 UNION ALL SELECT 43 UNION ALL SELECT 44\n    UNION ALL SELECT 45 UNION ALL SELECT 46 UNION ALL SELECT 47 UNION ALL SELECT 48 UNION ALL SELECT 49\n    UNION ALL SELECT 50 UNION ALL SELECT 51 UNION ALL SELECT 52 UNION ALL SELECT 53 UNION ALL SELECT 54\n    UNION ALL SELECT 55 UNION ALL SELECT 56 UNION ALL SELECT 57 UNION ALL SELECT 58 UNION ALL SELECT 59\n    UNION ALL SELECT 60\n  ) seq\n  WHERE DATE_ADD(\n    {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }},\n    INTERVAL seq.n DAY\n  ) <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n) calendar\n\nLEFT JOIN (\n  SELECT\n    dt.target_date AS targetDate,\n    SUM(dt.sales_target_amount) AS salesTarget,\n    SUM(dt.transaction_target_count) AS transactionTarget,\n    SUM(dt.item_target_quantity) AS itemQtyTarget\n  FROM sales_plan_daily_targets dt\n  JOIN sales_plans sp\n    ON sp.id = dt.sales_plan_id\n  WHERE dt.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND sp.is_active = 1\n    AND sp.status IN ('APPROVED', 'DRAFT')\n    AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n\n    AND (\n      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n      OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n    )\n\n    AND (\n      {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n      OR sp.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}\n      OR sp.branch_id IN (\n        SELECT DISTINCT waccess.branch_id\n        FROM user_warehouse_access uwa\n        JOIN warehouses waccess\n          ON waccess.id = uwa.warehouse_id\n        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n          AND COALESCE(waccess.branch_id, 0) > 0\n      )\n    )\n\n  GROUP BY dt.target_date\n) plan\n  ON plan.targetDate = calendar.targetDate\n\nLEFT JOIN (\n  SELECT\n    d.document_date AS targetDate,\n\n    SUM(CASE\n      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n      THEN COALESCE(d.total_amount, 0)\n      WHEN d.document_type = 'CREDIT_NOTE'\n      THEN -ABS(COALESCE(d.total_amount, 0))\n      ELSE 0\n    END) AS actualSales,\n\n    COUNT(DISTINCT d.id) AS actualTransactions,\n\n    SUM(CASE\n      WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n      THEN COALESCE(items.itemQuantity, 0)\n      WHEN d.document_type = 'CREDIT_NOTE'\n      THEN -ABS(COALESCE(items.itemQuantity, 0))\n      ELSE 0\n    END) AS actualItemQty\n\n  FROM documents d\n  LEFT JOIN warehouses w\n    ON w.id = d.warehouse_id\n  LEFT JOIN (\n    SELECT\n      di.document_id,\n      SUM(COALESCE(di.quantity, 0)) AS itemQuantity\n    FROM document_items di\n    GROUP BY di.document_id\n  ) items\n    ON items.document_id = d.id\n\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.status <> 'CANCELLED'\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n\n    AND (\n      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n      OR w.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n    )\n\n    AND (\n      {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n      OR w.branch_id IN (\n        SELECT DISTINCT waccess.branch_id\n        FROM user_warehouse_access uwa\n        JOIN warehouses waccess\n          ON waccess.id = uwa.warehouse_id\n        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n          AND COALESCE(waccess.branch_id, 0) > 0\n      )\n    )\n\n  GROUP BY d.document_date\n) actual\n  ON actual.targetDate = calendar.targetDate\n\nORDER BY calendar.targetDate;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetDashboardPlanningDailyTrend",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

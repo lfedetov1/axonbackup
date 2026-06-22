@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_5302ecef-2dd5-4b17-a79a-2f0c2d134620",
+  "id": "Dashboard_GetDashboardPlanningBranchPerf",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  b.id AS branchId,\n  b.code AS branchCode,\n  b.name AS branchName,\n\n  COALESCE(plan.salesTarget, 0) AS salesTarget,\n  COALESCE(actual.actualSales, 0) AS actualSales,\n  COALESCE(prev.previousSales, 0) AS previousSales,\n\tCOALESCE(plan.marginTarget, 0) AS marginTarget,\n  COALESCE(plan.plannedWorkingHours, 0) AS plannedWorkingHours,\n  COALESCE(plan.plannedAbsenceHours, 0) AS plannedAbsenceHours,\n  COALESCE(plan.plannedSickLeaveHours, 0) AS plannedSickLeaveHours,\n\n  COALESCE(plan.transactionTarget, 0) AS transactionTarget,\n  COALESCE(actual.actualTransactions, 0) AS actualTransactions,\n\n  COALESCE(plan.itemQtyTarget, 0) AS itemQtyTarget,\n  COALESCE(items.actualItemQty, 0) AS actualItemQty,\n\n  COALESCE(plan.salesTarget, 0) - COALESCE(actual.actualSales, 0) AS salesGap,\n\n  CASE\n    WHEN COALESCE(plan.salesTarget, 0) = 0 THEN 0\n    ELSE ROUND((COALESCE(actual.actualSales, 0) / COALESCE(plan.salesTarget, 0)) * 100, 2)\n  END AS achievementPct,\n\n  CASE\n    WHEN COALESCE(prev.previousSales, 0) = 0 THEN 0\n    ELSE ROUND(\n      ((COALESCE(actual.actualSales, 0) - COALESCE(prev.previousSales, 0)) / ABS(COALESCE(prev.previousSales, 0))) * 100,\n      2\n    )\n  END AS previousChangePct,\n\n  CASE\n    WHEN COALESCE(actual.actualTransactions, 0) = 0 THEN 0\n    ELSE ROUND(COALESCE(actual.actualSales, 0) / COALESCE(actual.actualTransactions, 0), 2)\n  END AS averageBasket\n\nFROM branches b\n\nLEFT JOIN (\n  SELECT\n    sp.branch_id,\n    SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget,\n    SUM(COALESCE(dt.margin_target_amount, 0)) AS marginTarget,\n    SUM(COALESCE(dt.transaction_target_count, 0)) AS transactionTarget,\n    SUM(COALESCE(dt.item_target_quantity, 0)) AS itemQtyTarget,\n    SUM(COALESCE(dt.planned_working_hours, 0)) AS plannedWorkingHours,\n    SUM(COALESCE(dt.planned_absence_hours, 0)) AS plannedAbsenceHours,\n    SUM(COALESCE(dt.planned_sick_leave_hours, 0)) AS plannedSickLeaveHours\n  FROM sales_plans sp\n  JOIN sales_plan_daily_targets dt\n    ON dt.sales_plan_id = sp.id\n  WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND sp.status <> 'CANCELLED'\n    AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n  GROUP BY sp.branch_id\n) plan\n  ON plan.branch_id = b.id\n\nLEFT JOIN (\n  SELECT\n    w.branch_id,\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))\n        ELSE COALESCE(d.total_amount, 0)\n      END\n    ) AS actualSales,\n    COUNT(DISTINCT d.id) AS actualTransactions\n  FROM documents d\n  JOIN warehouses w\n    ON w.id = d.warehouse_id\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n    AND d.status <> 'CANCELLED'\n    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n  GROUP BY w.branch_id\n) actual\n  ON actual.branch_id = b.id\n\nLEFT JOIN (\n  SELECT\n    w.branch_id,\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))\n        ELSE COALESCE(di.quantity, 0)\n      END\n    ) AS actualItemQty\n  FROM documents d\n  JOIN document_items di\n    ON di.document_id = d.id\n  JOIN warehouses w\n    ON w.id = d.warehouse_id\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n    AND d.status <> 'CANCELLED'\n    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n  GROUP BY w.branch_id\n) items\n  ON items.branch_id = b.id\n\nLEFT JOIN (\n  SELECT\n    w.branch_id,\n    SUM(\n      CASE\n        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))\n        ELSE COALESCE(d.total_amount, 0)\n      END\n    ) AS previousSales\n  FROM documents d\n  JOIN warehouses w\n    ON w.id = d.warehouse_id\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n    AND d.status <> 'CANCELLED'\n    AND d.document_date >= DATE_SUB(\n      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }},\n      INTERVAL DATEDIFF(\n        {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }},\n        {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n      ) + 1 DAY\n    )\n    AND d.document_date < {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n  GROUP BY w.branch_id\n) prev\n  ON prev.branch_id = b.id\n\nWHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}\n  AND b.is_active = 1\n\n  AND (\n    {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n    OR b.id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n  )\n\n  AND (\n    {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n    OR b.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}\n    OR b.id IN (\n      SELECT DISTINCT waccess.branch_id\n      FROM user_warehouse_access uwa\n      JOIN warehouses waccess\n        ON waccess.id = uwa.warehouse_id\n      WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n        AND COALESCE(waccess.branch_id, 0) > 0\n    )\n  )\n\nORDER BY\n  actualSales DESC,\n  achievementPct DESC,\n  b.code;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetDashboardPlanningBranchPerf",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}

@@ -1,0 +1,3 @@
+DELETE FROM sales_plan_category_targets
+WHERE id = {{ Number(this.params.id || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

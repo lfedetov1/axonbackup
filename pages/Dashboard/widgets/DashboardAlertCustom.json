@@ -3,7 +3,7 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 169,
+  "bottomRow": 188,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
   "defaultModel": "{{\n{\n  alerts: GetDashboardAlerts.data || []\n}\n}}",
   "dynamicBindingPathList": [
@@ -54,7 +54,7 @@
     "js": "function severityClass(value) {\n  return String(value || \"\").toLowerCase();\n}\nfunction render(model = {}) {\n  const alerts = model.alerts || [];\n  document.getElementById(\"count\").innerText = alerts.length;\n  document.getElementById(\"alertList\").innerHTML = alerts.length ? alerts.map(alert => `\n      <div class=\"alert ${severityClass(alert.severity)}\">\n        <div class=\"top\">\n          <span class=\"badge\">${alert.severity || \"INFO\"}</span>\n          <span class=\"module\">${alert.moduleName || \"\"}</span>\n        </div>\n        <h3>${alert.title || \"\"}</h3>\n        <p>${alert.message || \"\"}</p>\n        <div class=\"code\">${alert.alertType || \"\"} / ${alert.entityCode || \"\"}</div>\n      </div>\n    `).join(\"\") : `<div class=\"empty\">No alerts right now.</div>`;\n}\nappsmith.onReady(() => {\n  render(appsmith.model || {});\n});\nappsmith.onModelChange(model => {\n  render(model || {});\n});"
   },
   "theme": "{{appsmith.theme}}",
-  "topRow": 139,
+  "topRow": 158,
   "type": "CUSTOM_WIDGET",
   "uncompiledSrcDoc": {
     "css": "body {\n  margin: 0;\n  font-family: Inter, Arial, sans-serif;\n  background: transparent;\n  color: #111827;\n}\n\n.alerts {\n  padding: 0 22px 22px;\n  box-sizing: border-box;\n}\n\n.head {\n  display: flex;\n  justify-content: space-between;\n  gap: 14px;\n  align-items: flex-start;\n  margin-bottom: 12px;\n}\n\n.head span {\n  color: #667085;\n  font-size: 11px;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n\nh2 {\n  margin: 3px 0 4px;\n  font-size: 20px;\n}\n\np {\n  margin: 0;\n  color: #667085;\n  font-size: 13px;\n}\n\n.count {\n  min-width: 42px;\n  height: 34px;\n  line-height: 34px;\n  border-radius: 999px;\n  background: #111827;\n  color: white;\n  text-align: center;\n  font-weight: 900;\n}\n\n.alert-list {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 11px;\n}\n\n.alert {\n  border: 1px solid #d0d5dd;\n  border-radius: 8px;\n  background: #fff;\n  padding: 13px;\n}\n\n.alert.critical {\n  border-color: #fecaca;\n  background: #fff1f2;\n}\n\n.alert.high {\n  border-color: #fed7aa;\n  background: #fff7ed;\n}\n\n.alert.medium {\n  border-color: #bfdbfe;\n  background: #eff6ff;\n}\n\n.top {\n  display: flex;\n  justify-content: space-between;\n  gap: 10px;\n  margin-bottom: 10px;\n}\n\n.badge {\n  font-size: 10px;\n  font-weight: 900;\n  text-transform: uppercase;\n  padding: 4px 7px;\n  border-radius: 999px;\n  border: 1px solid #d0d5dd;\n  background: #fff;\n}\n\n.module {\n  color: #667085;\n  font-size: 11px;\n  font-weight: 800;\n}\n\n.alert h3 {\n  margin: 0 0 6px;\n  font-size: 15px;\n}\n\n.alert p {\n  font-size: 12px;\n  line-height: 1.4;\n}\n\n.code {\n  margin-top: 10px;\n  color: #667085;\n  font-size: 11px;\n}\n\n.empty {\n  grid-column: 1 / -1;\n  border: 1px dashed #d0d5dd;\n  border-radius: 8px;\n  padding: 24px;\n  color: #667085;\n  text-align: center;\n}\n\n@media (max-width: 1100px) {\n  .alert-list {\n    grid-template-columns: 1fr;\n  }\n}",

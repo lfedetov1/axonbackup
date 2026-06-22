@@ -1,0 +1,159 @@
+SELECT
+  b.id AS branchId,
+  b.code AS branchCode,
+  b.name AS branchName,
+
+  COALESCE(plan.salesTarget, 0) AS salesTarget,
+  COALESCE(actual.actualSales, 0) AS actualSales,
+  COALESCE(prev.previousSales, 0) AS previousSales,
+	COALESCE(plan.marginTarget, 0) AS marginTarget,
+  COALESCE(plan.plannedWorkingHours, 0) AS plannedWorkingHours,
+  COALESCE(plan.plannedAbsenceHours, 0) AS plannedAbsenceHours,
+  COALESCE(plan.plannedSickLeaveHours, 0) AS plannedSickLeaveHours,
+
+  COALESCE(plan.transactionTarget, 0) AS transactionTarget,
+  COALESCE(actual.actualTransactions, 0) AS actualTransactions,
+
+  COALESCE(plan.itemQtyTarget, 0) AS itemQtyTarget,
+  COALESCE(items.actualItemQty, 0) AS actualItemQty,
+
+  COALESCE(plan.salesTarget, 0) - COALESCE(actual.actualSales, 0) AS salesGap,
+
+  CASE
+    WHEN COALESCE(plan.salesTarget, 0) = 0 THEN 0
+    ELSE ROUND((COALESCE(actual.actualSales, 0) / COALESCE(plan.salesTarget, 0)) * 100, 2)
+  END AS achievementPct,
+
+  CASE
+    WHEN COALESCE(prev.previousSales, 0) = 0 THEN 0
+    ELSE ROUND(
+      ((COALESCE(actual.actualSales, 0) - COALESCE(prev.previousSales, 0)) / ABS(COALESCE(prev.previousSales, 0))) * 100,
+      2
+    )
+  END AS previousChangePct,
+
+  CASE
+    WHEN COALESCE(actual.actualTransactions, 0) = 0 THEN 0
+    ELSE ROUND(COALESCE(actual.actualSales, 0) / COALESCE(actual.actualTransactions, 0), 2)
+  END AS averageBasket
+
+FROM branches b
+
+LEFT JOIN (
+  SELECT
+    sp.branch_id,
+    SUM(COALESCE(dt.sales_target_amount, 0)) AS salesTarget,
+    SUM(COALESCE(dt.margin_target_amount, 0)) AS marginTarget,
+    SUM(COALESCE(dt.transaction_target_count, 0)) AS transactionTarget,
+    SUM(COALESCE(dt.item_target_quantity, 0)) AS itemQtyTarget,
+    SUM(COALESCE(dt.planned_working_hours, 0)) AS plannedWorkingHours,
+    SUM(COALESCE(dt.planned_absence_hours, 0)) AS plannedAbsenceHours,
+    SUM(COALESCE(dt.planned_sick_leave_hours, 0)) AS plannedSickLeaveHours
+  FROM sales_plans sp
+  JOIN sales_plan_daily_targets dt
+    ON dt.sales_plan_id = sp.id
+  WHERE sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND sp.status <> 'CANCELLED'
+    AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+  GROUP BY sp.branch_id
+) plan
+  ON plan.branch_id = b.id
+
+LEFT JOIN (
+  SELECT
+    w.branch_id,
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ) AS actualSales,
+    COUNT(DISTINCT d.id) AS actualTransactions
+  FROM documents d
+  JOIN warehouses w
+    ON w.id = d.warehouse_id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+  GROUP BY w.branch_id
+) actual
+  ON actual.branch_id = b.id
+
+LEFT JOIN (
+  SELECT
+    w.branch_id,
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+        ELSE COALESCE(di.quantity, 0)
+      END
+    ) AS actualItemQty
+  FROM documents d
+  JOIN document_items di
+    ON di.document_id = d.id
+  JOIN warehouses w
+    ON w.id = d.warehouse_id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+  GROUP BY w.branch_id
+) items
+  ON items.branch_id = b.id
+
+LEFT JOIN (
+  SELECT
+    w.branch_id,
+    SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ) AS previousSales
+  FROM documents d
+  JOIN warehouses w
+    ON w.id = d.warehouse_id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= DATE_SUB(
+      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }},
+      INTERVAL DATEDIFF(
+        {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }},
+        {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      ) + 1 DAY
+    )
+    AND d.document_date < {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+  GROUP BY w.branch_id
+) prev
+  ON prev.branch_id = b.id
+
+WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND b.is_active = 1
+
+  AND (
+    {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+    OR b.id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+  )
+
+  AND (
+    {{ (AppAccess.has("admin.access") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1
+    OR b.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}
+    OR b.id IN (
+      SELECT DISTINCT waccess.branch_id
+      FROM user_warehouse_access uwa
+      JOIN warehouses waccess
+        ON waccess.id = uwa.warehouse_id
+      WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
+        AND COALESCE(waccess.branch_id, 0) > 0
+    )
+  )
+
+ORDER BY
+  actualSales DESC,
+  achievementPct DESC,
+  b.code;

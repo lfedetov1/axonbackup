@@ -1,0 +1,7 @@
+SELECT
+  p.id AS value,
+  CONCAT(p.code, ' - ', p.name) AS label
+FROM products p
+WHERE p.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND p.is_active = 1
+ORDER BY p.code;

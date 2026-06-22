@@ -1,0 +1,5 @@
+SELECT
+  pc.id AS value,
+  CONCAT(pc.code, ' - ', pc.name) AS label
+FROM product_categories pc
+ORDER BY pc.code;

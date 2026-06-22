@@ -1,0 +1,18 @@
+INSERT INTO sales_plan_category_targets (
+  company_id,
+  sales_plan_id,
+  product_category_id,
+  product_id,
+  target_quantity,
+  target_amount,
+  note
+)
+VALUES (
+  {{ Number(appsmith.store.companyId || 1) }},
+  {{ Number(appsmith.store.selectedAdminSalesPlanId || 0) }},
+  {{ Number(AdminPlanTargetCategorySelect.selectedOptionValue || 0) || null }},
+  {{ Number(AdminPlanTargetProductSelect.selectedOptionValue || 0) || null }},
+  {{ Number(AdminPlanTargetQuantityInput.text || 0) }},
+  {{ Number(AdminPlanTargetAmountInput.text || 0) }},
+  {{ AdminPlanTargetNoteInput.text || null }}
+);

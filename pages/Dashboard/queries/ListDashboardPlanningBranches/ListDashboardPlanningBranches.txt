@@ -1,0 +1,18 @@
+SELECT
+  CAST(b.id AS CHAR) AS value,
+  CONCAT(b.code, ' - ', b.name) AS label
+FROM branches b
+WHERE b.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND b.is_active = 1
+  AND (
+    {{ (AppAccess.has("admin.access") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1
+    OR b.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}
+    OR b.id IN (
+      SELECT DISTINCT w.branch_id
+      FROM user_warehouse_access uwa
+      JOIN warehouses w ON w.id = uwa.warehouse_id
+      WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
+        AND COALESCE(w.branch_id, 0) > 0
+    )
+  )
+ORDER BY b.code;

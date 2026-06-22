@@ -1,0 +1,23 @@
+SELECT
+  sct.id AS categoryTargetId,
+  sct.sales_plan_id AS salesPlanId,
+
+  pc.id AS productCategoryId,
+  pc.code AS `Category Code`,
+  pc.name AS `Category`,
+
+  p.id AS productId,
+  p.code AS `Product Code`,
+  p.name AS `Product`,
+
+  sct.target_quantity AS `Target Qty`,
+  sct.target_amount AS `Target Amount`,
+  sct.note AS `Note`
+FROM sales_plan_category_targets sct
+LEFT JOIN product_categories pc
+  ON pc.id = sct.product_category_id
+LEFT JOIN products p
+  ON p.id = sct.product_id
+WHERE sct.company_id = {{ Number(appsmith.store.companyId || 1) }}
+  AND sct.sales_plan_id = {{ Number(appsmith.store.selectedAdminSalesPlanId || 0) }}
+ORDER BY pc.name, p.name;

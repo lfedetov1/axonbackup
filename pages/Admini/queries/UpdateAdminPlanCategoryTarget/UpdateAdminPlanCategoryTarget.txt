@@ -1,0 +1,10 @@
+UPDATE sales_plan_category_targets
+SET
+  product_category_id = {{ Number(AdminPlanTargetCategorySelect.selectedOptionValue || 0) || null }},
+  product_id = {{ Number(AdminPlanTargetProductSelect.selectedOptionValue || 0) || null }},
+  target_quantity = {{ Number(AdminPlanTargetQuantityInput.text || 0) }},
+  target_amount = {{ Number(AdminPlanTargetAmountInput.text || 0) }},
+  note = {{ AdminPlanTargetNoteInput.text || null }},
+  updated_at = NOW()
+WHERE id = {{ Number(appsmith.store.selectedAdminPlanCategoryTargetId || 0) }}
+  AND company_id = {{ Number(appsmith.store.companyId || 1) }};

@@ -1,0 +1,62 @@
+SELECT
+  b.previousFrom,
+  b.previousTo,
+  COALESCE(h.actualSales, 0) AS previousSales,
+  COALESCE(h.actualTransactions, 0) AS previousTransactions,
+  COALESCE(i.actualItemQty, 0) AS previousItemQty
+FROM (
+  SELECT
+    DATE_SUB(
+      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }},
+      INTERVAL DATEDIFF(
+        {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }},
+        {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+      ) + 1 DAY
+    ) AS previousFrom,
+    DATE_SUB(
+      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }},
+      INTERVAL 1 DAY
+    ) AS previousTo
+) b
+CROSS JOIN (
+  SELECT
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE COALESCE(d.total_amount, 0)
+      END
+    ), 0) AS actualSales,
+    COUNT(DISTINCT d.id) AS actualTransactions
+  FROM documents d
+  LEFT JOIN warehouses w ON w.id = d.warehouse_id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= DATE_SUB({{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}, INTERVAL DATEDIFF({{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}, {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}) + 1 DAY)
+    AND d.document_date < {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND (
+      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+      OR COALESCE(w.branch_id, 0) = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+    )
+) h
+CROSS JOIN (
+  SELECT
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type = 'CREDIT_NOTE' THEN -ABS(COALESCE(di.quantity, 0))
+        ELSE COALESCE(di.quantity, 0)
+      END
+    ), 0) AS actualItemQty
+  FROM documents d
+  JOIN document_items di ON di.document_id = d.id
+  LEFT JOIN warehouses w ON w.id = d.warehouse_id
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.status <> 'CANCELLED'
+    AND d.document_date >= DATE_SUB({{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}, INTERVAL DATEDIFF({{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}, {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}) + 1 DAY)
+    AND d.document_date < {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND (
+      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+      OR COALESCE(w.branch_id, 0) = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+    )
+) i;

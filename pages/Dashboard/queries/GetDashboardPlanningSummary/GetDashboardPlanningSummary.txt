@@ -1,0 +1,153 @@
+SELECT
+  COALESCE(plan.salesTarget, 0) AS salesTarget,
+  COALESCE(plan.marginTarget, 0) AS marginTarget,
+  COALESCE(plan.transactionTarget, 0) AS transactionTarget,
+  COALESCE(plan.itemQtyTarget, 0) AS itemQtyTarget,
+  COALESCE(plan.workingHours, 0) AS workingHours,
+  COALESCE(plan.absenceHours, 0) AS absenceHours,
+  COALESCE(plan.sickLeaveHours, 0) AS sickLeaveHours,
+
+  COALESCE(actual.actualSales, 0) AS actualSales,
+  COALESCE(actual.actualTransactions, 0) AS actualTransactions,
+  COALESCE(actual.actualItemQty, 0) AS actualItemQty,
+
+  CASE
+    WHEN COALESCE(plan.salesTarget, 0) > 0
+    THEN ROUND((COALESCE(actual.actualSales, 0) / COALESCE(plan.salesTarget, 0)) * 100, 2)
+    ELSE 0
+  END AS salesAchievementPct,
+
+  CASE
+    WHEN COALESCE(plan.transactionTarget, 0) > 0
+    THEN ROUND((COALESCE(actual.actualTransactions, 0) / COALESCE(plan.transactionTarget, 0)) * 100, 2)
+    ELSE 0
+  END AS transactionAchievementPct,
+
+  CASE
+    WHEN COALESCE(plan.itemQtyTarget, 0) > 0
+    THEN ROUND((COALESCE(actual.actualItemQty, 0) / COALESCE(plan.itemQtyTarget, 0)) * 100, 2)
+    ELSE 0
+  END AS itemAchievementPct,
+
+  GREATEST(COALESCE(plan.salesTarget, 0) - COALESCE(actual.actualSales, 0), 0) AS salesGap,
+
+  CASE
+    WHEN DATEDIFF(
+      {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }},
+      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    ) + 1 > 0
+    THEN ROUND(
+      COALESCE(actual.actualSales, 0) /
+      (
+        DATEDIFF(
+          {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }},
+          {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+        ) + 1
+      )
+      * DAY(LAST_DAY({{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }})),
+      2
+    )
+    ELSE 0
+  END AS projectedMonthSales
+
+FROM
+(
+  SELECT
+    COALESCE(SUM(dt.sales_target_amount), 0) AS salesTarget,
+    COALESCE(SUM(dt.margin_target_amount), 0) AS marginTarget,
+    COALESCE(SUM(dt.transaction_target_count), 0) AS transactionTarget,
+    COALESCE(SUM(dt.item_target_quantity), 0) AS itemQtyTarget,
+    COALESCE(SUM(dt.planned_working_hours), 0) AS workingHours,
+    COALESCE(SUM(dt.planned_absence_hours), 0) AS absenceHours,
+    COALESCE(SUM(dt.planned_sick_leave_hours), 0) AS sickLeaveHours
+  FROM sales_plan_daily_targets dt
+  JOIN sales_plans sp
+    ON sp.id = dt.sales_plan_id
+  LEFT JOIN branches b
+    ON b.id = sp.branch_id
+  WHERE dt.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND sp.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND sp.is_active = 1
+    AND sp.status IN ('APPROVED', 'DRAFT')
+    AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+
+    AND (
+      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+      OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+    )
+
+    AND (
+      {{ (AppAccess.has("admin.access") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1
+      OR sp.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}
+      OR sp.branch_id IN (
+        SELECT DISTINCT waccess.branch_id
+        FROM user_warehouse_access uwa
+        JOIN warehouses waccess
+          ON waccess.id = uwa.warehouse_id
+        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
+          AND COALESCE(waccess.branch_id, 0) > 0
+      )
+    )
+) plan
+
+CROSS JOIN
+(
+  SELECT
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+        THEN COALESCE(d.total_amount, 0)
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(d.total_amount, 0))
+        ELSE 0
+      END
+    ), 0) AS actualSales,
+
+    COUNT(DISTINCT d.id) AS actualTransactions,
+
+    COALESCE(SUM(
+      CASE
+        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')
+        THEN COALESCE(items.itemQuantity, 0)
+        WHEN d.document_type = 'CREDIT_NOTE'
+        THEN -ABS(COALESCE(items.itemQuantity, 0))
+        ELSE 0
+      END
+    ), 0) AS actualItemQty
+
+  FROM documents d
+  LEFT JOIN warehouses w
+    ON w.id = d.warehouse_id
+  LEFT JOIN (
+    SELECT
+      di.document_id,
+      SUM(COALESCE(di.quantity, 0)) AS itemQuantity
+    FROM document_items di
+    GROUP BY di.document_id
+  ) items
+    ON items.document_id = d.id
+
+  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}
+    AND d.status <> 'CANCELLED'
+    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')
+    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf("month").format("YYYY-MM-DD") }}
+    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format("YYYY-MM-DD") }}
+
+    AND (
+      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0
+      OR w.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}
+    )
+
+    AND (
+      {{ (AppAccess.has("admin.access") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1
+      OR w.branch_id IN (
+        SELECT DISTINCT waccess.branch_id
+        FROM user_warehouse_access uwa
+        JOIN warehouses waccess
+          ON waccess.id = uwa.warehouse_id
+        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}
+          AND COALESCE(waccess.branch_id, 0) > 0
+      )
+    )
+) actual;

@@ -1,0 +1,35 @@
+{
+  "gitSyncId": "69e7d447c5e91666c08fb1a7_80a2c4af-421a-4b73-a235-a665c45f08d3",
+  "id": "Dashboard_GetDashboardPlanningSummary",
+  "pluginId": "mysql-plugin",
+  "pluginType": "DB",
+  "unpublishedAction": {
+    "actionConfiguration": {
+      "body": "SELECT\n  COALESCE(plan.salesTarget, 0) AS salesTarget,\n  COALESCE(plan.marginTarget, 0) AS marginTarget,\n  COALESCE(plan.transactionTarget, 0) AS transactionTarget,\n  COALESCE(plan.itemQtyTarget, 0) AS itemQtyTarget,\n  COALESCE(plan.workingHours, 0) AS workingHours,\n  COALESCE(plan.absenceHours, 0) AS absenceHours,\n  COALESCE(plan.sickLeaveHours, 0) AS sickLeaveHours,\n\n  COALESCE(actual.actualSales, 0) AS actualSales,\n  COALESCE(actual.actualTransactions, 0) AS actualTransactions,\n  COALESCE(actual.actualItemQty, 0) AS actualItemQty,\n\n  CASE\n    WHEN COALESCE(plan.salesTarget, 0) > 0\n    THEN ROUND((COALESCE(actual.actualSales, 0) / COALESCE(plan.salesTarget, 0)) * 100, 2)\n    ELSE 0\n  END AS salesAchievementPct,\n\n  CASE\n    WHEN COALESCE(plan.transactionTarget, 0) > 0\n    THEN ROUND((COALESCE(actual.actualTransactions, 0) / COALESCE(plan.transactionTarget, 0)) * 100, 2)\n    ELSE 0\n  END AS transactionAchievementPct,\n\n  CASE\n    WHEN COALESCE(plan.itemQtyTarget, 0) > 0\n    THEN ROUND((COALESCE(actual.actualItemQty, 0) / COALESCE(plan.itemQtyTarget, 0)) * 100, 2)\n    ELSE 0\n  END AS itemAchievementPct,\n\n  GREATEST(COALESCE(plan.salesTarget, 0) - COALESCE(actual.actualSales, 0), 0) AS salesGap,\n\n  CASE\n    WHEN DATEDIFF(\n      {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }},\n      {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    ) + 1 > 0\n    THEN ROUND(\n      COALESCE(actual.actualSales, 0) /\n      (\n        DATEDIFF(\n          {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }},\n          {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n        ) + 1\n      )\n      * DAY(LAST_DAY({{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }})),\n      2\n    )\n    ELSE 0\n  END AS projectedMonthSales\n\nFROM\n(\n  SELECT\n    COALESCE(SUM(dt.sales_target_amount), 0) AS salesTarget,\n    COALESCE(SUM(dt.margin_target_amount), 0) AS marginTarget,\n    COALESCE(SUM(dt.transaction_target_count), 0) AS transactionTarget,\n    COALESCE(SUM(dt.item_target_quantity), 0) AS itemQtyTarget,\n    COALESCE(SUM(dt.planned_working_hours), 0) AS workingHours,\n    COALESCE(SUM(dt.planned_absence_hours), 0) AS absenceHours,\n    COALESCE(SUM(dt.planned_sick_leave_hours), 0) AS sickLeaveHours\n  FROM sales_plan_daily_targets dt\n  JOIN sales_plans sp\n    ON sp.id = dt.sales_plan_id\n  LEFT JOIN branches b\n    ON b.id = sp.branch_id\n  WHERE dt.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND sp.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND sp.is_active = 1\n    AND sp.status IN ('APPROVED', 'DRAFT')\n    AND dt.target_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND dt.target_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n\n    AND (\n      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n      OR sp.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n    )\n\n    AND (\n      {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n      OR sp.responsible_user_id = {{ Number(appsmith.store.userId || 0) }}\n      OR sp.branch_id IN (\n        SELECT DISTINCT waccess.branch_id\n        FROM user_warehouse_access uwa\n        JOIN warehouses waccess\n          ON waccess.id = uwa.warehouse_id\n        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n          AND COALESCE(waccess.branch_id, 0) > 0\n      )\n    )\n) plan\n\nCROSS JOIN\n(\n  SELECT\n    COALESCE(SUM(\n      CASE\n        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n        THEN COALESCE(d.total_amount, 0)\n        WHEN d.document_type = 'CREDIT_NOTE'\n        THEN -ABS(COALESCE(d.total_amount, 0))\n        ELSE 0\n      END\n    ), 0) AS actualSales,\n\n    COUNT(DISTINCT d.id) AS actualTransactions,\n\n    COALESCE(SUM(\n      CASE\n        WHEN d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT')\n        THEN COALESCE(items.itemQuantity, 0)\n        WHEN d.document_type = 'CREDIT_NOTE'\n        THEN -ABS(COALESCE(items.itemQuantity, 0))\n        ELSE 0\n      END\n    ), 0) AS actualItemQty\n\n  FROM documents d\n  LEFT JOIN warehouses w\n    ON w.id = d.warehouse_id\n  LEFT JOIN (\n    SELECT\n      di.document_id,\n      SUM(COALESCE(di.quantity, 0)) AS itemQuantity\n    FROM document_items di\n    GROUP BY di.document_id\n  ) items\n    ON items.document_id = d.id\n\n  WHERE d.company_id = {{ Number(appsmith.store.companyId || 1) }}\n    AND d.status <> 'CANCELLED'\n    AND d.document_type IN ('SALES_INVOICE', 'POS_SALE', 'SALES_RECEIPT', 'CREDIT_NOTE')\n    AND d.document_date >= {{ appsmith.store.dashboardPlanningDateFrom || moment().startOf(\"month\").format(\"YYYY-MM-DD\") }}\n    AND d.document_date <= {{ appsmith.store.dashboardPlanningDateTo || moment().format(\"YYYY-MM-DD\") }}\n\n    AND (\n      {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }} = 0\n      OR w.branch_id = {{ Number(appsmith.store.dashboardPlanningBranchId || 0) }}\n    )\n\n    AND (\n      {{ (AppAccess.has(\"admin.access\") || AppAccess.canViewAllWarehouses()) ? 1 : 0 }} = 1\n      OR w.branch_id IN (\n        SELECT DISTINCT waccess.branch_id\n        FROM user_warehouse_access uwa\n        JOIN warehouses waccess\n          ON waccess.id = uwa.warehouse_id\n        WHERE uwa.user_id = {{ Number(appsmith.store.userId || 0) }}\n          AND COALESCE(waccess.branch_id, 0) > 0\n      )\n    )\n) actual;",
+      "encodeParamsToggle": true,
+      "paginationType": "NONE",
+      "pluginSpecifiedTemplates": [
+        {
+          "value": true
+        }
+      ],
+      "timeoutInMillisecond": 10000
+    },
+    "confirmBeforeExecute": false,
+    "datasource": {
+      "id": "Axon",
+      "isAutoGenerated": false,
+      "name": "Axon",
+      "pluginId": "mysql-plugin"
+    },
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "GetDashboardPlanningSummary",
+    "pageId": "Dashboard",
+    "runBehaviour": "AUTOMATIC",
+    "userSetOnLoad": false
+  }
+}
