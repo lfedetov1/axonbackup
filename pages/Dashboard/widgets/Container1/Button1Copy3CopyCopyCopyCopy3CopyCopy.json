@@ -42,7 +42,7 @@
   "mobileRightColumn": 22,
   "mobileTopRow": 23,
   "needsErrorInfo": false,
-  "onClick": "{{\nnavigateTo(\"http://localhost:8088\", {}, \"NEW_WINDOW\")\n}}",
+  "onClick": "{{ navigateTo(\"https://ubuntu-4gb-fsn1-1.tail44daa0.ts.net/pos/\", {}, \"NEW_WINDOW\") }}",
   "originalBottomRow": 41,
   "originalTopRow": 37,
   "parentColumnSpace": 14.234375,
